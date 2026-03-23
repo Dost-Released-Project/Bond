@@ -132,6 +132,15 @@
     transition: background .1s;
   }
   .btn:hover { background: var(--bg); }
+  .btn-save {
+    background: var(--text-primary); color: var(--bg);
+    border-color: var(--text-primary); font-weight: 600;
+  }
+  .btn-save:hover { opacity: .85; background: var(--text-primary); }
+  .save-status { font-size: 12px; }
+  .status-saving { color: var(--text-muted); }
+  .status-saved  { color: var(--avail-text); }
+  .status-error  { color: var(--unavail-text); }
   .export-area {
     max-width: 900px; margin: 1.5rem auto 0;
     display: flex; gap: 10px; flex-wrap: wrap;
@@ -198,7 +207,23 @@
   <button class="copy-btn" onclick="copyExport()">클립보드에 복사</button>
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, set, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDm5DpKxyiConsTqYyVKXf1ETapiVZCTQo",
+  authDomain: "teampage-67e1b.firebaseapp.com",
+  databaseURL: "https://teampage-67e1b-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "teampage-67e1b",
+  storageBucket: "teampage-67e1b.firebasestorage.app",
+  messagingSenderId: "172635325275",
+  appId: "1:172635325275:web:9bf82069725b0ad672107e"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
 const HOURS = Array.from({length:24},(_,i)=>i);
 const DAYS = ['월','화','수','목','금','토','일'];
 const NIGHT = new Set([0,1,2,3,4,5,22,23]);
@@ -225,7 +250,9 @@ members.forEach(m => {
 });
 
 let drag = false, dragMid = -1, dragVal = 'neutral';
+let remoteUpdate = false;
 
+function pad(n){ return String(n).padStart(2,'0'); }
 function initials(n){ const p=n.split(' '); return p.length>=2?(p[0][0]+p[1][0]).toUpperCase():n.slice(0,2).toUpperCase(); }
 
 function getDayStr(mid, type, day){
@@ -259,14 +286,12 @@ function getRanges(mid, type){
   return out;
 }
 
-function pad(n){ return String(n).padStart(2,'0'); }
-
-function applyCell(mid, day, hour, val){
+function applyCell(mid, day, hour, val, skipRender){
   state[mid][day][hour] = val;
   const el = document.querySelector(`[data-k="${mid}_${day}_${hour}"]`);
   if(!el) return;
   el.className = 'cell' + (NIGHT.has(hour)?' night':'') + (val==='neutral'?'':(` s-${val}`));
-  renderSummary(mid);
+  if(!skipRender) renderSummary(mid);
 }
 
 function renderSummary(mid){
@@ -277,6 +302,53 @@ function renderSummary(mid){
   let h = av.map(t=>`<span class="pill pill-avail">${t}</span>`).join('')
          + un.map(t=>`<span class="pill pill-unavail">${t}</span>`).join('');
   el.innerHTML = h || '<span class="pill pill-empty">아직 설정 없음</span>';
+}
+
+function setSaveStatus(mid, status){
+  const el = document.getElementById(`save-status-${mid}`);
+  if(!el) return;
+  const map = {
+    idle:    {text:'', cls:''},
+    saving:  {text:'저장 중...', cls:'status-saving'},
+    saved:   {text:'저장됨', cls:'status-saved'},
+    error:   {text:'오류 발생', cls:'status-error'},
+    loading: {text:'불러오는 중...', cls:'status-saving'},
+  };
+  const s = map[status] || map.idle;
+  el.textContent = s.text;
+  el.className = 'save-status ' + s.cls;
+}
+
+async function saveMember(mid){
+  setSaveStatus(mid, 'saving');
+  try {
+    await set(ref(db, `availability/${mid}`), state[mid]);
+    setSaveStatus(mid, 'saved');
+    setTimeout(() => setSaveStatus(mid, 'idle'), 2000);
+  } catch(e){
+    setSaveStatus(mid, 'error');
+  }
+}
+
+function loadAll(){
+  members.forEach(m => {
+    setSaveStatus(m.id, 'loading');
+    onValue(ref(db, `availability/${m.id}`), snap => {
+      const data = snap.val();
+      setSaveStatus(m.id, 'idle');
+      if(!data) return;
+      remoteUpdate = true;
+      DAYS.forEach(d => {
+        HOURS.forEach(h => {
+          const val = (data[d] && data[d][h]) ? data[d][h] : 'neutral';
+          state[m.id][d][h] = val;
+          applyCell(m.id, d, h, val, true);
+        });
+      });
+      renderSummary(m.id);
+      remoteUpdate = false;
+    });
+  });
 }
 
 function toggleMode(mid, mode){
@@ -360,14 +432,20 @@ function render(){
       </div></div>
       <div class="summary" id="sum-${m.id}"><span class="pill pill-empty">아직 설정 없음</span></div>
       <div class="card-footer">
-        <span></span>
-        <button class="btn" onclick="clearMember(${m.id})">이 카드 초기화</button>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="save-status" id="save-status-${m.id}"></span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn" onclick="clearMember(${m.id})">초기화</button>
+          <button class="btn btn-save" onclick="saveMember(${m.id})">저장</button>
+        </div>
       </div>
     </div>`;
   }).join('');
 }
 
 function dragStart(e, mid, day, hour){
+  if(remoteUpdate) return;
   drag=true; dragMid=mid;
   const cur=state[mid][day][hour], mode=modes[mid];
   dragVal = cur===mode ? 'neutral' : mode;
@@ -394,7 +472,17 @@ document.addEventListener('touchmove', e=>{
 document.addEventListener('mouseup',()=>{drag=false;dragMid=-1;});
 document.addEventListener('touchend',()=>{drag=false;dragMid=-1;});
 
+window.toggleMode = toggleMode;
+window.clearMember = clearMember;
+window.saveMember = saveMember;
+window.resetAll = resetAll;
+window.buildExport = buildExport;
+window.copyExport = copyExport;
+window.dragStart = dragStart;
+window.dragMove = dragMove;
+
 render();
+loadAll();
 </script>
 </body>
 </html>
