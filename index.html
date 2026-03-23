@@ -97,6 +97,12 @@
   #export-out pre { font-size: 12px; line-height: 1.7; white-space: pre-wrap; font-family: 'SF Mono','Menlo',monospace; color: var(--text-secondary); background: var(--bg); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border); }
   .copy-btn { font-size: 12px; padding: 4px 12px; margin-top: 8px; border: 1px solid var(--border-md); border-radius: var(--radius-sm); background: transparent; color: var(--text-secondary); cursor: pointer; font-family: var(--font); }
   .copy-btn:hover { background: var(--bg); }
+  .status-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 20px; border: 1px solid; white-space: nowrap; }
+  .status-badge::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+  .badge-available { background: var(--avail-bg); border-color: var(--avail-border); color: var(--avail-text); }
+  .badge-unavailable { background: var(--unavail-bg); border-color: var(--unavail-border); color: var(--unavail-text); }
+  .badge-sleep { background: var(--sleep-bg); border-color: var(--sleep-border); color: var(--sleep-text); }
+  .badge-unknown { background: var(--bg); border-color: var(--border-md); color: var(--text-muted); }
 </style>
 </head>
 <body>
@@ -230,6 +236,7 @@ function renderSummary(mid){
   let h=av.map(t=>`<span class="pill pill-avail">${t}</span>`).join('')
        +un.map(t=>`<span class="pill pill-unavail">${t}</span>`).join('');
   el.innerHTML=h||'<span class="pill pill-empty">아직 설정 없음</span>';
+  updateNowBadges();
 }
 
 function setSaveStatus(mid,status){
@@ -266,9 +273,11 @@ function loadAll(){
         });
       });
       renderSummary(m.id);
+      updateNowBadges();
     });
   });
   document.getElementById('header-sub').textContent='셀을 클릭하거나 드래그해서 시간대를 설정하세요';
+  setInterval(updateNowBadges, 60000);
 }
 
 function updateAuthUI(user){
@@ -318,7 +327,13 @@ function render(){
     return `<div class="card">
       <div class="card-header">
         <div class="avatar" style="background:${av.bg};color:${av.color}">${initials(m.name)}</div>
-        <div class="member-info"><div class="member-name">${m.name}</div><div class="member-role">${m.role}</div></div>
+        <div class="member-info">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <span class="member-name">${m.name}</span>
+            <span class="status-badge badge-unknown" id="now-badge-${m.id}">미설정</span>
+          </div>
+          <div class="member-role">${m.role}</div>
+        </div>
         <div class="mode-wrap">
           <div class="mode-toggle">
             <button class="mode-btn act-avail" data-mid="${m.id}" data-mode="available" onclick="toggleMode(${m.id},'available')" disabled>연락 가능</button>
@@ -342,6 +357,31 @@ function render(){
       </div>
     </div>`;
   }).join('');
+}
+
+function getNowStatus(mid){
+  const now = new Date();
+  const dayIdx = (now.getDay()+6)%7;
+  const day = DAYS[dayIdx];
+  const hour = now.getHours();
+  return state[mid][day][hour] || 'neutral';
+}
+
+function updateNowBadges(){
+  members.forEach(m=>{
+    const el=document.getElementById(`now-badge-${m.id}`);
+    if(!el)return;
+    const s=getNowStatus(m.id);
+    const map={
+      available:{cls:'badge-available',text:'연락 가능'},
+      unavailable:{cls:'badge-unavailable',text:'연락 불가'},
+      sleep:{cls:'badge-sleep',text:'수면 중'},
+      neutral:{cls:'badge-unknown',text:'미설정'},
+    };
+    const info=map[s]||map.neutral;
+    el.className=`status-badge ${info.cls}`;
+    el.textContent=info.text;
+  });
 }
 
 function dragStart(e,mid,day,hour){
