@@ -1,0 +1,198 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.page{padding:1rem 0 2rem}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:10px}
+.top-bar h2{font-size:16px;font-weight:500;color:var(--color-text-primary)}
+.legend{display:flex;gap:14px}
+.leg{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--color-text-secondary)}
+.leg-box{width:12px;height:12px;border-radius:2px;flex-shrink:0}
+.member-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:1rem}
+.card-header{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
+.avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0}
+.card-name{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.card-role{font-size:12px;color:var(--color-text-secondary)}
+.summary-row{display:flex;gap:16px;margin-bottom:1rem;flex-wrap:wrap}
+.summary-pill{font-size:12px;padding:3px 9px;border-radius:20px;border:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary)}
+.grid-section{margin-bottom:0.75rem}
+.section-label{font-size:11px;font-weight:500;color:var(--color-text-secondary);margin-bottom:6px;letter-spacing:.03em}
+.hour-header{display:flex;margin-bottom:3px;padding-left:28px}
+.hour-lbl{font-size:10px;color:var(--color-text-secondary);text-align:left;flex:1;white-space:nowrap}
+.day-row{display:flex;align-items:center;margin-bottom:3px}
+.day-lbl{font-size:11px;color:var(--color-text-secondary);width:28px;flex-shrink:0}
+.cells{display:flex;gap:2px;flex:1}
+.cell{height:20px;border-radius:2px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);flex:1;min-width:0;transition:opacity .1s}
+.cell:hover{opacity:.75}
+.cell.available{background:#5DCAA5;border-color:#1D9E75}
+.cell.unavailable{background:#F09595;border-color:#E24B4A}
+.cell.neutral{background:var(--color-background-secondary);border-color:var(--color-border-tertiary)}
+.mode-toggle{display:flex;gap:0;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);overflow:hidden}
+.mode-btn{font-size:12px;padding:5px 12px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);border:none;transition:background .15s}
+.mode-btn.active{background:var(--color-background-secondary);color:var(--color-text-primary);font-weight:500}
+.action-row{display:flex;justify-content:flex-end;gap:8px;margin-top:0.75rem}
+.btn-sm{font-size:12px;padding:4px 10px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:transparent;color:var(--color-text-secondary);cursor:pointer}
+.btn-sm:hover{background:var(--color-background-secondary)}
+.export-btn{font-size:13px;padding:6px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:transparent;color:var(--color-text-primary);cursor:pointer;margin-top:1rem}
+.export-btn:hover{background:var(--color-background-secondary)}
+</style>
+
+<div class="page">
+  <div class="top-bar">
+    <h2>팀 연락 가능 시간</h2>
+    <div class="legend">
+      <span class="leg"><span class="leg-box" style="background:#5DCAA5;border:0.5px solid #1D9E75"></span>연락 가능</span>
+      <span class="leg"><span class="leg-box" style="background:#F09595;border:0.5px solid #E24B4A"></span>연락 불가</span>
+      <span class="leg"><span class="leg-box" style="background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary)"></span>미설정</span>
+    </div>
+  </div>
+
+  <div id="cards"></div>
+
+  <button class="export-btn" onclick="exportSummary()">결과 요약 보기 ↗</button>
+</div>
+
+<script>
+const HOURS = [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21];
+const DAYS = ['월','화','수','목','금','토','일'];
+const AVATARS = [
+  {bg:'#E1F5EE',color:'#085041'},
+  {bg:'#E6F1FB',color:'#0C447C'},
+  {bg:'#EEEDFE',color:'#3C3489'},
+  {bg:'#FAEEDA',color:'#633806'},
+];
+
+const members = [
+  {id:0, name:'팀원 1', role:'역할'},
+  {id:1, name:'팀원 2', role:'역할'},
+  {id:2, name:'팀원 3', role:'역할'},
+  {id:3, name:'팀원 4', role:'역할'},
+];
+
+const state = {};
+members.forEach(m => {
+  state[m.id] = {};
+  DAYS.forEach(d => {
+    state[m.id][d] = {};
+    HOURS.forEach(h => { state[m.id][d][h] = 'neutral'; });
+  });
+});
+
+const modes = {};
+members.forEach(m => { modes[m.id] = 'available'; });
+
+function getInitials(name) {
+  const p = name.split(' ');
+  return p.length >= 2 ? (p[0][0]+p[1][0]).toUpperCase() : name.slice(0,2).toUpperCase();
+}
+
+function getSummary(mid) {
+  const avail = [], unavail = [];
+  DAYS.forEach(d => {
+    const hours = HOURS.filter(h => state[mid][d][h] === 'available');
+    const uhours = HOURS.filter(h => state[mid][d][h] === 'unavailable');
+    if(hours.length) avail.push(`${d} ${hours[0]}:00~${hours[hours.length-1]+1}:00`);
+    if(uhours.length) unavail.push(`${d} ${uhours[0]}:00~${uhours[uhours.length-1]+1}:00`);
+  });
+  return {avail, unavail};
+}
+
+function toggleMode(mid, mode) {
+  modes[mid] = mode;
+  document.querySelectorAll(`.mode-btn[data-mid="${mid}"]`).forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === mode);
+  });
+}
+
+function cellClick(mid, day, hour) {
+  const cur = state[mid][day][hour];
+  const mode = modes[mid];
+  if(cur === mode) {
+    state[mid][day][hour] = 'neutral';
+  } else {
+    state[mid][day][hour] = mode;
+  }
+  updateCell(mid, day, hour);
+  updateSummary(mid);
+}
+
+function updateCell(mid, day, hour) {
+  const el = document.querySelector(`.cell[data-mid="${mid}"][data-day="${day}"][data-hour="${hour}"]`);
+  if(!el) return;
+  el.className = 'cell ' + state[mid][day][hour];
+}
+
+function updateSummary(mid) {
+  const {avail, unavail} = getSummary(mid);
+  const el = document.getElementById(`summary-${mid}`);
+  if(!el) return;
+  let html = '';
+  if(avail.length) html += avail.map(t=>`<span class="summary-pill" style="background:#E1F5EE;border-color:#1D9E75;color:#085041">${t}</span>`).join('');
+  if(unavail.length) html += unavail.map(t=>`<span class="summary-pill" style="background:#FCEBEB;border-color:#E24B4A;color:#791F1F">${t}</span>`).join('');
+  if(!html) html = '<span class="summary-pill">아직 설정 없음</span>';
+  el.innerHTML = html;
+}
+
+function clearMember(mid) {
+  DAYS.forEach(d => HOURS.forEach(h => { state[mid][d][h] = 'neutral'; updateCell(mid,d,h); }));
+  updateSummary(mid);
+}
+
+function renderCards() {
+  const container = document.getElementById('cards');
+  container.innerHTML = members.map(m => {
+    const av = AVATARS[m.id % AVATARS.length];
+    const hourHeaderCells = HOURS.filter((_,i)=>i%3===0).map(h=>`<span class="hour-lbl" style="flex:3">${h}시</span>`).join('');
+
+    const dayRows = DAYS.map(d => {
+      const cells = HOURS.map(h =>
+        `<div class="cell neutral" data-mid="${m.id}" data-day="${d}" data-hour="${h}" onclick="cellClick(${m.id},'${d}',${h})"></div>`
+      ).join('');
+      return `<div class="day-row"><span class="day-lbl">${d}</span><div class="cells">${cells}</div></div>`;
+    }).join('');
+
+    return `<div class="member-card">
+      <div class="card-header">
+        <div class="avatar" style="background:${av.bg};color:${av.color}">${getInitials(m.name)}</div>
+        <div style="flex:1">
+          <div class="card-name">${m.name}</div>
+          <div class="card-role">${m.role}</div>
+        </div>
+        <div class="mode-toggle">
+          <button class="mode-btn active" data-mid="${m.id}" data-mode="available" onclick="toggleMode(${m.id},'available')">연락 가능</button>
+          <button class="mode-btn" data-mid="${m.id}" data-mode="unavailable" onclick="toggleMode(${m.id},'unavailable')">연락 불가</button>
+        </div>
+      </div>
+
+      <div class="grid-section">
+        <div class="hour-header">
+          <div style="flex:0 0 0px"></div>
+          ${HOURS.map((h,i)=>`<div style="flex:1;font-size:10px;color:var(--color-text-secondary);text-align:center">${i%3===0?h+'시':''}</div>`).join('')}
+        </div>
+        ${dayRows}
+      </div>
+
+      <div class="summary-row" id="summary-${m.id}">
+        <span class="summary-pill">아직 설정 없음</span>
+      </div>
+
+      <div class="action-row">
+        <button class="btn-sm" onclick="clearMember(${m.id})">초기화</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function exportSummary() {
+  let lines = ['팀 연락 가능 시간 요약\n'];
+  members.forEach(m => {
+    const {avail, unavail} = getSummary(m.id);
+    lines.push(`[ ${m.name} / ${m.role} ]`);
+    lines.push('연락 가능: ' + (avail.join(', ') || '미설정'));
+    lines.push('연락 불가: ' + (unavail.join(', ') || '미설정'));
+    lines.push('');
+  });
+  sendPrompt('팀 연락 가능 시간 요약을 마크다운 표로 정리해줘:\n\n' + lines.join('\n'));
+}
+
+renderCards();
+</script>
