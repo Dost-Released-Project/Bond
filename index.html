@@ -22,10 +22,6 @@
     --unavail-border: #E24B4A;
     --unavail-text: #791F1F;
     --night-bg: #f0efe9;
-    --sleep-bg: #EEEDFE;
-    --sleep-fill: #AFA9EC;
-    --sleep-border: #7F77DD;
-    --sleep-text: #3C3489;
     --radius-sm: 6px;
     --radius-md: 10px;
     --radius-lg: 14px;
@@ -86,7 +82,6 @@
   }
   .mode-btn.act-avail { background: var(--avail-bg); color: var(--avail-text); font-weight: 600; }
   .mode-btn.act-unavail { background: var(--unavail-bg); color: var(--unavail-text); font-weight: 600; }
-  .mode-btn.act-sleep { background: var(--sleep-bg); color: var(--sleep-text); font-weight: 600; }
   .drag-hint { font-size: 11px; color: var(--text-muted); }
   .grid-scroll { overflow-x: auto; }
   .grid-inner { min-width: 600px; }
@@ -113,7 +108,6 @@
   .cell.night { background: var(--night-bg); }
   .cell.s-available { background: var(--avail-fill); border-color: var(--avail-border); }
   .cell.s-unavailable { background: var(--unavail-fill); border-color: var(--unavail-border); }
-  .cell.s-sleep { background: var(--sleep-fill); border-color: var(--sleep-border); }
   .cell:hover { opacity: .72; }
   .summary {
     display: flex; flex-wrap: wrap; gap: 5px;
@@ -188,7 +182,6 @@
   <div class="legend">
     <span class="leg"><span class="leg-box" style="background:var(--avail-fill);border:1px solid var(--avail-border)"></span>연락 가능</span>
     <span class="leg"><span class="leg-box" style="background:var(--unavail-fill);border:1px solid var(--unavail-border)"></span>연락 불가</span>
-    <span class="leg"><span class="leg-box" style="background:var(--sleep-fill);border:1px solid var(--sleep-border)"></span>수면</span>
     <span class="leg"><span class="leg-box" style="background:var(--night-bg);border:1px solid var(--border-md)"></span>새벽 (0~5시, 22~23시)</span>
   </div>
 </header>
@@ -235,18 +228,34 @@ let drag = false, dragMid = -1, dragVal = 'neutral';
 
 function initials(n){ const p=n.split(' '); return p.length>=2?(p[0][0]+p[1][0]).toUpperCase():n.slice(0,2).toUpperCase(); }
 
+function getDayStr(mid, type, day){
+  const hrs = HOURS.filter(h => state[mid][day][h]===type);
+  if(!hrs.length) return '';
+  const segs = [];
+  let s=hrs[0], p=hrs[0];
+  for(let i=1;i<hrs.length;i++){
+    if(hrs[i]===p+1){ p=hrs[i]; }
+    else { segs.push(`${pad(s)}:00~${pad(p+1)}:00`); s=hrs[i]; p=hrs[i]; }
+  }
+  segs.push(`${pad(s)}:00~${pad(p+1)}:00`);
+  return segs.join(', ');
+}
+
 function getRanges(mid, type){
+  const dayStr = {};
+  DAYS.forEach(d => { dayStr[d] = getDayStr(mid, type, d); });
   const out = [];
-  DAYS.forEach(d => {
-    const hrs = HOURS.filter(h => state[mid][d][h]===type);
-    if(!hrs.length) return;
-    let s=hrs[0], p=hrs[0];
-    for(let i=1;i<hrs.length;i++){
-      if(hrs[i]===p+1){ p=hrs[i]; }
-      else { out.push(`${d} ${pad(s)}:00~${pad(p+1)}:00`); s=hrs[i]; p=hrs[i]; }
-    }
-    out.push(`${d} ${pad(s)}:00~${pad(p+1)}:00`);
-  });
+  let i = 0;
+  while(i < DAYS.length){
+    const d = DAYS[i];
+    if(!dayStr[d]){ i++; continue; }
+    let j = i + 1;
+    while(j < DAYS.length && dayStr[DAYS[j]] === dayStr[d]) j++;
+    const span = j - i;
+    const dayLabel = span === 1 ? d : span === 2 ? `${d}·${DAYS[j-1]}` : `${d}~${DAYS[j-1]}`;
+    out.push(`${dayLabel} ${dayStr[d]}`);
+    i = j;
+  }
   return out;
 }
 
@@ -273,8 +282,7 @@ function renderSummary(mid){
 function toggleMode(mid, mode){
   modes[mid] = mode;
   document.querySelectorAll(`.mode-btn[data-mid="${mid}"]`).forEach(b => {
-    const m = b.dataset.mode;
-    b.className = 'mode-btn' + (m===mode ? (mode==='available'?' act-avail': mode==='unavailable'?' act-unavail':' act-sleep') : '');
+    b.className = 'mode-btn' + (b.dataset.mode===mode ? (mode==='available'?' act-avail':' act-unavail') : '');
   });
 }
 
@@ -342,7 +350,6 @@ function render(){
           <div class="mode-toggle">
             <button class="mode-btn act-avail" data-mid="${m.id}" data-mode="available" onclick="toggleMode(${m.id},'available')">연락 가능</button>
             <button class="mode-btn" data-mid="${m.id}" data-mode="unavailable" onclick="toggleMode(${m.id},'unavailable')">연락 불가</button>
-            <button class="mode-btn" data-mid="${m.id}" data-mode="sleep" onclick="toggleMode(${m.id},'sleep')">수면</button>
           </div>
           <span class="drag-hint">드래그로 여러 칸 선택 가능</span>
         </div>
