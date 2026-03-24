@@ -203,18 +203,39 @@ function getDayStr(mid, type, day){
 function getRanges(mid, type){
   const dayStr={};
   DAYS.forEach(d=>{dayStr[d]=getDayStr(mid,type,d);});
+
+  const allSame = DAYS.every(d=>dayStr[d]===dayStr['월']);
+  if(allSame && dayStr['월']) return [`매일 ${dayStr['월']}`];
+
+  const timeGroups={};
+  DAYS.forEach(d=>{
+    if(!dayStr[d])return;
+    if(!timeGroups[dayStr[d]])timeGroups[dayStr[d]]=[];
+    timeGroups[dayStr[d]].push(d);
+  });
+
   const out=[];
-  let i=0;
-  while(i<DAYS.length){
-    const d=DAYS[i];
-    if(!dayStr[d]){i++;continue;}
-    let j=i+1;
-    while(j<DAYS.length&&dayStr[DAYS[j]]===dayStr[d])j++;
-    const span=j-i;
-    const lbl=span===1?d:span===2?`${d}·${DAYS[j-1]}`:`${d}~${DAYS[j-1]}`;
-    out.push(`${lbl} ${dayStr[d]}`);
-    i=j;
-  }
+  Object.entries(timeGroups).forEach(([timeStr, days])=>{
+    if(!timeStr)return;
+    let label='';
+    if(days.length===7){
+      label='매일';
+    } else {
+      const segments=[];
+      let i=0;
+      while(i<days.length){
+        let j=i+1;
+        while(j<days.length && DAYS.indexOf(days[j])===DAYS.indexOf(days[j-1])+1) j++;
+        const span=j-i;
+        if(span===1) segments.push(days[i]);
+        else if(span===2) segments.push(`${days[i]}·${days[j-1]}`);
+        else segments.push(`${days[i]}~${days[j-1]}`);
+        i=j;
+      }
+      label=segments.join(', ');
+    }
+    out.push(`${label} ${timeStr}`);
+  });
   return out;
 }
 
