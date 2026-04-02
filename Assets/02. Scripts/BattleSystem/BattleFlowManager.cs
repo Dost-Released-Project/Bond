@@ -1,43 +1,31 @@
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using juno_Test;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
 namespace _02._Scripts.BattleSystem_KWT
 {
-    public class BattleFlowManager : IStartable
+    public class BattleFlowManager
     {
         [Inject]
         private readonly BattleManager battleManager;
-
         [Inject] 
-        private readonly TM tm;
+        private readonly TurnManager turnManager;
+        [Inject]
+        private readonly BattleEntryPoint battleEntryPoint;
         
-        private List<GameObject> m_Units;
-        private int m_CurrentActCharacter;
+        private ITurnUseUnit[] _PlayerUnits;
 
-        public void Start()
+        public void SetPlayerUnits(ITurnUseUnit[] playerUnits)
         {
-            m_Units = new List<GameObject>();
-            // 플레이어 캐릭터 4명 목록 받아옴
-            m_CurrentActCharacter = 0;
+            _PlayerUnits = playerUnits;
         }
 
-        public void StartBattle()
+        public void StartBattle(ITurnUseUnit[] enemyUnits)
         {
-            // 적 캐릭터 목록 받아옴
-            // m_Units = TurnManager.Turn(m_Units);
-        }
-        private void NextUnit()
-        {
-             ExecuteUnitAction(m_CurrentActCharacter);
-             m_CurrentActCharacter++;
-        }
-
-        private void ExecuteUnitAction(int unitId)
-        {
-            Debug.Log($"<color=yellow>[BattleFlowManager]</color> 유닛({unitId}) 행동 시작");
-            Debug.Log("<color=yellow>[BattleFlowManager]</color> 다음 턴 대기 중...");
+            battleEntryPoint.StartAsync(default, enemyUnits, _PlayerUnits).Forget();
         }
     }
 }
