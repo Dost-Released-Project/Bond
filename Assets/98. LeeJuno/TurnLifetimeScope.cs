@@ -7,6 +7,7 @@ using VContainer.Unity;
 
 public class TurnLifetimeScope : LifetimeScope
 {
+    // 임시) 인스펙터에서 플레이어 할당
     [SerializeField] private TestPlayer[] sceneUnit; 
 
     protected override void Configure(IContainerBuilder builder)
