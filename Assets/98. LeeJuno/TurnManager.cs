@@ -11,6 +11,7 @@ public class TurnManager
     private bool _isBattleActive;
     private int _turnCount;
 
+    //이부분이 인자로 배열이나 리스트로 유닛들 추가
     public void RegisterUnit(IEnumerable<ITurnUseUnit> unit)
     {
         _units.AddRange(unit);
@@ -27,8 +28,6 @@ public class TurnManager
             if (token.IsCancellationRequested) break;
 
             await PlayRoundAsync(token);
-
-            CheckBattleEndCondition();
         }
     }
 
@@ -37,7 +36,8 @@ public class TurnManager
         _turnCount++;
         Debug.Log($"<b>--- {_turnCount} 라운드 시작 ---</b>");
 
-        PrepareTurnQueue(); 
+        // 라운드마다 살아있는 유닛만 큐에 추가
+        PrepareTurnQueue();
 
         for (int i = 0; i < _turnQueue.Count; i++)
         {
@@ -45,12 +45,11 @@ public class TurnManager
 
             if (_isBattleActive == false || unit.IsDead) continue;
 
-            // 유닛이 행동하는 동안에도 취소 토큰을 확인할 수 있도록 처리하는 것이 좋아
+            // 유닛이 행동하는 동안에도 취소 토큰을 확인할 수 있도록 처리
             await unit.TakeTurnAsync();
         }
     }
 
-    // 턴 큐 준비 함수
     private void PrepareTurnQueue()
     {
         _turnQueue.Clear();
@@ -69,24 +68,11 @@ public class TurnManager
         _turnQueue.Sort();
     }
 
-    //  승패 체크 로직 
+    // 해당 로직을 외부에서 승패 판정 후 호출 
     private void CheckBattleEndCondition()
     {
-        // 임시) 살아있는 유닛이 없으면 전투 종료
-        bool allDead = true;
-        for (int i = 0; i < _units.Count; i++)
-        {
-            if (_units[i].IsDead == false)
-            {
-                allDead = false;
-                break;
-            }
-        }
-
-        if (allDead)
-        {
-            _isBattleActive = false;
-            Debug.Log("== 전투 종료 ==");
-        }
+        _isBattleActive = false;
+        _units.Clear();
+        Debug.Log("== 전투 종료 ==");
     }
 }
