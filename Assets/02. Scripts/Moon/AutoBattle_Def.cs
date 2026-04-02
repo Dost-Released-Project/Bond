@@ -7,4 +7,22 @@ public class AutoBattle_Def : AutoBattle
     // 판단 2. 1번이 불가하거나 쿨타임일 경우 파티원 체력 확인
     // 판단 3. 2번에 체력이 적은 파티원이 있다면 엄호.
     // 판단 4. 파티원의 체력이 괜찮다면 일반 공격.
+    public override void BattleAction()
+    {
+        if(isPlayable) return;
+        int battleAction = Random.Range(0, 100);
+
+        if (battleAction < 20)
+        {
+            Debug.Log("탱커 스킬 사용, 덜 아프게 맞기");
+        }
+        else if (battleAction < 60)
+        {
+            Debug.Log("같이 맞아주기");
+        }
+        else
+        {
+            Debug.Log("일반 공격");
+        }
+    }
 }
