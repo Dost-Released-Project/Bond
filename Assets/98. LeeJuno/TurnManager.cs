@@ -41,7 +41,7 @@ public class TurnManager
 
         for (int i = 0; i < _turnQueue.Count; i++)
         {
-            var unit = _turnQueue[i];
+            ITurnUseUnit unit = _turnQueue[i];
 
             if (_isBattleActive == false || unit.IsDead) continue;
 
@@ -69,10 +69,10 @@ public class TurnManager
         _turnQueue.Sort();
     }
 
-    // 무한 루프 방지를 위한 승패 체크 로직 분리
+    //  승패 체크 로직 
     private void CheckBattleEndCondition()
     {
-        //  살아있는 유닛이 없으면 전투 종료
+        // 임시) 살아있는 유닛이 없으면 전투 종료
         bool allDead = true;
         for (int i = 0; i < _units.Count; i++)
         {
@@ -86,7 +86,7 @@ public class TurnManager
         if (allDead)
         {
             _isBattleActive = false;
-            Debug.Log("== 전투 종료 (모든 유닛 사망) ==");
+            Debug.Log("== 전투 종료 ==");
         }
     }
 }
