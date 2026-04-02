@@ -6,11 +6,18 @@ using UnityEngine;
 
 public class TurnManager
 {
+    // 전체 유닛
     private List<ITurnUseUnit> _units = new List<ITurnUseUnit>();
+    
+    // 현재 턴순서
     private List<ITurnUseUnit> _turnQueue = new List<ITurnUseUnit>(20);
-    private bool _isBattleActive;
+    
+    // 몇번째 턴인지 / UI는 턴바뀔때마다 이벤트 발송하면 될듯 / 스킬중 몇턴마다는 여기서 턴수 가져가서 연산하게 하면될듯
     private int _turnCount;
 
+    private bool _isBattleActive;
+    
+    
     //이부분이 인자로 배열이나 리스트로 유닛들 추가
     public void RegisterUnit(IEnumerable<ITurnUseUnit> unit)
     {
@@ -28,6 +35,9 @@ public class TurnManager
             if (token.IsCancellationRequested) break;
 
             await PlayRoundAsync(token);
+            
+            // 라운드 사이에 1초 정도 대기
+            await UniTask.Delay(1000, cancellationToken: token);
         }
     }
 
@@ -47,6 +57,7 @@ public class TurnManager
 
             // 유닛이 행동하는 동안에도 취소 토큰을 확인할 수 있도록 처리
             await unit.TakeTurnAsync();
+            
         }
     }
 
@@ -69,7 +80,7 @@ public class TurnManager
     }
 
     // 해당 로직을 외부에서 승패 판정 후 호출 
-    private void CheckBattleEndCondition()
+    private void BattleEnd()
     {
         _isBattleActive = false;
         _units.Clear();

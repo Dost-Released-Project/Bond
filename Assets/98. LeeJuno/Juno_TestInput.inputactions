@@ -1,0 +1,35 @@
+{
+    "version": 1,
+    "name": "Juno_TestInput",
+    "maps": [
+        {
+            "name": "Space",
+            "id": "49670eac-0a24-4680-9935-288340c8acbd",
+            "actions": [
+                {
+                    "name": "space",
+                    "type": "Button",
+                    "id": "1f2b1a5a-5813-4a68-baa8-749fa2c929fd",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "eb53d05d-3ba4-4209-aca2-88f6782c5169",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "space",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
