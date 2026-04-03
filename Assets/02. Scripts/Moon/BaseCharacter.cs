@@ -6,13 +6,13 @@ using UnityEngine.InputSystem;
 
 public class BaseCharacter : MonoBehaviour, ITurnUseUnit
 {
-    private List<Equipment> equip = new List<Equipment>(); // 2개
-    private List<Trait> traits = new List<Trait>(); // 4개
-    private Class classType;
-    private AutoBattle battleType;
-    private bool isPlayable;
+    public Equipment[] equip = new Equipment[2]; // 2개
+    public Trait[] traits = new Trait[4]; // 4개
+    public Class classType { get; set; }
+    public AutoBattle battleType { get; set; }
+    public bool isPlayable { get; set; }
 
-    private BaseCharacter sup_Character; // 지원 선택 대상. 대상이 행동할 때 역할군에 따른 지원. 탱커: 피격 시 엄호, 서포터: 피격 후 치유, 딜러: 공격 시 지원 공격.
+    public BaseCharacter sup_Character { get; set; } // 지원 선택 대상. 대상이 행동할 때 역할군에 따른 지원. 탱커: 피격 시 엄호, 서포터: 피격 후 치유, 딜러: 공격 시 지원 공격.
 
     private Stat stat;
 
