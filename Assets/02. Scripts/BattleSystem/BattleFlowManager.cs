@@ -2,30 +2,36 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using juno_Test;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using VContainer;
 using VContainer.Unity;
 
 namespace _02._Scripts.BattleSystem_KWT
 {
-    public class BattleFlowManager
+    public class BattleFlowManager : ITickable
     {
-        [Inject]
-        private readonly BattleManager battleManager;
         [Inject] 
-        private readonly TurnManager turnManager;
-        [Inject]
-        private readonly BattleEntryPoint battleEntryPoint;
+        private readonly IBattleEntryPoint battleEntryPoint;
         
-        private ITurnUseUnit[] _PlayerUnits;
+        [Inject]
+        private TestPlayer[] _PlayerUnits;
 
-        public void SetPlayerUnits(ITurnUseUnit[] playerUnits)
+        public void SetPlayerUnits(TestPlayer[] playerUnits)
         {
             _PlayerUnits = playerUnits;
         }
 
-        public void StartBattle(ITurnUseUnit[] enemyUnits)
+        public void StartBattle(TestPlayer[] units)
         {
-            battleEntryPoint.StartAsync(default, enemyUnits, _PlayerUnits).Forget();
+            battleEntryPoint.StartAsync(default, units).Forget();
+        }
+        
+        public void Tick()
+        {
+            if (Keyboard.current != null && Keyboard.current.digit1Key.wasPressedThisFrame)
+            {
+                StartBattle(_PlayerUnits);
+            }
         }
     }
 }

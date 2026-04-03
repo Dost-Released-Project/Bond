@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Threading;
+using _02._Scripts.BattleSystem_KWT;
 using Cysharp.Threading.Tasks;
 using juno_Test;
 using UnityEngine;
@@ -7,34 +9,31 @@ using VContainer.Unity;
 
 public class TurnLifetimeScope : LifetimeScope
 {
-    // 임시) 인스펙터에서 플레이어 할당
-    [SerializeField] private TestPlayer[] sceneUnit;
     [SerializeField] private TurnUI ui;
 
     protected override void Configure(IContainerBuilder builder)
     {
         builder.Register<TurnManager>(Lifetime.Scoped);
-        builder.RegisterInstance(sceneUnit);
         builder.RegisterComponent(ui);
-        builder.RegisterEntryPoint<BattleEntryPoint>();
+        builder.Register<BattleEntryPoint>(Lifetime.Scoped).As<IBattleEntryPoint>();
+        builder.RegisterEntryPoint<BattleFlowManager>(Lifetime.Scoped);
     }
 }
 
-public class BattleEntryPoint : IAsyncStartable
+public class BattleEntryPoint : IBattleEntryPoint
 {
     private readonly TurnManager _turnManager;
-    private readonly TestPlayer[] _unit;
 
     [Inject]
-    public BattleEntryPoint(TurnManager turnManager, TestPlayer[] unit)
+    public BattleEntryPoint(TurnManager turnManager)
     {
         _turnManager = turnManager;
-        _unit = unit;
     }
-
-    public async UniTask StartAsync(CancellationToken cancellation)
+    
+    public async UniTask StartAsync(CancellationToken cancellation, 
+        IEnumerable<ITurnUseUnit> unit)
     {
-        _turnManager.RegisterUnit(_unit);
+        _turnManager.RegisterUnit(unit);
         await _turnManager.StartBattleAsync(cancellation);
     }
 }
