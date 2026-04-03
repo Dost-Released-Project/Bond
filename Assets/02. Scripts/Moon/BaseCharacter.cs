@@ -93,6 +93,8 @@ public class BaseCharacter : MonoBehaviour, ITurnUseUnit
 
     public int Speed { get; private set; }
     public bool IsDead { get; private set; }
+    public string ImageAddress { get; }
+    public int RandomSpeed { get; set; }
 
     public UniTask TakeTurnAsync()
     {
