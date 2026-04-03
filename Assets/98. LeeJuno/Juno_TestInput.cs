@@ -100,6 +100,15 @@ public partial class @Juno_TestInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""FkeyDie"",
+                    ""type"": ""Button"",
+                    ""id"": ""246d2aba-22e6-4ba3-86da-0b839ed23cfd"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -113,6 +122,17 @@ public partial class @Juno_TestInput: IInputActionCollection2, IDisposable
                     ""action"": ""space"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d08f556d-404f-40e8-ba83-e8f531b61c0f"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FkeyDie"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -122,6 +142,7 @@ public partial class @Juno_TestInput: IInputActionCollection2, IDisposable
         // Space
         m_Space = asset.FindActionMap("Space", throwIfNotFound: true);
         m_Space_space = m_Space.FindAction("space", throwIfNotFound: true);
+        m_Space_FkeyDie = m_Space.FindAction("FkeyDie", throwIfNotFound: true);
     }
 
     ~@Juno_TestInput()
@@ -203,6 +224,7 @@ public partial class @Juno_TestInput: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Space;
     private List<ISpaceActions> m_SpaceActionsCallbackInterfaces = new List<ISpaceActions>();
     private readonly InputAction m_Space_space;
+    private readonly InputAction m_Space_FkeyDie;
     /// <summary>
     /// Provides access to input actions defined in input action map "Space".
     /// </summary>
@@ -218,6 +240,10 @@ public partial class @Juno_TestInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Space/space".
         /// </summary>
         public InputAction @space => m_Wrapper.m_Space_space;
+        /// <summary>
+        /// Provides access to the underlying input action "Space/FkeyDie".
+        /// </summary>
+        public InputAction @FkeyDie => m_Wrapper.m_Space_FkeyDie;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -247,6 +273,9 @@ public partial class @Juno_TestInput: IInputActionCollection2, IDisposable
             @space.started += instance.OnSpace;
             @space.performed += instance.OnSpace;
             @space.canceled += instance.OnSpace;
+            @FkeyDie.started += instance.OnFkeyDie;
+            @FkeyDie.performed += instance.OnFkeyDie;
+            @FkeyDie.canceled += instance.OnFkeyDie;
         }
 
         /// <summary>
@@ -261,6 +290,9 @@ public partial class @Juno_TestInput: IInputActionCollection2, IDisposable
             @space.started -= instance.OnSpace;
             @space.performed -= instance.OnSpace;
             @space.canceled -= instance.OnSpace;
+            @FkeyDie.started -= instance.OnFkeyDie;
+            @FkeyDie.performed -= instance.OnFkeyDie;
+            @FkeyDie.canceled -= instance.OnFkeyDie;
         }
 
         /// <summary>
@@ -308,5 +340,12 @@ public partial class @Juno_TestInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSpace(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "FkeyDie" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnFkeyDie(InputAction.CallbackContext context);
     }
 }

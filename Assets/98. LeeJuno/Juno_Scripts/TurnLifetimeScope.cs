@@ -8,12 +8,14 @@ using VContainer.Unity;
 public class TurnLifetimeScope : LifetimeScope
 {
     // 임시) 인스펙터에서 플레이어 할당
-    [SerializeField] private TestPlayer[] sceneUnit; 
+    [SerializeField] private TestPlayer[] sceneUnit;
+    [SerializeField] private TurnUI ui;
 
     protected override void Configure(IContainerBuilder builder)
     {
         builder.Register<TurnManager>(Lifetime.Scoped);
         builder.RegisterInstance(sceneUnit);
+        builder.RegisterComponent(ui);
         builder.RegisterEntryPoint<BattleEntryPoint>();
     }
 }

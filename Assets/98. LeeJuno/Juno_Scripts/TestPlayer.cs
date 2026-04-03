@@ -9,9 +9,12 @@ namespace juno_Test
     {
         [SerializeField] private string unitName;
         [SerializeField] private int speed;
+        [SerializeField] private string imageAddress;
         private Juno_TestInput _input;
         public int Speed => speed;
         public bool IsDead { get; private set; } = false;
+        public string ImageAddress => imageAddress;
+        public int RandomSpeed { get; set; }
 
         private AutoResetUniTaskCompletionSource<bool> _tcs;
 
@@ -19,6 +22,7 @@ namespace juno_Test
         {
             _input = new Juno_TestInput();
             _input.Space.space.performed += OnActionButtonClicked;
+            _input.Space.FkeyDie.performed += OnDie;
             _input.Enable();
         }
 
@@ -26,6 +30,7 @@ namespace juno_Test
         private void OnDestroy()
         {
             _input.Space.space.performed -= OnActionButtonClicked;
+            _input.Space.FkeyDie.performed -= OnDie;
             _input.Disable();
         }
 
@@ -41,6 +46,13 @@ namespace juno_Test
             Debug.Log($"{unitName} 행동 완료!");
         }
 
+        private void OnDie(InputAction.CallbackContext context)
+        {
+            if (_tcs == null) return;
+            IsDead = true;
+            Debug.Log($"<color=red>[테스트] {unitName} 강제 사망!</color>");
+            _tcs?.TrySetResult(true);
+        }
 
         private void OnActionButtonClicked(InputAction.CallbackContext context)
         {
@@ -51,7 +63,18 @@ namespace juno_Test
         public int CompareTo(ITurnUseUnit other)
         {
             if (other == null) return 1;
-            return other.Speed.CompareTo(Speed);
+            // 1. 먼저 스피드를 비교
+            int speedComparison = other.Speed.CompareTo(this.Speed);
+
+            // 2. 만약 스피드가 완전히 똑같다면 
+            if (speedComparison == 0)
+            {
+                // 3. 매니저가 나누어준 랜덤 번호표로 순서를 결정
+                return other.RandomSpeed.CompareTo(this.RandomSpeed);
+            }
+
+            // 스피드가 다르면 그냥 스피드 비교 결과를 반환
+            return speedComparison;
         }
     }
 }

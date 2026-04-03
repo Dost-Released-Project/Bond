@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -6,6 +7,11 @@ using UnityEngine;
 
 public class TurnManager
 {
+    // 외부용 
+    public event Action OnTurnQueueUpdated;
+    public int TurnCount => _turnCount;
+    public IReadOnlyList<ITurnUseUnit> TurnQueue => _turnQueue;
+
     // 전체 유닛
     private List<ITurnUseUnit> _units = new List<ITurnUseUnit>();
 
@@ -14,7 +20,6 @@ public class TurnManager
 
     // 몇번째 턴인지 / UI는 턴바뀔때마다 이벤트 발송하면 될듯 / 스킬중 몇턴마다는 여기서 턴수 가져가서 연산하게 하면될듯
     private int _turnCount;
-
     private bool _isBattleActive;
 
 
@@ -35,8 +40,6 @@ public class TurnManager
             if (token.IsCancellationRequested) break;
 
             await PlayRoundAsync(token);
-
-            // 라운드 사이에 1초 정도 대기
             await UniTask.Delay(1000, cancellationToken: token);
         }
     }
@@ -46,19 +49,37 @@ public class TurnManager
         _turnCount++;
         Debug.Log($"<b>--- {_turnCount} 라운드 시작 ---</b>");
 
-        // 라운드마다 살아있는 유닛만 큐에 추가
         PrepareTurnQueue();
+        OnTurnQueueUpdated?.Invoke();
 
-        for (int i = 0; i < _turnQueue.Count; i++)
+        while (_turnQueue.Count > 0)
         {
-            ITurnUseUnit unit = _turnQueue[i];
+            ITurnUseUnit unit = _turnQueue[0];
 
-            if (_isBattleActive == false || unit.IsDead) continue;
+            if (_isBattleActive && unit.IsDead == false)
+            {
+                if (token.IsCancellationRequested) break;
 
-            // 유닛이 행동하는 동안에도 취소 토큰을 확인할 수 있도록 처리
-            if (token.IsCancellationRequested) break;
-            
-            await unit.TakeTurnAsync();
+                await UniTask.Delay(150, cancellationToken: token);
+                await unit.TakeTurnAsync();
+            }
+            if (_turnQueue.Count > 0 && _turnQueue[0] == unit)
+            {
+                _turnQueue.RemoveAt(0);
+            }
+            RemoveDeadUnitsFromQueue();
+            OnTurnQueueUpdated?.Invoke();
+        }
+    }
+
+    private void RemoveDeadUnitsFromQueue()
+    {
+        for (int i = _turnQueue.Count - 1; i >= 0; i--)
+        {
+            if (_turnQueue[i].IsDead)
+            {
+                _turnQueue.RemoveAt(i);
+            }
         }
     }
 
@@ -72,6 +93,8 @@ public class TurnManager
             var unit = _units[i];
             if (unit.IsDead == false)
             {
+                //속도 같을때 섞기용
+                unit.RandomSpeed = UnityEngine.Random.Range(0, 10000);
                 _turnQueue.Add(unit);
             }
         }
