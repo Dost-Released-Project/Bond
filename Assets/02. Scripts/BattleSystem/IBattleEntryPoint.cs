@@ -6,6 +6,5 @@ using UnityEngine;
 public interface IBattleEntryPoint
 {
     public UniTask StartAsync(CancellationToken cancellation,
-        IEnumerable<ITurnUseUnit> enemy,
-        IEnumerable<ITurnUseUnit> playerUnit);
+        IEnumerable<ITurnUseUnit> unit);
 }
