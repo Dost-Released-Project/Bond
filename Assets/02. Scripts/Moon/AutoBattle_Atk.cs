@@ -6,7 +6,7 @@ public class AutoBattle_Atk : AutoBattle
     // 판단 1. 딜러 스킬 사용 가능 여부
     // 판단 2. 1번이 불가하거나 쿨타임일 경우 적 체력 확인.
     // 판단 3. 2번 체력이 낮은 적을 우선 공격. 체력이 모두 동일하다면 위협적인 적 공격
-    public override void BattleAction()
+    public override void BattleAction(SkillBase skill)
     {
         if(isPlayable) return;
         int battleAction = Random.Range(0, 100);
