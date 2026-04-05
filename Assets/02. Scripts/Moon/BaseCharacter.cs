@@ -4,11 +4,13 @@ using _03._PipeLine;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 public class BaseCharacter : MonoBehaviour, ITurnUseUnit
 {
     public Equipment[] equip = new Equipment[2]; // 2개
     public Trait[] traits = new Trait[4]; // 4개
+    public SkillBase[] skills = new SkillBase[4]; // 4개
     public Class classType { get; set; }
     public AutoBattle battleType { get; set; }
     public bool isPlayable { get; set; }
@@ -41,16 +43,6 @@ public class BaseCharacter : MonoBehaviour, ITurnUseUnit
         {
             battleType = new AutoBattle_Sup();
             Debug.Log("넌 서포터야.");
-        }
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
-            if (battleType == null)
-            {
-                Debug.Log("역할군이 비어있습니다.");
-                return;
-            }
-            
-            battleType.BattleAction();
         }
 
         if (Keyboard.current.f1Key.wasPressedThisFrame)
@@ -101,7 +93,8 @@ public class BaseCharacter : MonoBehaviour, ITurnUseUnit
 
     public UniTask TakeTurnAsync()
     {
-        // AutoBattle의 BattleAction이 BattleContext를 반환하게 해도될듯
+        // AutoBattle의 BattleAction이 BattleContext를 반환하게 해도될듯 -> 우선 void로 만들어둘테니 나중에 변환할 수 있으면 ㄱㄱ
+        battleType.BattleAction(skills[Random.Range(0, skills.Length)]);
         BattleContext battleContext = new BattleContext();
         onBattleAction?.Invoke(battleContext);
         

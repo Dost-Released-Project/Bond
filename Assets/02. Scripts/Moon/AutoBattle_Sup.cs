@@ -10,19 +10,7 @@ public class AutoBattle_Sup : AutoBattle
     public override void BattleAction(SkillBase skill)
     {
         if(isPlayable) return;
-        int battleAction = Random.Range(0, 100);
-
-        if (battleAction < 20)
-        {
-            Debug.Log("서포터 스킬 사용, 전체 보호막 부여");
-        }
-        else if (battleAction < 60)
-        {
-            Debug.Log("아군 1명 치유");
-        }
-        else
-        {
-            Debug.Log("일반 공격");
-        }
+        
+        skill.UseSkill();
     }
 }

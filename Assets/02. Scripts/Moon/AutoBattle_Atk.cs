@@ -9,19 +9,7 @@ public class AutoBattle_Atk : AutoBattle
     public override void BattleAction(SkillBase skill)
     {
         if(isPlayable) return;
-        int battleAction = Random.Range(0, 100);
-
-        if (battleAction < 20)
-        {
-            Debug.Log("딜러 스킬 사용, 맞은데 또 때리기");
-        }
-        else if (battleAction < 60)
-        {
-            Debug.Log("체력 낮은 놈 때리기");
-        }
-        else
-        {
-            Debug.Log("위험한 놈 때리기");
-        }
+        
+        skill.UseSkill();
     }
 }
