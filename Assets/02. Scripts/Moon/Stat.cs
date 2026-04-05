@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 public enum StatType { STR, AGI, INT }
 
@@ -36,31 +37,35 @@ public class Stat : MonoBehaviour
 
     private void Start()
     {
-        STR = 5;
-        AGI = 5;
-        INT = 5;
+        STR = Random.Range(1,6);
+        AGI = Random.Range(1,6);
+        INT = Random.Range(1,6);
+
+        classType = (ClassType)Random.Range(0, 3);
+        
+        StatCalculate();
     }
 
     private void Update()
     {
-        if (Keyboard.current.f2Key.wasPressedThisFrame)
-        {
-            classType = ClassType.Warrior;
-            Debug.Log("넌 전사야.");
-            StatCalculate();
-        }
-        if (Keyboard.current.f3Key.wasPressedThisFrame)
-        {
-            classType = ClassType.Assassin;
-            Debug.Log("넌 도둑이야.");
-            StatCalculate();
-        }
-        if (Keyboard.current.f4Key.wasPressedThisFrame)
-        {
-            classType = ClassType.Cleric;
-            Debug.Log("넌 신관이야.");
-            StatCalculate();
-        }
+        // if (Keyboard.current.f2Key.wasPressedThisFrame)
+        // {
+        //     classType = ClassType.Warrior;
+        //     Debug.Log("넌 전사야.");
+        //     StatCalculate();
+        // }
+        // if (Keyboard.current.f3Key.wasPressedThisFrame)
+        // {
+        //     classType = ClassType.Assassin;
+        //     Debug.Log("넌 도둑이야.");
+        //     StatCalculate();
+        // }
+        // if (Keyboard.current.f4Key.wasPressedThisFrame)
+        // {
+        //     classType = ClassType.Cleric;
+        //     Debug.Log("넌 신관이야.");
+        //     StatCalculate();
+        // }
     }
 
     private void StatCalculate()

@@ -25,25 +25,45 @@ public class BaseCharacter : MonoBehaviour, ITurnUseUnit
     {
         stat = GetComponent<Stat>();
         Speed = stat.speed;
+        _input = new Juno_TestInput();
+        _input.Space.space.performed += OnActionButtonClicked;
+        _input.Space.FkeyDie.performed += OnDie;
+        _input.Enable();
+
+        if (battleType == null)
+        {
+            switch (Random.Range(0,3))
+            {
+                case 1:
+                    battleType = new AutoBattle_Atk();
+                    break;
+                case 2:
+                    battleType = new AutoBattle_Def();
+                    break;
+                case 3:
+                    battleType = new AutoBattle_Sup();
+                    break;
+            }
+        }
     }
 
     private void Update()
     {
-        if (Keyboard.current.digit1Key.wasPressedThisFrame)
-        {
-            battleType = new AutoBattle_Atk();
-            Debug.Log("넌 딜러야.");
-        }
-        if (Keyboard.current.digit2Key.wasPressedThisFrame)
-        {
-            battleType = new AutoBattle_Def();
-            Debug.Log("넌 탱커야.");
-        }
-        if (Keyboard.current.digit3Key.wasPressedThisFrame)
-        {
-            battleType = new AutoBattle_Sup();
-            Debug.Log("넌 서포터야.");
-        }
+        // if (Keyboard.current.digit1Key.wasPressedThisFrame)
+        // {
+        //     battleType = new AutoBattle_Atk();
+        //     Debug.Log("넌 딜러야.");
+        // }
+        // if (Keyboard.current.digit2Key.wasPressedThisFrame)
+        // {
+        //     battleType = new AutoBattle_Def();
+        //     Debug.Log("넌 탱커야.");
+        // }
+        // if (Keyboard.current.digit3Key.wasPressedThisFrame)
+        // {
+        //     battleType = new AutoBattle_Sup();
+        //     Debug.Log("넌 서포터야.");
+        // }
 
         if (Keyboard.current.f1Key.wasPressedThisFrame)
         {
@@ -71,33 +91,74 @@ public class BaseCharacter : MonoBehaviour, ITurnUseUnit
     }
     
     /*
-     장비 2종 Equip – Equipment형
-     성향 4종 Trait – Trait형
-     직업 정보 – 전사 도적 신관 – Class형
-     역할군 정보 – 탱거 딜러 서포터 - AutoBattle형
-     플블 선택 여부 – bool형
-     선택 대상 – 역할군 리액션 발동 대상 지정 – Player형
-     ----
      스킬 사용 여부 - and계산(플레이어 위치, 사용 가능 칸, 적 진영 아군 진영)
     */
-    
-    public int CompareTo(ITurnUseUnit other)
-    {
-        throw new NotImplementedException();
-    }
 
     public int Speed { get; private set; }
-    public bool IsDead { get; private set; }
-    public string ImageAddress { get; }
+    
+    [SerializeField] private string unitName;
+    [SerializeField] private string imageAddress;
+    private Juno_TestInput _input;
+    
+    public bool IsDead { get; private set; } = false;
+    public string ImageAddress => imageAddress;
     public int RandomSpeed { get; set; }
-
-    public UniTask TakeTurnAsync()
+    
+    private AutoResetUniTaskCompletionSource<bool> _tcs;
+    
+    
+    private void OnDestroy()
     {
+        _input.Space.space.performed -= OnActionButtonClicked;
+        _input.Space.FkeyDie.performed -= OnDie;
+        _input.Disable();
+    }
+    
+    public async UniTask TakeTurnAsync()
+    {
+        Debug.Log($"<color=green>{unitName} 차례! 플레이어의 명령을 기다립니다...</color>");
+    
+        _tcs = AutoResetUniTaskCompletionSource<bool>.Create();
+        
         // AutoBattle의 BattleAction이 BattleContext를 반환하게 해도될듯 -> 우선 void로 만들어둘테니 나중에 변환할 수 있으면 ㄱㄱ
         battleType.BattleAction(skills[Random.Range(0, skills.Length)]);
         BattleContext battleContext = new BattleContext();
         onBattleAction?.Invoke(battleContext);
-        
-        return UniTask.CompletedTask;
+    
+        await _tcs.Task;
+        _tcs = null;
+    
+        Debug.Log($"{unitName} 행동 완료!");
+    }
+    
+    private void OnDie(InputAction.CallbackContext context)
+    {
+        if (_tcs == null) return;
+        IsDead = true;
+        Debug.Log($"<color=red>[테스트] {unitName} 강제 사망!</color>");
+        _tcs?.TrySetResult(true);
+    }
+    
+    private void OnActionButtonClicked(InputAction.CallbackContext context)
+    {
+        if (_tcs == null) return;
+        _tcs?.TrySetResult(true);
+    }
+    
+    public int CompareTo(ITurnUseUnit other)
+    {
+        if (other == null) return 1;
+        // 1. 먼저 스피드를 비교
+        int speedComparison = other.Speed.CompareTo(this.Speed);
+    
+        // 2. 만약 스피드가 완전히 똑같다면 
+        if (speedComparison == 0)
+        {
+            // 3. 매니저가 나누어준 랜덤 번호표로 순서를 결정
+            return other.RandomSpeed.CompareTo(this.RandomSpeed);
+        }
+    
+        // 스피드가 다르면 그냥 스피드 비교 결과를 반환
+        return speedComparison;
     }
 }
