@@ -7,11 +7,12 @@ namespace _02._Scripts.ReactionSystem
 {
     public class Reaction
     {
-        public object Agent;
-        public Trigger Trigger;
+        public BaseCharacter Agent;     // 조건이 만족 됐을때 행동할 주체
+        public Trigger Trigger;         // 리액션 행동을 발동시키는 조건
+        public Action Action;           // 조건 만족시 하게될 행동
     }
     
-    public class Trigger
+    public abstract class Trigger
     {
         public int Id;             // 트리거 자체의 고유 식별 번호
         public int Category;       // 로직 그룹핑 및 UI 필터링을 위한 분류 체계
