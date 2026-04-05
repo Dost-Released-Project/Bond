@@ -1,4 +1,4 @@
-using _02._Scripts.BattleSystem_KWT;
+using _02._Scripts.BattleSystem;
 using juno_Test;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,11 +8,4 @@ public class Tester : MonoBehaviour
 {
     [Inject]
     private readonly BattleFlowManager battleFlowManager;
-    
-    
-
-    private void Update()
-    {
-        
-    }
 }

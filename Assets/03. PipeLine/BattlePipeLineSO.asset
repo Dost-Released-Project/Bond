@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f508662d7479f7f4ea53ef9ecac731a0, type: 3}
+  m_Name: BattlePipeLineSO
+  m_EditorClassIdentifier: Assembly-CSharp::_03._PipeLine.BattlePipeLineSo
+  steps:
+  - rid: 2186371277247742036
+  - rid: 2186371277247742037
+  - rid: 2186371277247742038
+  - rid: 2186371277247742039
+  references:
+    version: 2
+    RefIds:
+    - rid: 2186371277247742036
+      type: {class: EntryStep, ns: _03._PipeLine, asm: Assembly-CSharp}
+      data: 
+    - rid: 2186371277247742037
+      type: {class: EvasionStep, ns: _03._PipeLine, asm: Assembly-CSharp}
+      data: 
+    - rid: 2186371277247742038
+      type: {class: CriticalStep, ns: _03._PipeLine, asm: Assembly-CSharp}
+      data: 
+    - rid: 2186371277247742039
+      type: {class: DefenseStep, ns: _03._PipeLine, asm: Assembly-CSharp}
+      data: 

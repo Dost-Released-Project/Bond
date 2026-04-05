@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using _03._PipeLine;
 using Cysharp.Threading.Tasks;
 using juno_Test;
 using UnityEngine;
@@ -6,13 +6,16 @@ using UnityEngine.InputSystem;
 using VContainer;
 using VContainer.Unity;
 
-namespace _02._Scripts.BattleSystem_KWT
+namespace _02._Scripts.BattleSystem
 {
-    public class BattleFlowManager : ITickable
+    public class BattleFlowManager : MonoBehaviour
     {
         [Inject] 
         private readonly IBattleEntryPoint battleEntryPoint;
-        
+
+        [Inject]
+        private readonly BattleManager battleManager;
+
         [Inject]
         private TestPlayer[] _PlayerUnits;
 
@@ -21,16 +24,23 @@ namespace _02._Scripts.BattleSystem_KWT
             _PlayerUnits = playerUnits;
         }
 
+        // ReSharper disable Unity.PerformanceAnalysis
         public void StartBattle(TestPlayer[] units)
         {
             battleEntryPoint.StartAsync(default, units).Forget();
         }
-        
-        public void Tick()
+
+        private void Update()
         {
             if (Keyboard.current != null && Keyboard.current.digit1Key.wasPressedThisFrame)
             {
                 StartBattle(_PlayerUnits);
+            }
+
+            if (Keyboard.current != null && Keyboard.current.digit2Key.wasPressedThisFrame)
+            {
+                Debug.Log("Digit 2 key pressed");
+                battleManager.SkillApplyLogic(new BattleContext());
             }
         }
     }
