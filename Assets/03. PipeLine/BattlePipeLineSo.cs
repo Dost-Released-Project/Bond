@@ -8,6 +8,7 @@ namespace _03._PipeLine
     {
         public BaseCharacter caster;
         public BaseCharacter target;
+        public SkillBase skill;
 
         public float damage;
         public bool isCritical;
