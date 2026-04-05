@@ -1,8 +1,7 @@
-using _02._Scripts.BattleSystem;
 using _03._PipeLine;
 using VContainer;
 
-namespace _02._Scripts.BattleSystem_KWT
+namespace _02._Scripts.BattleSystem
 {
     public class BattleManager : IBattleManager
     {
