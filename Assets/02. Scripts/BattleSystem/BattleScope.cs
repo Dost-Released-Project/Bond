@@ -1,12 +1,10 @@
 using _03._PipeLine;
 using juno_Test;
+using UnityEngine;
 using VContainer;
 using VContainer.Unity;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.Serialization;
 
-namespace _02._Scripts.BattleSystem_KWT
+namespace _02._Scripts.BattleSystem
 {
     public class BattleScope : LifetimeScope
     {

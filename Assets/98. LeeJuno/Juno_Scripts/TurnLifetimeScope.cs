@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Threading;
-using _02._Scripts.BattleSystem_KWT;
 using Cysharp.Threading.Tasks;
 using juno_Test;
 using UnityEngine;
@@ -16,7 +15,6 @@ public class TurnLifetimeScope : LifetimeScope
         builder.Register<TurnManager>(Lifetime.Scoped);
         builder.RegisterComponent(ui);
         builder.Register<BattleEntryPoint>(Lifetime.Scoped).As<IBattleEntryPoint>();
-        builder.RegisterEntryPoint<BattleFlowManager>(Lifetime.Scoped);
     }
 }
 
