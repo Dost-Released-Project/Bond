@@ -31,7 +31,7 @@ namespace juno_Test
         {
             _input.Space.space.performed -= OnActionButtonClicked;
             _input.Space.FkeyDie.performed -= OnDie;
-            _input.Disable();
+            _input.Dispose();
         }
 
         public async UniTask TakeTurnAsync()

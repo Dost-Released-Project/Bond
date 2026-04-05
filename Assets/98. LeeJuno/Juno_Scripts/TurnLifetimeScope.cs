@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading;
+using _02._Scripts.BattleSystem;
 using Cysharp.Threading.Tasks;
 using juno_Test;
 using UnityEngine;
@@ -14,24 +15,26 @@ public class TurnLifetimeScope : LifetimeScope
     {
         builder.Register<TurnManager>(Lifetime.Scoped);
         builder.RegisterComponent(ui);
-        builder.Register<BattleEntryPoint>(Lifetime.Scoped).As<IBattleEntryPoint>();
+        builder.RegisterEntryPoint<BattleEntryPoint>();
     }
 }
 
-public class BattleEntryPoint : IBattleEntryPoint
+public class BattleEntryPoint : IAsyncStartable
 {
     private readonly TurnManager _turnManager;
+    private readonly TestPlayer[]  _units;
 
     [Inject]
-    public BattleEntryPoint(TurnManager turnManager)
+    public BattleEntryPoint(TurnManager turnManager, TestPlayer[] units)
     {
         _turnManager = turnManager;
+        _units = units;
     }
-    
-    public async UniTask StartAsync(CancellationToken cancellation, 
-        IEnumerable<ITurnUseUnit> unit)
+
+    public async UniTask StartAsync(CancellationToken cancellation)
     {
-        _turnManager.RegisterUnit(unit);
+         _turnManager.RegisterUnit(_units);
         await _turnManager.StartBattleAsync(cancellation);
+        
     }
 }

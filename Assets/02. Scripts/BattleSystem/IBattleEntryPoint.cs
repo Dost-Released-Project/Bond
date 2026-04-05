@@ -5,6 +5,5 @@ using UnityEngine;
 
 public interface IBattleEntryPoint
 {
-    public UniTask StartAsync(CancellationToken cancellation,
-        IEnumerable<ITurnUseUnit> unit);
+    public UniTask StartAsync(CancellationToken cancellation,IEnumerable<ITurnUseUnit>units);
 }

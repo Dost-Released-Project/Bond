@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using _03._PipeLine;
 using Cysharp.Threading.Tasks;
 using juno_Test;
@@ -10,31 +11,27 @@ namespace _02._Scripts.BattleSystem
 {
     public class BattleFlowManager : MonoBehaviour
     {
-        [Inject] 
-        private readonly IBattleEntryPoint battleEntryPoint;
+       
 
         [Inject]
         private readonly BattleManager battleManager;
 
-        [Inject]
-        private TestPlayer[] _PlayerUnits;
-
+        
         public void SetPlayerUnits(TestPlayer[] playerUnits)
         {
-            _PlayerUnits = playerUnits;
         }
 
         // ReSharper disable Unity.PerformanceAnalysis
-        public void StartBattle(TestPlayer[] units)
+        public void StartBattle(IEnumerable<ITurnUseUnit> units)
         {
-            battleEntryPoint.StartAsync(default, units).Forget();
+           
         }
 
         private void Update()
         {
             if (Keyboard.current != null && Keyboard.current.digit1Key.wasPressedThisFrame)
             {
-                StartBattle(_PlayerUnits);
+                //StartBattle();
             }
 
             if (Keyboard.current != null && Keyboard.current.digit2Key.wasPressedThisFrame)
