@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using _03._PipeLine;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -12,10 +13,12 @@ public class BaseCharacter : MonoBehaviour, ITurnUseUnit
     public AutoBattle battleType { get; set; }
     public bool isPlayable { get; set; }
 
-    public BaseCharacter sup_Character { get; set; } // 지원 선택 대상. 대상이 행동할 때 역할군에 따른 지원. 탱커: 피격 시 엄호, 서포터: 피격 후 치유, 딜러: 공격 시 지원 공격.
-
+    public BaseCharacter sup_Character { get; set; } // 지원 선택 대상. 대상이 행동할 때 역할군에 따른 지원. 탱커: 피격 시 엄호, 서포터: 피격 후 치유, 딜러: 공격 시 지원 공격.\
     private Stat stat;
-
+    
+    // BattleManager가 구독할 이벤트. BattleContext는 공격자, 방어자, 스킬 정보 등을 담는 클래스. BattleManager는 이 이벤트를 구독하여 BattleContext를 받아 처리.
+    public Action<BattleContext> onBattleAction;
+    
     private void Start()
     {
         stat = GetComponent<Stat>();
@@ -98,6 +101,10 @@ public class BaseCharacter : MonoBehaviour, ITurnUseUnit
 
     public UniTask TakeTurnAsync()
     {
-        throw new NotImplementedException();
+        // AutoBattle의 BattleAction이 BattleContext를 반환하게 해도될듯
+        BattleContext battleContext = new BattleContext();
+        onBattleAction?.Invoke(battleContext);
+        
+        return UniTask.CompletedTask;
     }
 }

@@ -1,25 +1,23 @@
-using UnityEngine;
+using _02._Scripts.BattleSystem;
+using _03._PipeLine;
+using VContainer;
 
 namespace _02._Scripts.BattleSystem_KWT
 {
-    /// <summary>
-    /// [L] 전투 로직 담당 (Pure C#)
-    /// </summary>
-    public class BattleManager
+    public class BattleManager : IBattleManager
     {
-        /// <summary>
-        /// 이제 행동 순서 판단은 TurnManager가 담당하므로, 
-        /// 여기서는 순수하게 전투 결과(데미지 등) 계산만 수행합니다.
-        /// </summary>
-        public int GetTestDamage(int attackerId, int str, int targetId, int def)
-        {
-            // 기획서 공식 대신 연관 스탯 로그 출력
-            Debug.Log($"<color=cyan>[BattleManager]</color> 데미지 계산 요청 - 공격자({attackerId}) STR: {str} VS 방어자({targetId}) DEF: {def}");
-            
-            // 테스트용 고정 데미지 반환
-            return 10;
-        }
+        [Inject]
+        private readonly IBattlePipeLine skillApplyPipeline;
 
-        // TODO: 기획서 기반의 4번 항목(데미지 계산), 3번 항목(스탯 보정) 등 전투 규칙 로직이 여기에 위치하게 됩니다.
+        public BattleContext SkillApplyLogic(BattleContext context)
+        {
+            // [입구] 로직 파이프라인 실행
+            if (skillApplyPipeline != null)
+            {
+                return skillApplyPipeline.Run(context);
+            }
+
+            return context;
+        }
     }
 }
