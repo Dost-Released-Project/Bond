@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using _03._PipeLine;
 using Cysharp.Threading.Tasks;
 using juno_Test;
@@ -11,33 +12,34 @@ namespace _02._Scripts.BattleSystem
 {
     public class BattleFlowManager : MonoBehaviour
     {
-       
+        private BattleManager _battleManager;
+        private TurnManager _turnManager;
+        private TestPlayer[] _unit;
 
-        [Inject]
-        private readonly BattleManager battleManager;
-
-        
-        public void SetPlayerUnits(TestPlayer[] playerUnits)
+        public void Init(BattleManager battleManager, TurnManager turnManager, TestPlayer[] unit)
         {
+            _battleManager = battleManager;
+            _turnManager = turnManager;
+            _unit = unit;
         }
 
-        // ReSharper disable Unity.PerformanceAnalysis
-        public void StartBattle(IEnumerable<ITurnUseUnit> units)
+        private async UniTask StartBattle(TestPlayer[] unit, CancellationToken token)
         {
-           
+            _turnManager.RegisterUnit(unit);
+            await _turnManager.StartBattleAsync(token);
         }
 
-        private void Update()
+        private async void Update()
         {
             if (Keyboard.current != null && Keyboard.current.digit1Key.wasPressedThisFrame)
             {
-                //StartBattle();
+                await StartBattle(_unit, default);
             }
 
             if (Keyboard.current != null && Keyboard.current.digit2Key.wasPressedThisFrame)
             {
                 Debug.Log("Digit 2 key pressed");
-                battleManager.SkillApplyLogic(new BattleContext());
+                _battleManager.SkillApplyLogic(new BattleContext());
             }
         }
     }

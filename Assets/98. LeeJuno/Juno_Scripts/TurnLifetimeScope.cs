@@ -22,19 +22,22 @@ public class TurnLifetimeScope : LifetimeScope
 public class BattleEntryPoint : IAsyncStartable
 {
     private readonly TurnManager _turnManager;
-    private readonly TestPlayer[]  _units;
+    private readonly TestPlayer[] _units;
+    private readonly BattleFlowManager _battleFlowManager;
+    private readonly BattleManager _battleManager;
 
     [Inject]
-    public BattleEntryPoint(TurnManager turnManager, TestPlayer[] units)
+    public BattleEntryPoint(TurnManager turnManager, TestPlayer[] units, BattleFlowManager battleFlowManager,
+        BattleManager battleManager)
     {
         _turnManager = turnManager;
         _units = units;
+        _battleFlowManager = battleFlowManager;
+        _battleManager = battleManager;
     }
 
     public async UniTask StartAsync(CancellationToken cancellation)
     {
-         _turnManager.RegisterUnit(_units);
-        await _turnManager.StartBattleAsync(cancellation);
-        
+        _battleFlowManager.Init(_battleManager, _turnManager, _units);
     }
 }
