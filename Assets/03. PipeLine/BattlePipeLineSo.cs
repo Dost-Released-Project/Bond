@@ -8,9 +8,8 @@ namespace _03._PipeLine
     {
         public BaseCharacter caster;
         public BaseCharacter target;
-        public SkillBase skill;
-
-        public float damage;
+        public SkillBase runtimeSkill; // 캐릭터의 스탯, 장비, 버프 등이 적용된 스킬
+        
         public bool isCritical;
         public bool isEvaded;
     }
@@ -69,6 +68,17 @@ namespace _03._PipeLine
         {
             Debug.Log("Executing DefenseStep");
             // TODO: 방어자의 방어력 수치를 기반으로 최종 데미지를 감쇄시키는 로직이 추가되어야 합니다.
+            return context;
+        }
+    }
+    
+    [System.Serializable]
+    public class ReactionCall : IPipeLineStep<BattleContext>
+    {
+        public BattleContext Execute(BattleContext context)
+        {
+            Debug.Log("Executing ReactionCall");
+            // TODO: 리액션 시스템 콜 새로운 BattleContext를 생성해서 전투 파이프라인에 들어와야합니다.
             return context;
         }
     }
