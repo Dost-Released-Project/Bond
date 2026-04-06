@@ -8,9 +8,8 @@ namespace _03._PipeLine
     {
         public BaseCharacter caster;
         public BaseCharacter target;
-        public SkillBase skill;
-
-        public float damage;
+        public SkillBase runtimeSkill; // 캐릭터의 스탯, 장비, 버프 등이 적용된 스킬
+        
         public bool isCritical;
         public bool isEvaded;
     }
