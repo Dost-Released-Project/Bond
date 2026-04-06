@@ -72,6 +72,17 @@ namespace _03._PipeLine
             return context;
         }
     }
+    
+    [System.Serializable]
+    public class ReactionCall : IPipeLineStep<BattleContext>
+    {
+        public BattleContext Execute(BattleContext context)
+        {
+            Debug.Log("Executing ReactionCall");
+            // TODO: 리액션 시스템 콜 새로운 BattleContext를 생성해서 전투 파이프라인에 들어와야합니다.
+            return context;
+        }
+    }
 
     #endregion
 }
