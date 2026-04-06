@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace _02._Scripts.ReactionSystem
+namespace ReactionSystem
 {
     public class Reaction<T> where T : EventArgs
     {
@@ -20,14 +20,15 @@ namespace _02._Scripts.ReactionSystem
 
         public void Action(T eventArgs)
         {
-            if (Trigger.Condition(eventArgs))
+            // TODO: 전달변수 교체
+            if (Trigger.Condition(eventArgs) && ReactionSystem.IsSuccess(new object()))
             {
                 Behaviour?.Invoke(eventArgs);
             }
         }
     }
     
-    public abstract class Trigger<T> where T : EventArgs
+    public class Trigger<T> where T : EventArgs
     {
         // 이건 딱히 내가 생각해서 적은거 아니고 그냥 기획서 복붙한거임. 
         public int Id;             // 트리거 자체의 고유 식별 번호

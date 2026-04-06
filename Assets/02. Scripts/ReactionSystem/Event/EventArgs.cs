@@ -1,6 +1,6 @@
 using System;
 
-namespace _02._Scripts.ReactionSystem.Event
+namespace ReactionSystem.Event
 {
     public abstract class BattleEventArgs : System.EventArgs
     {
