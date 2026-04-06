@@ -1,19 +1,22 @@
 using System;
 using _02._Scripts.ReactionSystem.Event;
+using VContainer;
 
 namespace _02._Scripts.ReactionSystem
 {
     public class ReactionManager
     {
-        public readonly EventManager eventManager;
+        [Inject]
+        private readonly EventBus eventBus;
+        
         public void Register<T>(Reaction<T> reaction) where T: EventArgs
         {
-            eventManager.AddListener<T>(reaction.Action);
+            eventBus.Subscribe<T>(reaction.Action);
         }
 
         public void Unregister<T>(Reaction<T> reaction) where T : EventArgs
         {
-            eventManager.RemoveListener<T>(reaction.Action);
+            eventBus.Unsubscribe<T>(reaction.Action);
         }
     }
 }

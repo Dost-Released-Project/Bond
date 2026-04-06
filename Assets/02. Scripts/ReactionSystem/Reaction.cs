@@ -11,6 +11,13 @@ namespace _02._Scripts.ReactionSystem
         public Trigger<T> Trigger;      // 리액션 행동을 발동시키는 조건
         public Action<T> Behaviour;     // 조건 만족시 하게될 행동
 
+        public Reaction(BaseCharacter agent, Trigger<T> trigger, Action<T> behaviour)
+        {
+            Agent = agent;
+            Trigger = trigger;
+            Behaviour = behaviour;
+        }
+
         public void Action(T eventArgs)
         {
             if (Trigger.Condition(eventArgs))

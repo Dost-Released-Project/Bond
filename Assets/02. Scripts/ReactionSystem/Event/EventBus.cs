@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace _02._Scripts.ReactionSystem.Event
 {
-    public class EventManager
+    public class EventBus
     {
         private Dictionary<Type, Delegate> eventTable = new Dictionary<Type, Delegate>();
 
         /// <summary>
         /// 이벤트 등록
         /// </summary>
-        public void AddListener<T>(Action<T> listener) where T : EventArgs
+        public void Subscribe<T>(Action<T> listener) where T : EventArgs
         {
             var eventType = typeof(T);
             if (eventTable.TryGetValue(eventType, out var existingDelegate))
@@ -28,7 +28,7 @@ namespace _02._Scripts.ReactionSystem.Event
         /// <summary>
         /// 이벤트 해제
         /// </summary>
-        public void RemoveListener<T>(Action<T> listener) where T : EventArgs
+        public void Unsubscribe<T>(Action<T> listener) where T : EventArgs
         {
             var eventType = typeof(T);
             if (eventTable.TryGetValue(eventType, out var existingDelegate))
@@ -49,7 +49,7 @@ namespace _02._Scripts.ReactionSystem.Event
         /// <summary>
         /// 이벤트 호출
         /// </summary>
-        public void CallEvent<T>(T eventArgs) where T : EventArgs
+        public void Publish<T>(T eventArgs) where T : EventArgs
         {
             BroadCastToListeners(eventArgs);
         }
