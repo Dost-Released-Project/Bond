@@ -12,9 +12,9 @@ public class TurnLifetimeScope : LifetimeScope
 
     protected override void Configure(IContainerBuilder builder)
     {
-        builder.Register<TurnManager>(Lifetime.Scoped);
+        builder.Register<TurnManager>(Lifetime.Singleton);
         builder.RegisterComponent(ui);
-        builder.Register<BattleEntryPoint>(Lifetime.Scoped).As<IBattleEntryPoint>();
+        builder.Register<BattleEntryPoint>(Lifetime.Singleton).As<IBattleEntryPoint>();
     }
 }
 
