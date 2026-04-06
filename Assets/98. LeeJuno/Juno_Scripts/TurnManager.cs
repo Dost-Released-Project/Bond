@@ -22,7 +22,10 @@ public class TurnManager
     private int _turnCount;
     private bool _isBattleActive;
 
-
+    public TurnManager()
+    {
+        Debug.Log($"[TurnManager] 생성됨! 호출 스택:{System.Environment.StackTrace}");
+    }
     //이부분이 인자로 배열이나 리스트로 유닛들 추가
     public void RegisterUnit(IEnumerable<ITurnUseUnit> unit)
     {
