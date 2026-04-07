@@ -9,8 +9,15 @@ public class AutoBattle_Def : AutoBattle
     // 판단 4. 파티원의 체력이 괜찮다면 일반 공격.
     public override void BattleAction(SkillBase skill)
     {
-        if(isPlayable) return;
+        if(isPlayable) return; // 자동 전투 여부
         
-        skill.UseSkill();
+        skill.UseSkill(); // 스킬 사용 로직
+    }
+    
+    public AutoBattle_Def() { } // 기본 생성자
+    
+    public AutoBattle_Def(string str) // 테스트용 생성자
+    {
+        Debug.Log($"{str}의 역할군은 탱커입니다.");
     }
 }

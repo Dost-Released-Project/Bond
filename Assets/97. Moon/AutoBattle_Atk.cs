@@ -8,8 +8,15 @@ public class AutoBattle_Atk : AutoBattle
     // 판단 3. 2번 체력이 낮은 적을 우선 공격. 체력이 모두 동일하다면 위협적인 적 공격
     public override void BattleAction(SkillBase skill)
     {
-        if(isPlayable) return;
+        if(isPlayable) return; // 자동 전투 여부
         
-        skill.UseSkill();
+        skill.UseSkill(); // 스킬 사용 로직
+    }
+    
+    public AutoBattle_Atk() { } // 기본 생성자
+
+    public AutoBattle_Atk(string str) // 테스트용 생성자
+    {
+        Debug.Log($"{str}의 역할군은 딜러입니다.");
     }
 }
