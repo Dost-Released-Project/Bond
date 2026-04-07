@@ -10,7 +10,7 @@ namespace _02._Scripts.BattleSystem
     {
         [SerializeField] 
         private BattlePipeLineSo _BattlePipeLineSo;
-        public TestPlayer[] sceneUnit;
+        public BaseCharacter[] sceneUnit;
         
         protected override void Configure(IContainerBuilder builder)
         {
