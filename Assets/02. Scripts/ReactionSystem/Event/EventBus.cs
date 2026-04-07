@@ -7,7 +7,7 @@ namespace ReactionSystem.Event
     public class EventBus
     {
         private Dictionary<Type, Delegate> eventTable = new Dictionary<Type, Delegate>();
-
+        
         /// <summary>
         /// 이벤트 등록
         /// </summary>
