@@ -15,8 +15,11 @@ namespace _02._Scripts.BattleSystem
         Form4   = 1 << 3, // 최후방 (Back)
         
         // 자주 사용되는 프리셋
-        FrontTwo = Form1 | Form2,
-        BackTwo  = Form3 | Form4,
-        Any      = Form1 | Form2 | Form3 | Form4
+        FrontLine = Form1 | Form2,
+        BackLine  = Form3 | Form4,
+        Middle    = Form2 | Form3,
+        NotFront  = Form2 | Form3 | Form4,
+        NotBack   = Form1 | Form2 | Form3,
+        Any       = Form1 | Form2 | Form3 | Form4
     }
 }

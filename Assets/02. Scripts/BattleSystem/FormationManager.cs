@@ -42,7 +42,7 @@ namespace _02._Scripts.BattleSystem
 {
     public class FormationManager : IFormationManager
     {
-        // 이제 캐릭터 배열이 아닌 슬롯 배열을 관리합니다.
+        // 진영 상태 데이터를 관리하는 딕셔너리
         private Dictionary<e_BattleSide, BattleSlot[]> _Slots;
 
         public FormationManager()
@@ -51,7 +51,7 @@ namespace _02._Scripts.BattleSystem
             {
                 { e_BattleSide.Player, CreateSlots(e_BattleSide.Player) },
                 { e_BattleSide.Enemy, CreateSlots(e_BattleSide.Enemy) }
-            } ;
+            };
         }
 
         private BattleSlot[] CreateSlots(e_BattleSide side)
@@ -66,8 +66,6 @@ namespace _02._Scripts.BattleSystem
             return slots;
         }
 
-
-        
         public BattleSlot GetSlot(BaseCharacter character)
         {
             if (character == null) return null;
@@ -80,26 +78,52 @@ namespace _02._Scripts.BattleSystem
             return null;
         }
 
-        public FormationMask GetCharacterRank(e_BattleSide battleSide, BaseCharacter character)
+        public FormationMask GetCharacterRank(BaseCharacter character)
         {
             var slot = GetSlot(character);
             return slot?.Rank ?? FormationMask.None;
         }
-        
+
+        public BaseCharacter GetCharacterAt(e_BattleSide side, FormationMask rank)
+        {
+            return _Slots[side].FirstOrDefault(s => (s.Rank & rank) != 0)?.Occupant;
+        }
+
         public void SwapFormation(BaseCharacter fromCharacter, BaseCharacter toCharacter)
         {
             var fromSlot = GetSlot(fromCharacter);
             var toSlot = GetSlot(toCharacter);
-            
-            if (fromSlot == null || toSlot == null || fromSlot.Side != toSlot.Side) 
+
+            if (fromSlot == null || toSlot == null || fromSlot.Side != toSlot.Side)
                 return;
-            
-            // 슬롯의 내용물(Occupant)만 교체합니다.
+
+            // 슬롯의 내용물(Occupant) 교체
             BaseCharacter temp = fromSlot.Occupant;
             fromSlot.SetOccupant(toSlot.Occupant);
             toSlot.SetOccupant(temp);
-            
-            // Visual 로직 들어갈 자리
+
+            // TODO: Visual 변경 이벤트 발생
+        }
+
+        public void MoveCharacter(BaseCharacter character, e_BattleSide side, int targetIndex)
+        {
+            if (targetIndex < 0 || targetIndex >= 4) return;
+
+            var currentSlot = GetSlot(character);
+            var targetSlot = _Slots[side][targetIndex];
+
+            if (currentSlot == null) return;
+
+            // 이미 그 자리에 누군가 있다면 스왑 처리
+            if (!targetSlot.IsEmpty)
+            {
+                SwapFormation(character, targetSlot.Occupant);
+            }
+            else
+            {
+                currentSlot.Clear();
+                targetSlot.SetOccupant(character);
+            }
         }
 
         public bool IsSkillUsable(BaseCharacter character, FormationMask skillUsableMask)
@@ -118,19 +142,40 @@ namespace _02._Scripts.BattleSystem
             return (slot.Rank & targetMask) != 0;
         }
 
+        /// <summary>
+        /// 빈 슬롯을 제거하고 캐릭터들을 앞으로 당깁니다.
+        /// </summary>
+        public void ConsolidationFormation(e_BattleSide side)
+        {
+            var sideSlots = _Slots[side];
+            List<BaseCharacter> characters = new List<BaseCharacter>();
+
+            // 현재 살아있는 캐릭터들만 추출
+            for (int i = 0; i < sideSlots.Length; i++)
+            {
+                if (!sideSlots[i].IsEmpty)
+                {
+                    characters.Add(sideSlots[i].Occupant);
+                }
+            }
+
+            // 모든 슬롯 초기화 후 순차적으로 재배치 (앞에서부터)
+            for (int i = 0; i < sideSlots.Length; i++)
+            {
+                sideSlots[i].Clear();
+                if (i < characters.Count)
+                {
+                    sideSlots[i].SetOccupant(characters[i]);
+                }
+            }
+        }
 
         #region Helper Methods
-        /// <summary>
-        /// 특정 진영의 특정 위치(Rank)에 있는 슬롯을 가져옵니다.
-        /// </summary>
         public BattleSlot GetSlotAt(e_BattleSide side, FormationMask rank)
         {
             return _Slots[side].FirstOrDefault(s => s.Rank == rank);
         }
 
-        /// <summary>
-        /// 캐릭터를 특정 슬롯에 배치합니다 (초기 세팅용).
-        /// </summary>
         public void SetCharacterToSlot(BaseCharacter character, e_BattleSide side, int index)
         {
             if (index < 0 || index >= 4) return;
