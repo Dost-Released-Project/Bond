@@ -17,15 +17,15 @@ namespace _02._Scripts.BattleSystem
         private readonly BattleManager battleManager;
 
         [Inject]
-        private TestPlayer[] _PlayerUnits;
+        private BaseCharacter[] _PlayerUnits;
 
-        public void SetPlayerUnits(TestPlayer[] playerUnits)
+        public void SetPlayerUnits(BaseCharacter[] playerUnits)
         {
             _PlayerUnits = playerUnits;
         }
 
         // ReSharper disable Unity.PerformanceAnalysis
-        public void StartBattle(TestPlayer[] units)
+        public void StartBattle(BaseCharacter[] units)
         {
             battleEntryPoint.StartAsync(default, units).Forget();
         }
