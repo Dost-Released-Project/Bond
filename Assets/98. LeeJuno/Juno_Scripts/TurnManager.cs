@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class TurnManager
 {
-    // 외부용 
+    // 외부용
     public event Action OnTurnQueueUpdated;
     public int TurnCount => _turnCount;
     public IReadOnlyList<ITurnUseUnit> TurnQueue => _turnQueue;
@@ -22,11 +22,16 @@ public class TurnManager
     private int _turnCount;
     private bool _isBattleActive;
 
-    public TurnManager()
+    // 라운드 종료마다 캐릭터별 쿨타임을 1씩 감소시키기 위해 주입받음
+    private readonly ISkillManager _skillManager;
+
+    public TurnManager(ISkillManager skillManager)
     {
-        Debug.Log($"[TurnManager] 생성됨! 호출 스택:{System.Environment.StackTrace}");
+        _skillManager = skillManager;
+        Debug.Log($"[TurnManager] 생성됨! 호출 스택:{Environment.StackTrace}");
     }
-    //이부분이 인자로 배열이나 리스트로 유닛들 추가
+
+    // 이부분이 인자로 배열이나 리스트로 유닛들 추가
     public void RegisterUnit(IEnumerable<ITurnUseUnit> unit)
     {
         _units.AddRange(unit);
@@ -73,6 +78,13 @@ public class TurnManager
             RemoveDeadUnitsFromQueue();
             OnTurnQueueUpdated?.Invoke();
         }
+
+        // 라운드 종료: BaseCharacter인 유닛의 스킬 쿨타임을 1 감소
+        foreach (var unit in _units)
+        {
+            if (unit is BaseCharacter character)
+                _skillManager.TickCoolTimes(character);
+        }
     }
 
     private void RemoveDeadUnitsFromQueue()
@@ -96,7 +108,7 @@ public class TurnManager
             var unit = _units[i];
             if (unit.IsDead == false)
             {
-                //속도 같을때 섞기용
+                // 속도 같을때 섞기용
                 unit.RandomSpeed = UnityEngine.Random.Range(0, 10000);
                 _turnQueue.Add(unit);
             }
@@ -106,7 +118,7 @@ public class TurnManager
         _turnQueue.Sort();
     }
 
-    // 해당 로직을 외부에서 승패 판정 후 호출 
+    // 해당 로직을 외부에서 승패 판정 후 호출
     private void BattleEnd()
     {
         _isBattleActive = false;
