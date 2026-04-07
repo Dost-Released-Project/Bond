@@ -154,11 +154,11 @@ MonoBehaviour:
   autoInjectGameObjects: []
   _BattlePipeLineSo: {fileID: 11400000, guid: f6d7bc105c3672744b9425aaa988c32e, type: 2}
   sceneUnit:
-  - {fileID: 1130071072}
-  - {fileID: 308235465}
-  - {fileID: 1412171868}
-  - {fileID: 2134428792}
-  - {fileID: 971839252}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!4 &14760989
 Transform:
   m_ObjectHideFlags: 0
@@ -229,8 +229,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 308235466}
-  - component: {fileID: 308235465}
   - component: {fileID: 308235467}
+  - component: {fileID: 308235468}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -238,34 +238,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &308235465
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 308235464}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77a15aacc325e5d44879c7c48c602371, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::juno_Test.TestPlayer
-  unitName: "\uD604\uC6B0"
-  speed: 6
-  imageAddress: Wildboar
-  equip:
-  - {fileID: 0}
-  - {fileID: 0}
-  traits:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  skills:
-  - {fileID: 1528827454}
-  - {fileID: 1324048512}
-  - {fileID: 401130218}
-  - {fileID: 2113255960}
 --- !u!4 &308235466
 Transform:
   m_ObjectHideFlags: 0
@@ -294,6 +266,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stat
   insanity: 0
+--- !u!114 &308235468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 308235464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3882a424dfcc07944a96845ab974539e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BaseCharacter
+  equip:
+  - {fileID: 0}
+  - {fileID: 0}
+  traits:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  skills:
+  - {fileID: 1528827454}
+  - {fileID: 1324048512}
+  - {fileID: 401130218}
+  - {fileID: 2113255960}
+  unitName: "\uD604\uC6B0"
+  imageAddress: Wildboar
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -710,8 +709,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 971839253}
-  - component: {fileID: 971839252}
   - component: {fileID: 971839254}
+  - component: {fileID: 971839255}
   m_Layer: 0
   m_Name: Player (2)
   m_TagString: Untagged
@@ -719,34 +718,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &971839252
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 971839251}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77a15aacc325e5d44879c7c48c602371, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::juno_Test.TestPlayer
-  unitName: "\uBB49\uD0F1\uC774"
-  speed: 2
-  imageAddress: MTE
-  equip:
-  - {fileID: 0}
-  - {fileID: 0}
-  traits:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  skills:
-  - {fileID: 1528827454}
-  - {fileID: 1324048512}
-  - {fileID: 401130218}
-  - {fileID: 2113255960}
 --- !u!4 &971839253
 Transform:
   m_ObjectHideFlags: 0
@@ -775,6 +746,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stat
   insanity: 0
+--- !u!114 &971839255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 971839251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3882a424dfcc07944a96845ab974539e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BaseCharacter
+  equip:
+  - {fileID: 0}
+  - {fileID: 0}
+  traits:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  skills:
+  - {fileID: 1528827454}
+  - {fileID: 1324048512}
+  - {fileID: 401130218}
+  - {fileID: 2113255960}
+  unitName: "\uBB49\uD0F1\uC774"
+  imageAddress: MTE
 --- !u!1001 &1122539759
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -881,8 +879,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1130071073}
-  - component: {fileID: 1130071072}
   - component: {fileID: 1130071074}
+  - component: {fileID: 1130071075}
   m_Layer: 0
   m_Name: Player (3)
   m_TagString: Untagged
@@ -890,34 +888,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1130071072
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1130071071}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77a15aacc325e5d44879c7c48c602371, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::juno_Test.TestPlayer
-  unitName: "\uD2B8\uB7FC\uD504"
-  speed: 2
-  imageAddress: GodOfWar
-  equip:
-  - {fileID: 0}
-  - {fileID: 0}
-  traits:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  skills:
-  - {fileID: 1528827454}
-  - {fileID: 1324048512}
-  - {fileID: 401130218}
-  - {fileID: 2113255960}
 --- !u!4 &1130071073
 Transform:
   m_ObjectHideFlags: 0
@@ -946,6 +916,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stat
   insanity: 0
+--- !u!114 &1130071075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1130071071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3882a424dfcc07944a96845ab974539e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BaseCharacter
+  equip:
+  - {fileID: 0}
+  - {fileID: 0}
+  traits:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  skills:
+  - {fileID: 1528827454}
+  - {fileID: 1324048512}
+  - {fileID: 401130218}
+  - {fileID: 2113255960}
+  unitName: "\uD2B8\uB7FC\uD504"
+  imageAddress: GodOfWar
 --- !u!1 &1270962758
 GameObject:
   m_ObjectHideFlags: 0
@@ -1048,8 +1045,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1412171869}
-  - component: {fileID: 1412171868}
   - component: {fileID: 1412171870}
+  - component: {fileID: 1412171871}
   m_Layer: 0
   m_Name: Player (4)
   m_TagString: Untagged
@@ -1057,34 +1054,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1412171868
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1412171867}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77a15aacc325e5d44879c7c48c602371, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::juno_Test.TestPlayer
-  unitName: "\uC300\uC22D\uC774"
-  speed: 1
-  imageAddress: RiceSummoner
-  equip:
-  - {fileID: 0}
-  - {fileID: 0}
-  traits:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  skills:
-  - {fileID: 1528827454}
-  - {fileID: 1324048512}
-  - {fileID: 401130218}
-  - {fileID: 2113255960}
 --- !u!4 &1412171869
 Transform:
   m_ObjectHideFlags: 0
@@ -1113,6 +1082,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stat
   insanity: 0
+--- !u!114 &1412171871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1412171867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3882a424dfcc07944a96845ab974539e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BaseCharacter
+  equip:
+  - {fileID: 0}
+  - {fileID: 0}
+  traits:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  skills:
+  - {fileID: 1528827454}
+  - {fileID: 1324048512}
+  - {fileID: 401130218}
+  - {fileID: 2113255960}
+  unitName: "\uC300\uC22D\uC774"
+  imageAddress: RiceSummoner
 --- !u!114 &1521924634 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4608877386632493682, guid: a89cdd7fe3dc956409e3fb793963a739, type: 3}
@@ -1221,8 +1217,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2134428793}
-  - component: {fileID: 2134428792}
   - component: {fileID: 2134428794}
+  - component: {fileID: 2134428795}
   m_Layer: 0
   m_Name: Player (1)
   m_TagString: Untagged
@@ -1230,34 +1226,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2134428792
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2134428791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77a15aacc325e5d44879c7c48c602371, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::juno_Test.TestPlayer
-  unitName: "\uC2E0\uCC3D\uC12D"
-  speed: 4
-  imageAddress: GodOfNormalization
-  equip:
-  - {fileID: 0}
-  - {fileID: 0}
-  traits:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  skills:
-  - {fileID: 1528827454}
-  - {fileID: 1324048512}
-  - {fileID: 401130218}
-  - {fileID: 2113255960}
 --- !u!4 &2134428793
 Transform:
   m_ObjectHideFlags: 0
@@ -1286,6 +1254,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stat
   insanity: 0
+--- !u!114 &2134428795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2134428791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3882a424dfcc07944a96845ab974539e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BaseCharacter
+  equip:
+  - {fileID: 0}
+  - {fileID: 0}
+  traits:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  skills:
+  - {fileID: 1528827454}
+  - {fileID: 1324048512}
+  - {fileID: 401130218}
+  - {fileID: 2113255960}
+  unitName: "\uC2E0\uCC3D\uC12D"
+  imageAddress: GodOfNormalization
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
