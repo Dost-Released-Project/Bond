@@ -15,7 +15,7 @@ public class SkillData : ScriptableObject
     // ── 식별자 ────────────────────────────────────
     [Header("식별자")]
     [Tooltip("스킬 시트 ID (8자리): 예) 01010000")]
-    [SerializeField] private string _skillId;
+    [SerializeField] private int _skillId;
 
     [Tooltip("표시용 스킬 이름")]
     [SerializeField] private string _skillName;
@@ -62,7 +62,7 @@ public class SkillData : ScriptableObject
     [SerializeField] private string _iconAddress;
 
     // ── 프로퍼티 (읽기 전용) ───────────────────────
-    public string SkillId         => _skillId;
+    public int SkillId            => _skillId;
     public string SkillName       => _skillName;
     public string Description     => _description;
     public SkillType Type         => _type;
@@ -75,4 +75,47 @@ public class SkillData : ScriptableObject
     public int EnemyTargetMask    => _enemyTargetMask;
     public int AllyTargetMask     => _allyTargetMask;
     public string IconAddress     => _iconAddress;
+
+    /// <summary>
+    /// 파서 등 외부 코드에서 프로그래밍 방식으로 값을 설정할 때 사용한다.
+    /// ScriptableObject.CreateInstance&lt;SkillData&gt;() 로 생성 후 호출.
+    /// Inspector 직렬화 필드를 그대로 사용하므로 기존 에셋과 호환된다.
+    /// </summary>
+    public void SetData(SkillRawData raw)
+    {
+        _skillId         = raw.SkillId;
+        _skillName       = raw.SkillName;
+        _description     = raw.Description;
+        _type            = raw.Type;
+        _target          = raw.Target;
+        _value           = raw.Value;
+        _coolTime        = raw.CoolTime;
+        _duration        = raw.Duration;
+        _useableClasses  = raw.UseableClasses;
+        _useableSlots    = raw.UseableSlots;
+        _enemyTargetMask = raw.EnemyTargetMask;
+        _allyTargetMask  = raw.AllyTargetMask;
+        _iconAddress     = raw.IconAddress;
+    }
+}
+
+/// <summary>
+/// SkillData.SetData() 에 넘길 파라미터 묶음.
+/// 파서가 TSV 1행을 읽어 이 구조체를 채운 뒤 SetData()에 전달한다.
+/// </summary>
+public struct SkillRawData
+{
+    public int        SkillId;
+    public string     SkillName;
+    public string     Description;
+    public SkillType  Type;
+    public SkillTarget Target;
+    public float      Value;
+    public int        CoolTime;
+    public int        Duration;
+    public int        UseableClasses;
+    public int        UseableSlots;
+    public int        EnemyTargetMask;
+    public int        AllyTargetMask;
+    public string     IconAddress;
 }
