@@ -2,12 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
 
-/// <summary>
-/// ISkillManager 구현체.
-/// SkillData Dictionary 관리 + 캐릭터별 쿨타임 추적을 담당한다.
-/// 비트마스크 해석(슬롯 매핑 등)은 담당하지 않는다.
-/// VContainer의 SkillScope에서 Singleton으로 등록된다.
-/// </summary>
 public class SkillManager : ISkillManager
 {
     // ── 내부 저장소 ───────────────────────────────
@@ -27,7 +21,6 @@ public class SkillManager : ISkillManager
     private readonly List<int> _keyBuffer = new List<int>();
 
     // ── 생성자: VContainer가 SkillData[] 주입 ──────
-    [Inject]
     public SkillManager(SkillData[] allSkills)
     {
         _skillDict       = new Dictionary<int, SkillData>(allSkills.Length);

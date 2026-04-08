@@ -3,8 +3,6 @@ using System.Collections.Generic;
 /// <summary>
 /// 스킬 데이터 접근 및 쿨타임 관리를 위한 인터페이스.
 /// VContainer 싱글턴으로 등록되어 SkillBase, TurnManager 등에서 주입받아 사용한다.
-/// 비트마스크 해석(슬롯 매핑 등)은 다른 팀원의 매니저가 담당하므로
-/// 여기서는 ID/타입 기반 조회와 쿨타임 관리만 제공한다.
 /// </summary>
 public interface ISkillManager
 {
