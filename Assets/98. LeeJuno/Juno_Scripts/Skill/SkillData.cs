@@ -92,7 +92,7 @@ public class SkillData : ScriptableObject
         _coolTime        = raw.CoolTime;
         _duration        = raw.Duration;
         _useableClasses  = raw.UseableClasses;
-        _useableSlots    = raw.UseableSlots;
+        _useableSlots    = raw.UseableSlots; 
         _enemyTargetMask = raw.EnemyTargetMask;
         _allyTargetMask  = raw.AllyTargetMask;
         _iconAddress     = raw.IconAddress;

@@ -39,6 +39,12 @@ public class TurnManager
 
     public async UniTask StartBattleAsync(CancellationToken token = default)
     {
+        if (_isBattleActive)
+        {
+            Debug.LogWarning("[TurnManager] 이미 배틀이 진행 중입니다.");
+            return;
+        }
+
         _turnCount = 0;
         _isBattleActive = true;
 
