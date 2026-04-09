@@ -3,6 +3,7 @@ using System.Linq;
 using _02._Scripts.BattleSystem;
 using _02._Scripts.BattleSystem.Interface;
 using UnityEngine;
+using VContainer;
 
 public enum e_BattleSide
 {
@@ -18,14 +19,14 @@ namespace _02._Scripts.BattleSystem
     /// </summary>
     public class FormationManager : IFormationManager
     {
-        private readonly RuntimeFormationData _playerData;
-        private readonly RuntimeFormationData _enemyData;
+        private RuntimeFormationData _playerData;
+        private RuntimeFormationData _enemyData;
         private IFormationVisualizer _visualizer;
 
-        public FormationManager(RuntimeFormationData playerData, RuntimeFormationData enemyData)
+        [Inject]
+        public FormationManager(CharacterSlot playerUnit)
         {
-            _playerData = playerData;
-            _enemyData = enemyData;
+            
         }
 
         public void SetVisualizer(IFormationVisualizer visualizer)
