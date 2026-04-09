@@ -6,6 +6,5 @@ using VContainer;
 
 public class Tester : MonoBehaviour
 {
-    [Inject]
-    private readonly BattleFlowManager battleFlowManager;
+    public FormationMask rank;
 }

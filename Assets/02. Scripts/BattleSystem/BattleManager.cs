@@ -1,12 +1,26 @@
 using _03._PipeLine;
+using UnityEngine;
 using VContainer;
 
 namespace _02._Scripts.BattleSystem
 {
     public class BattleManager : IBattleManager
     {
-        [Inject]
+        private readonly ReactionSystem.ReactionSystem reactionSystem;
         private readonly IBattlePipeLine skillApplyPipeline;
+        [Inject]
+        public BattleManager(ReactionSystem.ReactionSystem reactionSystem, 
+            IBattlePipeLine  skillApplyPipeline)
+        {
+            this.reactionSystem = reactionSystem;
+            this.skillApplyPipeline = skillApplyPipeline;
+            Init();
+        }
+
+        private void Init()
+        {
+            skillApplyPipeline.SetReactionSysetem(reactionSystem);
+        }
 
         public BattleContext SkillApplyLogic(BattleContext context)
         {

@@ -10,22 +10,26 @@ namespace _02._Scripts.BattleSystem
 {
     public class BattleFlowManager : MonoBehaviour
     {
-        [Inject] 
-        private readonly IBattleEntryPoint battleEntryPoint;
-
+        private IBattleEntryPoint battleEntryPoint;
+        private IBattleManager battleManager;
+        private BaseCharacter[] _PlayerUnits;
+        
         [Inject]
-        private readonly BattleManager battleManager;
+        public void Construct(IBattleEntryPoint battleEntryPoint, 
+            IBattleManager battleManager, BaseCharacter[] playerUnits)
+        {
+            this.battleEntryPoint = battleEntryPoint;
+            this.battleManager = battleManager;
+            _PlayerUnits = playerUnits;
+        }
 
-        [Inject]
-        private TestPlayer[] _PlayerUnits;
-
-        public void SetPlayerUnits(TestPlayer[] playerUnits)
+        public void SetPlayerUnits(BaseCharacter[] playerUnits)
         {
             _PlayerUnits = playerUnits;
         }
 
         // ReSharper disable Unity.PerformanceAnalysis
-        public void StartBattle(TestPlayer[] units)
+        public void StartBattle(BaseCharacter[] units)
         {
             battleEntryPoint.StartAsync(default, units).Forget();
         }

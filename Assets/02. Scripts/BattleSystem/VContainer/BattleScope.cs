@@ -10,11 +10,12 @@ namespace _02._Scripts.BattleSystem
     {
         [SerializeField] 
         private BattlePipeLineSo _BattlePipeLineSo;
-        public TestPlayer[] sceneUnit;
+        public BaseCharacter[] sceneUnit;
         
         protected override void Configure(IContainerBuilder builder)
         {
-            builder.Register<BattleManager>(Lifetime.Scoped);
+            builder.Register<BattleManager>(Lifetime.Singleton).As<IBattleManager>();
+            builder.Register<ReactionSystem.ReactionSystem>(Lifetime.Scoped);
             builder.RegisterInstance(_BattlePipeLineSo).As<IBattlePipeLine>();
             builder.RegisterInstance(sceneUnit);
         }
