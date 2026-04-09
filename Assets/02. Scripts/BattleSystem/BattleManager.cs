@@ -28,7 +28,12 @@ namespace _02._Scripts.BattleSystem
             // [입구] 로직 파이프라인 실행
             if (skillApplyPipeline != null)
             {
-                return skillApplyPipeline.Run(context);
+                skillApplyPipeline.Run(context);
+
+                foreach (var reaction in context.reactions)
+                {
+                    SkillApplyLogic(new BattleContext()); // TODO: 리액션을 배틀컨텍스트로 치환한 후에 전달하는 로직
+                }
             }
 
             return context;
