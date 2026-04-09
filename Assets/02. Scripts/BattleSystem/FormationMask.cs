@@ -9,17 +9,17 @@ namespace _02._Scripts.BattleSystem
     public enum FormationMask
     {
         None    = 0,
-        Form1   = 1 << 0, // 최전방 (Front)
-        Form2   = 1 << 1,
-        Form3   = 1 << 2,
-        Form4   = 1 << 3, // 최후방 (Back)
+        Rank1   = 1 << 0, // 최전방 (Front)
+        Rank2   = 1 << 1,
+        Rank3   = 1 << 2,
+        Rank4   = 1 << 3, // 최후방 (Back)
         
         // 자주 사용되는 프리셋
-        FrontLine = Form1 | Form2,
-        BackLine  = Form3 | Form4,
-        Middle    = Form2 | Form3,
-        NotFront  = Form2 | Form3 | Form4,
-        NotBack   = Form1 | Form2 | Form3,
-        Any       = Form1 | Form2 | Form3 | Form4
+        FrontLine = Rank1 | Rank2,
+        BackLine  = Rank3 | Rank4,
+        Middle    = Rank2 | Rank3,
+        NotFront  = Rank2 | Rank3 | Rank4,
+        NotBack   = Rank1 | Rank2 | Rank3,
+        Any       = Rank1 | Rank2 | Rank3 | Rank4
     }
 }
