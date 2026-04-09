@@ -3,15 +3,18 @@ using VContainer.Unity;
 
 /// <summary>
 /// 씬 B용 Scope.
-/// SharedService를 Singleton으로 새로 등록한다.
-/// 씬 전환 후 이 Scope의 SharedService ID가 씬 A와 다르면
-/// → 씬 A의 Singleton이 파괴되고 새로 생성된 것.
+/// SharedService는 RootScope에서 상속받으므로 재등록하지 않는다.
+/// 씬 전환 후 SceneBEntryPoint에서 Root의 SharedService ID와 동일한지 확인.
+///
+/// 상속 구조:
+///   RootScope (SharedService Singleton)
+///   └── SceneBScope  ← 이 Scope
 /// </summary>
 public class SceneBScope : LifetimeScope
 {
     protected override void Configure(IContainerBuilder builder)
     {
-        builder.Register<SharedService>(Lifetime.Singleton);
+        // SharedService → RootScope에서 상속, 재등록 불필요
         builder.RegisterEntryPoint<SceneBEntryPoint>();
     }
 }

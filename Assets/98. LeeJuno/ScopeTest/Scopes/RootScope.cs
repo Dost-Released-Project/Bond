@@ -14,6 +14,7 @@ public class RootScope : LifetimeScope
     protected override void Configure(IContainerBuilder builder)
     {
         builder.Register<SharedService>(Lifetime.Singleton);
+        builder.Register<RootScopedService>(Lifetime.Scoped);  // 씬 Scope에서 새 인스턴스 생성되는지 테스트
         builder.RegisterEntryPoint<RootScopeEntryPoint>();
     }
 }

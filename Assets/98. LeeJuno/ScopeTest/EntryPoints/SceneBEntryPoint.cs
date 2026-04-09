@@ -10,18 +10,20 @@ using VContainer.Unity;
 public class SceneBEntryPoint : IStartable
 {
     private readonly SharedService _shared;
+    private readonly RootScopedService _rootScoped;
 
     [Inject]
-    public SceneBEntryPoint(SharedService shared)
+    public SceneBEntryPoint(SharedService shared, RootScopedService rootScoped)
     {
         _shared = shared;
+        _rootScoped = rootScoped;
     }
 
     public void Start()
     {
-        Debug.Log("========== [씬 B - Singleton 생존 검증] ==========");
-        Debug.Log($"[씬 B] SharedService ID: {_shared.InstanceId}");
-        Debug.Log("  → 씬 A의 ID와 같으면 Singleton 생존, 다르면 파괴 후 재생성");
-        Debug.Log("==================================================");
+        Debug.Log("==========세로운 씬 [씬 B Scope 검증] ==========");
+        Debug.Log($"<color=green>[씬B] SharedService     ID: {_shared.InstanceId}     (Root_Singleton) ← 씬 A와 동일해야 함</color>");
+        Debug.Log($"<color=green>[씬B] RootScopedService ID: {_rootScoped.InstanceId} (Root_Scoped)    ← 씬 A와 다르면 씬 전환 시 파괴 후 새 인스턴스 생성</color>");
+        Debug.Log("=======================================");
     }
 }

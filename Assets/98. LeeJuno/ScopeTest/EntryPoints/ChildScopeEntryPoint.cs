@@ -14,16 +14,21 @@ using VContainer.Unity;
 /// </summary>
 public class ChildScopeEntryPoint : IStartable
 {
-    private readonly SharedService _shared;       // 부모 Scope에서 상속 (Singleton)
-    private readonly ScopedService _scoped;       // 부모 Scope에서 상속 (Scoped, 오버라이드 없음)
-    private readonly ChildOnlyService _childOnly; // 자식 Scope 전용
-    private readonly ICounter _counter;           // 오버라이드된 CounterB
+    private readonly SharedService _shared;
+    private readonly RootScopedService _rootScoped;
+    private readonly ParentSingletonService _parentSingleton;
+    private readonly ScopedService _scoped;
+    private readonly ChildOnlyService _childOnly;
+    private readonly ICounter _counter;
 
     [Inject]
-    public ChildScopeEntryPoint(SharedService shared, ScopedService scoped,
+    public ChildScopeEntryPoint(SharedService shared, RootScopedService rootScoped,
+        ParentSingletonService parentSingleton, ScopedService scoped,
         ChildOnlyService childOnly, ICounter counter)
     {
         _shared = shared;
+        _rootScoped = rootScoped;
+        _parentSingleton = parentSingleton;
         _scoped = scoped;
         _childOnly = childOnly;
         _counter = counter;
@@ -33,21 +38,18 @@ public class ChildScopeEntryPoint : IStartable
     {
         Debug.Log("========== [자식 Scope 검증] ==========");
 
-        // 1. Singleton 상속
-        Debug.Log($"[자식] SharedService ID : {_shared.InstanceId}  → 부모와 같아야 함 (Singleton)");
+        // Singleton → Root/부모/자식 모두 동일
+        Debug.Log($"<color=green>[자식] SharedService          ID: {_shared.InstanceId}         (Root_Singleton)   ← Root·부모와 동일해야 함</color>");
+        Debug.Log($"<color=green>[자식] RootScopedService      ID: {_rootScoped.InstanceId}     (Root_Scoped)      ← 부모(씬A)와 같으면 부모 컨테이너 공유, 다르면 자식 컨테이너가 새로 생성</color>");
+        Debug.Log($"<color=yellow>[자식] ParentSingletonService ID: {_parentSingleton.InstanceId} (Parent_Singleton) ← 부모와 동일해야 함 (Singleton 상속)</color>");
+        Debug.Log($"<color=cyan>[자식] ScopedService          ID: {_scoped.InstanceId}         (Parent_Scoped)    ← 부모와 다름 (각 컨테이너마다 별도)</color>");
 
-        // 2. Scoped 오버라이드 없음 → 자식 Scope가 독립적으로 새 인스턴스를 생성함 (실측 확인)
-        Debug.Log($"[자식] ScopedService ID : {_scoped.InstanceId}  → 부모와 다름 (각 Scope 컨테이너마다 별도 인스턴스)");
-
-        // 3. ICounter 오버라이드
         string counterType = _counter.GetType().Name;
-        bool overrideSuccess = counterType == "CounterB";
-        Debug.Log($"[자식] ICounter 타입    : {counterType}  → 기대값: CounterB  [{(overrideSuccess ? "성공" : "실패")}]");
+        Debug.Log($"[자식] ICounter 타입       : {counterType}  → 기대값: CounterB (오버라이딩)  [{(counterType == "CounterB" ? "성공" : "실패")}]");
         _counter.Increment();
 
-        // 4. 자식 전용 서비스
         bool childOnlyExists = _childOnly != null;
-        Debug.Log($"[자식] ChildOnlyService : {childOnlyExists}  → 기대값: True  [{(childOnlyExists ? "성공" : "실패")}]");
+        Debug.Log($"[자식] ChildOnlyService    : {childOnlyExists}  [{(childOnlyExists ? "성공" : "실패")}]");
         _childOnly?.DoSomething();
 
         Debug.Log("========================================");

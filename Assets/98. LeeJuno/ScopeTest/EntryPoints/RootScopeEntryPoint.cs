@@ -10,17 +10,19 @@ using VContainer.Unity;
 public class RootScopeEntryPoint : IStartable
 {
     private readonly SharedService _shared;
+    private readonly RootScopedService _rootScoped;
 
     [Inject]
-    public RootScopeEntryPoint(SharedService shared)
+    public RootScopeEntryPoint(SharedService shared, RootScopedService rootScoped)
     {
         _shared = shared;
+        _rootScoped = rootScoped;
     }
 
     public void Start()
     {
-        Debug.Log("========== [Root Scope 시작] ==========");
-        Debug.Log($"[Root] SharedService ID: {_shared.InstanceId}  ← 씬 전환 후에도 이 ID가 유지되어야 함");
-        Debug.Log("=======================================");
+        Debug.Log("<color=green>========== 여기서 부터 보면됨 [Root Scope 시작] ==========</color>");
+        Debug.Log($"<color=green>[Root] SharedService    ID: {_shared.InstanceId}      (Root_Singleton) ← 씬 전환 후에도 동일해야 함</color>");
+        Debug.Log($"<color=green>[Root] RootScopedService ID: {_rootScoped.InstanceId} (Root_Scoped)    ← 씬 Scope에서는 새 인스턴스인지 확인</color>");
     }
 }
