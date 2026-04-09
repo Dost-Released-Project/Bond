@@ -15,12 +15,14 @@ namespace _03._PipeLine
         
         public bool isCritical;
         public bool isEvaded;
+        
+        public List<Reaction> reactions = null;
     }
 
     // 혹시 동일한 Type이 들어가는 파이프라인이 여러 개 생길 수 있으므로, 인터페이스로 구분해줌
     public interface IBattlePipeLine : IPipeLine<BattleContext>
     {
-        public void SetReactionSysetem(ReactionSystem reactionSystem);
+        public void SetReactionSystem(ReactionSystem reactionSystem);
     }
 
     [CreateAssetMenu(fileName = "BattlePipeLineSO", menuName = "PipeLine/BattlePipeLineSO")]
@@ -32,12 +34,12 @@ namespace _03._PipeLine
             return context.isEvaded;
         }
 
-        public void SetReactionSysetem(ReactionSystem reactionSystem)
+        public void SetReactionSystem(ReactionSystem reactionSystem)
         {
             List<ReactionCall> allReactionCalls = steps.OfType<ReactionCall>().ToList();
             foreach (var cs in allReactionCalls)
             {
-                cs.SetReactionSysetem(reactionSystem);
+                cs.SetReactionSystem(reactionSystem);
             }
         }
     }
@@ -92,7 +94,7 @@ namespace _03._PipeLine
     {
         private ReactionSystem reactionSystem;
 
-        public void SetReactionSysetem(ReactionSystem reactionSystem)
+        public void SetReactionSystem(ReactionSystem reactionSystem)
         {
             this.reactionSystem = reactionSystem;
         }
@@ -102,7 +104,11 @@ namespace _03._PipeLine
             // TODO: 리액션 시스템 콜 새로운 BattleContext를 생성해서 전투 파이프라인에 들어와야합니다.
             if (reactionSystem != null)
             {
-                Debug.Log("Calling Reaction System from ReactionCall step");
+                context.reactions = reactionSystem.GetReactions(context);
+                foreach (var reaction in context.reactions)
+                {
+                    Debug.Log($"<color=yellow>Reaction: {reaction}</color>");
+                }
             }
             return context;
         }

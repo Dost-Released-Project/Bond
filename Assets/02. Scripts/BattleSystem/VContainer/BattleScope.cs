@@ -22,8 +22,8 @@ namespace _02._Scripts.BattleSystem
             builder.Register<ReactionSystem>(Lifetime.Singleton);
             builder.Register<FormationManager>(Lifetime.Singleton).As<IFormationManager>();
             builder.RegisterInstance(_BattlePipeLineSo).As<IBattlePipeLine>();
-            builder.RegisterInstance(playerUnits);
-            builder.RegisterInstance(enemyUnits);
+            // builder.RegisterInstance(playerUnits);
+            // builder.RegisterInstance(enemyUnits);
         }
     }
 }

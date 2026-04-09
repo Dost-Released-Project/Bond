@@ -20,7 +20,7 @@ namespace _02._Scripts.BattleSystem
 
         private void Init()
         {
-            skillApplyPipeline.SetReactionSysetem(reactionSystem);
+            skillApplyPipeline.SetReactionSystem(reactionSystem);
         }
 
         public BattleContext SkillApplyLogic(BattleContext context)
