@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using _02._Scripts.BattleSystem;
 using _02._Scripts.BattleSystem.Interface;
+using UnityEngine;
 
 public enum e_BattleSide
 {
@@ -9,48 +10,22 @@ public enum e_BattleSide
     Enemy
 }
 
-/// <summary>
-/// 전투 내의 특정 위치(Slot) 정보를 담는 객체입니다.
-/// </summary>
-public class BattleSlot
-{
-    public e_BattleSide Side { get; }
-    public FormationMask Rank { get; }
-    public BaseCharacter Occupant { get; private set; }
-
-    public bool IsEmpty => Occupant == null;
-
-    public BattleSlot(e_BattleSide side, FormationMask rank)
-    {
-        Side = side;
-        Rank = rank;
-    }
-
-    public void SetOccupant(BaseCharacter character)
-    {
-        Occupant = character;
-    }
-
-    public void Clear()
-    {
-        Occupant = null;
-    }
-}
-
 namespace _02._Scripts.BattleSystem
 {
     /// <summary>
-    /// [L] Logic (System): 진영 배치를 판단하고 제어합니다.
-    /// 직접적인 데이터 수정은 RuntimeData에게, 연출은 Visualizer에게 위임합니다.
+    /// [L] Logic (System): 진영 배치를 판단하고 제어하는 유일한 중심점입니다.
+    /// RuntimeDataFormation(Data)의 상태를 직접 수정하며 Visualizer(Visual)에 명령을 내립니다.
     /// </summary>
     public class FormationManager : IFormationManager
     {
-        private readonly RuntimeDataFormation _runtimeData;
+        private readonly RuntimeFormationData _playerData;
+        private readonly RuntimeFormationData _enemyData;
         private IFormationVisualizer _visualizer;
 
-        public FormationManager(RuntimeDataFormation runtimeData)
+        public FormationManager(RuntimeFormationData playerData, RuntimeFormationData enemyData)
         {
-            _runtimeData = runtimeData;
+            _playerData = playerData;
+            _enemyData = enemyData;
         }
 
         public void SetVisualizer(IFormationVisualizer visualizer)
@@ -58,31 +33,38 @@ namespace _02._Scripts.BattleSystem
             _visualizer = visualizer;
         }
 
-        public BattleSlot GetSlot(BaseCharacter character) => _runtimeData.GetSlot(character);
+        private RuntimeFormationData GetData(e_BattleSide side) 
+            => side == e_BattleSide.Player ? _playerData : _enemyData;
+
+        public CharacterSlot GetSlot(BaseCharacter character)
+        {
+            if (character == null) return null;
+            return _playerData.Slots.Concat(_enemyData.Slots)
+                .FirstOrDefault(s => s != null && s.Occupant == character);
+        }
 
         public FormationMask GetCharacterRank(BaseCharacter character)
         {
-            var slot = GetSlot(character);
-            return slot?.Rank ?? FormationMask.None;
+            return GetSlot(character)?.Rank ?? FormationMask.None;
         }
 
         public BaseCharacter GetCharacterAt(e_BattleSide side, FormationMask rank)
         {
-            return _runtimeData.GetSlots(side).FirstOrDefault(s => (s.Rank & rank) != 0)?.Occupant;
+            return GetData(side).Slots.FirstOrDefault(s => s != null && (s.Rank & rank) != 0)?.Occupant;
         }
 
         public void SwapFormation(BaseCharacter fromCharacter, BaseCharacter toCharacter)
         {
-            var fromSlot = _runtimeData.GetSlot(fromCharacter);
-            var toSlot = _runtimeData.GetSlot(toCharacter);
+            var fromSlot = GetSlot(fromCharacter);
+            var toSlot = GetSlot(toCharacter);
 
             if (fromSlot == null || toSlot == null || fromSlot.Side != toSlot.Side)
                 return;
 
-            // [D] 데이터 갱신 요청
-            _runtimeData.SwapOccupants(fromSlot, toSlot);
+            // 로직 시스템이 데이터의 상태를 직접 제어
+            fromSlot.SetOccupant(toCharacter);
+            toSlot.SetOccupant(fromCharacter);
 
-            // [V] 비주얼 연출 명령
             _visualizer?.PlaySwapEffect(fromCharacter, toCharacter);
         }
 
@@ -90,11 +72,11 @@ namespace _02._Scripts.BattleSystem
         {
             if (targetIndex < 0 || targetIndex >= 4) return;
 
-            var currentSlot = _runtimeData.GetSlot(character);
-            var sideSlots = _runtimeData.GetSlots(side);
-            var targetSlot = sideSlots[targetIndex];
+            var currentSlot = GetSlot(character);
+            var targetData = GetData(side);
+            var targetSlot = targetData.Slots[targetIndex];
 
-            if (currentSlot == null) return;
+            if (currentSlot == null || targetSlot == null) return;
 
             if (!targetSlot.IsEmpty)
             {
@@ -102,12 +84,9 @@ namespace _02._Scripts.BattleSystem
             }
             else
             {
-                // [D] 데이터 갱신 요청
-                int currentIndex = System.Array.IndexOf(_runtimeData.GetSlots(currentSlot.Side), currentSlot);
-                _runtimeData.ClearSlot(currentSlot.Side, currentIndex);
-                _runtimeData.UpdateSlot(side, targetIndex, character);
+                currentSlot.Clear();
+                targetSlot.SetOccupant(character);
 
-                // [V] 비주얼 연출 명령
                 _visualizer?.PlayMoveEffect(character, targetSlot.Rank);
             }
         }
@@ -126,35 +105,37 @@ namespace _02._Scripts.BattleSystem
 
         public void ConsolidationFormation(e_BattleSide side)
         {
-            var sideSlots = _runtimeData.GetSlots(side);
-            List<BaseCharacter> characters = sideSlots
-                .Where(s => !s.IsEmpty)
+            var data = GetData(side);
+            var slots = data.Slots;
+            
+            var characters = slots
+                .Where(s => s != null && !s.IsEmpty)
                 .Select(s => s.Occupant)
                 .ToList();
 
-            // [D] 데이터 순차적 갱신
-            for (int i = 0; i < sideSlots.Length; i++)
+            for (int i = 0; i < slots.Length; i++)
             {
+                if (slots[i] == null) continue;
+                
                 if (i < characters.Count)
-                    _runtimeData.UpdateSlot(side, i, characters[i]);
+                    slots[i].SetOccupant(characters[i]);
                 else
-                    _runtimeData.ClearSlot(side, i);
+                    slots[i].Clear();
             }
 
-            // [V] 비주얼 연출 명령
             _visualizer?.PlayConsolidationEffect(side);
         }
 
         #region Helper Methods
-        public BattleSlot GetSlotAt(e_BattleSide side, FormationMask rank)
+        public CharacterSlot GetSlotAt(e_BattleSide side, FormationMask rank)
         {
-            return _runtimeData.GetSlots(side).FirstOrDefault(s => s.Rank == rank);
+            return GetData(side).Slots.FirstOrDefault(s => s != null && s.Rank == rank);
         }
 
         public void SetCharacterToSlot(BaseCharacter character, e_BattleSide side, int index)
         {
             if (index < 0 || index >= 4) return;
-            _runtimeData.UpdateSlot(side, index, character);
+            GetData(side).Slots[index]?.SetOccupant(character);
         }
         #endregion
     }

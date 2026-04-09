@@ -23,13 +23,13 @@ public class TurnManager
     private bool _isBattleActive;
 
     // 라운드 종료마다 캐릭터별 쿨타임을 1씩 감소시키기 위해 주입받음
-    private readonly ISkillManager _skillManager;
+    /*private readonly ISkillManager _skillManager;
 
     public TurnManager(ISkillManager skillManager)
     {
         _skillManager = skillManager;
         Debug.Log($"[TurnManager] 생성됨! 호출 스택:{Environment.StackTrace}");
-    }
+    }*/
 
     // 이부분이 인자로 배열이나 리스트로 유닛들 추가
     public void RegisterUnit(IEnumerable<ITurnUseUnit> unit)
@@ -86,11 +86,11 @@ public class TurnManager
         }
 
         // 라운드 종료: BaseCharacter인 유닛의 스킬 쿨타임을 1 감소
-        foreach (var unit in _units)
+        /*foreach (var unit in _units)
         {
             if (unit is BaseCharacter character)
                 _skillManager.TickCoolTimes(character);
-        }
+        }*/
     }
 
     private void RemoveDeadUnitsFromQueue()

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using _03._PipeLine.PipeLineBase;
 using UnityEngine;
 
@@ -15,7 +17,10 @@ namespace _03._PipeLine
     }
 
     // 혹시 동일한 Type이 들어가는 파이프라인이 여러 개 생길 수 있으므로, 인터페이스로 구분해줌
-    public interface IBattlePipeLine : IPipeLine<BattleContext> { }
+    public interface IBattlePipeLine : IPipeLine<BattleContext>
+    {
+        public void SetReactionSysetem(ReactionSystem.ReactionSystem reactionSystem);
+    }
 
     [CreateAssetMenu(fileName = "BattlePipeLineSO", menuName = "PipeLine/BattlePipeLineSO")]
     public class BattlePipeLineSo : PipeLineSo<BattleContext>, IBattlePipeLine
@@ -24,6 +29,15 @@ namespace _03._PipeLine
         {
             // 회피가 성공했다면 이후 데미지/크리티컬 계산 등을 수행하지 않고 중단합니다.
             return context.isEvaded;
+        }
+
+        public void SetReactionSysetem(ReactionSystem.ReactionSystem reactionSystem)
+        {
+            List<ReactionCall> allReactionCalls = steps.OfType<ReactionCall>().ToList();
+            foreach (var cs in allReactionCalls)
+            {
+                cs.SetReactionSysetem(reactionSystem);
+            }
         }
     }
     #region [L] Logic Steps (구현부 대기)
@@ -75,10 +89,20 @@ namespace _03._PipeLine
     [System.Serializable]
     public class ReactionCall : IPipeLineStep<BattleContext>
     {
+        private ReactionSystem.ReactionSystem reactionSystem;
+
+        public void SetReactionSysetem(ReactionSystem.ReactionSystem reactionSystem)
+        {
+            this.reactionSystem = reactionSystem;
+        }
         public BattleContext Execute(BattleContext context)
         {
             Debug.Log("Executing ReactionCall");
             // TODO: 리액션 시스템 콜 새로운 BattleContext를 생성해서 전투 파이프라인에 들어와야합니다.
+            if (reactionSystem != null)
+            {
+                Debug.Log("Calling Reaction System from ReactionCall step");
+            }
             return context;
         }
     }
