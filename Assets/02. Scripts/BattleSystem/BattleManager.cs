@@ -1,4 +1,5 @@
 using _03._PipeLine;
+using Reactions;
 using UnityEngine;
 using VContainer;
 
@@ -6,10 +7,10 @@ namespace _02._Scripts.BattleSystem
 {
     public class BattleManager : IBattleManager
     {
-        private readonly ReactionSystem.ReactionSystem reactionSystem;
+        private readonly ReactionSystem reactionSystem;
         private readonly IBattlePipeLine skillApplyPipeline;
         [Inject]
-        public BattleManager(ReactionSystem.ReactionSystem reactionSystem, 
+        public BattleManager(ReactionSystem reactionSystem, 
             IBattlePipeLine  skillApplyPipeline)
         {
             this.reactionSystem = reactionSystem;

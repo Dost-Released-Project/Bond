@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using _03._PipeLine.PipeLineBase;
 using UnityEngine;
+using Reactions;
 
 namespace _03._PipeLine
 {
@@ -19,7 +20,7 @@ namespace _03._PipeLine
     // 혹시 동일한 Type이 들어가는 파이프라인이 여러 개 생길 수 있으므로, 인터페이스로 구분해줌
     public interface IBattlePipeLine : IPipeLine<BattleContext>
     {
-        public void SetReactionSysetem(ReactionSystem.ReactionSystem reactionSystem);
+        public void SetReactionSysetem(ReactionSystem reactionSystem);
     }
 
     [CreateAssetMenu(fileName = "BattlePipeLineSO", menuName = "PipeLine/BattlePipeLineSO")]
@@ -31,7 +32,7 @@ namespace _03._PipeLine
             return context.isEvaded;
         }
 
-        public void SetReactionSysetem(ReactionSystem.ReactionSystem reactionSystem)
+        public void SetReactionSysetem(ReactionSystem reactionSystem)
         {
             List<ReactionCall> allReactionCalls = steps.OfType<ReactionCall>().ToList();
             foreach (var cs in allReactionCalls)
@@ -89,9 +90,9 @@ namespace _03._PipeLine
     [System.Serializable]
     public class ReactionCall : IPipeLineStep<BattleContext>
     {
-        private ReactionSystem.ReactionSystem reactionSystem;
+        private ReactionSystem reactionSystem;
 
-        public void SetReactionSysetem(ReactionSystem.ReactionSystem reactionSystem)
+        public void SetReactionSysetem(ReactionSystem reactionSystem)
         {
             this.reactionSystem = reactionSystem;
         }
