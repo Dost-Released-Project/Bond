@@ -1,15 +1,15 @@
-using _03._PipeLine;
+using ReactionSystem;
 using ReactionSystem.Event;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VContainer;
 
-namespace ReactionSystem
+namespace Ha
 {
     public class Test : MonoBehaviour
     {
         [Inject]
-        private ReactionSystem _reactionSystem;
+        private ReactionSystem.ReactionSystem _reactionSystem;
         
         [Inject]
         private EventBus _eventBus;

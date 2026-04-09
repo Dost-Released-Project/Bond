@@ -6,7 +6,7 @@ namespace ReactionSystem
 {
     public class ReactionScope : LifetimeScope
     {
-        public Test t;
+        public Ha.Test t;
         protected override void Configure(IContainerBuilder builder)
         {
             builder.Register<EventBus>(Lifetime.Singleton);
