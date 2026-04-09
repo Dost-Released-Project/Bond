@@ -2,72 +2,69 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ReactionSystem.Event
+public class EventBus
 {
-    public class EventBus
+    private Dictionary<Type, Delegate> eventTable = new Dictionary<Type, Delegate>();
+
+    /// <summary>
+    /// 이벤트 등록
+    /// </summary>
+    public void Subscribe<T>(Action<T> listener) where T : EventArgs
     {
-        private Dictionary<Type, Delegate> eventTable = new Dictionary<Type, Delegate>();
-        
-        /// <summary>
-        /// 이벤트 등록
-        /// </summary>
-        public void Subscribe<T>(Action<T> listener) where T : EventArgs
+        var eventType = typeof(T);
+        if (eventTable.TryGetValue(eventType, out var existingDelegate))
         {
-            var eventType = typeof(T);
-            if (eventTable.TryGetValue(eventType, out var existingDelegate))
+            eventTable[eventType] = Delegate.Combine(existingDelegate, listener);
+        }
+        else
+        {
+            eventTable[eventType] = listener;
+            Debug.LogWarning($"[EventManager] Created new event listener for {eventType.Name}");
+        }
+    }
+
+    /// <summary>
+    /// 이벤트 해제
+    /// </summary>
+    public void Unsubscribe<T>(Action<T> listener) where T : EventArgs
+    {
+        var eventType = typeof(T);
+        if (eventTable.TryGetValue(eventType, out var existingDelegate))
+        {
+            var current = Delegate.Remove(existingDelegate, listener);
+            if (current == null)
             {
-                eventTable[eventType] = Delegate.Combine(existingDelegate, listener);
+                eventTable.Remove(eventType);
             }
             else
             {
-                eventTable[eventType] = listener;
-                Debug.LogWarning($"[EventManager] Created new event listener for {eventType.Name}");
+                eventTable[eventType] = current;
+                Debug.LogWarning($"[EventManager] Unregistered listener for {eventType.Name}");
             }
         }
+    }
 
-        /// <summary>
-        /// 이벤트 해제
-        /// </summary>
-        public void Unsubscribe<T>(Action<T> listener) where T : EventArgs
+    /// <summary>
+    /// 이벤트 호출
+    /// </summary>
+    public void Publish<T>(T eventArgs) where T : EventArgs
+    {
+        BroadCastToListeners(eventArgs);
+    }
+
+    void BroadCastToListeners<T>(T eventArgs) where T : EventArgs
+    {
+        var eventType = eventArgs.GetType();
+
+        if (eventTable.TryGetValue(eventType, out var del))
         {
-            var eventType = typeof(T);
-            if (eventTable.TryGetValue(eventType, out var existingDelegate))
+            try
             {
-                var current = Delegate.Remove(existingDelegate, listener);
-                if (current == null)
-                {
-                    eventTable.Remove(eventType);
-                }
-                else
-                {
-                    eventTable[eventType] = current;
-                    Debug.LogWarning($"[EventManager] Unregistered listener for {eventType.Name}");
-                }
+                del.DynamicInvoke(eventArgs);
             }
-        }
-
-        /// <summary>
-        /// 이벤트 호출
-        /// </summary>
-        public void Publish<T>(T eventArgs) where T : EventArgs
-        {
-            BroadCastToListeners(eventArgs);
-        }
-
-        void BroadCastToListeners<T>(T eventArgs) where T : EventArgs
-        {
-            var eventType = eventArgs.GetType();
-
-            if (eventTable.TryGetValue(eventType, out var del))
+            catch (Exception ex)
             {
-                try
-                {
-                    del.DynamicInvoke(eventArgs);
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogError($"[EventManager] Error invoking event {eventType.Name}: {ex}");
-                }
+                Debug.LogError($"[EventManager] Error invoking event {eventType.Name}: {ex}");
             }
         }
     }
