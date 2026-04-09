@@ -291,6 +291,7 @@ MonoBehaviour:
   - {fileID: 1324048512}
   - {fileID: 401130218}
   - {fileID: 2113255960}
+  TestSkillManager: {fileID: 1777505137}
   unitName: "\uD604\uC6B0"
   imageAddress: Wildboar
 --- !u!1 &330585543
@@ -441,7 +442,7 @@ GameObject:
   - component: {fileID: 401130219}
   - component: {fileID: 401130218}
   m_Layer: 0
-  m_Name: TestSkillHeal
+  m_Name: TestSkillSpellAtk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -459,6 +460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 609d1e82b4920354aaaf0420dc63cc33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestSkillHeal
+  _targetSkillId: 1030000
 --- !u!4 &401130219
 Transform:
   m_ObjectHideFlags: 0
@@ -771,6 +773,7 @@ MonoBehaviour:
   - {fileID: 1324048512}
   - {fileID: 401130218}
   - {fileID: 2113255960}
+  TestSkillManager: {fileID: 1777505137}
   unitName: "\uBB49\uD0F1\uC774"
   imageAddress: MTE
 --- !u!1001 &1122539759
@@ -941,6 +944,7 @@ MonoBehaviour:
   - {fileID: 1324048512}
   - {fileID: 401130218}
   - {fileID: 2113255960}
+  TestSkillManager: {fileID: 1777505137}
   unitName: "\uD2B8\uB7FC\uD504"
   imageAddress: GodOfWar
 --- !u!1 &1270962758
@@ -1021,6 +1025,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 111a76a87a819b84f964f034f6c98e1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestSkillBuff
+  _targetSkillId: 1040000
 --- !u!4 &1324048513
 Transform:
   m_ObjectHideFlags: 0
@@ -1107,6 +1112,7 @@ MonoBehaviour:
   - {fileID: 1324048512}
   - {fileID: 401130218}
   - {fileID: 2113255960}
+  TestSkillManager: {fileID: 1777505137}
   unitName: "\uC300\uC22D\uC774"
   imageAddress: RiceSummoner
 --- !u!114 &1521924634 stripped
@@ -1149,6 +1155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17806bcf2e847643956ed86af6bc3be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestSkillAttack
+  _targetSkillId: 1010000
 --- !u!4 &1528827455
 Transform:
   m_ObjectHideFlags: 0
@@ -1156,6 +1163,55 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1528827453}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1777505137
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1777505139}
+  - component: {fileID: 1777505138}
+  m_Layer: 0
+  m_Name: SkillManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1777505138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777505137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51bd8f2a89fd2fe4a8196c7a01d19ea1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestSkillManager
+  _skillDatabase:
+  - {fileID: 11400000, guid: 3e595a2dddab1b84fb8ca84a0ab28459, type: 2}
+  - {fileID: 11400000, guid: f0529a8e8b4bc1947bb250e06f371657, type: 2}
+  - {fileID: 11400000, guid: 2ae7d9133af5e074cbcb1082fdc1a33d, type: 2}
+  - {fileID: 11400000, guid: f0479433426605a42b246c56003ae87a, type: 2}
+--- !u!4 &1777505139
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777505137}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -1193,6 +1249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b8f8c6761dba534fa4c25a5c98826a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestSkillShield
+  _targetSkillId: 1020000
 --- !u!4 &2113255961
 Transform:
   m_ObjectHideFlags: 0
@@ -1279,6 +1336,7 @@ MonoBehaviour:
   - {fileID: 1324048512}
   - {fileID: 401130218}
   - {fileID: 2113255960}
+  TestSkillManager: {fileID: 1777505137}
   unitName: "\uC2E0\uCC3D\uC12D"
   imageAddress: GodOfNormalization
 --- !u!1660057539 &9223372036854775807
@@ -1299,3 +1357,4 @@ SceneRoots:
   - {fileID: 1324048513}
   - {fileID: 401130219}
   - {fileID: 2113255961}
+  - {fileID: 1777505139}
