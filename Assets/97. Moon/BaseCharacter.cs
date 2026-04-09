@@ -103,7 +103,7 @@ public class BaseCharacter : MonoBehaviour, ITurnUseUnit
     
     public async UniTask TakeTurnAsync()
     {
-        Debug.Log($"<color=green>{unitName} 차례! 플레이어의 명령을 기다립니다...</color>");
+        Debug.Log($"<color=green>{unitName} 차례! 역할군: {battleType} 플레이어의 명령을 기다립니다...</color>");
     
         _tcs = AutoResetUniTaskCompletionSource<bool>.Create();
         
