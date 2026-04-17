@@ -9,7 +9,7 @@ public class TestSkillManager : MonoBehaviour, ISkillManager
     [SerializeField] private List<SkillData> _skillDatabase = new List<SkillData>();
 
     // 빠른 검색을 위한 사전 (ID를 키로 사용)
-    private Dictionary<int, SkillData> _skillDict;
+    private Dictionary<string, SkillData> _skillDict;
 
     private void Awake()
     {
@@ -22,7 +22,7 @@ public class TestSkillManager : MonoBehaviour, ISkillManager
     // ── 데이터 조회 구현 (필수 사항) ───────────────────────────────
 
     /// <summary>ID로 특정 스킬 데이터를 가져옵니다.</summary>
-    public SkillData GetSkill(int skillId)
+    public SkillData GetSkill(string skillId)
     {
         if (_skillDict != null && _skillDict.TryGetValue(skillId, out var skill))
         {
@@ -47,14 +47,16 @@ public class TestSkillManager : MonoBehaviour, ISkillManager
         return _skillDatabase.AsReadOnly();
     }
 
+    public void RegisterCoolTime(BaseCharacter character, string skillId, int coolTime)
+    {
+        throw new System.NotImplementedException();
+    }
+
     // ── 쿨타임 관리 (사용하지 않으므로 비워둠) ───────────────────────
 
-    public void RegisterCoolTime(BaseCharacter character, int skillId, int coolTime) { }
-
     public void TickCoolTimes(BaseCharacter character) { }
-
-    public int GetRemainingCoolTime(BaseCharacter character, int skillId)
+    public int GetRemainingCoolTime(BaseCharacter character, string skillId)
     {
-        return 0; // 쿨타임이 없으므로 항상 0 반환
+        throw new System.NotImplementedException();
     }
 }
