@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+/*
 public class TestSkillManager : MonoBehaviour, ISkillManager
 {
     // 1. 인스펙터에서 모든 SkillData(ScriptableObject)를 드래그해서 넣어주세요.
@@ -57,4 +57,4 @@ public class TestSkillManager : MonoBehaviour, ISkillManager
     {
         return 0; // 쿨타임이 없으므로 항상 0 반환
     }
-}
+}*/

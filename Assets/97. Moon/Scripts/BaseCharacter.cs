@@ -80,7 +80,7 @@ public class BaseCharacter : MonoBehaviour, ITurnUseUnit
             return;
         }
 
-        foreach (var skill in skills)
+       /* foreach (var skill in skills)
         {
             if (skill == null) continue;
 
@@ -94,7 +94,7 @@ public class BaseCharacter : MonoBehaviour, ITurnUseUnit
             else if (skill is TestSkillBuff buff)
                 skill.Init(buff.TargetSkillId, _skillManager);
             
-        }
+        }*/
     }
     
     // 역할군 랜덤 지정 로직
