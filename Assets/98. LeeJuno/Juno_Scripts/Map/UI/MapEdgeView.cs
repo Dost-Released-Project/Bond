@@ -1,24 +1,34 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
-/// 맵에서 두 노드 사이의 경로(엣지)를 LineRenderer로 그리는 컴포넌트.
+/// 맵에서 두 노드 사이의 경로(엣지)를 Canvas UI Image로 그리는 컴포넌트.
+/// LineRenderer는 Canvas 렌더링 파이프라인에서 동작하지 않으므로,
+/// Image를 두 노드 중간점에 배치하고 연결 각도로 회전시켜 선을 표현한다.
 /// MapView.DrawEdges()에서 엣지마다 하나씩 Instantiate된다.
-/// useWorldSpace = false로 설정해 Canvas 로컬 좌표계에서 동작한다.
 /// </summary>
-[RequireComponent(typeof(LineRenderer))]
+[RequireComponent(typeof(Image))]
 public class MapEdgeView : MonoBehaviour
 {
-    private LineRenderer _lineRenderer;
+    [SerializeField] private float _lineWidth = 4f;
+
+    private Image _image;
+    private RectTransform _rectTransform;
 
     private void Awake()
     {
-        _lineRenderer = GetComponent<LineRenderer>();
-        _lineRenderer.positionCount = 2;        // 시작점과 끝점 2개
-        _lineRenderer.useWorldSpace = false;    // Canvas 로컬 좌표 사용
+        _image = GetComponent<Image>();
+        _rectTransform = GetComponent<RectTransform>();
+
+        // 양 끝에서 정확히 시작/끝나도록 앵커를 중심으로 고정
+        _rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+        _rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+        _rectTransform.pivot     = new Vector2(0.5f, 0.5f);
     }
 
     /// <summary>
-    /// 두 노드의 정규화 좌표를 받아 Canvas 로컬 좌표로 변환한 뒤 선을 그린다.
+    /// 두 노드의 정규화 좌표를 받아 두 점을 잇는 선을 Image로 그린다.
+    /// Image를 두 점의 중간에 배치하고, 길이를 두 점 사이 거리로, 각도를 연결 방향으로 설정한다.
     /// </summary>
     /// <param name="fromNormalized">시작 노드의 정규화 좌표 (0~1)</param>
     /// <param name="toNormalized">끝 노드의 정규화 좌표 (0~1)</param>
@@ -27,15 +37,18 @@ public class MapEdgeView : MonoBehaviour
     public void Setup(Vector2 fromNormalized, Vector2 toNormalized, RectTransform mapRect, bool isActive)
     {
         Vector2 fromLocal = NormalizedToLocal(fromNormalized, mapRect);
-        Vector2 toLocal = NormalizedToLocal(toNormalized, mapRect);
+        Vector2 toLocal   = NormalizedToLocal(toNormalized, mapRect);
 
-        _lineRenderer.SetPosition(0, new Vector3(fromLocal.x, fromLocal.y, 0f));
-        _lineRenderer.SetPosition(1, new Vector3(toLocal.x, toLocal.y, 0f));
+        Vector2 diff     = toLocal - fromLocal;
+        float   distance = diff.magnitude;
+        float   angle    = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
 
-        // 방문한 경로는 불투명, 아직 지나지 않은 경로는 반투명으로 표시
-        Color lineColor = isActive ? Color.white : new Color(1f, 1f, 1f, 0.3f);
-        _lineRenderer.startColor = lineColor;
-        _lineRenderer.endColor = lineColor;
+        // 중간점에 배치, 너비 = 두 점 사이 거리, 높이 = 선 두께
+        _rectTransform.anchoredPosition = (fromLocal + toLocal) * 0.5f;
+        _rectTransform.sizeDelta        = new Vector2(distance, _lineWidth);
+        _rectTransform.localEulerAngles = new Vector3(0f, 0f, angle);
+
+        _image.color = isActive ? Color.white : new Color(1f, 1f, 1f, 0.3f);
     }
 
     /// <summary>

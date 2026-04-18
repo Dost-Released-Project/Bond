@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f41bc8db7d51460408c765150f066124, type: 3}
   m_Name: Test Map Generator Config
   m_EditorClassIdentifier: Assembly-CSharp::MapGeneratorConfig
-  TotalLayers: 15
+  TotalLayers: 10
   MinNodesPerLayer: 1
-  MaxNodesPerLayer: 6
+  MaxNodesPerLayer: 3
   MinEdgesPerNode: 1
   MaxEdgesPerNode: 3
   EliteMinLayer: 5
