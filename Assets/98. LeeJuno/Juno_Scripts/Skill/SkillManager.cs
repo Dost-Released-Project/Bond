@@ -2,11 +2,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
 
+/// <summary>
+/// ISkillManager 구현체.
+/// SkillData Dictionary 관리 + 캐릭터별 쿨타임 추적을 담당한다.
+/// 비트마스크 해석(슬롯 매핑 등)은 담당하지 않는다.
+/// VContainer의 SkillScope에서 Singleton으로 등록된다.
+/// </summary>
 public class SkillManager : ISkillManager
 {
     // ── 내부 저장소 ───────────────────────────────
     // ID → SkillData
-    private readonly Dictionary<int, SkillData> _skillDict;
+    private readonly Dictionary<string, SkillData> _skillDict;
     // 타입별 목록 — 생성자에서 미리 구성해 조회 시 할당 없음
     private readonly Dictionary<SkillType, List<SkillData>> _skillsByType;
     // 전체 목록 캐시
@@ -14,25 +20,24 @@ public class SkillManager : ISkillManager
     // 빈 목록 — 타입 미존재 시 반환용 (할당 없음)
     private static readonly IReadOnlyList<SkillData> _emptyList = new List<SkillData>(0);
 
-    // 캐릭터 → (skillId(int) → 남은 쿨타임)
-    private readonly Dictionary<BaseCharacter, Dictionary<int, int>> _coolTimeTracker;
-    
+    // 캐릭터 → (skillId → 남은 쿨타임)
+    private readonly Dictionary<BaseCharacter, Dictionary<string, int>> _coolTimeTracker;
     // TickCoolTimes 내부에서 키를 임시 보관하는 재사용 버퍼
-    private readonly List<int> _keyBuffer = new List<int>();
+    private readonly List<string> _keyBuffer = new List<string>();
 
     // ── 생성자: VContainer가 SkillData[] 주입 ──────
     public SkillManager(SkillData[] allSkills)
     {
-        _skillDict       = new Dictionary<int, SkillData>(allSkills.Length);
+        _skillDict       = new Dictionary<string, SkillData>(allSkills.Length);
         _skillsByType    = new Dictionary<SkillType, List<SkillData>>();
         _allSkillsList   = new List<SkillData>(allSkills.Length);
-        _coolTimeTracker = new Dictionary<BaseCharacter, Dictionary<int, int>>();
+        _coolTimeTracker = new Dictionary<BaseCharacter, Dictionary<string, int>>();
 
         foreach (SkillData skill in allSkills)
         {
-            if (skill.SkillId == 0)
+            if (string.IsNullOrEmpty(skill.SkillId))
             {
-                Debug.LogWarning($"[SkillManager] SkillId가 0인 에셋 발견: {skill.name}");
+                Debug.LogWarning($"[SkillManager] SkillId가 비어있는 에셋 발견: {skill.name}");
                 continue;
             }
 
@@ -50,7 +55,7 @@ public class SkillManager : ISkillManager
 
     // ── ISkillManager 구현 ────────────────────────
 
-    public SkillData GetSkill(int skillId)
+    public SkillData GetSkill(string skillId)
     {
         _skillDict.TryGetValue(skillId, out SkillData skill);
         if (skill == null)
@@ -70,10 +75,10 @@ public class SkillManager : ISkillManager
     public IReadOnlyList<SkillData> GetAllSkills() => _allSkillsList;
 
     // 쿨타임 등록
-    public void RegisterCoolTime(BaseCharacter character, int skillId, int coolTime)
+    public void RegisterCoolTime(BaseCharacter character, string skillId, int coolTime)
     {
         if (_coolTimeTracker.ContainsKey(character) == false)
-            _coolTimeTracker[character] = new Dictionary<int, int>();
+            _coolTimeTracker[character] = new Dictionary<string, int>();
 
         _coolTimeTracker[character][skillId] = coolTime;
         Debug.Log($"[SkillManager] 쿨타임 등록: {character.name} / {skillId} = {coolTime}턴");
@@ -82,13 +87,13 @@ public class SkillManager : ISkillManager
     // 턴마다 쿨타임 감소 — _keyBuffer 재사용으로 할당 없음
     public void TickCoolTimes(BaseCharacter character)
     {
-        if (_coolTimeTracker.TryGetValue(character, out Dictionary<int, int> coolTimes) == false) return;
+        if (_coolTimeTracker.TryGetValue(character, out Dictionary<string, int> coolTimes) == false) return;
 
         _keyBuffer.Clear();
-        foreach (int key in coolTimes.Keys)
+        foreach (string key in coolTimes.Keys)
             _keyBuffer.Add(key);
 
-        foreach (int key in _keyBuffer)
+        foreach (string key in _keyBuffer)
         {
             if (coolTimes[key] > 0)
                 coolTimes[key]--;
@@ -96,9 +101,9 @@ public class SkillManager : ISkillManager
     }
 
     // 남은 쿨타임 반환 로직
-    public int GetRemainingCoolTime(BaseCharacter character, int skillId)
+    public int GetRemainingCoolTime(BaseCharacter character, string skillId)
     {
-        if (_coolTimeTracker.TryGetValue(character, out Dictionary<int, int> coolTimes))
+        if (_coolTimeTracker.TryGetValue(character, out Dictionary<string, int> coolTimes))
             if (coolTimes.TryGetValue(skillId, out int remaining))
                 return remaining;
         return 0;

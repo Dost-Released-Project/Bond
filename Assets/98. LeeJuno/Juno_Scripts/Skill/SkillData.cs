@@ -15,7 +15,7 @@ public class SkillData : ScriptableObject
     // ── 식별자 ────────────────────────────────────
     [Header("식별자")]
     [Tooltip("스킬 시트 ID (8자리): 예) 01010000")]
-    [SerializeField] private int _skillId;
+    [SerializeField] private string _skillId;
 
     [Tooltip("표시용 스킬 이름")]
     [SerializeField] private string _skillName;
@@ -62,7 +62,7 @@ public class SkillData : ScriptableObject
     [SerializeField] private string _iconAddress;
 
     // ── 프로퍼티 (읽기 전용) ───────────────────────
-    public int SkillId            => _skillId;
+    public string SkillId         => _skillId;
     public string SkillName       => _skillName;
     public string Description     => _description;
     public SkillType Type         => _type;
@@ -105,7 +105,7 @@ public class SkillData : ScriptableObject
 /// </summary>
 public struct SkillRawData
 {
-    public int        SkillId;
+    public string     SkillId;
     public string     SkillName;
     public string     Description;
     public SkillType  Type;
