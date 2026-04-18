@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: TestStage Config_Elite
   m_EditorClassIdentifier: Assembly-CSharp::StageConfig
   Type: 1
-  DisplayName: 
-  Icon: {fileID: 0}
+  DisplayName: Elite
+  Icon: {fileID: 21300000, guid: c6031a44864e33d4a9fbe6f57002dc1b, type: 3}
   IconAddress: 
   SceneAddress: 
-  NodeColor: {r: 0, g: 0, b: 0, a: 0}
+  NodeColor: {r: 1, g: 1, b: 1, a: 1}
   BaseWeight: 0

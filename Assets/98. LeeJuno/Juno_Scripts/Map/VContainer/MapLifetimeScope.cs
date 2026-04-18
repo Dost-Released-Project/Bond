@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -41,5 +43,47 @@ public class MapLifetimeScope : LifetimeScope
 
         // 씬에 배치된 MonoBehaviour를 DI 대상으로 등록
         builder.RegisterComponent(_mapUIController);
+
+        builder.RegisterEntryPoint<MapTestStarter>();
+    }
+}
+
+public class MapTestStarter : IAsyncStartable
+{
+    private IMapGenerator _generator;
+    private IStageLoader _stageLoader;
+    private IMapNavigator _mapNavigator;
+    private IMapRepository _repository;
+private MapUIController _mapUIController;
+    public MapTestStarter(IMapGenerator generator, IStageLoader stageLoader, IMapNavigator mapNavigator,
+        IMapRepository repository, MapUIController mapUIController)
+    {
+        _generator = generator;
+        _stageLoader = stageLoader;
+        _mapNavigator = mapNavigator;
+        _repository = repository;
+        _mapUIController = mapUIController;
+    }
+
+    public UniTask StartAsync(CancellationToken cancellation = default)
+    {
+        MapData mapData = _generator.GenerateMap(12345, 1);
+        _mapNavigator.Initialize(mapData);
+        // 현재 위치 노드 접근
+        MapNode current = _mapNavigator.CurrentNode; // 시작 전이면 null
+
+        // 선택 가능한 노드 목록
+        List<MapNode> available = _mapNavigator.GetAvailableNodes();
+
+        // 노드 진입 이벤트 구독
+        _mapNavigator.OnNodeEntered += OnNodeEntered;
+        _mapUIController.ShowMap(mapData);
+        
+        return default;
+    }
+
+    public void OnNodeEntered(MapNode node)
+    {
+        Debug.Log("Entered");
     }
 }

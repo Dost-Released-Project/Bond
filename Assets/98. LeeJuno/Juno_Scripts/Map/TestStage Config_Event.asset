@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: TestStage Config_Event
   m_EditorClassIdentifier: Assembly-CSharp::StageConfig
   Type: 4
-  DisplayName: 
+  DisplayName: Event
   Icon: {fileID: 0}
   IconAddress: 
   SceneAddress: 
-  NodeColor: {r: 0, g: 0, b: 0, a: 0}
+  NodeColor: {r: 1, g: 1, b: 1, a: 1}
   BaseWeight: 0
