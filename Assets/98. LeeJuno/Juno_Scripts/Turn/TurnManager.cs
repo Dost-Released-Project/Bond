@@ -5,7 +5,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public class TurnManager
+public class TurnManager : ITurnManager
 {
     // 외부용
     public event Action OnTurnQueueUpdated;
@@ -110,7 +110,7 @@ public class TurnManager
     }
 
     // 해당 로직을 외부에서 승패 판정 후 호출
-    private void BattleEnd()
+    public void BattleEnd()
     {
         _isBattleActive = false;
         _units.Clear();
