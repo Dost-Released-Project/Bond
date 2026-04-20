@@ -35,13 +35,13 @@ public class SkillManager : ISkillManager
 
         foreach (SkillData skill in allSkills)
         {
-            if (string.IsNullOrEmpty(skill.SkillId))
+            if (string.IsNullOrEmpty(skill.Id))
             {
                 Debug.LogWarning($"[SkillManager] SkillId가 비어있는 에셋 발견: {skill.name}");
                 continue;
             }
 
-            _skillDict[skill.SkillId] = skill;
+            _skillDict[skill.Id] = skill;
             _allSkillsList.Add(skill);
 
             // 타입별 목록 미리 구성
