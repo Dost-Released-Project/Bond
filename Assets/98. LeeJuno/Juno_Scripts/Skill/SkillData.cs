@@ -1,15 +1,14 @@
 using UnityEngine;
 
-/// <summary>
-/// 스킬 시트 1행에 대응하는 ScriptableObject.
-/// 순수 데이터 컨테이너 — 비트마스크 해석 로직은 포함하지 않는다.
-///
-/// ID 구조: [시트(2)][타입(2)][순번(2)][예약(2)] = 8자리
-/// 비트마스크:
-///   - UseableSlots / AllyTargetMask : 아군 기준 [3][2][1][0]
-///   - EnemyTargetMask               : 적 기준   [0][1][2][3]
-/// </summary>
-using UnityEngine;
+// <summary>
+// 스킬 시트 1행에 대응하는 ScriptableObject.
+// 순수 데이터 컨테이너 — 비트마스크 해석 로직은 포함하지 않는다.
+//
+// ID 구조: [시트(2)][타입(2)][순번(2)][예약(2)] = 8자리
+// 비트마스크:
+//   - UseableSlots / AllyTargetMask : 아군 기준 [3][2][1][0]
+//   - EnemyTargetMask               : 적 기준   [0][1][2][3]
+// </summary>
 
 [CreateAssetMenu(menuName = "Bond/SkillSystem/SkillData", fileName = "SK_00000000")]
 public class SkillData : BaseSO
