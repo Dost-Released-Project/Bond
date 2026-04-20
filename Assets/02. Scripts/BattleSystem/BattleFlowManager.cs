@@ -1,3 +1,4 @@
+using System;
 using _03._PipeLine;
 using Cysharp.Threading.Tasks;
 using juno_Test;
@@ -8,44 +9,45 @@ using VContainer.Unity;
 
 namespace _02._Scripts.BattleSystem
 {
-    public class BattleFlowManager : MonoBehaviour
+    public class BattleFlowManager : MonoBehaviour, IBattleFlowManager
     {
-        private IBattleEntryPoint battleEntryPoint;
-        private IBattleManager battleManager;
-        private BaseCharacter[] _PlayerUnits;
+        public event Action<BaseCharacter[], BaseCharacter[]> OnBattleStart;
         
-        [Inject]
-        public void Construct(IBattleEntryPoint battleEntryPoint, 
-            IBattleManager battleManager, BaseCharacter[] playerUnits)
-        {
-            this.battleEntryPoint = battleEntryPoint;
-            this.battleManager = battleManager;
-            _PlayerUnits = playerUnits;
-        }
+        private BaseCharacter[] _PlayerUnits;
+        private BaseCharacter[] _EnemyUnits;
 
         public void SetPlayerUnits(BaseCharacter[] playerUnits)
         {
             _PlayerUnits = playerUnits;
         }
+        
+        public void SetEnemyUnits(BaseCharacter[] enemyUnits)
+        {
+            _EnemyUnits = enemyUnits;
+        }
 
         // ReSharper disable Unity.PerformanceAnalysis
-        public void StartBattle(BaseCharacter[] units)
+        public void StartBattle()
         {
-            battleEntryPoint.StartAsync(default, units).Forget();
+            _PlayerUnits = null;
+            _EnemyUnits = null;
+            OnBattleStart?.Invoke(_PlayerUnits, _EnemyUnits);
         }
 
         private void Update()
         {
             if (Keyboard.current != null && Keyboard.current.digit1Key.wasPressedThisFrame)
             {
-                StartBattle(_PlayerUnits);
+                StartBattle();
+                Debug.Log("Digit 1 key pressed, starting battle");
             }
 
             if (Keyboard.current != null && Keyboard.current.digit2Key.wasPressedThisFrame)
             {
                 Debug.Log("Digit 2 key pressed");
-                battleManager.SkillApplyLogic(new BattleContext());
             }
         }
+
+        
     }
 }

@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e991b75ee461f16478779a6513c3745c, type: 3}
   m_Name: DataBaseSO
   m_EditorClassIdentifier: Assembly-CSharp::DataBaseSO
+  _soList: []

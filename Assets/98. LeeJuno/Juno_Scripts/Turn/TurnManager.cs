@@ -4,13 +4,31 @@ using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using VContainer.Unity;
 
-public class TurnManager : ITurnManager
+public class TurnManager : ITurnManager, IStartable, IDisposable
 {
     // 외부용
     public event Action OnTurnQueueUpdated;
     public int TurnCount => _turnCount;
     public IReadOnlyList<ITurnUseUnit> TurnQueue => _turnQueue;
+    
+    
+    private readonly IBattleFlowManager _battleFlowManager;
+    public TurnManager(IBattleFlowManager battleFlowManager) {
+        _battleFlowManager = battleFlowManager;
+    }
+    
+    public void Start()
+    {
+        Debug.Log("TurnManager started and subscribed to battle start event.");
+        _battleFlowManager.OnBattleStart += StartBattle;
+    }
+
+    public void Dispose()
+    {
+        _battleFlowManager.OnBattleStart -= StartBattle;
+    }
 
     // 전체 유닛
     private List<ITurnUseUnit> _units = new List<ITurnUseUnit>();
@@ -26,6 +44,16 @@ public class TurnManager : ITurnManager
     public void RegisterUnit(IEnumerable<ITurnUseUnit> unit)
     {
         _units.AddRange(unit);
+    }
+
+    public void StartBattle(BaseCharacter[] characters, BaseCharacter[] targets)
+    {
+        if (characters == null || targets == null)
+        {
+            Debug.LogError("유닛 데이터가 설정되지 않았습니다! SetPlayerUnits를 먼저 호출하세요.");
+            return;
+        }
+        Debug.Log($"TurnManager received battle start event with {characters.Length} characters and {targets.Length} targets.");
     }
 
     public async UniTask StartBattleAsync(CancellationToken token = default)
