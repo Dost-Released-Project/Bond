@@ -1,3 +1,4 @@
+using Bond.PartyManagement;
 using Reactions;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -7,16 +8,11 @@ namespace Ha
 {
     public class Test : MonoBehaviour
     {
-        [Inject] private ReactionSystem reactionSystem;
-
-        [Inject] private EventBus eventBus;
+        [Inject] public IPartyProvider PartySystem;
 
         private void Start()
         {
-            for (int i = 0; i < 10; i++)
-            {
-                reactionSystem.Register(new Reaction(i));
-            }
+            
         }
     }
 }
