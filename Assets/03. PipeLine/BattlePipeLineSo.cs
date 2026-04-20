@@ -16,7 +16,7 @@ namespace _03._PipeLine
         public bool isCritical;
         public bool isEvaded;
         
-        public List<Reaction> reactions = null;
+        public IReadOnlyList<ReactionExecution> reactions = null;
     }
 
     // 혹시 동일한 Type이 들어가는 파이프라인이 여러 개 생길 수 있으므로, 인터페이스로 구분해줌
@@ -104,7 +104,7 @@ namespace _03._PipeLine
             // TODO: 리액션 시스템 콜 새로운 BattleContext를 생성해서 전투 파이프라인에 들어와야합니다.
             if (reactionSystem != null)
             {
-                context.reactions = reactionSystem.GetReactions(context);
+                context.reactions = reactionSystem.Resolve(context);
                 foreach (var reaction in context.reactions)
                 {
                     Debug.Log($"<color=yellow>Reaction: {reaction}</color>");

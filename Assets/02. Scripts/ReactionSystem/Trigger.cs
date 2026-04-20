@@ -5,17 +5,18 @@ namespace Reactions
 {
     public interface ITrigger
     {
+        public string TriggerKey { get; set; }
         public bool CheckCondition(BattleContext args);
     }
 
     public class Trigger : ITrigger
     {
         // 이건 딱히 내가 생각해서 적은거 아니고 그냥 기획서 복붙한거임. 
-        public int Id;             // 트리거 자체의 고유 식별 번호
-        public int Category;       // 로직 그룹핑 및 UI 필터링을 위한 분류 체계
-        public string TriggerKey;  // 코드상에서 이벤트 리스너가 감시할 고유 문자열 식별자
-        public string Description; // 해당 트리거가 발생하는 구체적인 상황에 대한 기획적 설명
-        public float ValueParam;   // 스탯 기반 트리거 등에서 사용하는 가변 수치값 (예: HP N% 미만)
+        public int Id;                          // 트리거 자체의 고유 식별 번호
+        public int Category;                    // 로직 그룹핑 및 UI 필터링을 위한 분류 체계
+        public string TriggerKey { get; set; }  // 코드상에서 이벤트 리스너가 감시할 고유 문자열 식별자
+        public string Description;              // 해당 트리거가 발생하는 구체적인 상황에 대한 기획적 설명
+        public float ValueParam;                // 스탯 기반 트리거 등에서 사용하는 가변 수치값 (예: HP N% 미만)
 
         public bool CheckCondition(BattleContext args)
         {
