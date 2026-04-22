@@ -10,14 +10,18 @@ namespace _02._Scripts.BattleSystem
 {
     public class BattleFlowManager : MonoBehaviour
     {
-        [Inject] 
-        private readonly IBattleEntryPoint battleEntryPoint;
-
-        [Inject]
-        private readonly BattleManager battleManager;
-
-        [Inject]
+        private IBattleEntryPoint battleEntryPoint;
+        private IBattleManager battleManager;
         private BaseCharacter[] _PlayerUnits;
+        
+        [Inject]
+        public void Construct(IBattleEntryPoint battleEntryPoint, 
+            IBattleManager battleManager, BaseCharacter[] playerUnits)
+        {
+            this.battleEntryPoint = battleEntryPoint;
+            this.battleManager = battleManager;
+            _PlayerUnits = playerUnits;
+        }
 
         public void SetPlayerUnits(BaseCharacter[] playerUnits)
         {

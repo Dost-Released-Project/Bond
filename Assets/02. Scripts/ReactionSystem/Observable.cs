@@ -1,65 +1,62 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace _02._Scripts.ReactionSystem
+public interface IObservable<T>
 {
-    public interface IObservable<T>
-    {
-        public void Subscribe(IObserver<T> listener);
-        public void Unsubscribe(IObserver<T> listener);
-    }
+    public void Subscribe(IObserver<T> listener);
+    public void Unsubscribe(IObserver<T> listener);
+}
 
-    public interface IObserver<T>
+public interface IObserver<T>
+{
+    public Action<T> EventHandler { get; set; }
+}
+
+public class ObservableValue<T> : IObservable<T>
+{
+    private T _value;
+    private readonly List<IObserver<T>> observers = new List<IObserver<T>>();
+
+    public T Value
     {
-        public Action<T> EventHandler { get; set; }
-    }
-    
-    public class ObservableValue<T> : IObservable<T>
-    {
-        private T _value;
-        private readonly List<IObserver<T>> observers = new List<IObserver<T>>();
-        public T Value
+        get => _value;
+        set
         {
-            get => _value;
-            set
+            if (EqualityComparer<T>.Default.Equals(_value, value))
             {
-                if (EqualityComparer<T>.Default.Equals(_value, value))
-                {
-                    return;
-                }
-                
-                _value = value;
-                Notify(value);
+                return;
             }
-        }
 
-        public ObservableValue()
-        {
-            _value = default(T);
-        }
-
-        public ObservableValue(T value)
-        {
             _value = value;
+            Notify(value);
         }
+    }
 
-        public void Subscribe(IObserver<T> listener)
-        {
-            observers.Add(listener);
-        }
+    public ObservableValue()
+    {
+        _value = default(T);
+    }
 
-        public void Unsubscribe(IObserver<T> listener)
-        {
-            observers.Remove(listener);
-        }
+    public ObservableValue(T value)
+    {
+        _value = value;
+    }
 
-        private void Notify(T value)
+    public void Subscribe(IObserver<T> listener)
+    {
+        observers.Add(listener);
+    }
+
+    public void Unsubscribe(IObserver<T> listener)
+    {
+        observers.Remove(listener);
+    }
+
+    private void Notify(T value)
+    {
+        foreach (var observer in observers)
         {
-            foreach (var observer in observers)
-            {
-                observer.EventHandler?.Invoke(value);
-            }
+            observer.EventHandler?.Invoke(value);
         }
     }
 }

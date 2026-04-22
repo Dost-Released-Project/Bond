@@ -13,22 +13,14 @@ MonoBehaviour:
   m_Name: BattlePipeLineSO
   m_EditorClassIdentifier: Assembly-CSharp::_03._PipeLine.BattlePipeLineSo
   steps:
-  - rid: 2186371277247742036
-  - rid: 2186371277247742037
-  - rid: 2186371277247742038
-  - rid: 2186371277247742039
+  - rid: 2186371380770766915
+  - rid: 2186371380770766914
   references:
     version: 2
     RefIds:
-    - rid: 2186371277247742036
+    - rid: 2186371380770766914
+      type: {class: ReactionCall, ns: _03._PipeLine, asm: Assembly-CSharp}
+      data: 
+    - rid: 2186371380770766915
       type: {class: EntryStep, ns: _03._PipeLine, asm: Assembly-CSharp}
-      data: 
-    - rid: 2186371277247742037
-      type: {class: EvasionStep, ns: _03._PipeLine, asm: Assembly-CSharp}
-      data: 
-    - rid: 2186371277247742038
-      type: {class: CriticalStep, ns: _03._PipeLine, asm: Assembly-CSharp}
-      data: 
-    - rid: 2186371277247742039
-      type: {class: DefenseStep, ns: _03._PipeLine, asm: Assembly-CSharp}
       data: 

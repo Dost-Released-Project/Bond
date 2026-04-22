@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8802ff4708a60da41b66b02771e5d201, type: 3}
   m_Name: SK_00000000
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
-  _skillId: 1010000
+  _skillId: 01010000
   _skillName: "\uACF5"
   _description: "\uBB3C\uB9AC \uD53C\uD574 \uACF5\uACA9"
   _type: 1

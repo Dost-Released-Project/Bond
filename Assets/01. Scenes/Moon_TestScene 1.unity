@@ -460,7 +460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 609d1e82b4920354aaaf0420dc63cc33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestSkillHeal
-  _targetSkillId: 1030000
+  _targetSkillId: 01030000
 --- !u!4 &401130219
 Transform:
   m_ObjectHideFlags: 0
@@ -1025,7 +1025,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 111a76a87a819b84f964f034f6c98e1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestSkillBuff
-  _targetSkillId: 1040000
+  _targetSkillId: 01040000
 --- !u!4 &1324048513
 Transform:
   m_ObjectHideFlags: 0
@@ -1155,7 +1155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17806bcf2e847643956ed86af6bc3be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestSkillAttack
-  _targetSkillId: 1010000
+  _targetSkillId: 01010000
 --- !u!4 &1528827455
 Transform:
   m_ObjectHideFlags: 0
@@ -1249,7 +1249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b8f8c6761dba534fa4c25a5c98826a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestSkillShield
-  _targetSkillId: 1020000
+  _targetSkillId: 01020000
 --- !u!4 &2113255961
 Transform:
   m_ObjectHideFlags: 0
@@ -1354,7 +1354,7 @@ SceneRoots:
   - {fileID: 971839253}
   - {fileID: 1122539759}
   - {fileID: 1528827455}
-  - {fileID: 1324048513}
-  - {fileID: 401130219}
   - {fileID: 2113255961}
+  - {fileID: 401130219}
+  - {fileID: 1324048513}
   - {fileID: 1777505139}
