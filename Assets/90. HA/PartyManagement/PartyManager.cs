@@ -34,11 +34,21 @@ namespace Bond.PartyManagement
         bool RemoveMember(BaseCharacter character);
     }
     
-    public class PartySystem : IPartyProvider, IPartyController
+    public class PartyManager : IPartyProvider, IPartyController, IRoleAssigner
     {
         private readonly List<BaseCharacter> currentParty = new List<BaseCharacter>();
+        private readonly Dictionary<BaseCharacter, RoleType> roles = new Dictionary<BaseCharacter, RoleType>();
+        private readonly Dictionary<RoleType, List<string>> roleTriggerDef = new Dictionary<RoleType, List<string>>();
         private const int MaxPartySize = 4;
 
+        public void SetRoleTriggerDef(IEnumerable<RoleTriggerSO> roleTriggers)
+        {
+            foreach (var roleTriggerSo in roleTriggers)
+            {
+                roleTriggerDef[roleTriggerSo.Role] = roleTriggerSo.TriggerKeys;
+            }
+        }
+        
         // 파티 편성
         public bool TryAddMember(BaseCharacter character)
         {
@@ -64,5 +74,21 @@ namespace Bond.PartyManagement
         // 조회
         public IReadOnlyList<BaseCharacter> GetCurrentParty() => currentParty.AsReadOnly();
         public int GetPartyCount() => currentParty.Count;
+        
+        // IRoleAssigner
+        public void AssignRole(BaseCharacter character, RoleType role)
+        {
+            roles[character] = role;
+        }
+
+        public RoleType GetRole(BaseCharacter character)
+        {
+            return roles[character];
+        }
+
+        public IReadOnlyList<string> GetRoleTriggerKeys(RoleType role)
+        {
+            return roleTriggerDef[role];
+        }
     }
 }

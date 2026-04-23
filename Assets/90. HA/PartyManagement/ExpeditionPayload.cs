@@ -18,7 +18,7 @@ namespace Bond.Expedition
         // OnEnable에서 초기화하여 플레이 시작마다 찌꺼기 제거
 
         public List<BaseCharacter> Party { get; private set; }
-        public List<object> Supplies { get; private set; }
+        public IInventory Supplies { get; private set; }
         public string DungeonId { get; private set; }
 
         // 탐사 결과 (귀환 후 마을 씬이 읽음)
@@ -31,7 +31,7 @@ namespace Bond.Expedition
 
         public void SetPayload(
             List<BaseCharacter> party,
-            List<object> supplies,
+            IInventory supplies,
             string dungeonId)
         {
             Party = party;
