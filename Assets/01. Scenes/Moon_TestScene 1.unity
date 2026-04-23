@@ -153,12 +153,8 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   _BattlePipeLineSo: {fileID: 11400000, guid: f6d7bc105c3672744b9425aaa988c32e, type: 2}
-  sceneUnit:
-  - {fileID: 308235468}
-  - {fileID: 2134428795}
-  - {fileID: 971839255}
-  - {fileID: 1130071075}
-  - {fileID: 1412171871}
+  playerUnits: []
+  enemyUnits: []
 --- !u!4 &14760989
 Transform:
   m_ObjectHideFlags: 0
