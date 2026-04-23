@@ -42,7 +42,7 @@ namespace Bond.PartyManagement
         // 파티 편성
         public bool TryAddMember(BaseCharacter character)
         {
-            if (currentParty.Count >= MaxPartySize || currentParty.Contains(character) == false)
+            if (currentParty.Count >= MaxPartySize || currentParty.Contains(character))
             {
                 return false;
             }
