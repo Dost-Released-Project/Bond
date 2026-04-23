@@ -24,6 +24,14 @@ public class InventoryView : MonoBehaviour
     private int _sourceIndex = -1;
     private IInventory _sourceInventory;
     
+    private TextField _searchField;
+    private Button _sortButton;
+    private Button _filterConsumableBtn;
+    private Button _filterAccessoryBtn;
+    private Button _allFilterBtn;
+    
+    private ItemCategory? _currentFilter = null; // null이면 전체 보기
+    
     // [Inject] 태그를 붙이면 VContainer가 알아서 값을 넣어줍니다.
     [Inject]
     public void Construct(ITotalInventory total, IExpeditionInventory expedition, InventoryTransferService service)
@@ -49,7 +57,9 @@ public class InventoryView : MonoBehaviour
         
         _totalInventory.AddItem(testItems[0], 5); 
         _totalInventory.AddItem(testItems[1], 5); 
-        _totalInventory.AddItem(testItems[2], 5); 
+        _totalInventory.AddItem(testItems[2], 5);
+        _totalInventory.AddItem(testItems[3], 1);
+        _totalInventory.AddItem(testItems[4], 1);
         RefreshUI();
 
         SetupUI();
@@ -81,6 +91,31 @@ public class InventoryView : MonoBehaviour
         GenerateSlots(_expeditionGrid, _expeditionInventory.Capacity, _expeditionSlotElements, _expeditionInventory);
         
         RefreshUI();
+        
+        // UI 요소 연결 (UXML에 해당 이름의 요소가 있어야 함)
+        _searchField = _root.Q<TextField>("inventory-search");
+        _sortButton = _root.Q<Button>("btn-sort");
+        _filterConsumableBtn = _root.Q<Button>("btn-filter-consumable");
+        _filterAccessoryBtn = _root.Q<Button>("btn-filter-accessory");
+        _allFilterBtn = _root.Q<Button>("btn-filter-all");
+        
+        // 이벤트 등록
+        _sortButton?.RegisterCallback<ClickEvent>(evt => {
+            _totalInventory.SortById();
+            _expeditionInventory.SortById();
+            RefreshUI();
+        });
+
+        _filterConsumableBtn.RegisterCallback<ClickEvent>(evt => SetFilter(ItemCategory.Consume));
+        _filterAccessoryBtn.RegisterCallback<ClickEvent>(evt => SetFilter(ItemCategory.Accessories));
+        _allFilterBtn.RegisterCallback<ClickEvent>(evt => SetFilter(null)); // 전체 보기 버튼도 필요함
+    }
+    
+    private void SetFilter(ItemCategory? category)
+    {
+        _currentFilter = category;
+        RefreshUI();
+        Debug.Log(category == null ? "전체 보기" : $"{category} 필터 활성화");
     }
 
     private void GenerateSlots(VisualElement container, int count, List<VisualElement> list, IInventory inv)
@@ -104,11 +139,11 @@ public class InventoryView : MonoBehaviour
 
     public void RefreshUI()
     {
-        UpdateGrid(_totalSlotElements, _totalInventory);
-        UpdateGrid(_expeditionSlotElements, _expeditionInventory);
+        UpdateGridWithFilter(_totalSlotElements, _totalInventory);
+        UpdateGridWithFilter(_expeditionSlotElements, _expeditionInventory);
     }
-
-    private void UpdateGrid(List<VisualElement> elements, IInventory inv)
+    
+    private void UpdateGridWithFilter(List<VisualElement> elements, IInventory inv)
     {
         for (int i = 0; i < elements.Count; i++)
         {
@@ -116,8 +151,17 @@ public class InventoryView : MonoBehaviour
             var slotVisual = elements[i];
             slotVisual.Clear();
 
+            // [필터 로직] 아이템이 있고, 필터가 설정되어 있는데 카테고리가 다르면 숨김
             if (!slotData.IsEmpty)
             {
+                if (_currentFilter.HasValue && slotData.item.category != _currentFilter.Value)
+                {
+                    slotVisual.style.display = DisplayStyle.None; // UI에서 숨김
+                    continue;
+                }
+                
+                slotVisual.style.display = DisplayStyle.Flex; // 보임
+                
                 var icon = new VisualElement();
                 icon.style.backgroundImage = new StyleBackground(slotData.item.icon);
                 icon.style.width = Length.Percent(100);
@@ -129,6 +173,11 @@ public class InventoryView : MonoBehaviour
                 slotVisual.Add(icon);
                 slotVisual.Add(label);
             }
+            else
+            {
+                // 빈 슬롯은 필터링 중에는 숨기고, 전체 보기일 때는 보여주는 것이 깔끔함
+                slotVisual.style.display = _currentFilter.HasValue ? DisplayStyle.None : DisplayStyle.Flex;
+            }
         }
     }
 
@@ -138,24 +187,36 @@ public class InventoryView : MonoBehaviour
         {
             var slot = inv.GetSlot(index);
             if (slot.IsEmpty) return;
-
             _sourceIndex = index;
             _sourceInventory = inv;
-
-            // 드래그 고스트 활성화
+            
             _dragGhost.style.backgroundImage = new StyleBackground(slot.item.icon);
             _dragGhost.style.width = 60; // 적절한 크기
             _dragGhost.style.height = 60;
             _dragGhost.style.visibility = Visibility.Visible;
             UpdateGhostPosition(evt.position);
         }
-        else if (evt.button == 1) // 우클릭 즉시 이동
+        else if (evt.button == 1) // 우클릭: 1개씩 이동
         {
             var target = (inv is ITotalInventory) ? (IInventory)_expeditionInventory : (IInventory)_totalInventory;
-            _transferService.TryMoveItem(inv, index, target);
+            _transferService.MoveOneItem(inv, index, target); // 수정된 메서드 호출
             RefreshUI();
         }
     }
+
+    private void OnPointerUp(PointerUpEvent evt, IInventory targetInv, int targetIndex)
+    {
+        if (_sourceInventory != null)
+        {
+            // 드래그 앤 드롭 시 전체 스택 이동 시도 (서비스에서 제한량 체크함)
+            _transferService.ExecuteDragDrop(_sourceInventory, _sourceIndex, targetInv, targetIndex);
+            
+            _sourceInventory = null;
+            _sourceIndex = -1;
+            _dragGhost.style.visibility = Visibility.Hidden;
+            RefreshUI();
+        }
+    }    
 
     private void OnPointerMove(PointerMoveEvent evt)
     {
@@ -170,19 +231,5 @@ public class InventoryView : MonoBehaviour
         // 씬 중앙이나 레이아웃 설정에 따라 좌표 보정이 필요할 수 있습니다.
         _dragGhost.style.left = position.x - (_dragGhost.layout.width / 2);
         _dragGhost.style.top = position.y - (_dragGhost.layout.height / 2);
-    }
-
-    private void OnPointerUp(PointerUpEvent evt, IInventory targetInv, int targetIndex)
-    {
-        if (_sourceInventory != null)
-        {
-            _transferService.SwapItems(_sourceInventory, _sourceIndex, targetInv, targetIndex);
-            
-            // 드래그 상태 초기화
-            _sourceInventory = null;
-            _sourceIndex = -1;
-            _dragGhost.style.visibility = Visibility.Hidden;
-            RefreshUI();
-        }
     }
 }

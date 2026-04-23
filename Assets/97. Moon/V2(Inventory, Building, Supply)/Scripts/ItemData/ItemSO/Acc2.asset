@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1837d133c528205458d79e9b995f7d42, type: 3}
-  m_Name: Stimulant
+  m_Name: Acc2
   m_EditorClassIdentifier: Assembly-CSharp::TestItem
-  id: 19990004
-  itemName: 'Stimulant '
-  category: 1
-  icon: {fileID: 21300000, guid: e9d7bce1284d37548a69ce2c71723c6a, type: 3}
-  totalGlobalMax: 10
-  expeditionSlotMax: 2
+  id: 19990007
+  itemName: Acc2
+  category: 2
+  icon: {fileID: 21300000, guid: c6031a44864e33d4a9fbe6f57002dc1b, type: 3}
+  totalGlobalMax: 1
+  expeditionSlotMax: 1
