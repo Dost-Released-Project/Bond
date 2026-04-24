@@ -1,0 +1,63 @@
+/* ── EoB Theme: DarkAmber (기본 테마) ── */
+/* 갈색/암갈색 계열. 고문서·군용 기록 분위기. */
+
+:root {
+    /* Background */
+    --bg-base:    #0e0c0a;
+    --bg-deep:    #0a0907;
+    --bg-surface: #12100d;
+    --bg-raised:  #1a1410;
+    --bg-divider: #1e1810;
+
+    /* Border */
+    --border-default:   #2a2015;
+    --border-active:    #3a2e1e;
+    --border-highlight: #5a4020;
+    --border-danger:    #4a1a1a;
+
+    /* Text */
+    --text-primary:   #c9b99a;
+    --text-secondary: #9a8a70;
+    --text-muted:     #6a5a42;
+    --text-label:     #5a4a35;
+    --text-disabled:  #4a3a28;
+    --text-accent:    #c9a060;
+
+    /* Semantic — Status */
+    --hp-safe:     #4a8a4a;
+    --hp-low:      #8a6a20;
+    --stress-safe: #6a4a8a;
+    --stress-warn: #8a4a4a;
+    --stress-crit: #c05030;
+
+    /* System — Reaction Slots */
+    --slot-role-border:  #3a2a5a;
+    --slot-role-dot:     #6a4aaa;
+    --slot-role-bg:      #0e0a18;
+    --slot-trait-border: #3a1a1a;
+    --slot-trait-dot:    #aa4a4a;
+    --slot-trait-bg:     #120a0a;
+
+    /* Interactive — Button */
+    --btn-primary-bg:       #2a1e10;
+    --btn-primary-border:   #5a3e20;
+    --btn-primary-text:     #c9a060;
+    --btn-secondary-border: #2a2015;
+    --btn-secondary-text:   #5a4a35;
+
+    /* Echo System */
+    --echo-ready-border: #4a6a4a;
+    --echo-ready-text:   #6a9a6a;
+    --chain-border:      #4a3a6a;
+    --chain-text:        #7a6aaa;
+
+    /* Typography — Font Size 기준값 */
+    /* ThemeSwitcher가 --font-scale 배율을 계산하여 이 값들을 덮어씀. 직접 수정 금지. */
+    --font-size-header: 15.4px;
+    --font-size-name: 18.2px;
+    --font-size-class: 12.6px;
+    --font-size-body: 16.8px;
+    --font-size-button: 15.4px;
+    --font-size-system: 12.6px;
+    --font-scale:       1.40;
+}

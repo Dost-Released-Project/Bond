@@ -1,0 +1,32 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <!-- 역할/성향 슬롯 1개 단위 템플릿 -->
+    <ui:VisualElement class="rre-slot">
+
+        <!-- 상단 행: 인디케이터 + 본문 -->
+        <ui:VisualElement class="rre-slot__top-row">
+            <ui:VisualElement name="slotIndicator" class="rre-slot__indicator" />
+
+            <ui:VisualElement class="rre-slot__body">
+                <!-- 트리거 행 -->
+                <ui:VisualElement class="rre-slot__trigger-row">
+                    <ui:Label class="rre-slot__row-label" text="트리거" />
+                    <ui:DropdownField name="triggerDropdown" class="rre-slot__trigger-dropdown" />
+                </ui:VisualElement>
+
+                <!-- 스킬 행 -->
+                <ui:VisualElement class="rre-slot__skill-row">
+                    <ui:Label class="rre-slot__row-label" text="스킬" />
+                    <ui:Button name="skillButton" class="rre-slot__skill-btn" text="— 선택 안 됨 —" />
+                    <ui:VisualElement name="echoIcon" class="rre-slot__echo-icon rre-slot__echo-icon--inactive" />
+                    <ui:VisualElement name="warnIcon" class="rre-slot__warn-icon" style="display: none;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- 인라인 스킬 선택 패널 (기본 숨김, 슬롯 하단에 전개) -->
+        <ui:VisualElement name="skillPanel" class="rre-skill-panel" style="display: none;">
+            <ui:VisualElement name="skillGrid" class="rre-skill-panel__grid" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

@@ -9,8 +9,7 @@
 $OutputEncoding = [System.Text.Encoding]::UTF8
 
 $config = @{
-    TempCode      = "96. WT/TempCode.cs"
-    ReviewFile    = "96. WT/TempReview.md"
+    ReviewFile    = "Assets/96. WT/TempReview.md"
     GuidelineFile = "C:\Users\kot77\Desktop\Unity\Bond\Assets\Ignore\Guide\통합_AI_작업_가이드라인.md"
 }
 
@@ -41,11 +40,20 @@ $code
 [Rules]
 - 가이드라인 §4 코드 리뷰 양식을 엄격히 준수하라.
 - DLV 무결성 및 Unity6 최적화 상태를 비판적으로 분석하라.
-- 서론/결론/인사/```코드블록 금지. 첫 헤더부터 즉시 출력하라.
+- 서론/결론/인사/``코드블록 금지. 첫 헤더부터 즉시 출력하라.
 "@
 
+    # 임시 파일에 프롬프트 저장
+    $tmpPrompt = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "gemini_prompt_$(Get-Random).txt")
+    [System.IO.File]::WriteAllText($tmpPrompt, $reviewPrompt, [System.Text.Encoding]::UTF8)
+
     Write-Host "`n🔍 리뷰 중: $srcPath" -ForegroundColor Yellow
-    $reviewPrompt | gemini --approval-mode plan | Tee-Object -FilePath $dstPath
+
+    # Get-Content로 읽어 파이프 → PowerShell에서 stdin 리다이렉션 대체
+    $result = Get-Content -Path $tmpPrompt -Raw | gemini --approval-mode plan
+    $result | Tee-Object -FilePath $dstPath
+
+    Remove-Item $tmpPrompt -Force -ErrorAction SilentlyContinue
     Write-Host "`n📝 저장 완료: $dstPath" -ForegroundColor Green
 }
 
@@ -56,6 +64,6 @@ if (-not $userPrompt)     { $userPrompt = "DLV 구조와 Unity6 최적화 상태
 Write-Host "`n=== GEMINI CODE REVIEWER ===" -ForegroundColor Magenta
 
 $guide = Get-Guideline
-Run-Reviewer -intent $intent -guide $guide -srcPath $targetFilePath -dstPath $config.ReviewFile
+Run-Reviewer -intent $userPrompt -guide $guide -srcPath $targetFilePath -dstPath $config.ReviewFile
 
 Write-Host "============================" -ForegroundColor Magenta

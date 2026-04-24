@@ -9,7 +9,6 @@ param (
 $OutputEncoding = [System.Text.Encoding]::UTF8
 
 $config = @{
-    TempFile      = "96. WT/TempCode.cs"
     GuidelineFile = "C:\Users\kot77\Desktop\Unity\Bond\Assets\Ignore\Guide\통합_AI_작업_가이드라인.md"
 }
 
