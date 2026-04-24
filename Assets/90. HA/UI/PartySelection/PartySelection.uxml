@@ -1,0 +1,58 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="project://Assets/UI/Themes/EoB_Variables.uss" />
+    <Style src="project://Assets/UI/Themes/EoB_Theme_DarkAmber.uss" />
+    <Style src="PartySelection.uss" />
+
+    <ui:VisualElement class="eob-screen">
+
+        <!-- ===== 헤더 ===== -->
+        <ui:VisualElement class="eob-header">
+            <ui:Label class="eob-header__title" text="탐사 편성 — 대원 선발" />
+            <ui:Label class="eob-header__sub"   text="개척령 402호" />
+        </ui:VisualElement>
+
+        <!-- ===== 메인 (좌우 분할) ===== -->
+        <ui:VisualElement class="eob-main">
+
+            <!-- 좌측: 파티 패널 -->
+            <ui:VisualElement class="party-panel">
+                <ui:Label class="panel-label" text="출전 편성" />
+
+                <!-- 리더 슬롯 (고정, 인터랙션 없음) -->
+                <ui:VisualElement name="leaderSlot" class="party-slot party-slot--leader">
+                    <ui:Label class="party-slot__role-label" text="리더" />
+                    <ui:Label class="party-slot__name"       text="(고정)" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="eob-divider" />
+
+                <!-- 대원 슬롯 3개 (동적 생성) -->
+                <ui:VisualElement name="memberSlots" class="party-slot-list" />
+
+                <!-- 하단 -->
+                <ui:VisualElement class="party-footer">
+                    <ui:Label name="partyCountLabel" class="party-footer__count" text="0 / 3" />
+                    <ui:Button name="btnNext" class="btn-next btn-next--disabled" text="다음 단계 →" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <!-- 우측: 로스터 패널 -->
+            <ui:VisualElement class="roster-panel">
+                <ui:VisualElement class="roster-header">
+                    <ui:Label class="panel-label" text="보유 대원 로스터" />
+                    <!-- 필터 바 -->
+                    <ui:VisualElement name="filterBar" class="filter-bar">
+                        <ui:Button name="filterAll"     class="filter-btn filter-btn--active" text="전체" />
+                        <ui:Button name="filterWarrior" class="filter-btn"                    text="전사" />
+                        <ui:Button name="filterRogue"   class="filter-btn"                    text="도적" />
+                        <ui:Button name="filterCleric"  class="filter-btn"                    text="성직자" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- 캐릭터 카드 그리드 (동적 생성) -->
+                <ui:ScrollView name="rosterGrid" class="roster-grid" />
+            </ui:VisualElement>
+
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

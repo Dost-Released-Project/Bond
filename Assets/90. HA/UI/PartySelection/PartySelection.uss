@@ -1,0 +1,318 @@
+/* ── PartySelection.uss ── */
+/* 모든 색상·폰트는 EoB 테마 변수만 사용. 하드코딩 금지. */
+
+/* ── 전체 화면 ── */
+.eob-screen {
+    flex-direction: column;
+    flex-grow: 1;
+    background-color: var(--bg-base);
+}
+
+/* ── 헤더 ── */
+.eob-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--bg-deep);
+    padding: 6px 16px;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--border-default);
+}
+
+.eob-header__title {
+    font-size: var(--font-size-header);
+    color: var(--text-label);
+    letter-spacing: 4px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+}
+
+.eob-header__sub {
+    font-size: var(--font-size-system);
+    color: var(--text-disabled);
+    letter-spacing: 2px;
+}
+
+/* ── 메인 영역 ── */
+.eob-main {
+    flex-direction: row;
+    flex-grow: 1;
+}
+
+.eob-divider {
+    height: 1px;
+    background-color: var(--border-default);
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+/* ── 섹션 레이블 ── */
+.panel-label {
+    font-size: var(--font-size-class);
+    color: var(--text-label);
+    letter-spacing: 4px;
+    -unity-font-style: bold;
+    margin-bottom: 8px;
+}
+
+/* ════════════════════════════════════════
+   파티 패널 (좌측)
+   ════════════════════════════════════════ */
+.party-panel {
+    width: 220px;
+    flex-shrink: 0;
+    flex-direction: column;
+    background-color: var(--bg-deep);
+    padding: 16px 12px;
+    border-right-width: 1px;
+    border-right-color: var(--border-default);
+}
+
+/* ── 파티 슬롯 공통 ── */
+.party-slot {
+    flex-direction: column;
+    padding: 10px;
+    margin-bottom: 6px;
+    border-width: 1px;
+    border-radius: 4px;
+    border-color: var(--border-default);
+    background-color: var(--bg-surface);
+}
+
+/* 리더 슬롯 */
+.party-slot--leader {
+    border-color: var(--border-active);
+    background-color: var(--bg-raised);
+}
+
+/* 비어있음 */
+.party-slot--empty {
+    border-style: dashed;
+    border-color: var(--border-default);
+}
+
+/* 채워짐 */
+.party-slot--filled {
+    border-style: solid;
+    border-color: var(--border-active);
+}
+
+/* 위험 */
+.party-slot--danger {
+    border-color: var(--border-danger);
+}
+
+.party-slot__role-label {
+    font-size: var(--font-size-system);
+    color: var(--text-label);
+    letter-spacing: 2px;
+    margin-bottom: 2px;
+}
+
+.party-slot__name {
+    font-size: var(--font-size-name);
+    color: var(--text-primary);
+}
+
+.party-slot__class {
+    font-size: var(--font-size-class);
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+}
+
+.party-slot__release-btn {
+    align-self: flex-end;
+    font-size: var(--font-size-system);
+    color: var(--text-secondary);
+    background-color: transparent;
+    border-width: 0;
+    padding: 0;
+    margin-top: 4px;
+}
+
+.party-slot__release-btn:hover {
+    color: var(--text-accent);
+}
+
+/* ── 하단 ── */
+.party-footer {
+    flex-direction: column;
+    margin-top: auto;
+}
+
+.party-footer__count {
+    font-size: var(--font-size-system);
+    color: var(--text-disabled);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    -unity-text-align: middle-center;
+}
+
+.btn-next {
+    padding: 8px;
+    font-size: var(--font-size-button);
+    letter-spacing: 3px;
+    color: var(--btn-primary-text);
+    background-color: var(--btn-primary-bg);
+    border-width: 1px;
+    border-color: var(--btn-primary-border);
+    border-radius: 4px;
+    -unity-text-align: middle-center;
+}
+
+.btn-next--disabled {
+    color: var(--text-disabled);
+    background-color: var(--bg-surface);
+    border-color: var(--border-default);
+}
+
+/* ════════════════════════════════════════
+   로스터 패널 (우측)
+   ════════════════════════════════════════ */
+.roster-panel {
+    flex-grow: 1;
+    flex-direction: column;
+    background-color: var(--bg-base);
+    padding: 16px;
+}
+
+.roster-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+/* ── 필터 바 ── */
+.filter-bar {
+    flex-direction: row;
+}
+
+.filter-btn {
+    font-size: var(--font-size-system);
+    letter-spacing: 2px;
+    color: var(--btn-secondary-text);
+    background-color: transparent;
+    border-width: 1px;
+    border-color: var(--btn-secondary-border);
+    border-radius: 4px;
+    padding: 4px 10px;
+    margin-left: 4px;
+}
+
+.filter-btn--active {
+    color: var(--text-accent);
+    border-color: var(--border-active);
+}
+
+/* ── 로스터 그리드 ── */
+.roster-grid {
+    flex-grow: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+
+/* ════════════════════════════════════════
+   캐릭터 카드
+   ════════════════════════════════════════ */
+.roster-card {
+    width: 160px;
+    flex-direction: column;
+    background-color: var(--bg-surface);
+    border-width: 1px;
+    border-color: var(--border-default);
+    border-radius: 4px;
+    padding: 10px;
+    margin: 6px;
+}
+
+.roster-card:hover {
+    border-color: var(--border-highlight);
+    background-color: var(--bg-raised);
+}
+
+.roster-card--danger {
+    border-color: var(--border-danger);
+}
+
+.roster-card--selected {
+    opacity: 0.4;
+}
+
+/* 아바타 */
+.roster-card__avatar {
+    width: 40px;
+    height: 40px;
+    background-color: var(--bg-raised);
+    border-radius: 4px;
+    margin-bottom: 6px;
+    align-self: center;
+}
+
+/* 이름 */
+.char-name {
+    font-size: var(--font-size-name);
+    color: var(--text-primary);
+    -unity-text-align: middle-center;
+}
+
+/* 직업+레벨 */
+.char-class {
+    font-size: var(--font-size-class);
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    -unity-text-align: middle-center;
+    margin-bottom: 6px;
+}
+
+/* HP / 스트레스 게이지 */
+.bar-track {
+    height: 4px;
+    background-color: var(--bg-divider);
+    border-radius: 2px;
+    margin-bottom: 3px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 4px;
+    border-radius: 2px;
+}
+
+.bar-fill--hp-safe { background-color: var(--hp-safe); }
+.bar-fill--hp-low  { background-color: var(--hp-low);  }
+
+.bar-fill--stress-safe { background-color: var(--stress-safe); }
+.bar-fill--stress-warn { background-color: var(--stress-warn); }
+.bar-fill--stress-crit { background-color: var(--stress-crit); }
+
+/* 성향 태그 */
+.trait-tags {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.trait-tag {
+    font-size: var(--font-size-system);
+    color: var(--text-secondary);
+    border-width: 1px;
+    border-color: var(--border-default);
+    border-radius: 2px;
+    padding: 1px 4px;
+    margin-right: 3px;
+    margin-bottom: 2px;
+}
+
+/* 위험 인디케이터 점 */
+.danger-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    background-color: var(--stress-crit);
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}

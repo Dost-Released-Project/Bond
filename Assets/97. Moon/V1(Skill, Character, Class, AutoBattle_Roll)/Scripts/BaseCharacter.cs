@@ -17,6 +17,8 @@ public class BaseCharacter : MonoBehaviour, ITurnUseUnit
     public AutoBattle battleType { get; set; }
     public bool isPlayable { get; set; }
 
+    public int level = 1;
+
     public RoleType roleType = RoleType.None;
     public Reaction[] roleReactions  = new Reaction[2]; // 역할 슬롯, 최대 2개
     public Reaction[] traitReactions = new Reaction[4]; // 성향 슬롯 (traits[]와 인덱스 대응)
