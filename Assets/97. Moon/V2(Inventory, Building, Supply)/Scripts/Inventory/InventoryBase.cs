@@ -65,6 +65,15 @@ public abstract class InventoryBase : IInventory
         }
         return result;
     }
+    
+    public void ExpandStorage(int additionalSlots)
+    {
+        for (int i = 0; i < additionalSlots; i++)
+        {
+            _slots.Add(new InventorySlot());
+        }
+        Debug.Log($"슬롯 확장: {additionalSlots}개 추가됨, 전체 슬롯 {_slots.Count} 개");
+    }
 
     public abstract int AddItemAuto(BaseItem item, int quantity);
     public void ClearSlot(int index) => _slots[index].Clear();

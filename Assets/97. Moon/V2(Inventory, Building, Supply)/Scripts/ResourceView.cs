@@ -17,7 +17,7 @@ public class ResourceView : MonoBehaviour
     }
 
     private void Start()
-    {
+    {   
         var root = GetComponent<UIDocument>().rootVisualElement;
         
         // UXML의 ID와 매칭 (label-frontier, label-wood, label-ore)

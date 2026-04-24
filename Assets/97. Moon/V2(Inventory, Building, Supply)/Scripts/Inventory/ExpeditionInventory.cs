@@ -31,4 +31,6 @@ public class ExpeditionInventory : InventoryBase, IExpeditionInventory
 
     public bool EquipItem(BaseCharacter character, string itemID) => true;
     public void UnequipItem(BaseCharacter character, Equipment slot) { }
+    
+    public void ExpandStorage(int additionalSlots) { /* 로직 */ }
 }

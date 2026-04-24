@@ -15,4 +15,6 @@ public interface IInventory
     // --- 검색 및 정렬 ---
     void SortById();
     IEnumerable<int> GetFilteredIndices(string searchField, ItemCategory? category);
+    
+    void ExpandStorage(int additionalSlots);
 }

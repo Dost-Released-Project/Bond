@@ -29,6 +29,7 @@ public class InventoryView : MonoBehaviour
     private Button _filterConsumableBtn;
     private Button _filterAccessoryBtn;
     private Button _allFilterBtn;
+    private Button _closeBtn;
     
     private string _currentSearch = "";
     private ItemCategory? _currentFilter = null; // null이면 전체 보기
@@ -64,6 +65,17 @@ public class InventoryView : MonoBehaviour
         RefreshUI();
 
         SetupUI();
+        
+        ToggleWindow(false);
+    }
+    
+    public void ToggleWindow(bool show)
+    {
+        var root = GetComponent<UIDocument>().rootVisualElement;
+        root.Q<VisualElement>("inventory-container").style.display = 
+            show ? DisplayStyle.Flex : DisplayStyle.None;
+    
+        if(show) RefreshUI();
     }
 
     private void SetupUI()
@@ -99,6 +111,7 @@ public class InventoryView : MonoBehaviour
         _filterConsumableBtn = _root.Q<Button>("btn-filter-consumable");
         _filterAccessoryBtn = _root.Q<Button>("btn-filter-accessory");
         _allFilterBtn = _root.Q<Button>("btn-filter-all");
+        _closeBtn = _root.Q<Button>("btn-close");
         
         // 검색 기능 연결
         _searchField.RegisterValueChangedCallback(evt => {
@@ -116,6 +129,7 @@ public class InventoryView : MonoBehaviour
         _filterConsumableBtn.RegisterCallback<ClickEvent>(evt => SetFilter(ItemCategory.Consume));
         _filterAccessoryBtn.RegisterCallback<ClickEvent>(evt => SetFilter(ItemCategory.Accessories));
         _allFilterBtn.RegisterCallback<ClickEvent>(evt => SetFilter(null)); // 전체 보기 버튼도 필요함
+        _closeBtn.RegisterCallback<ClickEvent>(evt => ToggleWindow(false)); // 인벤토리 닫기
     }
     
     private void SetFilter(ItemCategory? category)
@@ -144,7 +158,7 @@ public class InventoryView : MonoBehaviour
         }
     }
 
-    private void RefreshUI()
+    public void RefreshUI()
     {
         var totalVisible = _totalInventory.GetFilteredIndices(_currentSearch, _currentFilter);
         var expeditionVisible = _expeditionInventory.GetFilteredIndices(_currentSearch, _currentFilter);

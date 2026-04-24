@@ -9,16 +9,33 @@ public class BuildingService
         _resourceManager = rm;
     }
 
-    public void TryBuild(BuildingData data)
+    // 건설은 무조건 1레벨 데이터를 참조
+    public bool TryBuild(BuildingData data)
     {
-        if (_resourceManager.ConsumeResources(data.frontierCost, data.woodCost, data.oreCost))
+        var level1 = data.GetLevelData(1);
+        
+        if (_resourceManager.ConsumeResources(level1.frontierCost, level1.woodCost, level1.oreCost))
         {
-            Debug.Log($"<color=green>[건설 완료]</color> {data.buildingName} (Type: {data.buildingType})");
-            // 여기서 실제 건물 프리팹 생성 로직 호출
+            Debug.Log($"<color=green>[건설 성공]</color> {data.buildingName}이 건설되었습니다.");
+            return true;
         }
-        else
+
+        Debug.LogWarning($"[자원 부족] {data.buildingName} 건설 불가.");
+        return false;
+    }
+
+    // 업그레이드는 시도하려는 다음 레벨 데이터를 참조
+    public bool TryUpgrade(BuildingData data, int targetLevel)
+    {
+        var targetData = data.GetLevelData(targetLevel);
+
+        if (_resourceManager.ConsumeResources(targetData.frontierCost, targetData.woodCost, targetData.oreCost))
         {
-            Debug.LogWarning($"[자원 부족] {data.buildingName} 건설에 필요한 자원이 부족합니다.");
+            Debug.Log($"<color=cyan>[업그레이드 성공]</color> {data.buildingName} Lv.{targetLevel}");
+            return true;
         }
+
+        Debug.LogWarning($"[자원 부족] {data.buildingName} Lv.{targetLevel} 업그레이드 불가.");
+        return false;
     }
 }

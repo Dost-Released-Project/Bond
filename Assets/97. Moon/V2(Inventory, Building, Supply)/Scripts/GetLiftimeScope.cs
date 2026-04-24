@@ -15,8 +15,11 @@ public class GameLifetimeScope : LifetimeScope
         builder.Register<ResourceManager>(Lifetime.Singleton);
         builder.Register<BuildingService>(Lifetime.Singleton);
 
-        // View (씬에 배치된 컴포넌트)
+        // 씬에 배치된 컴포넌트
         builder.RegisterComponentInHierarchy<InventoryView>();
         builder.RegisterComponentInHierarchy<ResourceView>();
+        builder.RegisterComponentInHierarchy<SettlementManager>();
+        builder.RegisterComponentInHierarchy<ConstructionUI>();
+        builder.RegisterComponentInHierarchy<InteractionManager>();
     }
 }
