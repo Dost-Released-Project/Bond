@@ -30,6 +30,7 @@ public class InventoryView : MonoBehaviour
     private Button _filterAccessoryBtn;
     private Button _allFilterBtn;
     
+    private string _currentSearch = "";
     private ItemCategory? _currentFilter = null; // null이면 전체 보기
     
     // [Inject] 태그를 붙이면 VContainer가 알아서 값을 넣어줍니다.
@@ -55,11 +56,11 @@ public class InventoryView : MonoBehaviour
             return;
         }
         
-        _totalInventory.AddItem(testItems[0], 5); 
-        _totalInventory.AddItem(testItems[1], 5); 
-        _totalInventory.AddItem(testItems[2], 5);
-        _totalInventory.AddItem(testItems[3], 1);
-        _totalInventory.AddItem(testItems[4], 1);
+        _totalInventory.AddItemAt(0, testItems[0], 5); 
+        _totalInventory.AddItemAt(1, testItems[1], 5); 
+        _totalInventory.AddItemAt(2, testItems[2], 5);
+        _totalInventory.AddItemAt(3, testItems[3], 1);
+        _totalInventory.AddItemAt(4, testItems[4], 1);
         RefreshUI();
 
         SetupUI();
@@ -99,6 +100,12 @@ public class InventoryView : MonoBehaviour
         _filterAccessoryBtn = _root.Q<Button>("btn-filter-accessory");
         _allFilterBtn = _root.Q<Button>("btn-filter-all");
         
+        // 검색 기능 연결
+        _searchField.RegisterValueChangedCallback(evt => {
+            _currentSearch = evt.newValue;
+            RefreshUI();
+        });
+        
         // 이벤트 등록
         _sortButton?.RegisterCallback<ClickEvent>(evt => {
             _totalInventory.SortById();
@@ -137,46 +144,48 @@ public class InventoryView : MonoBehaviour
         }
     }
 
-    public void RefreshUI()
+    private void RefreshUI()
     {
-        UpdateGridWithFilter(_totalSlotElements, _totalInventory);
-        UpdateGridWithFilter(_expeditionSlotElements, _expeditionInventory);
+        var totalVisible = _totalInventory.GetFilteredIndices(_currentSearch, _currentFilter);
+        var expeditionVisible = _expeditionInventory.GetFilteredIndices(_currentSearch, _currentFilter);
+
+        UpdateGrid(_totalSlotElements, _totalInventory, totalVisible);
+        UpdateGrid(_expeditionSlotElements, _expeditionInventory, expeditionVisible);
     }
     
-    private void UpdateGridWithFilter(List<VisualElement> elements, IInventory inv)
+    private void UpdateGrid(List<VisualElement> elements, IInventory inv, IEnumerable<int> visibleIndices)
     {
+        var visibleSet = new HashSet<int>(visibleIndices);
+
         for (int i = 0; i < elements.Count; i++)
         {
-            var slotData = inv.GetSlot(i);
             var slotVisual = elements[i];
+            var slotData = inv.GetSlot(i);
             slotVisual.Clear();
 
-            // [필터 로직] 아이템이 있고, 필터가 설정되어 있는데 카테고리가 다르면 숨김
-            if (!slotData.IsEmpty)
+            if (visibleSet.Contains(i))
             {
-                if (_currentFilter.HasValue && slotData.item.category != _currentFilter.Value)
+                slotVisual.style.display = DisplayStyle.Flex;
+            
+                if (!slotData.IsEmpty)
                 {
-                    slotVisual.style.display = DisplayStyle.None; // UI에서 숨김
-                    continue;
+                    // 아이콘 생성
+                    var icon = new VisualElement();
+                    icon.style.backgroundImage = new StyleBackground(slotData.item.icon);
+                    icon.style.width = Length.Percent(100);
+                    icon.style.height = Length.Percent(100);
+                
+                    // 수량 라벨
+                    var label = new Label(slotData.quantity.ToString());
+                    label.AddToClassList("slot-quantity-label");
+                
+                    slotVisual.Add(icon);
+                    slotVisual.Add(label);
                 }
-                
-                slotVisual.style.display = DisplayStyle.Flex; // 보임
-                
-                var icon = new VisualElement();
-                icon.style.backgroundImage = new StyleBackground(slotData.item.icon);
-                icon.style.width = Length.Percent(100);
-                icon.style.height = Length.Percent(100);
-                
-                var label = new Label(slotData.quantity.ToString());
-                label.AddToClassList("slot-quantity-label");
-                
-                slotVisual.Add(icon);
-                slotVisual.Add(label);
             }
             else
             {
-                // 빈 슬롯은 필터링 중에는 숨기고, 전체 보기일 때는 보여주는 것이 깔끔함
-                slotVisual.style.display = _currentFilter.HasValue ? DisplayStyle.None : DisplayStyle.Flex;
+                slotVisual.style.display = DisplayStyle.None;
             }
         }
     }
@@ -199,7 +208,7 @@ public class InventoryView : MonoBehaviour
         else if (evt.button == 1) // 우클릭: 1개씩 이동
         {
             var target = (inv is ITotalInventory) ? (IInventory)_expeditionInventory : (IInventory)_totalInventory;
-            _transferService.MoveOneItem(inv, index, target); // 수정된 메서드 호출
+            _transferService.MoveOneFromSlot(inv, index, target); // 수정된 메서드 호출
             RefreshUI();
         }
     }
