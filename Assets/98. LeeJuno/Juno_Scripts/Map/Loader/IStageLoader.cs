@@ -1,0 +1,28 @@
+using System;
+using Cysharp.Threading.Tasks;
+
+/// <summary>
+/// 스테이지 씬 로드/언로드 인터페이스.
+/// 구현체(StageLoader)는 VContainer를 통해 주입된다.
+/// </summary>
+public interface IStageLoader
+{
+    /// <summary>
+    /// 스테이지가 완료되었을 때 발생하는 이벤트.
+    /// 스테이지 씬 내부에서 StageLoader.NotifyStageCompleted()를 호출해 발생시킨다.
+    /// MapUIController 등에서 구독해 맵으로 복귀하는 처리를 수행한다.
+    /// </summary>
+    public event Action<StageResult> OnStageCompleted;
+
+    /// <summary>
+    /// 지정한 스테이지 타입에 해당하는 씬을 Additive 방식으로 비동기 로드한다.
+    /// 이전에 로드된 씬이 있으면 먼저 언로드한 후 새 씬을 로드한다.
+    /// </summary>
+    public UniTask LoadStage(StageType stageType, MapNode node);
+
+    /// <summary>
+    /// 현재 로드된 스테이지 씬을 비동기로 언로드한다.
+    /// 로드된 씬이 없으면 아무 동작도 하지 않는다.
+    /// </summary>
+    public UniTask UnloadCurrentStage();
+}
