@@ -8,17 +8,9 @@ using UnityEngine;
 /// 생성 위치: Assets 우클릭 → Create → Bond → Map → EventData
 /// </summary>
 [CreateAssetMenu(fileName = "EventData", menuName = "Bond/Map/EventData")]
-public class EventData : ScriptableObject
+public class EventData : BaseSO
 {
-    [SerializeField] private string _eventId;           // 이벤트 고유 식별자
-    [SerializeField] private string _title;             // 이벤트 제목 (UI 표시용)
-    [TextArea(3, 8)]
-    [SerializeField] private string _description;       // 이벤트 설명 본문
     [SerializeField] private List<EventChoice> _choices; // 플레이어가 선택할 수 있는 선택지 목록
-
-    public string EventId => _eventId;
-    public string Title => _title;
-    public string Description => _description;
     public List<EventChoice> Choices => _choices;
 }
 

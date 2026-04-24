@@ -7,7 +7,7 @@ using UnityEngine;
 /// 생성 위치: Assets 우클릭 → Create → Bond → MapGeneratorConfig
 /// </summary>
 [CreateAssetMenu(menuName = "Bond/MapGeneratorConfig")]
-public class MapGeneratorConfig : ScriptableObject
+public class MapGeneratorConfig : BaseSO
 {
     [Header("맵 크기")]
     public int TotalLayers = 15;        // 맵의 총 층 수 (시작층 0 포함)
