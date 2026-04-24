@@ -51,7 +51,7 @@ namespace Bond.UI.RoleReactionEditor
             var icon = new VisualElement();
             icon.AddToClassList("rre-skill-card__icon");
 
-            var name = new Label(skill.Data.SkillName);
+            var name = new Label(skill.Data.DisplayName);
             name.AddToClassList("rre-skill-card__name");
 
             var desc = new Label(skill.Data.Description);
