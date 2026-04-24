@@ -1,0 +1,438 @@
+/* ============================================================
+   USS 변수 정의 (색상 하드코딩 금지 — 모든 색상은 여기서만 선언)
+   ============================================================ */
+:root {
+    --color-bg-root:        #12121f;
+    --color-bg-panel:       #1c1c30;
+    --color-bg-panel-alt:   #24243c;
+    --color-bg-slot:        #1e1e32;
+    --color-bg-skill-card:  #252540;
+    --color-bg-hover:       #2e2e50;
+
+    --color-indicator-role:  #7c3aed;   /* 보라 — 역할 슬롯 */
+    --color-indicator-trait: #dc2626;   /* 붉은 — 성향 슬롯 */
+
+    --color-accent-select:   #f59e0b;   /* 선택 강조 */
+    --color-accent-echo:     #34d399;   /* 에코 코어 활성 */
+    --color-warn:            #ef4444;   /* 경고 */
+
+    --color-text-primary:    #f1f5f9;
+    --color-text-secondary:  #94a3b8;
+    --color-text-muted:      #475569;
+
+    --color-border-normal:   #2d2d4a;
+    --color-border-selected: #f59e0b;
+    --color-border-warn:     #ef4444;
+
+    --radius-sm:  4px;
+    --radius-md:  8px;
+    --radius-lg: 12px;
+
+    --spacing-xs:  4px;
+    --spacing-sm:  8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+
+    --indicator-width: 6px;
+}
+
+
+/* ============================================================
+   루트
+   ============================================================ */
+.rre-root {
+    flex-direction: column;
+    flex-grow: 1;
+    background-color: var(--color-bg-root);
+}
+
+
+/* ============================================================
+   파티 요약 바
+   ============================================================ */
+.rre-party-bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--color-bg-panel);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-bottom-width: 1px;
+    border-bottom-color: var(--color-border-normal);
+}
+
+.rre-party-bar__icons {
+    flex-direction: row;
+}
+
+.rre-party-bar__summary {
+    color: var(--color-text-secondary);
+    font-size: 13px;
+    margin-left: var(--spacing-md);
+}
+
+
+/* 파티 아이콘 */
+.rre-char-icon {
+    flex-direction: column;
+    align-items: center;
+    width: 64px;
+    padding: var(--spacing-xs);
+    margin-right: var(--spacing-sm);
+    background-color: var(--color-bg-panel-alt);
+    border-width: 2px;
+    border-color: var(--color-border-normal);
+    border-radius: var(--radius-md);
+}
+
+.rre-char-icon:hover {
+    background-color: var(--color-bg-hover);
+}
+
+.rre-char-icon--selected {
+    border-color: var(--color-border-selected);
+}
+
+.rre-char-icon__image {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: var(--color-bg-slot);
+}
+
+.rre-char-icon__name {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    margin-top: var(--spacing-xs);
+    -unity-text-align: middle-center;
+}
+
+
+/* ============================================================
+   메인 영역 (좌우 분할)
+   ============================================================ */
+.rre-main {
+    flex-direction: row;
+    flex-grow: 1;
+}
+
+
+/* ============================================================
+   좌측: 캐릭터 정보 패널
+   ============================================================ */
+.rre-char-info {
+    width: 260px;
+    flex-shrink: 0;
+    background-color: var(--color-bg-panel);
+    padding: var(--spacing-md);
+    border-right-width: 1px;
+    border-right-color: var(--color-border-normal);
+}
+
+.rre-char-info__name {
+    font-size: 20px;
+    color: var(--color-text-primary);
+    -unity-font-style: bold;
+}
+
+.rre-char-info__class {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-md);
+}
+
+/* 스탯 */
+.rre-char-info__stats {
+    margin-bottom: var(--spacing-md);
+}
+
+.rre-stat-row {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: var(--spacing-xs) 0;
+}
+
+.rre-stat-row__key {
+    color: var(--color-text-secondary);
+    font-size: 13px;
+}
+
+.rre-stat-row__val {
+    color: var(--color-text-primary);
+    font-size: 13px;
+    -unity-font-style: bold;
+}
+
+.rre-stat-row--stress .rre-stat-row__key {
+    color: var(--color-warn);
+}
+
+/* 성향 태그 */
+.rre-char-info__traits {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: var(--spacing-md);
+}
+
+.rre-trait-tag {
+    background-color: var(--color-bg-slot);
+    border-radius: var(--radius-sm);
+    padding: 2px var(--spacing-sm);
+    margin-right: var(--spacing-xs);
+    margin-bottom: var(--spacing-xs);
+}
+
+.rre-trait-tag__label {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+}
+
+/* 역할 버튼 */
+.rre-char-info__role-buttons {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: var(--spacing-sm);
+}
+
+.rre-role-btn {
+    flex-grow: 1;
+    margin-right: var(--spacing-xs);
+    padding: var(--spacing-sm);
+    background-color: var(--color-bg-slot);
+    border-width: 1px;
+    border-color: var(--color-border-normal);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    font-size: 13px;
+    -unity-text-align: middle-center;
+}
+
+.rre-role-btn:last-child {
+    margin-right: 0;
+}
+
+.rre-role-btn:hover {
+    background-color: var(--color-bg-hover);
+}
+
+.rre-role-btn--selected {
+    border-color: var(--color-accent-select);
+    color: var(--color-accent-select);
+    -unity-font-style: bold;
+}
+
+
+/* ============================================================
+   공용
+   ============================================================ */
+.rre-section-label {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-xs);
+    margin-top: var(--spacing-md);
+    -unity-font-style: bold;
+}
+
+.rre-divider {
+    height: 1px;
+    background-color: var(--color-border-normal);
+    margin-top: var(--spacing-md);
+    margin-bottom: var(--spacing-xs);
+}
+
+
+/* ============================================================
+   우측: 리액션 에디터
+   ============================================================ */
+.rre-reaction-editor {
+    flex-grow: 1;
+    padding: var(--spacing-md);
+    background-color: var(--color-bg-root);
+}
+
+.rre-slot-list {
+    flex-direction: column;
+}
+
+
+/* ============================================================
+   리액션 슬롯
+   ============================================================ */
+.rre-slot {
+    flex-direction: column;
+    background-color: var(--color-bg-slot);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-sm);
+    border-width: 1px;
+    border-color: var(--color-border-normal);
+    overflow: hidden;
+}
+
+.rre-slot--warn {
+    border-color: var(--color-border-warn);
+}
+
+.rre-slot__indicator {
+    width: var(--indicator-width);
+    align-self: stretch;
+    flex-shrink: 0;
+}
+
+.rre-slot__indicator--role {
+    background-color: var(--color-indicator-role);
+}
+
+.rre-slot__indicator--trait {
+    background-color: var(--color-indicator-trait);
+}
+
+.rre-slot__body {
+    flex-grow: 1;
+    flex-direction: column;
+    padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.rre-slot__top-row {
+    flex-direction: row;
+    align-items: stretch;
+}
+
+/* trigger row */
+.rre-slot__trigger-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: var(--spacing-xs);
+}
+
+.rre-slot__trigger-label {
+    width: 50px;
+    font-size: 12px;
+    color: var(--color-text-muted);
+}
+
+.rre-slot__trigger-dropdown {
+    flex-grow: 1;
+    color: var(--color-text-primary);
+}
+
+/* skill row */
+.rre-slot__skill-row {
+    flex-direction: row;
+    align-items: center;
+}
+
+.rre-slot__skill-label {
+    width: 50px;
+    font-size: 12px;
+    color: var(--color-text-muted);
+}
+
+.rre-slot__skill-btn {
+    flex-grow: 1;
+    background-color: var(--color-bg-panel-alt);
+    border-width: 1px;
+    border-color: var(--color-border-normal);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    font-size: 13px;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    -unity-text-align: middle-left;
+}
+
+.rre-slot__skill-btn:hover {
+    background-color: var(--color-bg-hover);
+}
+
+/* 에코 코어 아이콘 */
+.rre-slot__echo-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    margin-left: var(--spacing-sm);
+    flex-shrink: 0;
+}
+
+.rre-slot__echo-icon--active {
+    background-color: var(--color-accent-echo);
+}
+
+.rre-slot__echo-icon--inactive {
+    background-color: var(--color-border-normal);
+}
+
+.rre-slot__echo-icon--warn {
+    background-color: var(--color-warn);
+}
+
+/* 경고 아이콘 */
+.rre-slot__warn-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    margin-left: var(--spacing-xs);
+    background-color: var(--color-warn);
+    flex-shrink: 0;
+}
+
+
+/* ============================================================
+   인라인 스킬 선택 패널
+   ============================================================ */
+.rre-skill-panel {
+    flex-grow: 1;
+    width: 100%;
+    background-color: var(--color-bg-panel);
+    padding: var(--spacing-sm);
+    border-top-width: 1px;
+    border-top-color: var(--color-border-normal);
+}
+
+.rre-skill-panel__grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+
+/* ============================================================
+   스킬 카드
+   ============================================================ */
+.rre-skill-card {
+    width: 120px;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--spacing-sm);
+    margin: var(--spacing-xs);
+    background-color: var(--color-bg-skill-card);
+    border-width: 1px;
+    border-color: var(--color-border-normal);
+    border-radius: var(--radius-md);
+}
+
+.rre-skill-card:hover {
+    background-color: var(--color-bg-hover);
+}
+
+.rre-skill-card--selected {
+    border-color: var(--color-border-selected);
+}
+
+.rre-skill-card__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    background-color: var(--color-bg-slot);
+    margin-bottom: var(--spacing-xs);
+}
+
+.rre-skill-card__name {
+    font-size: 12px;
+    color: var(--color-text-primary);
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.rre-skill-card__desc {
+    font-size: 10px;
+    color: var(--color-text-secondary);
+    -unity-text-align: middle-center;
+    white-space: normal;
+}

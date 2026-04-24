@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using _03._PipeLine;
+using Bond.PartyManagement;
 using Cysharp.Threading.Tasks;
+using Reactions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
@@ -15,6 +17,9 @@ public class BaseCharacter : MonoBehaviour, ITurnUseUnit
     public AutoBattle battleType { get; set; }
     public bool isPlayable { get; set; }
 
+    public RoleType roleType = RoleType.None;
+    public Reaction[] roleReactions = new Reaction[2]; // 역할 슬롯, 최대 2개
+
     public BaseCharacter sup_Character { get; set; } // 지원 선택 대상. 대상이 행동할 때 역할군에 따른 지원. 탱커: 피격 시 엄호, 서포터: 피격 후 치유, 딜러: 공격 시 지원 공격.\
     private Stat stat;
     
@@ -27,6 +32,11 @@ public class BaseCharacter : MonoBehaviour, ITurnUseUnit
     private void Awake()
     {
         if (battleType == null) AssignDefaultBattleType(); // 역할군 랜덤 지정
+
+        for (int i = 0; i < roleReactions.Length; i++)
+        {
+            roleReactions[i] = new Reaction(i) { Agent = this };
+        }
     }
 
     private void Start()
@@ -123,6 +133,8 @@ public class BaseCharacter : MonoBehaviour, ITurnUseUnit
     
     public bool IsDead { get; private set; } = false;
     public string ImageAddress => imageAddress;
+    public string UnitName => unitName;
+    public Stat StatComponent => stat;
     public int RandomSpeed { get; set; }
     
     private AutoResetUniTaskCompletionSource<bool> _tcs;

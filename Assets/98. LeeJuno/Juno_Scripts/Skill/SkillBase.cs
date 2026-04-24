@@ -22,5 +22,7 @@ public abstract class SkillBase : MonoBehaviour
             SkillCooldown = _skillData.CoolTime;
     }
 
+    public SkillData Data => _skillData;
+
     public abstract void UseSkill();
 }
