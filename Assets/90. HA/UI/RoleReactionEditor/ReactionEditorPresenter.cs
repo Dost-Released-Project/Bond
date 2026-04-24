@@ -27,7 +27,6 @@ namespace Bond.UI.RoleReactionEditor
             public VisualElement SkillPanel;
             public VisualElement SkillGrid;
             public Reaction      Reaction;
-            public Trait         TraitRef;       // 성향 슬롯일 때만 사용
             public bool          IsTraitSlot;
             public List<Trigger> AvailableTriggers = new();
         }
@@ -82,7 +81,7 @@ namespace Bond.UI.RoleReactionEditor
             for (int i = 0; i < _current.roleReactions.Length; i++)
             {
                 var vm = CreateSlot(_current.roleReactions[i], isTraitSlot: false,
-                                    roleTriggers, traitRef: null);
+                                    roleTriggers);
                 _roleSlotContainer.Add(vm.Root);
                 _roleSlotVMs.Add(vm);
             }
@@ -93,20 +92,17 @@ namespace Bond.UI.RoleReactionEditor
             _traitSlotContainer.Clear();
             _traitSlotVMs.Clear();
 
-            foreach (var trait in _current.traits)
+            for (int i = 0; i < _current.traits.Length; i++)
             {
+                var trait = _current.traits[i];
                 if (trait == null || trait.fixedTrigger == null) continue;
 
-                // 성향 슬롯용 임시 Reaction (Agent/Trigger 고정, Behaviour는 trait.behaviour 참조)
-                var reaction = new Reaction(-1)
-                {
-                    Agent     = _current,
-                    Trigger   = trait.fixedTrigger,
-                    Behaviour = trait.behaviour
-                };
+                // 트리거는 Trait에서 고정. 스킬(Behaviour)은 traitReactions[i]에 저장
+                var reaction = _current.traitReactions[i];
+                reaction.Trigger = trait.fixedTrigger;
 
                 var vm = CreateSlot(reaction, isTraitSlot: true,
-                                    availableTriggers: null, traitRef: trait);
+                                    availableTriggers: null);
 
                 vm.TriggerDropdown.SetValueWithoutNotify(trait.fixedTrigger.Description);
                 vm.TriggerDropdown.SetEnabled(false);
@@ -117,7 +113,7 @@ namespace Bond.UI.RoleReactionEditor
         }
 
         private SlotViewModel CreateSlot(Reaction reaction, bool isTraitSlot,
-                                         List<Trigger> availableTriggers, Trait traitRef)
+                                         List<Trigger> availableTriggers)
         {
             var tree = _slotTemplate.CloneTree();
             var vm = new SlotViewModel
@@ -130,7 +126,6 @@ namespace Bond.UI.RoleReactionEditor
                 SkillPanel      = tree.Q<VisualElement>("skillPanel"),
                 SkillGrid       = tree.Q<VisualElement>("skillGrid"),
                 Reaction        = reaction,
-                TraitRef        = traitRef,
                 IsTraitSlot     = isTraitSlot
             };
 
@@ -145,10 +140,10 @@ namespace Bond.UI.RoleReactionEditor
             {
                 vm.AvailableTriggers = availableTriggers;
                 var choices = new List<string> { "— 없음 —" };
-                choices.AddRange(availableTriggers.ConvertAll(t => t.Description));
+                choices.AddRange(availableTriggers.ConvertAll(trig => trig.Description));
                 vm.TriggerDropdown.choices = choices;
                 vm.TriggerDropdown.SetValueWithoutNotify(
-                    reaction.Trigger is Trigger t ? t.Description : "— 없음 —");
+                    reaction.Trigger is Trigger cur ? cur.Description : "— 없음 —");
 
                 vm.TriggerDropdown.RegisterValueChangedCallback(evt =>
                 {
@@ -192,10 +187,6 @@ namespace Bond.UI.RoleReactionEditor
 
             vm.Reaction.Behaviour = skill;
             vm.SkillButton.text   = skill.Data?.SkillName ?? "—";
-
-            // 성향 슬롯은 Trait.behaviour도 동기화
-            if (vm.IsTraitSlot && vm.TraitRef != null)
-                vm.TraitRef.behaviour = skill;
 
             RefreshIcons(vm);
             CloseSkillPanel();

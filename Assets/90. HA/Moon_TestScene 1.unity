@@ -216,6 +216,91 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5634ec12a29f4874f9e7220cc02bb235, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02._Scripts.BattleSystem.BattleFlowManager
+--- !u!1001 &204284880
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 413019195709310118, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 413019195709310118, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 413019195709310118, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 413019195709310118, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 413019195709310118, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 413019195709310118, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 413019195709310118, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 413019195709310118, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 413019195709310118, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 413019195709310118, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 642968211895033654, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: characters.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2977709028049973198, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: m_Name
+      value: Ha's
+      objectReference: {fileID: 0}
+    - target: {fileID: 8225046686097492084, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: partyMembers.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8225046686097492084, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: 'partyMembers.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1130071075}
+    - target: {fileID: 8225046686097492084, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: 'partyMembers.Array.data[1]'
+      value: 
+      objectReference: {fileID: 308235468}
+    - target: {fileID: 8225046686097492084, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: 'partyMembers.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1412171871}
+    - target: {fileID: 8225046686097492084, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: 'partyMembers.Array.data[3]'
+      value: 
+      objectReference: {fileID: 2134428795}
+    - target: {fileID: 8225046686097492084, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: 'partyMembers.Array.data[4]'
+      value: 
+      objectReference: {fileID: 971839255}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
 --- !u!1 &308235464
 GameObject:
   m_ObjectHideFlags: 0
@@ -278,15 +363,44 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   traits:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - traitName: 
+    description: 
+    fixedTrigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  - traitName: 
+    description: 
+    fixedTrigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  - traitName: 
+    description: 
+    fixedTrigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  - traitName: 
+    description: 
+    fixedTrigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
   skills:
   - {fileID: 1528827454}
   - {fileID: 1324048512}
   - {fileID: 401130218}
   - {fileID: 2113255960}
+  roleType: 0
   TestSkillManager: {fileID: 1777505137}
   unitName: "\uD604\uC6B0"
   imageAddress: Wildboar
@@ -760,15 +874,44 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   traits:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - traitName: 123
+    description: 123123
+    fixedTrigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: "\u3134\u3147\u314E\u3147\u3134\u3139"
+      ValueParam: 0
+  - traitName: safd
+    description: asdfsadf
+    fixedTrigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: "\uB204\uB208"
+      ValueParam: 0
+  - traitName: 456
+    description: 456456
+    fixedTrigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: "\u3141\u3139"
+      ValueParam: 0
+  - traitName: 789
+    description: 78978978
+    fixedTrigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: "\u3134\u3147\u3139"
+      ValueParam: 0
   skills:
   - {fileID: 1528827454}
   - {fileID: 1324048512}
   - {fileID: 401130218}
   - {fileID: 2113255960}
+  roleType: 0
   TestSkillManager: {fileID: 1777505137}
   unitName: "\uBB49\uD0F1\uC774"
   imageAddress: MTE
@@ -931,15 +1074,44 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   traits:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - traitName: 
+    description: 
+    fixedTrigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  - traitName: 
+    description: 
+    fixedTrigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  - traitName: 
+    description: 
+    fixedTrigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  - traitName: 
+    description: 
+    fixedTrigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
   skills:
   - {fileID: 1528827454}
   - {fileID: 1324048512}
   - {fileID: 401130218}
   - {fileID: 2113255960}
+  roleType: 0
   TestSkillManager: {fileID: 1777505137}
   unitName: "\uD2B8\uB7FC\uD504"
   imageAddress: GodOfWar
@@ -1099,15 +1271,44 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   traits:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - traitName: 
+    description: 
+    fixedTrigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  - traitName: 
+    description: 
+    fixedTrigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  - traitName: 
+    description: 
+    fixedTrigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  - traitName: 
+    description: 
+    fixedTrigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
   skills:
   - {fileID: 1528827454}
   - {fileID: 1324048512}
   - {fileID: 401130218}
   - {fileID: 2113255960}
+  roleType: 0
   TestSkillManager: {fileID: 1777505137}
   unitName: "\uC300\uC22D\uC774"
   imageAddress: RiceSummoner
@@ -1323,15 +1524,44 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   traits:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - traitName: 
+    description: 
+    fixedTrigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  - traitName: 
+    description: 
+    fixedTrigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  - traitName: 
+    description: 
+    fixedTrigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  - traitName: 
+    description: 
+    fixedTrigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
   skills:
   - {fileID: 1528827454}
   - {fileID: 1324048512}
   - {fileID: 401130218}
   - {fileID: 2113255960}
+  roleType: 0
   TestSkillManager: {fileID: 1777505137}
   unitName: "\uC2E0\uCC3D\uC12D"
   imageAddress: GodOfNormalization
@@ -1354,3 +1584,4 @@ SceneRoots:
   - {fileID: 401130219}
   - {fileID: 1324048513}
   - {fileID: 1777505139}
+  - {fileID: 204284880}

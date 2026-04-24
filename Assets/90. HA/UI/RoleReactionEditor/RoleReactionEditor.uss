@@ -206,9 +206,6 @@
     -unity-text-align: middle-center;
 }
 
-.rre-role-btn:last-child {
-    margin-right: 0;
-}
 
 .rre-role-btn:hover {
     background-color: var(--color-bg-hover);
