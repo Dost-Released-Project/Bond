@@ -25,7 +25,7 @@ public class MapGenerator : IMapGenerator
         _config = config;
     }
 
-    public MapData GenerateMap(int seed, int actNumber)
+    public MapData GenerateMap(int seed)
     {
         // 시드 고정 난수 — 같은 시드면 항상 동일한 맵 생성
         System.Random rng = new System.Random(seed);
@@ -33,7 +33,6 @@ public class MapGenerator : IMapGenerator
         MapData data = new MapData
         {
             Seed = seed,
-            ActNumber = actNumber,
             TotalLayers = _config.TotalLayers,
             MaxNodesPerLayer = _config.MaxNodesPerLayer,
         };
@@ -119,9 +118,7 @@ public class MapGenerator : IMapGenerator
         for (int i = max - 1; i > 0; i--)
         {
             int j = rng.Next(i + 1);
-            int tmp = pool[i];
-            pool[i] = pool[j];
-            pool[j] = tmp;
+            (pool[i], pool[j]) = (pool[j], pool[i]);
         }
 
         int[] selected = new int[count];
@@ -338,10 +335,6 @@ public class MapGenerator : IMapGenerator
     /// <summary>
     /// 층 번호에 따라 스테이지 타입 가중치 배열을 반환한다.
     /// 배열 순서: [Normal, Elite, Event, Camping, Shop]
-    ///
-    ///   layer < 4          : Normal/Event 위주 (초반 — Elite 없음)
-    ///   layer < EliteMinLayer : Normal/Event/Camping/Shop (Elite 아직 없음)
-    ///   그 외              : Config에서 설정한 전체 가중치 사용
     /// </summary>
     private float[] GetWeights(int layer)
     {
@@ -356,7 +349,6 @@ public class MapGenerator : IMapGenerator
             _config.WeightElite,
             _config.WeightEvent,
             _config.WeightCamping,
-            _config.WeightShop
         };
     }
 
@@ -373,7 +365,7 @@ public class MapGenerator : IMapGenerator
         float roll = (float)rng.NextDouble() * total;
         float cumulative = 0f;
 
-        StageType[] types = { StageType.Normal, StageType.Elite, StageType.Event, StageType.Camping, StageType.Shop };
+        StageType[] types = { StageType.Normal, StageType.Elite, StageType.Event, StageType.Camping };
 
         for (int i = 0; i < weights.Length; i++)
         {

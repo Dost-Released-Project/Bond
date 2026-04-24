@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StageConfig
   Type: 2
   DisplayName: Boss
-  Icon: {fileID: 21300000, guid: 0059bb35168a8284ba3b807f0695a93b, type: 3}
-  IconAddress: 
+  Icon: {fileID: 0}
+  IconAddress: Wildboar
   SceneAddress: 
   NodeColor: {r: 1, g: 1, b: 1, a: 1}
-  BaseWeight: 0

@@ -29,8 +29,5 @@ public class MapGeneratorConfig : ScriptableObject
     [Range(0f, 1f)] public float WeightElite   = 0.15f;
     [Range(0f, 1f)] public float WeightEvent   = 0.22f;
     [Range(0f, 1f)] public float WeightCamping = 0.12f;
-    [Range(0f, 1f)] public float WeightShop    = 0.06f;
 
-    [Header("ScriptableObject 참조")]
-    public StageConfig[] StageConfigs;  // 각 StageType별 시각/씬 설정 (MapGenerator에서 참조)
 }

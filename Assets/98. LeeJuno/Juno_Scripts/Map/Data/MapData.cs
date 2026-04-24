@@ -12,7 +12,6 @@ using System.Collections.Generic;
 public class MapData
 {
     public int Seed;                // 맵 생성에 사용된 시드값 — 같은 시드면 동일한 맵이 생성됨
-    public int ActNumber;           // 현재 챕터 번호 (1부터 시작)
     public int TotalLayers;         // 맵의 총 층 수
     public int MaxNodesPerLayer;    // 층당 최대 노드 수 (열 인덱스 상한)
 

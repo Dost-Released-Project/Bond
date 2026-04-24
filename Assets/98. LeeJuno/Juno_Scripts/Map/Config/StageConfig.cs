@@ -16,5 +16,4 @@ public class StageConfig : ScriptableObject
     public string IconAddress;      // Addressables로 동적 로드할 때 사용하는 아이콘 주소
     public string SceneAddress;     // Addressables로 로드할 스테이지 씬 주소
     public Color NodeColor;         // 맵 노드 배경색 (스테이지 타입을 색상으로 구분)
-    [Range(0f, 1f)] public float BaseWeight; // 이 타입의 기본 출현 가중치 (참고용, 실제 생성은 MapGeneratorConfig 가중치 사용)
 }

@@ -9,6 +9,5 @@ public interface IMapGenerator
     /// 같은 seed와 actNumber를 넣으면 항상 동일한 맵이 반환된다.
     /// </summary>
     /// <param name="seed">난수 시드 — 맵 재현성 보장</param>
-    /// <param name="actNumber">현재 챕터 번호 (향후 챕터별 규칙 분기에 사용)</param>
-    public MapData GenerateMap(int seed, int actNumber);
+    public MapData GenerateMap(int seed);
 }

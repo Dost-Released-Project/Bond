@@ -67,7 +67,8 @@ private MapUIController _mapUIController;
 
     public UniTask StartAsync(CancellationToken cancellation = default)
     {
-        MapData mapData = _generator.GenerateMap(12345, 1);
+        
+        MapData mapData = _generator.GenerateMap(65732);
         _mapNavigator.Initialize(mapData);
         // 현재 위치 노드 접근
         MapNode current = _mapNavigator.CurrentNode; // 시작 전이면 null

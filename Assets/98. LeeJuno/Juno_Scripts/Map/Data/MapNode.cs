@@ -24,7 +24,6 @@ public enum StageType
     Boss,       // 보스 전투 — 마지막 층에만 강제 배치
     Camping,    // 휴식 — 보스 직전 층 강제 배치, 그 외 층에서 보조 등장 가능
     Event,      // 랜덤 이벤트 — 선택지 기반 (EventData 참조)
-    Shop,       // 상점 — 아이템 구매
 }
 
 /// <summary>
