@@ -16,7 +16,7 @@ public class TestSkillManager : MonoBehaviour, ISkillManager
         // 리스트를 사전으로 변환하여 검색 효율을 높입니다 (O(1))
         _skillDict = _skillDatabase
             .Where(s => s != null)
-            .ToDictionary(s => s.SkillId, s => s);
+            .ToDictionary(s => s.Id, s => s);
     }
 
     // ── 데이터 조회 구현 (필수 사항) ───────────────────────────────

@@ -9,7 +9,7 @@ namespace _02._Scripts.BattleSystem
         [SerializeField] private BattleFlowManager _BattleFlowManager;
         protected override void Configure(IContainerBuilder builder)
         {
-            builder.RegisterComponent(_BattleFlowManager);
+            builder.RegisterComponent(_BattleFlowManager).As<IBattleFlowManager>();
         }
     }
 }

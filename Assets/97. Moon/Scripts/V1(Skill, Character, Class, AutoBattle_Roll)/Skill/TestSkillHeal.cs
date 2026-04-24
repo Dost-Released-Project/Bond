@@ -11,6 +11,6 @@ public class TestSkillSpellAtk : SkillBase
     public override void UseSkill()
     {
         if (_skillData == null) return;
-        Debug.Log($"[공격] {_skillData.SkillName} 발사! : {_skillData.Description}");
+        Debug.Log($"[공격] {_skillData.DisplayName} 발사! : {_skillData.Description}");
     }
 }
