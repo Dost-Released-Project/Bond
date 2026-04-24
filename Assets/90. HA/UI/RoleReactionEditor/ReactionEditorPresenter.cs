@@ -154,7 +154,7 @@ namespace Bond.UI.RoleReactionEditor
             }
 
             // 스킬 버튼
-            vm.SkillButton.text = reaction.Behaviour?.Data?.SkillName ?? "— 선택 안 됨 —";
+            vm.SkillButton.text = reaction.Behaviour?.Data?.DisplayName ?? "— 선택 안 됨 —";
             vm.SkillButton.clicked += () => ToggleSkillPanel(vm);
 
             RefreshIcons(vm);
@@ -186,7 +186,7 @@ namespace Bond.UI.RoleReactionEditor
             var vm = _openSlot;
 
             vm.Reaction.Behaviour = skill;
-            vm.SkillButton.text   = skill.Data?.SkillName ?? "—";
+            vm.SkillButton.text   = skill.Data?.DisplayName ?? "—";
 
             RefreshIcons(vm);
             CloseSkillPanel();
