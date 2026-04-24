@@ -36,8 +36,12 @@ namespace Bond.UI.PartySelection
 
         private void OnCharacterSelected(BaseCharacter character)
         {
-            if (_partyPanel.IsAssigned(character)) return;
-            if (!_partyPanel.TryAssign(character)) return;
+            if (_partyPanel.IsAssigned(character))
+            {
+                _partyPanel.TryRelease(character);
+                return;
+            }
+            if (_partyPanel.TryAssign(character) == false) return;
 
             _rosterPanel.SetSelected(character, selected: true);
         }

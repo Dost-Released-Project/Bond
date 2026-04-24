@@ -276,9 +276,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ha's
       objectReference: {fileID: 0}
+    - target: {fileID: 2977709028049973198, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8225046686097492084, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8225046686097492084, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
       propertyPath: partyMembers.Array.size
@@ -924,7 +928,7 @@ MonoBehaviour:
   - {fileID: 401130218}
   - {fileID: 2113255960}
   level: 1
-  roleType: 0
+  roleType: 1
   TestSkillManager: {fileID: 1777505137}
   unitName: "\uBB49\uD0F1\uC774"
   imageAddress: MTE

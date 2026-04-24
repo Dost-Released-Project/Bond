@@ -97,6 +97,11 @@
     border-color: var(--border-active);
 }
 
+.party-slot--filled:hover {
+    border-color: var(--border-highlight);
+    background-color: var(--bg-raised);
+}
+
 /* 위험 */
 .party-slot--danger {
     border-color: var(--border-danger);
@@ -207,25 +212,29 @@
 }
 
 /* ── 로스터 그리드 ── */
+/* flex 방향은 C#에서 contentContainer에 직접 적용 */
 .roster-grid {
     flex-grow: 1;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-content: flex-start;
 }
 
 /* ════════════════════════════════════════
    캐릭터 카드
    ════════════════════════════════════════ */
 .roster-card {
-    width: 160px;
+    width: 190px;
     flex-direction: column;
     background-color: var(--bg-surface);
     border-width: 1px;
     border-color: var(--border-default);
     border-radius: 4px;
-    padding: 10px;
-    margin: 6px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .roster-card:hover {
@@ -241,21 +250,33 @@
     opacity: 0.4;
 }
 
-/* 아바타 */
+/* 상단 행: 아바타 + 이름/직업 */
+.roster-card__top {
+    flex-direction: row;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
 .roster-card__avatar {
     width: 40px;
     height: 40px;
     background-color: var(--bg-raised);
     border-radius: 4px;
-    margin-bottom: 6px;
-    align-self: center;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.roster-card__meta {
+    flex-grow: 1;
+    flex-direction: column;
 }
 
 /* 이름 */
 .char-name {
     font-size: var(--font-size-name);
     color: var(--text-primary);
-    -unity-text-align: middle-center;
+    -unity-text-align: middle-left;
+    margin-bottom: 2px;
 }
 
 /* 직업+레벨 */
@@ -263,21 +284,40 @@
     font-size: var(--font-size-class);
     color: var(--text-muted);
     letter-spacing: 2px;
-    -unity-text-align: middle-center;
+    -unity-text-align: middle-left;
+}
+
+/* 게이지 컨테이너 */
+.roster-card__bars {
+    flex-direction: column;
     margin-bottom: 6px;
 }
 
-/* HP / 스트레스 게이지 */
+/* HP / 스트레스 게이지 행 */
+.bar-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 3px;
+}
+
+.bar-label {
+    font-size: var(--font-size-system);
+    color: var(--text-muted);
+    width: 16px;
+    margin-right: 4px;
+    -unity-text-align: middle-left;
+}
+
 .bar-track {
-    height: 4px;
+    flex-grow: 1;
+    height: 3px;
     background-color: var(--bg-divider);
     border-radius: 2px;
-    margin-bottom: 3px;
     overflow: hidden;
 }
 
 .bar-fill {
-    height: 4px;
+    height: 3px;
     border-radius: 2px;
 }
 
@@ -292,7 +332,6 @@
 .trait-tags {
     flex-direction: row;
     flex-wrap: wrap;
-    margin-top: 4px;
 }
 
 .trait-tag {
@@ -301,7 +340,10 @@
     border-width: 1px;
     border-color: var(--border-default);
     border-radius: 2px;
-    padding: 1px 4px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 4px;
+    padding-right: 4px;
     margin-right: 3px;
     margin-bottom: 2px;
 }

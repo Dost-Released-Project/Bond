@@ -62,6 +62,20 @@ namespace Bond.UI.PartySelection
             return false;
         }
 
+        // 캐릭터가 배정된 슬롯을 찾아 해제
+        public bool TryRelease(BaseCharacter character)
+        {
+            for (int i = 0; i < SlotCount; i++)
+            {
+                if (_slots[i].AssignedCharacter == character)
+                {
+                    Release(i);
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private void Assign(int index, BaseCharacter character)
         {
             _slots[index].AssignedCharacter = character;
@@ -115,7 +129,7 @@ namespace Bond.UI.PartySelection
                             ((float)stat.current_Hp / stat.max_Hp <= 0.3f ||
                              stat.insanity >= 80);
 
-            var root = new VisualElement();
+            var root = new Button(() => Release(index));
             root.AddToClassList("party-slot");
             root.AddToClassList("party-slot--filled");
             if (isDanger) root.AddToClassList("party-slot--danger");
@@ -128,12 +142,8 @@ namespace Bond.UI.PartySelection
                 : $"Lv.{character.level}");
             cls.AddToClassList("party-slot__class");
 
-            var releaseBtn = new Button(() => Release(index)) { text = "해제" };
-            releaseBtn.AddToClassList("party-slot__release-btn");
-
             root.Add(name);
             root.Add(cls);
-            root.Add(releaseBtn);
 
             return root;
         }

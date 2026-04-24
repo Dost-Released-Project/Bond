@@ -34,6 +34,10 @@ namespace Bond.UI.PartySelection
             _filterRogue   = root.Q<Button>("filterRogue");
             _filterCleric  = root.Q<Button>("filterCleric");
 
+            // 카드를 가로부터 채우도록 contentContainer에 직접 적용
+            _grid.contentContainer.style.flexDirection = FlexDirection.Row;
+            _grid.contentContainer.style.flexWrap      = Wrap.Wrap;
+
             _activeFilter = _filterAll;
 
             _filterAll.clicked     += () => SetFilter("",        _filterAll);
@@ -56,21 +60,16 @@ namespace Bond.UI.PartySelection
         }
 
         // 외부(Controller)에서 편성됨/해제 상태 동기화
+        // 카드는 항상 활성화 상태 유지 — 편성된 카드 클릭 시 Controller가 해제 처리
         public void SetSelected(BaseCharacter character, bool selected)
         {
             var vm = _cards.Find(c => c.Character == character);
             if (vm == null) return;
 
             if (selected)
-            {
                 vm.Root.AddToClassList("roster-card--selected");
-                vm.Root.SetEnabled(false);
-            }
             else
-            {
                 vm.Root.RemoveFromClassList("roster-card--selected");
-                vm.Root.SetEnabled(true);
-            }
         }
 
         private void SetFilter(string classKey, Button btn)
@@ -94,8 +93,10 @@ namespace Bond.UI.PartySelection
 
         private CardViewModel BuildCard(BaseCharacter character)
         {
-            var stat     = character.StatComponent;
+            var stat        = character.StatComponent;
             string classKey = stat != null ? stat.ClassType.ToString() : "";
+            Debug.Log($"is stat null? {stat == null}");
+            Debug.Log(classKey);
 
             bool isDanger = stat != null &&
                             ((float)stat.current_Hp / Mathf.Max(1, stat.max_Hp) <= 0.3f ||
@@ -105,11 +106,7 @@ namespace Bond.UI.PartySelection
             root.AddToClassList("roster-card");
             if (isDanger) root.AddToClassList("roster-card--danger");
 
-            // 아바타
-            var avatar = new VisualElement();
-            avatar.AddToClassList("roster-card__avatar");
-
-            // 위험 점
+            // 위험 점 (absolute — 가장 먼저 추가해야 다른 요소 위에 표시됨)
             if (isDanger)
             {
                 var dot = new VisualElement();
@@ -117,11 +114,19 @@ namespace Bond.UI.PartySelection
                 root.Add(dot);
             }
 
-            // 이름
+            // ── 상단 행: 아바타 + 이름/직업 ──
+            var charTop = new VisualElement();
+            charTop.AddToClassList("roster-card__top");
+
+            var avatar = new VisualElement();
+            avatar.AddToClassList("roster-card__avatar");
+
+            var charMeta = new VisualElement();
+            charMeta.AddToClassList("roster-card__meta");
+
             var nameLabel = new Label(character.UnitName);
             nameLabel.AddToClassList("char-name");
 
-            // 직업 + 레벨
             string classDisplay = classKey switch
             {
                 "Warrior"  => "전사",
@@ -129,13 +134,26 @@ namespace Bond.UI.PartySelection
                 "Cleric"   => "성직자",
                 _          => classKey
             };
-            var classLabel = new Label($"{classDisplay}  Lv.{character.level}");
+            var classLabel = new Label($"{classDisplay} · Lv.{character.level}");
             classLabel.AddToClassList("char-class");
 
-            // HP 게이지
+            charMeta.Add(nameLabel);
+            charMeta.Add(classLabel);
+            charTop.Add(avatar);
+            charTop.Add(charMeta);
+
+            // ── 게이지 행 ──
+            var barsContainer = new VisualElement();
+            barsContainer.AddToClassList("roster-card__bars");
+
+            // HP 행
+            var hpRow   = new VisualElement();
+            hpRow.AddToClassList("bar-row");
+            var hpLabel = new Label("HP");
+            hpLabel.AddToClassList("bar-label");
             var hpTrack = new VisualElement();
             hpTrack.AddToClassList("bar-track");
-            var hpFill = new VisualElement();
+            var hpFill  = new VisualElement();
             hpFill.AddToClassList("bar-fill");
 
             if (stat != null && stat.max_Hp > 0)
@@ -145,11 +163,17 @@ namespace Bond.UI.PartySelection
                 hpFill.AddToClassList(hpRatio > 0.3f ? "bar-fill--hp-safe" : "bar-fill--hp-low");
             }
             hpTrack.Add(hpFill);
+            hpRow.Add(hpLabel);
+            hpRow.Add(hpTrack);
 
-            // 스트레스 게이지
+            // 스트레스 행
+            var stressRow   = new VisualElement();
+            stressRow.AddToClassList("bar-row");
+            var stressLabel = new Label("ST");
+            stressLabel.AddToClassList("bar-label");
             var stressTrack = new VisualElement();
             stressTrack.AddToClassList("bar-track");
-            var stressFill = new VisualElement();
+            var stressFill  = new VisualElement();
             stressFill.AddToClassList("bar-fill");
 
             if (stat != null)
@@ -162,8 +186,13 @@ namespace Bond.UI.PartySelection
                 stressFill.AddToClassList(stressClass);
             }
             stressTrack.Add(stressFill);
+            stressRow.Add(stressLabel);
+            stressRow.Add(stressTrack);
 
-            // 성향 태그
+            barsContainer.Add(hpRow);
+            barsContainer.Add(stressRow);
+
+            // ── 성향 태그 ──
             var traitTags = new VisualElement();
             traitTags.AddToClassList("trait-tags");
             foreach (var trait in character.traits)
@@ -174,11 +203,8 @@ namespace Bond.UI.PartySelection
                 traitTags.Add(tag);
             }
 
-            root.Add(avatar);
-            root.Add(nameLabel);
-            root.Add(classLabel);
-            root.Add(hpTrack);
-            root.Add(stressTrack);
+            root.Add(charTop);
+            root.Add(barsContainer);
             root.Add(traitTags);
 
             return new CardViewModel { Character = character, Root = root, ClassKey = classKey };
