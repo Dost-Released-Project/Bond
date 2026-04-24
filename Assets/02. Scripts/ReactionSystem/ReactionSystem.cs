@@ -1,13 +1,61 @@
 using System.Collections.Generic;
 using System.Linq;
-using _02._Scripts.BattleSystem;
 using _03._PipeLine;
 using UnityEngine;
-using VContainer;
 
 namespace Reactions
 {
-    public class ReactionSystem
+    public enum ReactionResult
+    {
+        Success = 0,      // 이성 — UserSkill 실행
+        Anomaly = 1,      // 본능 — AnomalySkill 강제 실행
+        BondAwakening = 2 // 유대적 각성 — 돌발 취소 + 강화 스킬
+    }
+
+    public class ReactionExecution
+    {
+        public Reaction Reaction;       // 판정한 리액션
+        public ReactionResult Result;   // 판정 결과 (연출 시스템에서도 사용)
+
+        public ReactionExecution(Reaction reaction, ReactionResult result)
+        {
+            Reaction = reaction;
+            Result = result;
+        }
+    }
+    
+    public interface IReactionResolver
+    {
+        /// <summary>
+        /// 해당 배틀 컨텍스트에서 조건을 만족한 리액션 목록을 판정 결과와 함께 반환합니다.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns>ReactionExecution 컬렉션</returns>
+        IReadOnlyList<ReactionExecution> Resolve(BattleContext context);
+    }
+    
+    public interface IReactionRegistry
+    {
+        /// <summary>
+        /// 유저가 설정 완료한 리액션 목록을 등록합니다.
+        /// </summary>
+        /// <param name="reaction"></param>
+        void Register(Reaction reaction);
+
+        /// <summary>
+        /// 해당 캐릭터의 등록된 리액션을 모두 등록 해제합니다. 
+        /// </summary>
+        /// <param name="character"></param>
+        void Unregister(BaseCharacter character);
+        
+        /// <summary>
+        /// 해당 리액션을 등록 해제합니다.
+        /// </summary>
+        /// <param name="reaction"></param>
+        void Unregister(Reaction reaction);
+    }
+    
+    public class ReactionSystem : IReactionRegistry, IReactionResolver
     {
         private readonly List<Reaction> reactions;
         
@@ -16,53 +64,30 @@ namespace Reactions
             reactions.Add(reaction);
         }
 
+        public void Unregister(BaseCharacter character)
+        {
+            var filtered = reactions.Where(reaction => reaction.Agent == character);
+            foreach (var reaction in filtered)
+            {
+                Unregister(reaction);
+            }
+        }
+
         public void Unregister(Reaction reaction)
         {
             reactions.Remove(reaction);
         }
         
-        // /// <summary>
-        // /// 배틀 컨텍스트에 따른 리액션을 처리합니다.
-        // /// </summary>
-        // /// <param name="context">리액션을 일으킬 배틀 컨텍스트</param>
-        // public void RaiseReactions(BattleContext context)
-        // {
-        //     var raised = GetReactions(context);
-        //     foreach (var reaction in raised)
-        //     {
-        //         if (reaction.Success)
-        //         {
-        //             Debug.Log($"<color=yellow>{reaction}) is Raising</color>");
-        //             battleManager.SkillApplyLogic(
-        //                 new BattleContext()
-        //                 {
-        //                     caster = reaction.Agent,
-        //                     runtimeSkill = reaction.Behaviour
-        //                 });
-        //         }
-        //         else
-        //         {
-        //             Debug.Log($"<color=yellow>{reaction}) has Failed</color>");
-        //         }
-        //     }
-        // }
-        
-        /// <summary>
-        /// 배틀 컨텍스트에 맞는 리액션들을 반환합니다.
-        /// </summary>
-        /// <param name="battleContext"></param>
-        /// <returns></returns>
-        public List<Reaction> GetReactions(BattleContext battleContext)
+        public IReadOnlyList<ReactionExecution> Resolve(BattleContext context)
         {
             // 조건에 맞는 리액션 색출
-            var triggered = reactions
-                .Where(e => e.Trigger.CheckCondition(battleContext))
+            var conditionPassed = reactions
+                .Where(e => e.Trigger.CheckCondition(context))
                 .ToList();
             
             // 리액션 성공 실패 계산
-            CalcSuccess(triggered);
-
-            return triggered;
+            // TODO: 정렬 과정 필요
+            return ExecuteReactions(conditionPassed).ToList().AsReadOnly(); 
         }
 
         /// <summary>
@@ -70,14 +95,14 @@ namespace Reactions
         /// </summary>
         /// <param name="reaction">성공을 계산할 리액션</param>
         /// <returns></returns>
-        public static bool IsSuccess(Reaction reaction) // TODO: 구현
+        private static ReactionResult IsSuccess(Reaction reaction) // TODO: 구현
         {
             // 계산을 위한 데이터를 담은 구조체를 정의해야 될 수도 있음.
             // 아니면 배틀 컨텍스트랑 리액션 정보로만 계산하던가
             
             // 계산식: [기본 확률 + 스트레스 가산치] - (지능 × 계수 + 파티 관계 보너스)
             
-            return Random.Range(0,1f) < 0.5f;
+            return (ReactionResult)Random.Range(0,3); // 임시 처리임
         }
         
         /// <summary>
@@ -85,12 +110,9 @@ namespace Reactions
         /// </summary>
         /// <param name="reactions">성공을 계산할 리액션들</param>
         /// <returns></returns>
-        public static void CalcSuccess(IEnumerable<Reaction> reactions)
+        private static IEnumerable<ReactionExecution> ExecuteReactions(IEnumerable<Reaction> reactions)
         {
-            foreach (var reaction in reactions)
-            {
-                reaction.Success = IsSuccess(reaction);
-            }
+            return reactions.Select(reaction => new ReactionExecution(reaction, ReactionResult.Success));
         }
     }
 }

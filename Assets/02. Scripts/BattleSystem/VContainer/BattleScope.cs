@@ -18,7 +18,7 @@ namespace _02._Scripts.BattleSystem
         
         protected override void Configure(IContainerBuilder builder)
         {
-            builder.Register<BattleManager>(Lifetime.Singleton).As<IBattleManager>();
+            builder.RegisterEntryPoint<BattleManager>(Lifetime.Singleton).As<IBattleManager>();
             builder.Register<ReactionSystem>(Lifetime.Singleton);
             builder.Register<FormationManager>(Lifetime.Singleton).As<IFormationManager>();
             builder.RegisterInstance(_BattlePipeLineSo).As<IBattlePipeLine>();

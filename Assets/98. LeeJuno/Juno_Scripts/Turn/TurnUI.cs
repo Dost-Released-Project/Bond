@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using TMPro;
@@ -26,6 +27,10 @@ public class TurnUI : MonoBehaviour
     public void Construct(TurnManager turnManager)
     {
         _turnManager = turnManager;
+    }
+
+    private void Start()
+    {
         _turnManager.OnTurnQueueUpdated += UpdateTurnUI;
     }
 

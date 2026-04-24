@@ -6,10 +6,10 @@ namespace _02._Scripts.BattleSystem
 {
     public class BattleFlowManagerScope : LifetimeScope
     {
-        [SerializeField] private BattleFlowManager _BattleFlowManager;
+        [SerializeField] private ExpaditionFlowManager _BattleFlowManager;
         protected override void Configure(IContainerBuilder builder)
         {
-            builder.RegisterComponent(_BattleFlowManager);
+            builder.RegisterComponent(_BattleFlowManager).As<IExpaditionFlowManager>();
         }
     }
 }

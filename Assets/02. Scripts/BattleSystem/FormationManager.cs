@@ -5,7 +5,7 @@ using _02._Scripts.BattleSystem.Interface;
 using UnityEngine;
 using VContainer;
 
-public enum e_BattleSide
+public enum E_BattleSide
 {
     Player,
     Enemy
@@ -19,9 +19,9 @@ namespace _02._Scripts.BattleSystem
     /// </summary>
     public class FormationManager : IFormationManager
     {
-        private RuntimeFormationData _playerData;
-        private RuntimeFormationData _enemyData;
-        private IFormationVisualizer _visualizer;
+        private RuntimeFormationData m_playerData;
+        private RuntimeFormationData m_enemyData;
+        private IFormationVisualizer m_visualizer;
 
         [Inject]
         public FormationManager(CharacterSlot playerUnit)
@@ -31,27 +31,27 @@ namespace _02._Scripts.BattleSystem
 
         public void SetVisualizer(IFormationVisualizer visualizer)
         {
-            _visualizer = visualizer;
+            m_visualizer = visualizer;
         }
 
-        private RuntimeFormationData GetData(e_BattleSide side) 
-            => side == e_BattleSide.Player ? _playerData : _enemyData;
+        private RuntimeFormationData GetData(E_BattleSide side) 
+            => side == E_BattleSide.Player ? m_playerData : m_enemyData;
 
         public CharacterSlot GetSlot(BaseCharacter character)
         {
             if (character == null) return null;
-            return _playerData.Slots.Concat(_enemyData.Slots)
+            return m_playerData.Slots.Concat(m_enemyData.Slots)
                 .FirstOrDefault(s => s != null && s.Occupant == character);
         }
 
         public FormationMask GetCharacterRank(BaseCharacter character)
         {
-            return GetSlot(character)?.Rank ?? FormationMask.None;
+            return GetSlot(character)?.rank ?? FormationMask.None;
         }
 
-        public BaseCharacter GetCharacterAt(e_BattleSide side, FormationMask rank)
+        public BaseCharacter GetCharacterAt(E_BattleSide side, FormationMask rank)
         {
-            return GetData(side).Slots.FirstOrDefault(s => s != null && (s.Rank & rank) != 0)?.Occupant;
+            return GetData(side).Slots.FirstOrDefault(s => s != null && (s.rank & rank) != 0)?.Occupant;
         }
 
         public void SwapFormation(BaseCharacter fromCharacter, BaseCharacter toCharacter)
@@ -59,17 +59,17 @@ namespace _02._Scripts.BattleSystem
             var fromSlot = GetSlot(fromCharacter);
             var toSlot = GetSlot(toCharacter);
 
-            if (fromSlot == null || toSlot == null || fromSlot.Side != toSlot.Side)
+            if (fromSlot == null || toSlot == null || fromSlot.side != toSlot.side)
                 return;
 
             // 로직 시스템이 데이터의 상태를 직접 제어
             fromSlot.SetOccupant(toCharacter);
             toSlot.SetOccupant(fromCharacter);
 
-            _visualizer?.PlaySwapEffect(fromCharacter, toCharacter);
+            m_visualizer?.PlaySwapEffect(fromCharacter, toCharacter);
         }
 
-        public void MoveCharacter(BaseCharacter character, e_BattleSide side, int targetIndex)
+        public void MoveCharacter(BaseCharacter character, E_BattleSide side, int targetIndex)
         {
             if (targetIndex < 0 || targetIndex >= 4) return;
 
@@ -88,23 +88,23 @@ namespace _02._Scripts.BattleSystem
                 currentSlot.Clear();
                 targetSlot.SetOccupant(character);
 
-                _visualizer?.PlayMoveEffect(character, targetSlot.Rank);
+                m_visualizer?.PlayMoveEffect(character, targetSlot.rank);
             }
         }
 
         public bool IsSkillUsable(BaseCharacter character, FormationMask skillUsableMask)
         {
             var slot = GetSlot(character);
-            return slot != null && (slot.Rank & skillUsableMask) != 0;
+            return slot != null && (slot.rank & skillUsableMask) != 0;
         }
 
         public bool IsTargetable(BaseCharacter target, FormationMask targetMask)
         {
             var slot = GetSlot(target);
-            return slot != null && (slot.Rank & targetMask) != 0;
+            return slot != null && (slot.rank & targetMask) != 0;
         }
 
-        public void ConsolidationFormation(e_BattleSide side)
+        public void ConsolidationFormation(E_BattleSide side)
         {
             var data = GetData(side);
             var slots = data.Slots;
@@ -124,16 +124,16 @@ namespace _02._Scripts.BattleSystem
                     slots[i].Clear();
             }
 
-            _visualizer?.PlayConsolidationEffect(side);
+            m_visualizer?.PlayConsolidationEffect(side);
         }
 
         #region Helper Methods
-        public CharacterSlot GetSlotAt(e_BattleSide side, FormationMask rank)
+        public CharacterSlot GetSlotAt(E_BattleSide side, FormationMask rank)
         {
-            return GetData(side).Slots.FirstOrDefault(s => s != null && s.Rank == rank);
+            return GetData(side).Slots.FirstOrDefault(s => s != null && s.rank == rank);
         }
 
-        public void SetCharacterToSlot(BaseCharacter character, e_BattleSide side, int index)
+        public void SetCharacterToSlot(BaseCharacter character, E_BattleSide side, int index)
         {
             if (index < 0 || index >= 4) return;
             GetData(side).Slots[index]?.SetOccupant(character);

@@ -5,9 +5,11 @@ namespace Reactions
 {
     public interface ITrigger
     {
-        public bool CheckCondition(BattleContext args);
+        bool CheckCondition(BattleContext args);
+        bool IsCompatibleWith(SkillType skillType);
     }
 
+    [System.Serializable]
     public class Trigger : ITrigger
     {
         // 이건 딱히 내가 생각해서 적은거 아니고 그냥 기획서 복붙한거임. 
@@ -20,6 +22,18 @@ namespace Reactions
         public bool CheckCondition(BattleContext args)
         {
             return true;
+        }
+
+        public bool IsCompatibleWith(SkillType skillType)
+        {
+            if (string.IsNullOrEmpty(TriggerKey)) return true;
+            if (TriggerKey.StartsWith("TRG_OFF"))
+                return skillType == SkillType.OFFENSIVE || skillType == SkillType.OFFENSIVE_SPELL;
+            if (TriggerKey.StartsWith("TRG_DEF"))
+                return skillType == SkillType.DEFENSIVE;
+            if (TriggerKey.StartsWith("TRG_SIT"))
+                return skillType == SkillType.SUPPORT_SPELL;
+            return true; // TRG_STA_* 등: 제한 없음
         }
     }
     

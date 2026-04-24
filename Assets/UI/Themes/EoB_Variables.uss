@@ -1,0 +1,67 @@
+/* ── EoB UI Variables ──────────────────────────────────────────────── */
+/* 변수 목록 정의용 파일. 값은 각 테마 파일에서 선언한다.             */
+/* UXML: <Style src=".../EoB_Variables.uss" /> 를 첫 번째로,          */
+/*       <Style src=".../EoB_Theme_XXX.uss" /> 를 두 번째로 참조.     */
+/* ─────────────────────────────────────────────────────────────────── */
+
+:root {
+    /* Background */
+    --bg-base:    transparent;
+    --bg-deep:    transparent;
+    --bg-surface: transparent;
+    --bg-raised:  transparent;
+    --bg-divider: transparent;
+
+    /* Border */
+    --border-default:   transparent;
+    --border-active:    transparent;
+    --border-highlight: transparent;
+    --border-danger:    transparent;
+
+    /* Text */
+    --text-primary:   rgba(0,0,0,0);
+    --text-secondary: rgba(0,0,0,0);
+    --text-muted:     rgba(0,0,0,0);
+    --text-label:     rgba(0,0,0,0);
+    --text-disabled:  rgba(0,0,0,0);
+    --text-accent:    rgba(0,0,0,0);
+
+    /* Semantic — Status */
+    --hp-safe:     transparent;
+    --hp-low:      transparent;
+    --stress-safe: transparent;
+    --stress-warn: transparent;
+    --stress-crit: transparent;
+
+    /* System — Reaction Slots */
+    --slot-role-border:  transparent;
+    --slot-role-dot:     transparent;
+    --slot-role-bg:      transparent;
+    --slot-trait-border: transparent;
+    --slot-trait-dot:    transparent;
+    --slot-trait-bg:     transparent;
+
+    /* Interactive — Button */
+    --btn-primary-bg:       transparent;
+    --btn-primary-border:   transparent;
+    --btn-primary-text:     rgba(0,0,0,0);
+    --btn-secondary-border: transparent;
+    --btn-secondary-text:   rgba(0,0,0,0);
+
+    /* Echo System */
+    --echo-ready-border: transparent;
+    --echo-ready-text:   rgba(0,0,0,0);
+    --chain-border:      transparent;
+    --chain-text:        rgba(0,0,0,0);
+
+    /* Typography — Font Size 기준값 (ThemeSwitcher가 배율 적용 후 덮어씀) */
+    --font-size-header: 0px;
+    --font-size-name:   0px;
+    --font-size-class:  0px;
+    --font-size-body:   0px;
+    --font-size-button: 0px;
+    --font-size-system: 0px;
+
+    /* Typography — Scale (ThemeSwitcher 전용, 직접 수정 금지) */
+    --font-scale: 1.0;
+}
