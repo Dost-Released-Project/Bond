@@ -1,6 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
-    <Style src="project://Assets/UI/Themes/EoB_Variables.uss" />
-    <Style src="project://Assets/UI/Themes/EoB_Theme_DarkAmber.uss" />
+    <Style src="project://database/Assets/UI/Themes/EoB_Theme_DarkAmber.uss" />
     <Style src="RoleReactionEditor.uss" />
     <ui:VisualElement name="rre-root" class="rre-root">
 

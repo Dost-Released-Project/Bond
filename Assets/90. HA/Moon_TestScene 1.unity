@@ -268,9 +268,17 @@ PrefabInstance:
       propertyPath: characters.Array.size
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1392559912180472423, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: sourceAsset
+      value: 
+      objectReference: {fileID: 9197481963319205126, guid: 3b2000df17a2f1947b9c767202641354, type: 3}
     - target: {fileID: 2977709028049973198, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
       propertyPath: m_Name
       value: Ha's
+      objectReference: {fileID: 0}
+    - target: {fileID: 8225046686097492084, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8225046686097492084, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
       propertyPath: partyMembers.Array.size
@@ -299,7 +307,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2977709028049973198, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1322744276}
   m_SourcePrefab: {fileID: 100100000, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
 --- !u!1 &308235464
 GameObject:
@@ -400,6 +411,7 @@ MonoBehaviour:
   - {fileID: 1324048512}
   - {fileID: 401130218}
   - {fileID: 2113255960}
+  level: 1
   roleType: 0
   TestSkillManager: {fileID: 1777505137}
   unitName: "\uD604\uC6B0"
@@ -911,6 +923,7 @@ MonoBehaviour:
   - {fileID: 1324048512}
   - {fileID: 401130218}
   - {fileID: 2113255960}
+  level: 1
   roleType: 0
   TestSkillManager: {fileID: 1777505137}
   unitName: "\uBB49\uD0F1\uC774"
@@ -1111,6 +1124,7 @@ MonoBehaviour:
   - {fileID: 1324048512}
   - {fileID: 401130218}
   - {fileID: 2113255960}
+  level: 1
   roleType: 0
   TestSkillManager: {fileID: 1777505137}
   unitName: "\uD2B8\uB7FC\uD504"
@@ -1164,6 +1178,42 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   _BattleFlowManager: {fileID: 192782865}
+--- !u!1 &1322744271 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2977709028049973198, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+  m_PrefabInstance: {fileID: 204284880}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1322744274 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1392559912180472423, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+  m_PrefabInstance: {fileID: 204284880}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1322744271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+--- !u!114 &1322744276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1322744271}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17f1822592ef9824eb60b4fcde563043, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Bond.UI.PartySelection.PartySelectionController
+  uiDocument: {fileID: 1322744274}
+  roleReactionEditorScreen: {fileID: 0}
+  roster:
+  - {fileID: 1130071075}
+  - {fileID: 308235468}
+  - {fileID: 1412171871}
+  - {fileID: 2134428795}
+  - {fileID: 971839255}
 --- !u!1 &1324048511
 GameObject:
   m_ObjectHideFlags: 0
@@ -1308,6 +1358,7 @@ MonoBehaviour:
   - {fileID: 1324048512}
   - {fileID: 401130218}
   - {fileID: 2113255960}
+  level: 1
   roleType: 0
   TestSkillManager: {fileID: 1777505137}
   unitName: "\uC300\uC22D\uC774"
@@ -1561,6 +1612,7 @@ MonoBehaviour:
   - {fileID: 1324048512}
   - {fileID: 401130218}
   - {fileID: 2113255960}
+  level: 1
   roleType: 0
   TestSkillManager: {fileID: 1777505137}
   unitName: "\uC2E0\uCC3D\uC12D"

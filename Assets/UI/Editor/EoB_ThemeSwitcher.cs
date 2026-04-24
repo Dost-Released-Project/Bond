@@ -3,16 +3,16 @@ using System.IO;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Bond.UI.Editor
 {
     // ─────────────────────────────────────────────────────────────────────────
     // 테마 교체 방식:
-    //   PanelSettings.themeStyleSheet 는 ThemeStyleSheet 타입(.tss)을 요구하며
-    //   일반 .uss(StyleSheet)를 직접 대입할 수 없다.
-    //   따라서 EoB_Variables.uss 를 참조하는 모든 UXML 파일을 탐색하여
-    //   기존 EoB_Theme_*.uss src 속성을 선택한 테마 경로로 치환하는 방식을 사용.
+    //   PanelSettings.themeStyleSheet 는 ThemeStyleSheet(.tss)만 수용하므로
+    //   일반 .uss 파일을 직접 대입할 수 없다.
+    //   대신 프로젝트 내 모든 .uxml 파일에서
+    //     <Style src="...EoB_Theme_*.uss" />
+    //   줄을 찾아 선택한 테마 경로로 교체한다.
     // ─────────────────────────────────────────────────────────────────────────
     public class EoB_ThemeSwitcher : EditorWindow
     {
@@ -35,6 +35,11 @@ namespace Bond.UI.Editor
             { "--font-size-system",  9f },
         };
 
+        // .uxml 안의 EoB 테마 Style 태그를 찾는 패턴
+        private static readonly Regex UxmlThemePattern = new(
+            @"<Style\s+src=""[^""]*EoB_Theme_[^""]+\.uss""\s*/>",
+            RegexOptions.Compiled);
+
         private int    _selectedTheme;
         private float  _fontScale = 1.0f;
         private string _status    = "";
@@ -42,7 +47,7 @@ namespace Bond.UI.Editor
 
         [MenuItem("Tools/EoB/Theme Switcher")]
         public static void ShowWindow() =>
-            GetWindow<EoB_ThemeSwitcher>("EoB Theme Switcher").minSize = new Vector2(360, 340);
+            GetWindow<EoB_ThemeSwitcher>("EoB Theme Switcher").minSize = new Vector2(360, 360);
 
         private void OnEnable()
         {
@@ -114,8 +119,8 @@ namespace Bond.UI.Editor
                 return;
             }
 
-            // 1. 프로젝트 내 모든 PanelSettings에 선택된 테마 USS 적용
-            int psCount = ApplyToPanelSettings(themePath);
+            // 1. 모든 .uxml 에서 EoB 테마 Style src를 선택한 테마로 교체
+            int uxmlCount = ReplaceThemeInUxmlFiles(themePath);
 
             // 2. 선택된 테마 USS 파일에 폰트 배율 적용
             ApplyFontScaleToFile(themePath);
@@ -126,33 +131,34 @@ namespace Bond.UI.Editor
             AssetDatabase.Refresh();
             AssetDatabase.SaveAssets();
 
-            SetStatus($"✓ 완료 — {ThemeNames[_selectedTheme]} / {_fontScale:F2}x  (PanelSettings {psCount}개 갱신)", ok: true);
+            SetStatus(
+                $"✓ 완료 — {ThemeNames[_selectedTheme]} / {_fontScale:F2}x  (UXML {uxmlCount}개 갱신)",
+                ok: true);
         }
 
-        // 프로젝트 내 모든 PanelSettings의 themeStyleSheet 필드를 교체한다.
-        // Unity 내부 직렬화 필드명: m_ThemeStyleSheet
-        private static int ApplyToPanelSettings(string themePath)
+        // Assets 하위 모든 .uxml 파일에서 EoB 테마 Style 태그를 교체
+        private static int ReplaceThemeInUxmlFiles(string newThemePath)
         {
-            var themeAsset = AssetDatabase.LoadAssetAtPath<StyleSheet>(themePath);
-            if (themeAsset == null) return 0;
+            // project:// 형식으로 변환 (Unity UXML src 규칙)
+            string newSrcAttr = $@"<Style src=""project://database/{newThemePath}"" />";
 
-            var guids = AssetDatabase.FindAssets("t:PanelSettings");
+            var guids = AssetDatabase.FindAssets("t:VisualTreeAsset", new[] { "Assets" });
+            Debug.Log(guids.Length);
             int count = 0;
 
             foreach (var guid in guids)
             {
-                var path = AssetDatabase.GUIDToAssetPath(guid);
-                var ps   = AssetDatabase.LoadAssetAtPath<PanelSettings>(path);
-                if (ps == null) continue;
+                string filePath = AssetDatabase.GUIDToAssetPath(guid);
+                if (!filePath.EndsWith(".uxml", System.StringComparison.OrdinalIgnoreCase))
+                    continue;
 
-                var so   = new SerializedObject(ps);
-                var prop = so.FindProperty("m_ThemeStyleSheet");
-                if (prop == null) prop = so.FindProperty("themeStyleSheet"); // fallback
-                if (prop == null) continue;
+                string content = File.ReadAllText(filePath);
+                if (!UxmlThemePattern.IsMatch(content)) continue;
 
-                prop.objectReferenceValue = themeAsset;
-                so.ApplyModifiedProperties();
-                EditorUtility.SetDirty(ps);
+                string updated = UxmlThemePattern.Replace(content, newSrcAttr);
+                if (updated == content) continue;
+
+                File.WriteAllText(filePath, updated);
                 count++;
             }
 
