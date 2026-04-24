@@ -9,27 +9,27 @@ namespace _02._Scripts.BattleSystem
 {
     public class BattleManager : IBattleManager, IStartable, IDisposable
     {
-        private readonly ReactionSystem reactionSystem;
-        private readonly IBattlePipeLine skillApplyPipeline;
-        private readonly IBattleFlowManager battleFlowManager;
+        private readonly ReactionSystem _reactionSystem;
+        private readonly IBattlePipeLine _skillApplyPipeline;
+        private readonly IExpaditionFlowManager _expaditionFlowManager;
         
         public BattleManager(ReactionSystem reactionSystem, 
-            IBattlePipeLine  skillApplyPipeline, IBattleFlowManager battleFlowManager)
+            IBattlePipeLine  skillApplyPipeline, IExpaditionFlowManager expaditionFlowManagerFlowManager)
         {
-            this.battleFlowManager = battleFlowManager;
-            this.reactionSystem = reactionSystem;
-            this.skillApplyPipeline = skillApplyPipeline;
+            this._expaditionFlowManager = expaditionFlowManagerFlowManager;
+            this._reactionSystem = reactionSystem;
+            this._skillApplyPipeline = skillApplyPipeline;
             Init();
         }
         
-        public void Start()
+        void IStartable.Start()
         {
-            battleFlowManager.OnBattleStart += StartBattle;
+            _expaditionFlowManager.OnBattleStart += StartBattle;
         }
 
-        public void Dispose()
+        void IDisposable.Dispose()
         {
-            battleFlowManager.OnBattleStart -= StartBattle;
+            _expaditionFlowManager.OnBattleStart -= StartBattle;
         }
 
         private void StartBattle(BaseCharacter[] players, BaseCharacter[] enemies)
@@ -39,20 +39,18 @@ namespace _02._Scripts.BattleSystem
 
         private void Init()
         {
-            skillApplyPipeline.SetReactionSystem(reactionSystem);
+            _skillApplyPipeline.SetReactionSystem(_reactionSystem);
         }
 
         public BattleContext SkillApplyLogic(BattleContext context)
         {
             // [입구] 로직 파이프라인 실행
-            if (skillApplyPipeline != null)
+            if (_skillApplyPipeline != null)
             {
-                return skillApplyPipeline.Run(context);
+                return _skillApplyPipeline.Run(context);
             }
 
             return context;
         }
-
-        
     }
 }

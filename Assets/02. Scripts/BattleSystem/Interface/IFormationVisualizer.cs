@@ -20,6 +20,6 @@ namespace _02._Scripts.BattleSystem.Interface
         /// <summary>
         /// 진영이 재정렬될 때의 연출을 수행합니다.
         /// </summary>
-        void PlayConsolidationEffect(e_BattleSide side);
+        void PlayConsolidationEffect(E_BattleSide side);
     }
 }

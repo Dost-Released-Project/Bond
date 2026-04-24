@@ -9,8 +9,7 @@
 $OutputEncoding = [System.Text.Encoding]::UTF8
 
 $config = @{
-    TempCode      = "96. WT/TempCode.cs"
-    ReviewFile    = "96. WT/TempReview.md"
+    ReviewFile    = "Assets/96. WT/TempReview.md"
     GuidelineFile = "C:\Users\kot77\Desktop\Unity\Bond\Assets\Ignore\Guide\통합_AI_작업_가이드라인.md"
     WaitTime      = 30
 }
@@ -45,7 +44,9 @@ $guide
 $refactorBlock
 [Task]
 $prompt
-[Rules] Unity6 API 준수. 코드만 출력(설명·```csharp 금지).
+[Rules] 
+Unity6 API 준수. 코드만 출력(설명·```csharp 금지).
+Unity에서 사용한다는 것을 전제로 코드를 작성하라
 "@
 
     Write-Host "[1/2] 코드 생성 중..." -ForegroundColor Cyan
