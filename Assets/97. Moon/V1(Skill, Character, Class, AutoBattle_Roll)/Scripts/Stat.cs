@@ -9,6 +9,7 @@ public enum StatType { STR, AGI, INT }
 public class Stat : MonoBehaviour
 {
     private ClassType classType; // 스탯 보너스를 계산하기 위한 클래스 타입
+    public ClassType ClassType => classType;
     
     [Header("Base Stat")]
     public int INT { get; private set; } // int와 구분 짓고자 대문자 사용, 신관 특화 스탯

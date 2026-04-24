@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using _03._PipeLine;
+using Bond.PartyManagement;
 using Cysharp.Threading.Tasks;
+using Reactions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
@@ -14,7 +16,14 @@ public class BaseCharacter : MonoBehaviour, ITurnUseUnit
     public Class classType { get; set; }
     public AutoBattle battleType { get; set; }
     public bool isPlayable { get; set; }
-    
+
+    public int level = 1;
+
+    public RoleType roleType = RoleType.None;
+    public Reaction[] roleReactions  = new Reaction[2]; // 역할 슬롯, 최대 2개
+    public Reaction[] traitReactions = new Reaction[4]; // 성향 슬롯 (traits[]와 인덱스 대응)
+
+    public BaseCharacter sup_Character { get; set; } // 지원 선택 대상. 대상이 행동할 때 역할군에 따른 지원. 탱커: 피격 시 엄호, 서포터: 피격 후 치유, 딜러: 공격 시 지원 공격.\
     private Stat stat;
     
     // BattleManager가 구독할 이벤트. BattleContext는 공격자, 방어자, 스킬 정보 등을 담는 클래스. BattleManager는 이 이벤트를 구독하여 BattleContext를 받아 처리.
@@ -26,11 +35,20 @@ public class BaseCharacter : MonoBehaviour, ITurnUseUnit
     private void Awake()
     {
         if (battleType == null) AssignDefaultBattleType(); // 역할군 랜덤 지정
+
+        for (int i = 0; i < roleReactions.Length; i++)
+            roleReactions[i] = new Reaction(i) { Agent = this };
+
+        for (int i = 0; i < traitReactions.Length; i++)
+            traitReactions[i] = new Reaction(10 + i) { Agent = this };
     }
 
     private void Start()
     {
         _skillManager = TestSkillManager.GetComponent<ISkillManager>();
+        
+        // 2. 스킬 초기화 (Init 호출)
+        InitializeSkills();
         
         stat = GetComponent<Stat>(); // 스탯 컴포넌트 가져오기
         stat.StatCalculate(unitName);
@@ -39,6 +57,58 @@ public class BaseCharacter : MonoBehaviour, ITurnUseUnit
         _input.Space.space.performed += OnActionButtonClicked;
         _input.Space.FkeyDie.performed += OnDie;
         _input.Enable();
+    }
+
+    private void Update()
+    {
+        if (Keyboard.current.f1Key.wasPressedThisFrame) // 플레이어블 선택 여부(아직 개별로 작동하지 않기 때문에 여럿이 있을 땐 사용 못함)
+        {
+            if (battleType == null)
+            {
+                Debug.Log("역할군이 비어있습니다.");
+                return;
+            }
+            
+            isPlayable = !isPlayable;
+            battleType.isPlayable = isPlayable;
+            
+            if (isPlayable)
+            {
+                Debug.Log("얘는 내가 조종할게");
+            }
+            else
+            {
+                Debug.Log("걔는 네가 조종하렴");
+            }
+        }
+        
+        if (stat.current_Hp <= 0)
+            IsDead = true;
+    }
+    
+    private void InitializeSkills()
+    {
+        if (_skillManager == null)
+        {
+            Debug.LogError("SkillManager를 찾을 수 없습니다!");
+            return;
+        }
+
+        foreach (var skill in skills)
+        {
+            if (skill == null) continue;
+
+            // TestSkill로 캐스팅하여 인스펙터에 적힌 ID를 가져옴
+            if (skill is TestSkillAttack atkSkill) 
+                skill.Init(atkSkill.TargetSkillId, _skillManager);
+            else if (skill is TestSkillShield defSkill)
+                skill.Init(defSkill.TargetSkillId, _skillManager);
+            else if (skill is TestSkillSpellAtk spellSkill)
+                skill.Init(spellSkill.TargetSkillId, _skillManager);
+            else if (skill is TestSkillBuff buff)
+                skill.Init(buff.TargetSkillId, _skillManager);
+            
+        }
     }
     
     // 역할군 랜덤 지정 로직
@@ -67,6 +137,8 @@ public class BaseCharacter : MonoBehaviour, ITurnUseUnit
     
     public bool IsDead { get; private set; } = false;
     public string ImageAddress => imageAddress;
+    public string UnitName => unitName;
+    public Stat StatComponent => stat;
     public int RandomSpeed { get; set; }
     
     private AutoResetUniTaskCompletionSource<bool> _tcs;

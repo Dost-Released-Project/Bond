@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <!-- 스킬 선택 패널 내 카드 1개 단위 템플릿 -->
+    <ui:Button class="rre-skill-card">
+        <ui:VisualElement name="skillIcon"  class="rre-skill-card__icon" />
+        <ui:Label name="skillName"          class="rre-skill-card__name"  text="스킬 이름" />
+        <ui:Label name="skillDesc"          class="rre-skill-card__desc"  text="설명" />
+    </ui:Button>
+</ui:UXML>

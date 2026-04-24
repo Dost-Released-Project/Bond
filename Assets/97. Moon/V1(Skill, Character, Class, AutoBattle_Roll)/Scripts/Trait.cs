@@ -1,6 +1,11 @@
+using Reactions;
 using UnityEngine;
 
-public class Trait : MonoBehaviour
+[System.Serializable]
+public class Trait
 {
-    // Trait 타입 및 이름 등의 정보를 포함하는 스크립트
+    public string traitName;
+    [TextArea] public string description;
+    public Trigger fixedTrigger;  // 성향에 고정된 트리거, 편집 UI에서 읽기 전용
+    // 스킬(Behaviour)은 Trait이 소유하지 않는다. BaseCharacter.traitReactions[i].Behaviour에 저장.
 }
