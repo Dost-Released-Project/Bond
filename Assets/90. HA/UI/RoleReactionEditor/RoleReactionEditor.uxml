@@ -1,5 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
     <Style src="RoleReactionEditor.uss" />
+    <Style src="project:/Assets/UI/Themes/EoB_Variables.uss" />
+    <Style src="project:/Assets/UI/Themes/EoB_Theme_DarkAmber.uss" />
     <ui:VisualElement name="rre-root" class="rre-root">
 
         <!-- ===== 파티 요약 바 (상단 고정) ===== -->
