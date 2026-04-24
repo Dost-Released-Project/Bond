@@ -4,9 +4,13 @@ using System.Collections.Generic;
 public interface IInventory
 {
     // --- 기본 관리 ---
-    void AddItem(BaseItem item, int quantity);
+    int Capacity { get; } // VContainer에서 접근 가능하도록 추가
+    int AddItem(BaseItem item, int quantity);
     bool TryRemoveItem(string itemID, int quantity);
     IReadOnlyDictionary<string, int> GetItemList();
+    InventorySlot GetSlot(int index); // 사용자님이 옮긴 위치 확인
+    
+    void SwapSlots(int indexA, int indexB);
 
     // --- 편의 기능 (신규) ---
     /// <summary>ID 기반 자동 정렬</summary>
