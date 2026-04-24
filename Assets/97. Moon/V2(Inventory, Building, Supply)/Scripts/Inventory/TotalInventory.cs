@@ -68,5 +68,4 @@ public class TotalInventory : InventoryBase, ITotalInventory
         _resourceManager.AddFrontierData(quantity * 5);
         Debug.Log($"<color=cyan>[로그]</color> {item.itemName} 초과분 {quantity}개가 개척 데이터로 전환되었습니다.");
     }
-    public void ExpandStorage(int additionalSlots) { /* 로직 */ }
 }

@@ -34,7 +34,8 @@ public class InventoryView : MonoBehaviour
     private string _currentSearch = "";
     private ItemCategory? _currentFilter = null; // null이면 전체 보기
     
-    // [Inject] 태그를 붙이면 VContainer가 알아서 값을 넣어줍니다.
+    private ScrollView _totalScroll;
+
     [Inject]
     public void Construct(ITotalInventory total, IExpeditionInventory expedition, InventoryTransferService service)
     {
@@ -43,56 +44,42 @@ public class InventoryView : MonoBehaviour
         _transferService = service;
     }
 
-    // Awake 대신 Start를 사용하여 UI Toolkit의 로드 시간을 벌어줍니다.
     private void Start()
     {
-        var uiDocument = GetComponent<UIDocument>();
-        _root = uiDocument.rootVisualElement;
-
-        // 여기서 한 번 더 체크 (UI가 로드되지 않았다면 다음 프레임에 실행되게 할 수도 있음)
-        if (_root == null || _root.childCount == 0) 
-        {
-            Debug.LogWarning("UI Root가 아직 준비되지 않았습니다. 잠시 후 다시 시도합니다.");
-            Invoke(nameof(SetupUI), 0.1f); // 0.1초 뒤 실행
-            return;
-        }
-        
+        SetupUI();
+        // 테스트용 아이템 세팅
         _totalInventory.AddItemAt(0, testItems[0], 5); 
         _totalInventory.AddItemAt(1, testItems[1], 5); 
         _totalInventory.AddItemAt(2, testItems[2], 5);
         _totalInventory.AddItemAt(3, testItems[3], 1);
         _totalInventory.AddItemAt(4, testItems[4], 1);
-        RefreshUI();
-
-        SetupUI();
-        
         ToggleWindow(false);
     }
-    
+
     public void ToggleWindow(bool show)
     {
-        var root = GetComponent<UIDocument>().rootVisualElement;
-        root.Q<VisualElement>("inventory-container").style.display = 
-            show ? DisplayStyle.Flex : DisplayStyle.None;
-    
-        if(show) RefreshUI();
+        _root.Q<VisualElement>("inventory-container").style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
+        if (show)
+        {
+            // [추가] 창을 열 때 스크롤 위치를 맨 위로 초기화
+            // _totalScroll은 SetupUI에서 찾아둔 ScrollView 변수입니다.
+            if (_totalScroll != null)
+            {
+                _totalScroll.scrollOffset = Vector2.zero;
+            }
+            RefreshUI();
+        }
     }
 
     private void SetupUI()
     {
         _root = GetComponent<UIDocument>().rootVisualElement;
         
-        // 캡처해주신 이미지의 이름과 정확히 일치해야 합니다 (#은 ID, .은 Class)
-        _totalGrid = _root.Q<VisualElement>("total-inventory-grid");
+        // [수정] ScrollView로 가져오기
+        _totalScroll = _root.Q<ScrollView>("total-inventory-grid");
+        _totalGrid = _root.Q<VisualElement>("total-grid");
         _expeditionGrid = _root.Q<VisualElement>("expedition-inventory-grid");
 
-        if (_totalGrid == null || _expeditionGrid == null)
-        {
-            Debug.LogError("UXML에서 grid를 찾을 수 없습니다. Name 설정을 확인하세요.");
-            return;
-        }
-
-        // 고스트 생성 및 이벤트 등록 (기존 로직 동일)
         _dragGhost = new VisualElement();
         _dragGhost.style.position = Position.Absolute;
         _dragGhost.pickingMode = PickingMode.Ignore;
@@ -100,10 +87,10 @@ public class InventoryView : MonoBehaviour
         _root.Add(_dragGhost);
         _root.RegisterCallback<PointerMoveEvent>(OnPointerMove);
 
-        GenerateSlots(_totalGrid, _totalInventory.Capacity, _totalSlotElements, _totalInventory);
-        GenerateSlots(_expeditionGrid, _expeditionInventory.Capacity, _expeditionSlotElements, _expeditionInventory);
-        
-        RefreshUI();
+        // 초기 슬롯 생성
+        SyncSlotCount(_totalGrid, _totalInventory.Capacity, _totalSlotElements, _totalInventory);
+        SyncSlotCount(_expeditionGrid, _expeditionInventory.Capacity, _expeditionSlotElements, _expeditionInventory);
+
         
         // UI 요소 연결 (UXML에 해당 이름의 요소가 있어야 함)
         _searchField = _root.Q<TextField>("inventory-search");
@@ -125,28 +112,20 @@ public class InventoryView : MonoBehaviour
             _expeditionInventory.SortById();
             RefreshUI();
         });
-
+        
         _filterConsumableBtn.RegisterCallback<ClickEvent>(evt => SetFilter(ItemCategory.Consume));
         _filterAccessoryBtn.RegisterCallback<ClickEvent>(evt => SetFilter(ItemCategory.Accessories));
         _allFilterBtn.RegisterCallback<ClickEvent>(evt => SetFilter(null)); // 전체 보기 버튼도 필요함
         _closeBtn.RegisterCallback<ClickEvent>(evt => ToggleWindow(false)); // 인벤토리 닫기
     }
-    
-    private void SetFilter(ItemCategory? category)
-    {
-        _currentFilter = category;
-        RefreshUI();
-        Debug.Log(category == null ? "전체 보기" : $"{category} 필터 활성화");
-    }
 
-    private void GenerateSlots(VisualElement container, int count, List<VisualElement> list, IInventory inv)
+    // [핵심] 슬롯 숫자를 인벤토리 용량에 맞춰 동적으로 늘려주는 메서드
+    private void SyncSlotCount(VisualElement container, int targetCount, List<VisualElement> list, IInventory inv)
     {
-        container.Clear();
-        list.Clear();
-
-        for (int i = 0; i < count; i++)
+        // 현재 UI 슬롯이 부족한 경우에만 추가 생성
+        while (list.Count < targetCount)
         {
-            int index = i;
+            int index = list.Count;
             var slot = new VisualElement();
             slot.AddToClassList("inventory-slot-base");
             
@@ -160,39 +139,38 @@ public class InventoryView : MonoBehaviour
 
     public void RefreshUI()
     {
+        // 1. 용량 변화가 있었다면 슬롯 UI 추가 생성
+        SyncSlotCount(_totalGrid, _totalInventory.Capacity, _totalSlotElements, _totalInventory);
+        SyncSlotCount(_expeditionGrid, _expeditionInventory.Capacity, _expeditionSlotElements, _expeditionInventory);
+
         var totalVisible = _totalInventory.GetFilteredIndices(_currentSearch, _currentFilter);
         var expeditionVisible = _expeditionInventory.GetFilteredIndices(_currentSearch, _currentFilter);
 
         UpdateGrid(_totalSlotElements, _totalInventory, totalVisible);
         UpdateGrid(_expeditionSlotElements, _expeditionInventory, expeditionVisible);
     }
-    
+
     private void UpdateGrid(List<VisualElement> elements, IInventory inv, IEnumerable<int> visibleIndices)
     {
         var visibleSet = new HashSet<int>(visibleIndices);
-
+    
         for (int i = 0; i < elements.Count; i++)
         {
             var slotVisual = elements[i];
             var slotData = inv.GetSlot(i);
             slotVisual.Clear();
-
+    
             if (visibleSet.Contains(i))
             {
                 slotVisual.style.display = DisplayStyle.Flex;
-            
                 if (!slotData.IsEmpty)
                 {
-                    // 아이콘 생성
                     var icon = new VisualElement();
                     icon.style.backgroundImage = new StyleBackground(slotData.item.icon);
                     icon.style.width = Length.Percent(100);
                     icon.style.height = Length.Percent(100);
-                
-                    // 수량 라벨
                     var label = new Label(slotData.quantity.ToString());
                     label.AddToClassList("slot-quantity-label");
-                
                     slotVisual.Add(icon);
                     slotVisual.Add(label);
                 }
@@ -202,6 +180,13 @@ public class InventoryView : MonoBehaviour
                 slotVisual.style.display = DisplayStyle.None;
             }
         }
+    }
+    
+    private void SetFilter(ItemCategory? category)
+    {
+        _currentFilter = category;
+        RefreshUI();
+        Debug.Log(category == null ? "전체 보기" : $"{category} 필터 활성화");
     }
 
     private void OnPointerDown(PointerDownEvent evt, IInventory inv, int index)

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class InventoryBase : IInventory
 {
-    protected List<InventorySlot> _slots;
+    protected List<InventorySlot> _slots = new List<InventorySlot>();
     public int Capacity => _slots.Count;
 
     protected InventoryBase(int capacity)
@@ -66,13 +66,13 @@ public abstract class InventoryBase : IInventory
         return result;
     }
     
-    public void ExpandStorage(int additionalSlots)
+    public virtual void ExpandStorage(int additionalSlots)
     {
         for (int i = 0; i < additionalSlots; i++)
         {
             _slots.Add(new InventorySlot());
         }
-        Debug.Log($"슬롯 확장: {additionalSlots}개 추가됨, 전체 슬롯 {_slots.Count} 개");
+        Debug.Log($"<color=cyan>[인벤토리]</color> 슬롯이 {additionalSlots}칸 확장되어 총 {_slots.Count}칸입니다.");
     }
 
     public abstract int AddItemAuto(BaseItem item, int quantity);

@@ -41,14 +41,17 @@ public class InventoryTransferService
         if (sRemain > 0)
         {
             // AddItemAuto를 통해 빈자리나 기존 스택을 찾아 안전하게 들어감
-            source.AddItemAt(sourceIdx, sItem, sRemain);
+            if (source.GetSlot(sourceIdx) != null) source.AddItemAuto(sItem, sRemain);
+            else source.AddItemAt(sourceIdx, sItem, sRemain);
+            
             Debug.Log($"[잔량반환] {sItem.itemName} {sRemain}개가 원래 인벤토리로 돌아갔습니다.");
         }
 
         // [B] 타겟 아이템의 잔량이 있다면 원래의 인벤토리(target)로 복귀
         if (tRemain > 0)
         {
-            target.AddItemAt(targetIdx, tItem, tRemain);
+            if(target.GetSlot(targetIdx) != null) target.AddItemAuto(tItem, tRemain);
+            else target.AddItemAt(targetIdx, tItem, tRemain);
             Debug.Log($"[잔량반환] {tItem.itemName} {tRemain}개가 원래 인벤토리로 돌아갔습니다.");
         }
     }

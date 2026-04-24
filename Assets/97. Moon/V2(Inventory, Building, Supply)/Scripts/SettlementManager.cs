@@ -37,7 +37,7 @@ public class SettlementManager : MonoBehaviour
     public void OnBuildingClicked(BuildingObject building)
     {
         Debug.Log($"<color=cyan>{building.Data.buildingName}</color> Lv.{building.CurrentLevel} 클릭됨.");
-
+        var levelData = building.Data.GetLevelData(building.CurrentLevel);
         switch (building.Data.buildingType)
         {
             case BuildingType.Storage:
@@ -46,14 +46,14 @@ public class SettlementManager : MonoBehaviour
             case BuildingType.Guild:
                 CollectGuildData(building);
                 break;
-            case BuildingType.Tavern:
-                Debug.Log("식당: 캐릭터 체력 회복 UI 오픈 예정");
+            case BuildingType.Tavern: // 식당: HP 회복
+                ProcessTavern(levelData.effectValue);
                 break;
-            case BuildingType.Inn:
-                Debug.Log("여관: 정신력 안정화 UI 오픈 예정");
+            case BuildingType.Inn:    // 여관: 스트레스(광기) 회복
+                ProcessInn(levelData.effectValue);
                 break;
-            case BuildingType.Smithy:
-                Debug.Log("대장간: 장비 강화 UI 오픈 예정");
+            case BuildingType.Smithy: // 대장간: 장비 강화
+                ProcessSmithy(building);
                 break;
         }
     }
@@ -107,6 +107,26 @@ public class SettlementManager : MonoBehaviour
         }
     }
     
+    // 건물을 클릭했을 때 호출되거나, 전용 UI에서 '휴식하기' 버튼을 눌렀을 때 호출
+    public void ProcessRecovery(Stat characterStat, BuildingObject building)
+    {
+        var levelData = building.Data.GetLevelData(building.CurrentLevel);
+        float power = levelData.effectValue;
+
+        if (building.Data.buildingType == BuildingType.Tavern)
+        {
+            // 식당: HP 회복
+            characterStat.RecoverHp((int)power);
+            Debug.Log($"{building.Data.buildingName}: 체력을 {power}만큼 회복했습니다.");
+        }
+        else if (building.Data.buildingType == BuildingType.Inn)
+        {
+            // 여관: 스트레스(광기) 감소
+            characterStat.RecoverInsanity((int)power);
+            Debug.Log($"{building.Data.buildingName}: 광기를 {power}만큼 진정시켰습니다.");
+        }
+    }
+    
     // 업그레이드 메서드도 이 공통 메서드를 사용하도록 리팩토링
     public void UpgradeBuilding(BuildingObject building)
     {
@@ -154,5 +174,66 @@ public class SettlementManager : MonoBehaviour
         int reward = (int)guild.Data.GetLevelData(guild.CurrentLevel).effectValue;
         _resourceManager.AddFrontierData(reward);
         Debug.Log($"길드에서 {reward}의 개척 데이터를 수급했습니다!");
+    }
+    
+    private Stat _selectedCharacter; // 현재 선택된 캐릭터
+
+    // 캐릭터 선택 (InteractionManager나 외부에서 호출)
+    public void SelectCharacter(Stat characterStat)
+    {
+        _selectedCharacter = characterStat;
+        Debug.Log($"<color=green>[선택됨]</color> {characterStat.ClassType} 클래스 캐릭터");
+    }
+
+    private Stat GetSelectedCharacterStat()
+    {
+        if (_selectedCharacter == null)
+        {
+            Debug.LogWarning("선택된 캐릭터가 없습니다! 캐릭터를 먼저 클릭하세요.");
+        }
+        return _selectedCharacter;
+    }
+
+    // --- 건물 실무 로직 완결 ---
+
+    private void ProcessTavern(float effectValue)
+    {
+        Stat target = GetSelectedCharacterStat();
+        if (target == null) return;
+
+        // 식당: HP 회복 (effectValue만큼)
+        // StatCalculate를 호출하여 최대 체력을 갱신한 뒤 회복
+        target.StatCalculate(); 
+        // target.Heal((int)effectValue); // 별도의 Heal 메서드가 있다면 사용
+        Debug.Log($"식당 이용: {target.ClassType} HP 회복 완료");
+    }
+
+    private void ProcessInn(float effectValue)
+    {
+        Stat target = GetSelectedCharacterStat();
+        if (target == null) return;
+
+        // 여관: 스트레스(광기) 감소
+        target.insanity = Mathf.Max(0, target.insanity - (int)effectValue);
+        Debug.Log($"여관 이용: {target.ClassType} 스트레스 {effectValue} 감소");
+    }
+
+    private void ProcessSmithy(BuildingObject smithy)
+    {
+        Stat target = GetSelectedCharacterStat();
+        if (target == null) return;
+
+        // 대장간: 현재 대장간 레벨까지만 장비 강화 허용
+        // 예: 무기(baseWeapon) 강화
+        if (target.baseWeapon != null && target.baseWeapon.upgradeLevel < smithy.CurrentLevel)
+        {
+            target.baseWeapon.Upgrade();
+            target.StatCalculate(); // 강화 수치 반영을 위한 재계산
+            Debug.Log($"{target.ClassType} 무기 강화 성공! (Lv.{target.baseWeapon.upgradeLevel})");
+        }
+        else
+        {
+            Debug.LogWarning("강화 불가: 대장간 레벨 부족 또는 최대 강화 상태");
+        }
     }
 }

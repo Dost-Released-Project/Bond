@@ -1,13 +1,15 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/97.%20Moon/V2(Inventory,%20Building,%20Supply)/Scripts/UI/Inventory/InventoryStyle.uss?fileID=7433441132597879392&amp;guid=2d9b46e0e3f6b80438edfeb73b2d389a&amp;type=3#InventoryStyle"/>
-    <ui:VisualElement name="inventory-container" style="flex-grow: 1; flex-wrap: nowrap; width: 1920px; height: 1080px; aspect-ratio: auto; background-image: none;">
-        <ui:VisualElement name="total-inventory-grid" style="flex-grow: 1; flex-wrap: wrap; background-size: 100% 100%; top: 100px;"/>
-        <ui:VisualElement name="expedition-inventory-grid" style="flex-grow: 1; flex-wrap: wrap; top: 100px; left: 100px;"/>
+    <ui:VisualElement name="inventory-container" style="flex-grow: 1; flex-wrap: nowrap; width: 1920px; height: 1080px; aspect-ratio: auto; background-image: none; flex-direction: column;">
+        <ui:ScrollView name="total-inventory-grid" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" mode="Vertical" style="position: relative; top: 100px; width: 450px; height: 450px; flex-direction: row; white-space: normal; flex-wrap: wrap; align-items: stretch; align-self: auto; align-content: flex-start; flex-shrink: 1; flex-grow: 1;">
+            <ui:VisualElement name="total-grid" style="flex-grow: 1; flex-direction: row; flex-wrap: wrap; align-items: flex-start; width: 450px; height: 450px;"/>
+        </ui:ScrollView>
+        <ui:VisualElement name="expedition-inventory-grid" style="flex-grow: 1; flex-wrap: nowrap; top: 100px; left: auto; position: relative; height: 100px; width: 631px; flex-direction: row; background-position-y: center; flex-shrink: 1;"/>
         <ui:TextField label="Search" placeholder-text="filler text" name="inventory-search" style="width: 400px; height: 50px; align-items: center; justify-content: space-around; font-size: 30px; top: 100px;"/>
-        <ui:Button text="Sort" name="btn-sort" style="width: 100px; height: 100px; -unity-text-align: middle-center; white-space: pre; top: -550px; right: 0; left: 450px; bottom: 0; font-size: 40px;"/>
-        <ui:Button text="Consume" name="btn-filter-consumable" style="width: 100px; height: 100px; -unity-text-align: middle-center; white-space: pre; top: -550px; right: 0; left: 450px; bottom: 0; font-size: 20px;"/>
-        <ui:Button text="Equip" name="btn-filter-accessory" style="width: 100px; height: 100px; -unity-text-align: middle-center; white-space: pre; top: -550px; right: 0; left: 450px; bottom: 0; font-size: 37px;"/>
-        <ui:Button text="All" name="btn-filter-all" style="width: 100px; height: 100px; -unity-text-align: middle-center; white-space: pre; top: -550px; right: 0; left: 450px; bottom: 0; font-size: 40px;"/>
-        <ui:Button text="X" name="btn-close" style="width: 100px; height: 100px; -unity-text-align: middle-center; white-space: pre; top: 650px; right: 0; left: 450px; bottom: 0; font-size: 100px; position: absolute;"/>
+        <ui:Button text="Sort" name="btn-sort" style="width: 100px; height: 100px; -unity-text-align: middle-center; white-space: pre; top: -550px; right: 0; left: 500px; bottom: 0; font-size: 40px;"/>
+        <ui:Button text="Consume" name="btn-filter-consumable" style="width: 100px; height: 100px; -unity-text-align: middle-center; white-space: pre; top: -550px; right: 0; left: 500px; bottom: 0; font-size: 20px;"/>
+        <ui:Button text="Equip" name="btn-filter-accessory" style="width: 100px; height: 100px; -unity-text-align: middle-center; white-space: pre; top: -550px; right: 0; left: 500px; bottom: 0; font-size: 37px;"/>
+        <ui:Button text="All" name="btn-filter-all" style="width: 100px; height: 100px; -unity-text-align: middle-center; white-space: pre; top: -550px; right: 0; left: 500px; bottom: 0; font-size: 40px;"/>
+        <ui:Button text="X" name="btn-close" style="width: 100px; height: 100px; -unity-text-align: middle-center; white-space: pre; top: 65%; right: auto; left: 25%; bottom: auto; font-size: 100px; position: absolute;"/>
     </ui:VisualElement>
 </ui:UXML>
