@@ -20,44 +20,50 @@ public class InteractionManager : MonoBehaviour
     {
         _mainCam = Camera.main;
     }
-
+    
     void Update()
     {
-        // 1. 마우스 왼쪽 버튼 클릭 시 (뉴 인풋 시스템 방식)
+        // 좌클릭: 건설 슬롯 열기 / 건물 상호작용(수급, 창고열기 등)
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            // 2. UI 위에 마우스가 있다면 월드 클릭 무시
             if (EventSystem.current.IsPointerOverGameObject()) return;
+            ExecuteRaycast(false); // false는 좌클릭 의미
+        }
 
-            ExecuteRaycast();
+        // [추가] 우클릭: 건물 업그레이드 시도
+        if (Mouse.current.rightButton.wasPressedThisFrame)
+        {
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+            ExecuteRaycast(true); // true는 우클릭 의미
         }
     }
 
-    private void ExecuteRaycast()
+    private void ExecuteRaycast(bool isRightClick)
     {
-        // 마우스 현재 위치 읽기
         Vector2 mousePos = Mouse.current.position.ReadValue();
         Ray ray = _mainCam.ScreenPointToRay(mousePos);
-        
+    
         if (Physics.Raycast(ray, out RaycastHit hit, 500f))
         {
             GameObject hitObj = hit.collider.gameObject;
             Debug.Log($"<color=yellow>[Raycast]</color> 감지됨: {hitObj.name}");
-
-            // A. 건설된 건물인지 확인 (BuildingObject는 자식에 있을 수 있으므로 Parent까지 확인)
-            var building = hitObj.GetComponentInParent<BuildingObject>();
+            
+            var building = hit.collider.GetComponentInParent<BuildingObject>();
+        
             if (building != null)
             {
-                _settlementManager.OnBuildingClicked(building);
+                if (isRightClick) 
+                    _settlementManager.UpgradeBuilding(building); // 우클릭 시 업그레이드
+                else 
+                    _settlementManager.OnBuildingClicked(building); // 좌클릭 시 상호작용
                 return;
             }
 
-            // B. 빈 건설 슬롯인지 확인
-            var slot = hitObj.GetComponent<ConstructionSlot>();
-            if (slot != null)
+            // 슬롯 클릭은 좌클릭일 때만 허용
+            var slot = hit.collider.GetComponent<ConstructionSlot>();
+            if (slot != null && !isRightClick)
             {
                 _constructionUI.Open(slot.slotIndex);
-                return;
             }
         }
     }

@@ -47,10 +47,10 @@ public class SettlementManager : MonoBehaviour
                 CollectGuildData(building);
                 break;
             case BuildingType.Tavern: // 식당: HP 회복
-                ProcessTavern(levelData.effectValue);
+                ProcessTavern(building);
                 break;
             case BuildingType.Inn:    // 여관: 스트레스(광기) 회복
-                ProcessInn(levelData.effectValue);
+                ProcessInn(building);
                 break;
             case BuildingType.Smithy: // 대장간: 장비 강화
                 ProcessSmithy(building);
@@ -111,18 +111,18 @@ public class SettlementManager : MonoBehaviour
     public void ProcessRecovery(Stat characterStat, BuildingObject building)
     {
         var levelData = building.Data.GetLevelData(building.CurrentLevel);
-        float power = levelData.effectValue;
+        int power = levelData.effectValue;
 
         if (building.Data.buildingType == BuildingType.Tavern)
         {
             // 식당: HP 회복
-            characterStat.RecoverHp((int)power);
+            characterStat.RecoverHp(power);
             Debug.Log($"{building.Data.buildingName}: 체력을 {power}만큼 회복했습니다.");
         }
         else if (building.Data.buildingType == BuildingType.Inn)
         {
             // 여관: 스트레스(광기) 감소
-            characterStat.RecoverInsanity((int)power);
+            characterStat.RecoverInsanity(power);
             Debug.Log($"{building.Data.buildingName}: 광기를 {power}만큼 진정시켰습니다.");
         }
     }
@@ -171,7 +171,7 @@ public class SettlementManager : MonoBehaviour
     private void CollectGuildData(BuildingObject guild)
     {
         // 길드 레벨에 따른 effectValue만큼 개척 데이터 즉시 수급
-        int reward = (int)guild.Data.GetLevelData(guild.CurrentLevel).effectValue;
+        int reward = guild.Data.GetLevelData(guild.CurrentLevel).effectValue;
         _resourceManager.AddFrontierData(reward);
         Debug.Log($"길드에서 {reward}의 개척 데이터를 수급했습니다!");
     }
@@ -196,44 +196,58 @@ public class SettlementManager : MonoBehaviour
 
     // --- 건물 실무 로직 완결 ---
 
-    private void ProcessTavern(float effectValue)
+    private void ProcessTavern(BuildingObject tavern)
     {
         Stat target = GetSelectedCharacterStat();
         if (target == null) return;
+
+        int hp = target.current_Hp;
+        int amount = tavern.Data.GetLevelData(tavern.CurrentLevel).effectValue;
 
         // 식당: HP 회복 (effectValue만큼)
         // StatCalculate를 호출하여 최대 체력을 갱신한 뒤 회복
-        target.StatCalculate(); 
-        // target.Heal((int)effectValue); // 별도의 Heal 메서드가 있다면 사용
-        Debug.Log($"식당 이용: {target.ClassType} HP 회복 완료");
+        target.RecoverHp(amount);
+
+        Debug.Log($"식당 이용: {amount}만큼 HP 회복. {hp} => {target.current_Hp}");
     }
 
-    private void ProcessInn(float effectValue)
+    private void ProcessInn(BuildingObject inn)
     {
         Stat target = GetSelectedCharacterStat();
         if (target == null) return;
 
-        // 여관: 스트레스(광기) 감소
-        target.insanity = Mathf.Max(0, target.insanity - (int)effectValue);
-        Debug.Log($"여관 이용: {target.ClassType} 스트레스 {effectValue} 감소");
-    }
+        int insanity = target.insanity;
+        int amount = inn.Data.GetLevelData(inn.CurrentLevel).effectValue;
 
+        // 여관: 스트레스(광기) 감소
+        target.RecoverInsanity(amount);
+        
+        Debug.Log($"여관 이용: {amount}만큼 스트레스 감소. {insanity} => {target.insanity}");
+    }
+    
     private void ProcessSmithy(BuildingObject smithy)
     {
         Stat target = GetSelectedCharacterStat();
         if (target == null) return;
 
-        // 대장간: 현재 대장간 레벨까지만 장비 강화 허용
-        // 예: 무기(baseWeapon) 강화
-        if (target.baseWeapon != null && target.baseWeapon.upgradeLevel < smithy.CurrentLevel)
+        // 관리자 도구 등에서 설정된 현재 강화 타겟 장비를 가져옵니다. (무기 또는 방어구)
+        Equipment targetEquipment = GetCurrentUpgradeTarget(target);
+    
+        if (targetEquipment == null) 
         {
-            target.baseWeapon.Upgrade();
-            target.StatCalculate(); // 강화 수치 반영을 위한 재계산
-            Debug.Log($"{target.ClassType} 무기 강화 성공! (Lv.{target.baseWeapon.upgradeLevel})");
+            Debug.LogWarning("강화할 장비가 장착되어 있지 않습니다.");
+            return;
         }
-        else
-        {
-            Debug.LogWarning("강화 불가: 대장간 레벨 부족 또는 최대 강화 상태");
-        }
+
+        // BuildingService의 강화 로직 호출 (자원 소모 포함)
+        // 인자로 target(Stat)을 넘겨서 강화 후 StatCalculate가 실행되게 합니다.
+        _buildingService.UpgradeEquipment(target, targetEquipment, smithy.CurrentLevel);
+    }
+
+    // AdminTool 등에서 무기/방어구 중 무엇을 강화할지 결정하는 보조 메서드
+    private Equipment GetCurrentUpgradeTarget(Stat target)
+    {
+        // AdminTestTool에서 설정한 플래그에 따라 반환
+        return AdminTestTool.isTargetingWeapon ? target.baseWeapon : target.baseArmor;
     }
 }

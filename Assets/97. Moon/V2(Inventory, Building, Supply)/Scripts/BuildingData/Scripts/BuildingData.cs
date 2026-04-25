@@ -10,7 +10,7 @@ public struct BuildingLevelData
     public int oreCost;
     
     [Header("건물 성능 (예: 인벤토리 슬롯 수, 회복량 등)")]
-    public float effectValue; // 수치 
+    public int effectValue; // 수치 
     public int slotExpansion; // 창고 확장
     public int frontierCapAdd; // 개척 데이터 최대치 증가량
     public int materialCapAdd; // 목재/광물 최대치 증가량

@@ -4,7 +4,8 @@ using UnityEngine.InputSystem;
 public class AdminTestTool : MonoBehaviour
 {
     [SerializeField] private Stat testHero; // 인스펙터에서 캐릭터 큐브 할당
-
+    public static bool isTargetingWeapon = true;
+    
     void Update()
     {
         // 1. 캐릭터 데미지 입히기 (식당 테스트용)
@@ -17,7 +18,7 @@ public class AdminTestTool : MonoBehaviour
         // 2. 스트레스 증가 (여관 테스트용)
         if (Keyboard.current.f2Key.wasPressedThisFrame)
         {
-            testHero.insanity += 20;
+            testHero.ReduceInsanity(20);
             Debug.Log($"테스트 캐릭터 스트레스 증가: {testHero.insanity}");
         }
 
@@ -26,6 +27,14 @@ public class AdminTestTool : MonoBehaviour
         {
             FindObjectOfType<SettlementManager>().SelectCharacter(testHero);
             testHero.StatCalculate();
+        }
+        
+        // 4. 강화 대상 전환 (무기 <-> 방어구)
+        if (Keyboard.current.f4Key.wasPressedThisFrame)
+        {
+            isTargetingWeapon = !isTargetingWeapon;
+            string targetName = isTargetingWeapon ? "무기(Weapon)" : "방어구(Armor)";
+            Debug.Log($"<color=cyan>[대장간 타겟 변경]</color> 현재 강화 대상: {targetName}");
         }
     }
 }

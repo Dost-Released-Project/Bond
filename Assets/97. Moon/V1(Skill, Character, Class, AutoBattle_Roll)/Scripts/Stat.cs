@@ -148,11 +148,11 @@ public class Stat : MonoBehaviour
         }
 
         current_Hp = max_Hp;
-        Debug.Log($"STR: {STR} AGI: {AGI} INT: {INT}\nHP: {max_Hp} DEF: {def} ATK: {atk}\nSPD: {speed} CRT: {crt} ACC: {acc}\nInsanity_Ctrl: {Insanity_Ctrl} Reaction_Ctrl: {Reaction_Ctrl} Sp_Atk: {Sp_Atk}");
+        Debug.Log($"STR: {finalSTR} AGI: {finalAGI} INT: {finalINT}\nHP: {max_Hp} DEF: {def} ATK: {atk}\nSPD: {speed} CRT: {crt} ACC: {acc}\nInsanity_Ctrl: {Insanity_Ctrl} Reaction_Ctrl: {Reaction_Ctrl} Sp_Atk: {Sp_Atk}");
     }
     
     public void ReduceHP(int amount) => current_Hp = Mathf.Max(current_Hp - amount, 0); // 체력 감소
-    public void ReduceInsanity(int amount) => insanity = Mathf.Max(insanity + amount, 0); // 스트레스 증가
+    public void ReduceInsanity(int amount) => insanity = Mathf.Min(insanity + amount, 100); // 스트레스 증가
     
     // 회복 관련 메서드 추가
     public void RecoverHp(int amount) => current_Hp = Mathf.Min(current_Hp + amount, max_Hp);

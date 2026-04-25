@@ -39,22 +39,52 @@ public class BuildingService
         return false;
     }
     
-    public void UpgradeEquipment(Stat targetStat, Equipment equipment)
+    // public void UpgradeEquipment(Stat targetStat, Equipment equipment)
+    // {
+    //     if (equipment.type != EquipmentType.Base) return; // 기본 장비만 가능
+    //     if (equipment.upgradeLevel >= 5) return;
+    //
+    //     // 강화 비용 체크 (예: 레벨당 개척 데이터 100)
+    //     int cost = (equipment.upgradeLevel + 1) * 100;
+    //
+    //     if (_resourceManager.ConsumeResources(cost, 0, 10)) // 데이터와 광물 소모
+    //     {
+    //         equipment.Upgrade();
+    //     
+    //         // 중요: 장비 강화 후 캐릭터의 스탯을 다시 계산합니다.
+    //         // Stat 클래스에서 장비 스탯을 합산하도록 StatCalculate를 호출해야 함
+    //         targetStat.StatCalculate(); 
+    //         Debug.Log($"{equipment.itemName} 강화 성공! 현재 레벨: {equipment.upgradeLevel}");
+    //     }
+    // }
+    
+    public void UpgradeEquipment(Stat targetStat, Equipment equipment, int smithyLevel)
     {
-        if (equipment.type != EquipmentType.Base) return; // 기본 장비만 가능
+        if (equipment.type != EquipmentType.Base) return;
+    
+        // 1. 대장간 레벨보다 장비 레벨이 높거나 같으면 강화 불가
+        if (equipment.upgradeLevel >= smithyLevel)
+        {
+            Debug.LogWarning("대장간 레벨이 낮아 더 이상 강화할 수 없습니다.");
+            return;
+        }
+
         if (equipment.upgradeLevel >= 5) return;
 
-        // 강화 비용 체크 (예: 레벨당 개척 데이터 100)
-        int cost = (equipment.upgradeLevel + 1) * 100;
-    
-        if (_resourceManager.ConsumeResources(cost, 0, 10)) // 데이터와 광물 소모
+        // 2. 강화 비용 계산 (레벨에 비례)
+        int costFrontier = (equipment.upgradeLevel + 1) * 100;
+        int costOre = (equipment.upgradeLevel + 1) * 10;
+
+        // 3. 자원 소모 및 강화 실행
+        if (_resourceManager.ConsumeResources(costFrontier, 0, costOre))
         {
             equipment.Upgrade();
-        
-            // 중요: 장비 강화 후 캐릭터의 스탯을 다시 계산합니다.
-            // Stat 클래스에서 장비 스탯을 합산하도록 StatCalculate를 호출해야 함
-            targetStat.StatCalculate(); 
-            Debug.Log($"{equipment.itemName} 강화 성공! 현재 레벨: {equipment.upgradeLevel}");
+            targetStat.StatCalculate(); // 강화 성공 후 즉시 스탯 갱신
+            Debug.Log($"<color=green>{equipment.itemName}</color> 강화 성공! (Lv.{equipment.upgradeLevel})");
+        }
+        else
+        {
+            Debug.LogWarning("자원이 부족합니다.");
         }
     }
 }
