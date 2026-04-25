@@ -4,7 +4,7 @@ using VContainer;
 
 /// <summary>
 /// Slay the Spire 스타일의 절차적 맵 생성기.
-/// 7단계 파이프라인으로 DAG(방향 비순환 그래프) 구조의 맵을 생성한다.
+/// 8단계 파이프라인으로 DAG(방향 비순환 그래프) 구조의 맵을 생성한다.
 ///
 /// 생성 흐름:
 ///   1. DetermineNodeCounts  — 층별 노드 수 결정
@@ -14,15 +14,18 @@ using VContainer;
 ///   5. AssignStageTypes     — 스테이지 타입 가중치 배정
 ///   6. ApplyPlacementRules  — 배치 규칙 강제 적용 (보스·캠핑·엘리트 보장)
 ///   7. InitializeNodeStates — 초기 노드 상태 설정 (0층만 Available)
+///   8. AssignMonsterGroups  — Normal 노드에 몬스터 그룹 랜덤 배정
 /// </summary>
 public class MapGenerator : IMapGenerator
 {
     private readonly MapGeneratorConfig _config;
+    private readonly MonsterGroupConfig _monsterGroupConfig;
 
     [Inject]
-    public MapGenerator(MapGeneratorConfig config)
+    public MapGenerator(MapGeneratorConfig config, MonsterGroupConfig monsterGroupConfig)
     {
         _config = config;
+        _monsterGroupConfig = monsterGroupConfig;
     }
 
     public MapData GenerateMap(int seed)
@@ -44,6 +47,7 @@ public class MapGenerator : IMapGenerator
         AssignStageTypes(data, rng);
         ApplyPlacementRules(data, rng);
         InitializeNodeStates(data);
+        AssignMonsterGroups(data, rng); // Step 8: Normal 노드에 몬스터 그룹 랜덤 배정
 
         return data;
     }
@@ -517,5 +521,60 @@ public class MapGenerator : IMapGenerator
             list[i] = list[j];
             list[j] = tmp;
         }
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // Step 8: Normal 노드 몬스터 그룹 배정
+    // ─────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Normal 타입 노드에 MonsterGroupConfig 에서 층 범위에 맞는 그룹을 랜덤으로 배정한다.
+    /// rng 는 파이프라인 전체에서 공유되므로 Step 7 완료 후 호출해야
+    /// 같은 seed 에서 항상 동일한 결과가 보장된다.
+    /// </summary>
+    private void AssignMonsterGroups(MapData data, System.Random rng)
+    {
+        if (_monsterGroupConfig == null)
+            return;
+
+        if (_monsterGroupConfig.Groups == null)
+            return;
+
+        if (_monsterGroupConfig.Groups.Count == 0)
+            return;
+
+        foreach (MapNode node in data.Nodes)
+        {
+            if ((node.StageType == StageType.Normal) == false)
+                continue;
+
+            List<MonsterGroupData> candidates = GetCandidateGroups(node.Layer);
+
+            if (candidates.Count == 0)
+                continue;
+
+            MonsterGroupData chosen = candidates[rng.Next(candidates.Count)];
+            node.AssignedMonsterGroupId = chosen.Id;
+        }
+    }
+
+    /// <summary>
+    /// 지정 층 번호에 등장 가능한 몬스터 그룹 목록을 반환한다.
+    /// MinLayer == 0 &amp;&amp; MaxLayer == 0 이면 층 제한 없음으로 처리한다.
+    /// </summary>
+    private List<MonsterGroupData> GetCandidateGroups(int layer)
+    {
+        List<MonsterGroupData> candidates = new List<MonsterGroupData>();
+
+        foreach (MonsterGroupData group in _monsterGroupConfig.Groups)
+        {
+            bool noLayerLimit = group.MinLayer == 0 && group.MaxLayer == 0;
+            bool inRange = layer >= group.MinLayer && layer <= group.MaxLayer;
+
+            if (noLayerLimit || inRange)
+                candidates.Add(group);
+        }
+
+        return candidates;
     }
 }

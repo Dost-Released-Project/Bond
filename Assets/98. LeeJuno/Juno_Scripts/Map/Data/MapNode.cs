@@ -46,6 +46,8 @@ public class MapNode
 
     public Vector2 NormalizedPosition;   // UI 배치용 정규화 좌표 (x, y 모두 0~1 범위)
 
+    public string AssignedMonsterGroupId; // Normal 스테이지에 배정된 몬스터 그룹 ID. 비어있으면 미배정.
+
     /// <summary>
     /// 층과 열 번호로 노드를 초기화한다. Id는 자동 계산된다.
     /// </summary>
@@ -58,6 +60,7 @@ public class MapNode
         StageType = StageType.Normal;
         NextNodeIds = new List<int>();
         PrevNodeIds = new List<int>();
+        AssignedMonsterGroupId = string.Empty;
     }
 }
 /// <summary>

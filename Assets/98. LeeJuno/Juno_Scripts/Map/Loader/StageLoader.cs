@@ -21,14 +21,16 @@ using VContainer;
 public class StageLoader : IStageLoader
 {
     private readonly List<StageConfig> _stageConfigs;
+    private readonly MonsterGroupConfig _monsterGroupConfig;
 
     private SceneInstance _currentScene;    // 현재 로드된 씬 인스턴스
     private bool _hasLoadedScene;           // 현재 로드된 씬이 있는지 여부
 
     [Inject]
-    public StageLoader(List<StageConfig> stageConfigs)
+    public StageLoader(List<StageConfig> stageConfigs, MonsterGroupConfig monsterGroupConfig)
     {
         _stageConfigs = stageConfigs;
+        _monsterGroupConfig = monsterGroupConfig;
         _hasLoadedScene = false;
     }
 
@@ -41,6 +43,7 @@ public class StageLoader : IStageLoader
     /// 지정한 StageType에 대응하는 씬을 Additive로 비동기 로드한다.
     /// 이미 씬이 로드되어 있으면 언로드 후 새 씬을 로드한다.
     /// StageConfig에 SceneAddress가 설정되어 있지 않으면 로드하지 않는다.
+    /// Normal 스테이지의 경우 씬 로드 직전 NormalStageContext에 몬스터 정보를 기록한다.
     /// </summary>
     public async UniTask LoadStage(StageType stageType, MapNode node)
     {
@@ -51,6 +54,9 @@ public class StageLoader : IStageLoader
 
         if (config == null)
             return;
+
+        if (stageType == StageType.Normal)
+            SetNormalStageContext(node);
 
         AsyncOperationHandle<SceneInstance> handle = Addressables.LoadSceneAsync(
             config.SceneAddress,
@@ -93,6 +99,46 @@ public class StageLoader : IStageLoader
         {
             if (config.Type == stageType)
                 return config;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Normal 스테이지 로드 직전 NormalStageContext에 몬스터 정보를 기록한다.
+    /// AssignedMonsterGroupId 가 비어 있거나 그룹을 찾지 못하면 빈 컨텍스트를 기록한다.
+    /// </summary>
+    private void SetNormalStageContext(MapNode node)
+    {
+        if (string.IsNullOrEmpty(node.AssignedMonsterGroupId))
+        {
+            NormalStageContext.Set(string.Empty, new List<string>());
+            return;
+        }
+
+        MonsterGroupData group = FindMonsterGroup(node.AssignedMonsterGroupId);
+
+        if (group == null)
+        {
+            NormalStageContext.Set(string.Empty, new List<string>());
+            return;
+        }
+
+        NormalStageContext.Set(group.Id, group.MonsterIds);
+    }
+
+    /// <summary>
+    /// Id 로 MonsterGroupData 를 목록에서 찾아 반환한다. 없으면 null.
+    /// </summary>
+    private MonsterGroupData FindMonsterGroup(string groupId)
+    {
+        if (_monsterGroupConfig == null)
+            return null;
+
+        foreach (MonsterGroupData group in _monsterGroupConfig.Groups)
+        {
+            if (group.Id == groupId)
+                return group;
         }
 
         return null;

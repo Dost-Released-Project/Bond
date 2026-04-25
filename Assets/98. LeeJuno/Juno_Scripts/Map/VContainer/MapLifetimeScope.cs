@@ -11,7 +11,8 @@ using VContainer.Unity;
 ///
 /// 등록 목록:
 ///   - MapGeneratorConfig  : 맵 생성 파라미터 (Instance)
-///   - List (StageConfig>   : 스테이지 타입별 설정 (Instance)
+///   - List(StageConfig)   : 스테이지 타입별 설정 (Instance)
+///   - MonsterGroupConfig  : 몬스터 그룹 목록 (Instance)
 ///   - IMapGenerator       → MapGenerator (Singleton)
 ///   - IMapRepository      → MapRepository (Singleton)
 ///   - IMapNavigator       → MapNavigator  (Singleton)
@@ -19,14 +20,16 @@ using VContainer.Unity;
 ///   - MapUIController     : MonoBehaviour 컴포넌트 등록
 ///
 /// Inspector 연결 필요:
-///   _generatorConfig  — MapGeneratorConfig ScriptableObject
-///   _stageConfigs     — StageConfig 목록 (Normal, Elite, Boss, Camping, Event, Shop 각 1개)
-///   _mapUIController  — 씬에 배치된 MapUIController MonoBehaviour
+///   _generatorConfig     — MapGeneratorConfig ScriptableObject
+///   _stageConfigs        — StageConfig 목록 (Normal, Elite, Boss, Camping, Event, Shop 각 1개)
+///   _monsterGroupConfig  — MonsterGroupConfig ScriptableObject
+///   _mapUIController     — 씬에 배치된 MapUIController MonoBehaviour
 /// </summary>
 public class MapLifetimeScope : LifetimeScope
 {
     [SerializeField] private MapGeneratorConfig _generatorConfig;
     [SerializeField] private List<StageConfig> _stageConfigs;
+    [SerializeField] private MonsterGroupConfig _monsterGroupConfig; // Inspector 연결 필요
     [SerializeField] private MapUIController _mapUIController;
 
     protected override void Configure(IContainerBuilder builder)
@@ -34,6 +37,7 @@ public class MapLifetimeScope : LifetimeScope
         // ScriptableObject 인스턴스를 컨테이너에 직접 등록
         builder.RegisterInstance(_generatorConfig);
         builder.RegisterInstance(_stageConfigs);
+        builder.RegisterInstance(_monsterGroupConfig);
 
         // 맵 시스템 핵심 서비스 등록 (인터페이스 → 구현체 바인딩)
         builder.Register<IMapGenerator, MapGenerator>(Lifetime.Singleton);
