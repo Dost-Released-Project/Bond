@@ -30,6 +30,9 @@ public class MapView : MonoBehaviour
     /// <param name="onNodeClicked">노드 버튼 클릭 시 호출할 콜백 (인자: 노드 Id)</param>
     public void Initialize(MapData mapData, System.Action<int> onNodeClicked)
     {
+        foreach (Transform child in _mapContainer)
+            UnityEngine.Object.Destroy(child.gameObject);
+
         _mapData = mapData;
         _onNodeClickedCallback = onNodeClicked;
         _nodeViews = new Dictionary<int, MapNodeView>();

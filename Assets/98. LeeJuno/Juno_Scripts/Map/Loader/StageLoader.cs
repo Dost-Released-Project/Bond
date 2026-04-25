@@ -63,8 +63,16 @@ public class StageLoader : IStageLoader
             LoadSceneMode.Additive
         );
 
-        _currentScene = await handle.ToUniTask();
-        _hasLoadedScene = true;
+        try
+        {
+            _currentScene = await handle.ToUniTask();
+            _hasLoadedScene = true;
+        }
+        catch
+        {
+            _hasLoadedScene = false;
+            throw;
+        }
     }
 
     /// <summary>

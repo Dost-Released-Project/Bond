@@ -40,6 +40,9 @@ public class MapNavigator : IMapNavigator
         _mapData = mapData;
         CurrentNode = null;
 
+        if (_mapData.NodeById == null)
+            _mapData.BuildLookups();
+
         // 저장된 CurrentNodeId가 있으면 해당 노드를 복원
         if (_mapData.CurrentNodeId == -1)
             return;

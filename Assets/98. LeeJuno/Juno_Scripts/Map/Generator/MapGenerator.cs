@@ -343,10 +343,10 @@ public class MapGenerator : IMapGenerator
     private float[] GetWeights(int layer)
     {
         if (layer < 4)
-            return new float[] { 0.70f, 0f, 0.30f, 0f, 0f };
+            return new float[] { 0.70f, 0f, 0.30f, 0f };
 
         if (layer < _config.EliteMinLayer)
-            return new float[] { 0.55f, 0f, 0.25f, 0.15f, 0.05f };
+            return new float[] { 0.55f, 0f, 0.25f, 0.15f };
 
         return new float[] {
             _config.WeightNormal,
@@ -545,7 +545,7 @@ public class MapGenerator : IMapGenerator
 
         foreach (MapNode node in data.Nodes)
         {
-            if ((node.StageType == StageType.Normal) == false)
+            if (node.StageType != StageType.Normal)
                 continue;
 
             List<MonsterGroupData> candidates = GetCandidateGroups(node.Layer);

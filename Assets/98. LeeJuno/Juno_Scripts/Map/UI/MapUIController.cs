@@ -33,18 +33,16 @@ public class MapUIController : MonoBehaviour
     {
         _navigator = navigator;
         _stageLoader = stageLoader;
-    }
-
-    private void Start()
-    {
         _navigator.OnNodeEntered += OnNodeEntered;
         _stageLoader.OnStageCompleted += HandleStageCompleted;
     }
 
     private void OnDestroy()
     {
-        _navigator.OnNodeEntered -= OnNodeEntered;
-        _stageLoader.OnStageCompleted -= HandleStageCompleted;
+        if (_navigator != null)
+            _navigator.OnNodeEntered -= OnNodeEntered;
+        if (_stageLoader != null)
+            _stageLoader.OnStageCompleted -= HandleStageCompleted;
     }
 
     /// <summary>
@@ -115,6 +113,7 @@ public class MapUIController : MonoBehaviour
         catch (Exception e)
         {
             Debug.LogError($"[MapUIController] 씬 로드 실패: {e.Message}");
+            ShowMap(_cachedMapData);
         }
     }
 
