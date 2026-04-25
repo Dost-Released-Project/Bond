@@ -46,6 +46,8 @@ public class MapLifetimeScope : LifetimeScope
         // 씬에 배치된 MonoBehaviour를 DI 대상으로 등록
         builder.RegisterComponent(_mapUIController);
 
+#if UNITY_EDITOR
         builder.RegisterEntryPoint<MapTestStarter>();
+#endif
     }
 }

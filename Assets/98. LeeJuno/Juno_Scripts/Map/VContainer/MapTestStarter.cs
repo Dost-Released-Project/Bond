@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -8,6 +9,7 @@ using VContainer.Unity;
 /// <summary>
 /// 맵 시스템 테스트용 진입점.
 /// VContainer EntryPoint로 등록되어 씬 시작 시 맵을 생성하고 표시한다.
+/// 에디터 전용 클래스: 프로덕션 빌드에는 포함되지 않는다.
 /// </summary>
 public class MapTestStarter : IAsyncStartable, IDisposable
 {
@@ -55,3 +57,4 @@ public class MapTestStarter : IAsyncStartable, IDisposable
         Debug.Log("Entered");
     }
 }
+#endif

@@ -25,6 +25,7 @@ public class StageLoader : IStageLoader
 
     private SceneInstance _currentScene;    // 현재 로드된 씬 인스턴스
     private bool _hasLoadedScene;           // 현재 로드된 씬이 있는지 여부
+    private bool _isLoading;               // 비동기 로딩 진행 중 여부 (이중 호출 방지)
 
     [Inject]
     public StageLoader(List<StageConfig> stageConfigs, MonsterGroupConfig monsterGroupConfig)
@@ -44,34 +45,51 @@ public class StageLoader : IStageLoader
     /// 이미 씬이 로드되어 있으면 언로드 후 새 씬을 로드한다.
     /// StageConfig에 SceneAddress가 설정되어 있지 않으면 로드하지 않는다.
     /// Normal 스테이지의 경우 씬 로드 직전 NormalStageContext에 몬스터 정보를 기록한다.
+    /// 비동기 실행 중 이중 호출이 들어오면 즉시 반환한다.
     /// </summary>
     public async UniTask LoadStage(StageType stageType, MapNode node)
     {
-        if (_hasLoadedScene)
-            await UnloadCurrentStage();
-
-        StageConfig config = FindConfig(stageType);
-
-        if (config == null)
+        // ARCH-02: 이중 호출 방지 — 로딩 진행 중이면 즉시 반환
+        if (_isLoading)
             return;
 
-        if (stageType == StageType.Normal)
-            SetNormalStageContext(node);
-
-        AsyncOperationHandle<SceneInstance> handle = Addressables.LoadSceneAsync(
-            config.SceneAddress,
-            LoadSceneMode.Additive
-        );
-
+        _isLoading = true;
         try
         {
-            _currentScene = await handle.ToUniTask();
-            _hasLoadedScene = true;
+            if (_hasLoadedScene)
+                await UnloadCurrentStage();
+
+            StageConfig config = FindConfig(stageType);
+
+            if (config == null)
+                return;
+
+            // ARCH-04: SetNormalStageContext 직전 잔류 데이터 제거
+            if (stageType == StageType.Normal)
+            {
+                NormalStageContext.Clear();
+                SetNormalStageContext(node);
+            }
+
+            AsyncOperationHandle<SceneInstance> handle = Addressables.LoadSceneAsync(
+                config.SceneAddress,
+                LoadSceneMode.Additive
+            );
+
+            try
+            {
+                _currentScene = await handle.ToUniTask();
+                _hasLoadedScene = true;
+            }
+            catch
+            {
+                _hasLoadedScene = false;
+                throw;
+            }
         }
-        catch
+        finally
         {
-            _hasLoadedScene = false;
-            throw;
+            _isLoading = false;
         }
     }
 

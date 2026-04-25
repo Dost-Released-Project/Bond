@@ -406,12 +406,33 @@ public class MapGenerator : IMapGenerator
         foreach (MapNode node in data.NodesByLayer[preBossLayer])
             node.StageType = StageType.Camping;
 
-        // 규칙 3: Elite 최소 1개 보장
-        if (HasTypeInRange(data, StageType.Elite, _config.EliteMinLayer, preBossLayer - 1) == false)
+        // 규칙 3 & 4 전처리: EliteMinLayer ~ preBossLayer-1 구간을 단일 순회로 통합
+        // HasTypeInRange + FindRandomNormalInRange 를 동일 구간에서 연속 호출하는
+        // 중복 순회를 제거하기 위해 구간 내 노드를 한 번만 순회한다.
+        int eliteRangeEnd = preBossLayer - 1;
+        bool hasElite = false;
+        List<MapNode> eliteRangeCandidates = new List<MapNode>(); // Elite 보장용 Normal 후보
+
+        for (int layer = _config.EliteMinLayer; layer <= eliteRangeEnd; layer++)
         {
-            MapNode target = FindRandomNormalInRange(data, _config.EliteMinLayer, preBossLayer - 1, rng);
-            if (target != null)
-                target.StageType = StageType.Elite;
+            if (data.NodesByLayer.ContainsKey(layer) == false)
+                continue;
+
+            foreach (MapNode node in data.NodesByLayer[layer])
+            {
+                if (node.StageType == StageType.Elite)
+                    hasElite = true;
+
+                if (node.StageType == StageType.Normal)
+                    eliteRangeCandidates.Add(node);
+            }
+        }
+
+        // 규칙 3: Elite 최소 1개 보장
+        if (hasElite == false && eliteRangeCandidates.Count > 0)
+        {
+            MapNode target = eliteRangeCandidates[rng.Next(eliteRangeCandidates.Count)];
+            target.StageType = StageType.Elite;
         }
 
         // 규칙 4: Camping 최소 개수 보장
@@ -436,30 +457,24 @@ public class MapGenerator : IMapGenerator
     }
 
     /// <summary>
-    /// fromLayer~toLayer 구간에 특정 타입의 노드가 존재하는지 확인한다.
-    /// </summary>
-    private bool HasTypeInRange(MapData data, StageType type, int fromLayer, int toLayer)
-    {
-        foreach (MapNode node in data.Nodes)
-        {
-            if (node.Layer >= fromLayer && node.Layer <= toLayer && node.StageType == type)
-                return true;
-        }
-        return false;
-    }
-
-    /// <summary>
     /// fromLayer~toLayer 구간의 Normal 노드 중 하나를 무작위로 반환한다.
+    /// NodesByLayer를 활용해 해당 층만 접근한다.
     /// 후보가 없으면 null을 반환한다.
     /// </summary>
     private MapNode FindRandomNormalInRange(MapData data, int fromLayer, int toLayer, System.Random rng)
     {
         List<MapNode> candidates = new List<MapNode>();
 
-        foreach (MapNode node in data.Nodes)
+        for (int layer = fromLayer; layer <= toLayer; layer++)
         {
-            if (node.Layer >= fromLayer && node.Layer <= toLayer && node.StageType == StageType.Normal)
-                candidates.Add(node);
+            if (data.NodesByLayer.ContainsKey(layer) == false)
+                continue;
+
+            foreach (MapNode node in data.NodesByLayer[layer])
+            {
+                if (node.StageType == StageType.Normal)
+                    candidates.Add(node);
+            }
         }
 
         if (candidates.Count == 0)
