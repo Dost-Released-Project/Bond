@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using _03._PipeLine;
-using Bond.PartyManagement;
+using Bond.Embark;
 using Cysharp.Threading.Tasks;
 using Reactions;
 using UnityEngine;
@@ -10,6 +10,7 @@ using Random = UnityEngine.Random;
 
 public class BaseCharacter : MonoBehaviour, ITurnUseUnit
 {
+    public CharacterData Data;
     public Equipment[] equip = new Equipment[2]; // 2개
     public Trait[] traits = new Trait[4]; // 4개
     public SkillBase[] skills = new SkillBase[4]; // 4개
