@@ -149,6 +149,81 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3882a424dfcc07944a96845ab974539e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BaseCharacter
+  Data:
+    Id: 
+    ImageAddress: 
+    Name: 
+    Class: {fileID: 0}
+    Level: 0
+    Insanity: 0
+    RoleType: 0
+    Skills:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    Traits:
+    - traitName: 
+      description: 
+      fixedTrigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - traitName: 
+      description: 
+      fixedTrigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - traitName: 
+      description: 
+      fixedTrigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - traitName: 
+      description: 
+      fixedTrigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    Trinkets:
+    - {fileID: 0}
+    - {fileID: 0}
+    RoleReactions:
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    TraitReactions:
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
   equip:
   - {fileID: 0}
   - {fileID: 0}
@@ -190,7 +265,34 @@ MonoBehaviour:
   - {fileID: 1790513478}
   - {fileID: 1297400546}
   - {fileID: 271946004}
+  level: 1
   roleType: 0
+  roleReactions:
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  traitReactions:
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
   TestSkillManager: {fileID: 0}
   unitName: "\uC300\uC22D\uC774"
   imageAddress: RiceSummoner
@@ -207,6 +309,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stat
   insanity: 0
+  baseWeapon: {fileID: 0}
+  baseArmor: {fileID: 0}
 --- !u!4 &39269392
 Transform:
   m_ObjectHideFlags: 0
@@ -297,6 +401,81 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3882a424dfcc07944a96845ab974539e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BaseCharacter
+  Data:
+    Id: 
+    ImageAddress: 
+    Name: 
+    Class: {fileID: 0}
+    Level: 0
+    Insanity: 0
+    RoleType: 0
+    Skills:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    Traits:
+    - traitName: 
+      description: 
+      fixedTrigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - traitName: 
+      description: 
+      fixedTrigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - traitName: 
+      description: 
+      fixedTrigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - traitName: 
+      description: 
+      fixedTrigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    Trinkets:
+    - {fileID: 0}
+    - {fileID: 0}
+    RoleReactions:
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    TraitReactions:
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
   equip:
   - {fileID: 0}
   - {fileID: 0}
@@ -338,7 +517,34 @@ MonoBehaviour:
   - {fileID: 1790513478}
   - {fileID: 1297400546}
   - {fileID: 271946004}
+  level: 1
   roleType: 0
+  roleReactions:
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  traitReactions:
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
   TestSkillManager: {fileID: 0}
   unitName: "\uD604\uC6B0"
   imageAddress: Wildboar
@@ -355,6 +561,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stat
   insanity: 0
+  baseWeapon: {fileID: 0}
+  baseArmor: {fileID: 0}
 --- !u!4 &482685082
 Transform:
   m_ObjectHideFlags: 0
@@ -400,6 +608,81 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3882a424dfcc07944a96845ab974539e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BaseCharacter
+  Data:
+    Id: 
+    ImageAddress: 
+    Name: 
+    Class: {fileID: 0}
+    Level: 0
+    Insanity: 0
+    RoleType: 0
+    Skills:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    Traits:
+    - traitName: 
+      description: 
+      fixedTrigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - traitName: 
+      description: 
+      fixedTrigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - traitName: 
+      description: 
+      fixedTrigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - traitName: 
+      description: 
+      fixedTrigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    Trinkets:
+    - {fileID: 0}
+    - {fileID: 0}
+    RoleReactions:
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    TraitReactions:
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
   equip:
   - {fileID: 0}
   - {fileID: 0}
@@ -441,7 +724,34 @@ MonoBehaviour:
   - {fileID: 1790513478}
   - {fileID: 1297400546}
   - {fileID: 271946004}
+  level: 1
   roleType: 0
+  roleReactions:
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  traitReactions:
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
   TestSkillManager: {fileID: 0}
   unitName: "\uBB49\uD0F1\uC774"
   imageAddress: MTE
@@ -458,6 +768,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stat
   insanity: 0
+  baseWeapon: {fileID: 0}
+  baseArmor: {fileID: 0}
 --- !u!4 &781777823
 Transform:
   m_ObjectHideFlags: 0
@@ -504,6 +816,81 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3882a424dfcc07944a96845ab974539e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BaseCharacter
+  Data:
+    Id: 
+    ImageAddress: 
+    Name: 
+    Class: {fileID: 0}
+    Level: 0
+    Insanity: 0
+    RoleType: 0
+    Skills:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    Traits:
+    - traitName: 
+      description: 
+      fixedTrigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - traitName: 
+      description: 
+      fixedTrigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - traitName: 
+      description: 
+      fixedTrigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - traitName: 
+      description: 
+      fixedTrigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    Trinkets:
+    - {fileID: 0}
+    - {fileID: 0}
+    RoleReactions:
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    TraitReactions:
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
   equip:
   - {fileID: 0}
   - {fileID: 0}
@@ -545,7 +932,34 @@ MonoBehaviour:
   - {fileID: 1790513478}
   - {fileID: 1297400546}
   - {fileID: 271946004}
+  level: 1
   roleType: 0
+  roleReactions:
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  traitReactions:
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
   TestSkillManager: {fileID: 0}
   unitName: "\uC2E0\uCC3D\uC12D"
   imageAddress: GodOfNormalization
@@ -562,6 +976,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stat
   insanity: 0
+  baseWeapon: {fileID: 0}
+  baseArmor: {fileID: 0}
 --- !u!4 &933490011
 Transform:
   m_ObjectHideFlags: 0
@@ -620,6 +1036,81 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3882a424dfcc07944a96845ab974539e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BaseCharacter
+  Data:
+    Id: 
+    ImageAddress: 
+    Name: 
+    Class: {fileID: 0}
+    Level: 0
+    Insanity: 0
+    RoleType: 0
+    Skills:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    Traits:
+    - traitName: 
+      description: 
+      fixedTrigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - traitName: 
+      description: 
+      fixedTrigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - traitName: 
+      description: 
+      fixedTrigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - traitName: 
+      description: 
+      fixedTrigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    Trinkets:
+    - {fileID: 0}
+    - {fileID: 0}
+    RoleReactions:
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    TraitReactions:
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
   equip:
   - {fileID: 0}
   - {fileID: 0}
@@ -661,7 +1152,34 @@ MonoBehaviour:
   - {fileID: 1790513478}
   - {fileID: 1297400546}
   - {fileID: 271946004}
+  level: 1
   roleType: 0
+  roleReactions:
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  traitReactions:
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
   TestSkillManager: {fileID: 0}
   unitName: "\uD2B8\uB7FC\uD504"
   imageAddress: GodOfWar
@@ -678,6 +1196,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stat
   insanity: 0
+  baseWeapon: {fileID: 0}
+  baseArmor: {fileID: 0}
 --- !u!4 &1246891322
 Transform:
   m_ObjectHideFlags: 0
@@ -1213,6 +1733,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ha's
       objectReference: {fileID: 0}
+    - target: {fileID: 6621883425403598065, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: roster.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6621883425403598065, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: 'roster.Array.data[0]'
+      value: 
+      objectReference: {fileID: 933490009}
+    - target: {fileID: 6621883425403598065, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: 'roster.Array.data[1]'
+      value: 
+      objectReference: {fileID: 39269390}
+    - target: {fileID: 6621883425403598065, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: 'roster.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1246891320}
+    - target: {fileID: 6621883425403598065, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: 'roster.Array.data[3]'
+      value: 
+      objectReference: {fileID: 781777821}
+    - target: {fileID: 6621883425403598065, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: 'roster.Array.data[4]'
+      value: 
+      objectReference: {fileID: 482685080}
     - target: {fileID: 8225046686097492084, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
       propertyPath: 'partyMembers.Array.data[0]'
       value: 

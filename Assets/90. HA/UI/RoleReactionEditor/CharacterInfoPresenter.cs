@@ -1,5 +1,5 @@
 using System;
-using Bond.PartyManagement;
+using Bond.Embark;
 using UnityEngine.UIElements;
 
 namespace Bond.UI.RoleReactionEditor
