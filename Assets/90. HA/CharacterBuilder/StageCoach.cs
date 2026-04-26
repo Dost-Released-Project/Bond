@@ -1,13 +1,16 @@
 
 public class StageCoach
 {
-    public CharacterData GetRandomCharacterData()
+    public CharacterData GetRandomCharacter()
     {
         CharacterData.Builder builder = new CharacterData.Builder();
         
-        
-        // TODO: 중간 부분 채우기
-        
+        builder
+            .AddRandomTrait()
+            .AddRandomTrait()
+            .AddRandomSkill()
+            .AddRandomSkill()
+            .AddRandomSkill();
         
         return builder.Build();
     }

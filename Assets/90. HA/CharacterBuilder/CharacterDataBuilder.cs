@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Bond.Embark;
 
 public partial class CharacterData
@@ -52,6 +54,36 @@ public partial class CharacterData
         public Builder SetTraits(Trait[] traits)
         {
             data.Traits = traits;
+            return this;
+        }
+        
+        public Builder AddRandomTrait()
+        {
+            Trait randomTrait = new();
+            
+            int i = Array.FindIndex(data.Traits, trait => trait == null);
+            if (i == -1)
+            {
+                i = UnityEngine.Random.Range(0, data.Traits.Length);
+            }
+            
+            data.Traits[i] = randomTrait;
+            
+            return this;
+        }
+        
+        public Builder AddRandomSkill()
+        {
+            SkillBase randomSkill = new TempSkill();
+            
+            int i = Array.FindIndex(data.Skills, trait => trait == null);
+            if (i == -1)
+            {
+                i = UnityEngine.Random.Range(0, data.Skills.Length);
+            }
+            
+            data.Skills[i] = randomSkill;
+            
             return this;
         }
     }
