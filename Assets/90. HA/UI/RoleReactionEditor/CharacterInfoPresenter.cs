@@ -64,12 +64,12 @@ namespace Bond.UI.RoleReactionEditor
 
             foreach (var trait in _current.traits)
             {
-                if (trait == null || string.IsNullOrEmpty(trait.traitName)) continue;
+                if (trait == null || string.IsNullOrEmpty(trait.Name)) continue;
 
                 var tag = new VisualElement();
                 tag.AddToClassList("rre-trait-tag");
 
-                var lbl = new Label(trait.traitName);
+                var lbl = new Label(trait.Name);
                 lbl.AddToClassList("rre-trait-tag__label");
                 tag.Add(lbl);
 

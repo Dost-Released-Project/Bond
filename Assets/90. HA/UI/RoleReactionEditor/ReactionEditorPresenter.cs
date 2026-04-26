@@ -95,16 +95,16 @@ namespace Bond.UI.RoleReactionEditor
             for (int i = 0; i < _current.traits.Length; i++)
             {
                 var trait = _current.traits[i];
-                if (trait == null || trait.fixedTrigger == null) continue;
+                if (trait == null || trait.Trigger == null) continue;
 
                 // 트리거는 Trait에서 고정. 스킬(Behaviour)은 traitReactions[i]에 저장
                 var reaction = _current.traitReactions[i];
-                reaction.Trigger = trait.fixedTrigger;
+                reaction.Trigger = trait.Trigger;
 
                 var vm = CreateSlot(reaction, isTraitSlot: true,
                                     availableTriggers: null);
 
-                vm.TriggerDropdown.SetValueWithoutNotify(trait.fixedTrigger.Description);
+                vm.TriggerDropdown.SetValueWithoutNotify(trait.Trigger.Description);
                 vm.TriggerDropdown.SetEnabled(false);
 
                 _traitSlotContainer.Add(vm.Root);
