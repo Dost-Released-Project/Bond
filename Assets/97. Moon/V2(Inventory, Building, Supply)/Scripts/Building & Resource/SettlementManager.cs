@@ -3,7 +3,7 @@ using VContainer;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 
-public class SettlementManager : MonoBehaviour
+public class SettlementManager : MonoBehaviour, ISettlementManager
 {
     [SerializeField] private Transform[] constructionSlots; 
     
@@ -30,7 +30,7 @@ public class SettlementManager : MonoBehaviour
 
     private void Update()
     {
-        if (Keyboard.current.tKey.wasPressedThisFrame) _resourceManager.Admin_AddAllResources(500);
+        if (Keyboard.current.tKey.wasPressedThisFrame) _resourceManager.Admin_AddAllResources(1000);
     }
 
     // [중요] 기존 BuildingObject가 참조하던 메서드
@@ -54,6 +54,9 @@ public class SettlementManager : MonoBehaviour
                 break;
             case BuildingType.Smithy: // 대장간: 장비 강화
                 ProcessSmithy(building);
+                break;
+            case BuildingType.Carriage:
+                // 탐사 인벤토리 오픈
                 break;
         }
     }
@@ -107,25 +110,25 @@ public class SettlementManager : MonoBehaviour
         }
     }
     
-    // 건물을 클릭했을 때 호출되거나, 전용 UI에서 '휴식하기' 버튼을 눌렀을 때 호출
-    public void ProcessRecovery(Stat characterStat, BuildingObject building)
-    {
-        var levelData = building.Data.GetLevelData(building.CurrentLevel);
-        int power = levelData.effectValue;
-
-        if (building.Data.buildingType == BuildingType.Tavern)
-        {
-            // 식당: HP 회복
-            characterStat.RecoverHp(power);
-            Debug.Log($"{building.Data.buildingName}: 체력을 {power}만큼 회복했습니다.");
-        }
-        else if (building.Data.buildingType == BuildingType.Inn)
-        {
-            // 여관: 스트레스(광기) 감소
-            characterStat.RecoverInsanity(power);
-            Debug.Log($"{building.Data.buildingName}: 광기를 {power}만큼 진정시켰습니다.");
-        }
-    }
+    // // 건물을 클릭했을 때 호출되거나, 전용 UI에서 '휴식하기' 버튼을 눌렀을 때 호출
+    // public void ProcessRecovery(Stat characterStat, BuildingObject building)
+    // {
+    //     var levelData = building.Data.GetLevelData(building.CurrentLevel);
+    //     int power = levelData.effectValue;
+    //
+    //     if (building.Data.buildingType == BuildingType.Tavern)
+    //     {
+    //         // 식당: HP 회복
+    //         characterStat.RecoverHp(power);
+    //         Debug.Log($"{building.Data.buildingName}: 체력을 {power}만큼 회복했습니다.");
+    //     }
+    //     else if (building.Data.buildingType == BuildingType.Inn)
+    //     {
+    //         // 여관: 스트레스(광기) 감소
+    //         characterStat.RecoverInsanity(power);
+    //         Debug.Log($"{building.Data.buildingName}: 광기를 {power}만큼 진정시켰습니다.");
+    //     }
+    // }
     
     // 업그레이드 메서드도 이 공통 메서드를 사용하도록 리팩토링
     public void UpgradeBuilding(BuildingObject building)
@@ -250,4 +253,10 @@ public class SettlementManager : MonoBehaviour
         // AdminTestTool에서 설정한 플래그에 따라 반환
         return AdminTestTool.isTargetingWeapon ? target.baseWeapon : target.baseArmor;
     }
+
+    public void ExecuteBuildingFunction(int slotIndex, BaseCharacter target)
+    {
+        throw new System.NotImplementedException();
+    }
+
 }

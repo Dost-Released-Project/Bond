@@ -42,7 +42,7 @@ public class ResourceManager
     public void Admin_AddAllResources(int amount)
     {
         AddFrontierData(amount);
-        AddMaterials(amount/10, amount/10);
+        AddMaterials(amount, amount);
         Debug.Log($"<color=yellow>[Admin]</color> 모든 자원을 {amount}만큼 추가했습니다.");
     }
 
