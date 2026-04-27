@@ -8,7 +8,7 @@ namespace _02.Scripts.UI.Title
     /// 화면 테두리와 UI 영역 시각화를 담당하며, 카메라 자동 연결 기능을 포함합니다.
     /// </summary>
     [ExecuteAlways]
-    public class ScrollShapesCanvas : ImmediateModeCanvas
+    public class CanvasFrame : ImmediateModeCanvas
     {
         [Header("Frame Settings")]
         public float cornerRadius = 20f;
