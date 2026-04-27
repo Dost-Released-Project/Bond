@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Bond.Embark;
 
@@ -6,6 +7,25 @@ public partial class CharacterData
 {
     public class Builder
     {
+        private List<Trait> traits = new List<Trait>()
+        {
+            new Trait()
+            {
+                Name = "A",
+                Description = "aaa"
+            },
+            new Trait()
+            {
+                Name = "B",
+                Description = "bbb"
+            },
+            new Trait()
+            {
+                Name = "C",
+                Description = "ccc"
+            }
+        };
+        
         private readonly CharacterData data = new();
 
         public Builder()
@@ -59,7 +79,7 @@ public partial class CharacterData
         
         public Builder AddRandomTrait()
         {
-            Trait randomTrait = new();
+            Trait randomTrait = traits.GetRandom();
             
             int i = Array.FindIndex(data.Traits, trait => trait == null);
             if (i == -1)
