@@ -1,0 +1,4 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/97.%20Moon/V2(Inventory,%20Building,%20Supply)/Scripts/UI/Inventory/InventoryStyle.uss?fileID=7433441132597879392&amp;guid=2d9b46e0e3f6b80438edfeb73b2d389a&amp;type=3#InventoryStyle"/>
+    <ui:VisualElement name="expedition-container" style="flex-grow: 1; align-self: flex-end; background-color: rgb(255, 255, 255); width: 800px; height: 200px; justify-content: flex-start; flex-direction: row; flex-wrap: wrap; align-items: auto; background-position-y: top 0; background-position-x: left 0; background-size: 100% 100%; align-content: auto; position: absolute; -unity-background-scale-mode: stretch-to-fill; transform-origin: center; top: 880px; left: 1120px;"/>
+</ui:UXML>
