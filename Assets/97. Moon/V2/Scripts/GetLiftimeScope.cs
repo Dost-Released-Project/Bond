@@ -8,7 +8,7 @@ public class GetLifetimeScope : LifetimeScope
     {
         // Manager & Service (싱글톤처럼 유지)
         // 인벤토리
-        builder.Register<TotalInventory>(Lifetime.Singleton).WithParameter("capacity", 8).AsImplementedInterfaces().AsSelf();
+        builder.Register<TotalInventory>(Lifetime.Singleton).WithParameter("capacity", 16).AsImplementedInterfaces().AsSelf();
         builder.Register<ExpeditionInventory>(Lifetime.Singleton).WithParameter("capacity", 2).AsImplementedInterfaces().AsSelf();
         builder.Register<InventoryTransferService>(Lifetime.Singleton);
         // 자원 및 건물

@@ -36,14 +36,20 @@ public class InventoryView : MonoBehaviour
     {
         SetupUI();
         // 초기 데이터 세팅
-        if (testItems.Length >= 5)
-        {
-            _totalInventory.AddItemAt(0, testItems[0], 1);
-            _totalInventory.AddItemAt(1, testItems[1], 1);
-            _totalInventory.AddItemAt(2, testItems[2], 5);
-            _totalInventory.AddItemAt(3, testItems[3], 5);
-            _totalInventory.AddItemAt(4, testItems[4], 5);
-        }
+        _totalInventory.AddItemAt(0, testItems[0], 1);
+        _totalInventory.AddItemAt(1, testItems[1], 1);
+        _totalInventory.AddItemAt(2, testItems[2], 5);
+        _totalInventory.AddItemAt(3, testItems[3], 5);
+        _totalInventory.AddItemAt(4, testItems[4], 5);
+        // _totalInventory.AddItemAt(5, testItems[5], 1);
+        // _totalInventory.AddItemAt(6, testItems[6], 1);
+        // _totalInventory.AddItemAt(7, testItems[7], 1);
+        // _totalInventory.AddItemAt(8, testItems[8], 1);
+        // _totalInventory.AddItemAt(9, testItems[9], 1);
+        // _totalInventory.AddItemAt(10, testItems[10], 1);
+        // _totalInventory.AddItemAt(11, testItems[11], 1);
+        // _totalInventory.AddItemAt(12, testItems[12], 1);
+        
         ToggleWindow(false);
     }
 
@@ -103,8 +109,18 @@ public class InventoryView : MonoBehaviour
 
     public void RefreshUI()
     {
-        UpdateGrid(_totalSlotElements, _totalInventory, _totalInventory.GetFilteredIndices(_currentSearch, _currentFilter));
-        UpdateGrid(_expeditionSlotElements, _expeditionInventory, _expeditionInventory.GetFilteredIndices(_currentSearch, _currentFilter));
+        // [중요] 1. 용량이 변화했을 수 있으므로, 현재 용량에 맞춰 UI 슬롯 개수를 먼저 동기화합니다.
+        // 이 메서드가 실행되어야 새로 늘어난 Capacity만큼 VisualElement가 생성됩니다.
+        SyncSlotCount(_totalGrid, _totalInventory.Capacity, _totalSlotElements, _totalInventory);
+        SyncSlotCount(_expeditionGrid, _expeditionInventory.Capacity, _expeditionSlotElements, _expeditionInventory);
+
+        // 2. 필터링된 인덱스 가져오기
+        var totalVisible = _totalInventory.GetFilteredIndices(_currentSearch, _currentFilter);
+        var expeditionVisible = _expeditionInventory.GetFilteredIndices(_currentSearch, _currentFilter);
+
+        // 3. 동기화된 슬롯들에 데이터를 입힘
+        UpdateGrid(_totalSlotElements, _totalInventory, totalVisible);
+        UpdateGrid(_expeditionSlotElements, _expeditionInventory, expeditionVisible);
     }
 
     private void UpdateGrid(List<VisualElement> elements, IInventory inv, IEnumerable<int> visibleIndices)

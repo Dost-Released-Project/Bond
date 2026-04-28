@@ -99,7 +99,6 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
                 _totalInv.ExpandStorage(levelData.slotExpansion);
                 // 2. 자원 보유 상한치 확장
                 _resourceManager.ExpandCapacities(levelData.frontierCapAdd, levelData.materialCapAdd, levelData.materialCapAdd);
-                _inventoryView.RefreshUI(); // UI 갱신
                 Debug.Log($"창고 효과: 슬롯 +{levelData.slotExpansion}, 상한치 확장됨");
                 break;
     
