@@ -9,7 +9,7 @@ using VContainer.Unity;
 
 namespace _02._Scripts.BattleSystem
 {
-    public class ExpaditionFlowManager : MonoBehaviour, IExpaditionFlowManager
+    public class ExpeditionFlowManager : MonoBehaviour, IExpeditionFlowManager
     {
         public event Action<BaseCharacter[], BaseCharacter[]> OnBattleStart;
         

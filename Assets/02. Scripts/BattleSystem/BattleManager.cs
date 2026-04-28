@@ -11,12 +11,12 @@ namespace _02._Scripts.BattleSystem
     {
         private readonly ReactionSystem _reactionSystem;
         private readonly IBattlePipeLine _skillApplyPipeline;
-        private readonly IExpaditionFlowManager _expaditionFlowManager;
+        private readonly IExpeditionFlowManager _expeditionFlowManager;
         
         public BattleManager(ReactionSystem reactionSystem, 
-            IBattlePipeLine  skillApplyPipeline, IExpaditionFlowManager expaditionFlowManagerFlowManager)
+            IBattlePipeLine  skillApplyPipeline, IExpeditionFlowManager expeditionFlowManager)
         {
-            this._expaditionFlowManager = expaditionFlowManagerFlowManager;
+            this._expeditionFlowManager = expeditionFlowManager;
             this._reactionSystem = reactionSystem;
             this._skillApplyPipeline = skillApplyPipeline;
             Init();
@@ -24,12 +24,12 @@ namespace _02._Scripts.BattleSystem
         
         void IStartable.Start()
         {
-            _expaditionFlowManager.OnBattleStart += StartBattle;
+            _expeditionFlowManager.OnBattleStart += StartBattle;
         }
 
         void IDisposable.Dispose()
         {
-            _expaditionFlowManager.OnBattleStart -= StartBattle;
+            _expeditionFlowManager.OnBattleStart -= StartBattle;
         }
 
         private void StartBattle(BaseCharacter[] players, BaseCharacter[] enemies)
