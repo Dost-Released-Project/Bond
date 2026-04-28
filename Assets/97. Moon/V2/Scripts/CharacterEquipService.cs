@@ -6,25 +6,6 @@ public class CharacterEquipService
 {
     private ITotalInventory _totalInventory;
     [Inject] public void Construct(ITotalInventory total) => _totalInventory = total;
-
-    public bool AutoEquip(IInventory sourceInv, int invIndex)
-    {
-        var hero = AdminTestTool.testHero;
-        var slot = sourceInv.GetSlot(invIndex);
-        if (hero == null || slot.item is not AccessoryItem accItem) return false;
-
-        for (int i = 0; i < hero.equip.Length; i++)
-        {
-            if (hero.equip[i] == null)
-            {
-                hero.equip[i] = accItem.equipmentData.Clone(accItem);
-                sourceInv.RemoveFromSlot(invIndex, 1);
-                hero.TryGetComponent<Stat>(out var stat); stat?.StatCalculate();
-                return true;
-            }
-        }
-        return false;
-    }
     
     public void EquipFromDrag(IInventory sourceInv, int invIndex, int charSlotIndex)
     {
@@ -76,5 +57,29 @@ public class CharacterEquipService
         target.equip[slotIdx] = null;
     
         target.TryGetComponent<Stat>(out var stat); stat?.StatCalculate();
+    }
+    
+    public bool AutoEquip(IInventory sourceInv, int invIndex)
+    {
+        var hero = AdminTestTool.testHero;
+        var slot = sourceInv.GetSlot(invIndex);
+        if (hero == null || slot.item is not AccessoryItem accItem) return false;
+
+        for (int i = 0; i < hero.equip.Length; i++)
+        {
+            // [수정] 단순히 null 체크만 하지 말고, 알맹이(originItem)가 없는지도 같이 봅니다.
+            // 이렇게 하면 더미 데이터가 있어도 그 칸을 '비어있는 칸'으로 인식하고 덮어씁니다.
+            if (hero.equip[i] == null || hero.equip[i].originItem == null) 
+            {
+                hero.equip[i] = accItem.equipmentData.Clone(accItem);
+                hero.equip[i].originItem = accItem;
+            
+                sourceInv.RemoveFromSlot(invIndex, 1);
+                hero.TryGetComponent<Stat>(out var stat); 
+                stat?.StatCalculate();
+                return true;
+            }
+        }
+        return false;
     }
 }

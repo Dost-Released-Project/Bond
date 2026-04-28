@@ -265,5 +265,4 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     {
         throw new System.NotImplementedException();
     }
-
 }

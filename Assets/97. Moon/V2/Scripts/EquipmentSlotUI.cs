@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 using VContainer;
 using VContainer.Unity;
 
-public class EquipmentSlotUI : MonoBehaviour, IInitializable
+public class EquipmentSlotUI : MonoBehaviour
 {
     [SerializeField] private int slotIndex;
     private VisualElement _slotVisual;
@@ -24,15 +24,15 @@ public class EquipmentSlotUI : MonoBehaviour, IInitializable
             }
         });
         _slotVisual?.RegisterCallback<PointerDownEvent>(evt => {
-            if (evt.button == 1) { _equipService.UnequipToInventory(AdminTestTool.testHero, slotIndex, _totalInventory); RefreshUI(); }
+            if (evt.button == 1) { 
+                // 1. 해제 실행
+                _equipService.UnequipToInventory(AdminTestTool.testHero, slotIndex, _totalInventory); 
+        
+                // 2. [핵심] 즉시 UI 갱신
+                RefreshUI(); 
+            }
         });
         _totalInventory.OnChanged += RefreshUI;
-        RefreshUI();
-    }
-    
-    // VContainer가 주입 완료 후 호출
-    void IInitializable.Initialize() 
-    {
         RefreshUI();
     }
 

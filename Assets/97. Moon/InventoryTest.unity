@@ -216,14 +216,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BaseCharacter
   equip:
   - itemName: 
-    type: 0
+    type: 1
     upgradeLevel: 0
     bonusSTR: 0
     bonusAGI: 0
     bonusINT: 0
     originItem: {fileID: 0}
   - itemName: 
-    type: 0
+    type: 1
     upgradeLevel: 0
     bonusSTR: 0
     bonusAGI: 0

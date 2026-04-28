@@ -91,6 +91,3 @@ public abstract class InventoryBase : IInventory
     public void SortById() { _slots = _slots.OrderBy(s => s.item?.id ?? "ZZZ").ToList(); OnChanged?.Invoke(); }
     public abstract int AddItemAuto(BaseItem item, int quantity);
 }
-
-
-
