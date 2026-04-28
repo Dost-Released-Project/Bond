@@ -6,24 +6,64 @@ using VContainer;
 public class ExpeditionInventoryView : MonoBehaviour
 {
     private IExpeditionInventory _expeditionInventory;
-    private VisualElement _root;
+    private InventoryTransferService _transferService;
+    private CharacterEquipService _equipService;
+    
+    private VisualElement _slotContainer;
+    private VisualElement _localGhost; // 독립 고스트
     private List<VisualElement> _slots = new();
 
+    private bool IsWindowActive = true;
+
     [Inject]
-    public void Construct(IExpeditionInventory inventory)
+    public void Construct(IExpeditionInventory inventory, InventoryTransferService transfer, CharacterEquipService equip)
     {
         _expeditionInventory = inventory;
+        _transferService = transfer;
+        _equipService = equip;
     }
 
     private void Start()
     {
-        _root = GetComponent<UIDocument>().rootVisualElement.Q<VisualElement>("expedition-container");
+        var doc = GetComponent<UIDocument>().rootVisualElement;
+        _slotContainer = doc.Q<VisualElement>("expedition-container");
         
+        // 독립 고스트 생성
+        _localGhost = new VisualElement();
+        _localGhost.style.position = Position.Absolute;
+        _localGhost.style.width = _localGhost.style.height = 50;
+        _localGhost.style.visibility = Visibility.Hidden;
+        _localGhost.pickingMode = PickingMode.Ignore;
+        doc.Add(_localGhost);
+
         _expeditionInventory.OnChanged += RefreshUI;
         RefreshUI();
     }
 
-    // 용량(Capacity)에 맞춰 슬롯 UI 객체를 동기화
+    public void ToggleWindow()
+    {
+        IsWindowActive = !IsWindowActive;
+        _slotContainer.style.display = IsWindowActive ? DisplayStyle.Flex : DisplayStyle.None;
+    }
+
+    public void RefreshUI()
+    {
+        SyncSlots();
+        for (int i = 0; i < _slots.Count; i++)
+        {
+            var data = _expeditionInventory.GetSlot(i);
+            _slots[i].Clear();
+            if (!data.IsEmpty)
+            {
+                var icon = new VisualElement();
+                icon.style.backgroundImage = new StyleBackground(data.item.icon);
+                icon.style.width = icon.style.height = Length.Percent(100);
+                icon.pickingMode = PickingMode.Ignore;
+                _slots[i].Add(icon);
+            }
+        }
+    }
+
     private void SyncSlots()
     {
         while (_slots.Count < _expeditionInventory.Capacity)
@@ -31,58 +71,55 @@ public class ExpeditionInventoryView : MonoBehaviour
             int index = _slots.Count;
             var slot = new VisualElement();
             slot.AddToClassList("inventory-slot-base");
-            
-            // 우클릭: 사용 로직
+
             slot.RegisterCallback<PointerDownEvent>(evt => {
-                if (evt.button == 1) UseItemInExpedition(index);
-                // 필요 시 좌클릭 드래그 시작 로직을 여기에 추가 (InventoryView 참고)
+                var data = _expeditionInventory.GetSlot(index);
+                if (data.IsEmpty) return;
+
+                if (evt.button == 0) { // 드래그 시작
+                    InventoryView.CurrentDraggingIndex = index;
+                    InventoryView.CurrentSourceInventory = _expeditionInventory;
+                    _localGhost.style.backgroundImage = new StyleBackground(data.item.icon);
+                    _localGhost.style.visibility = Visibility.Visible;
+                    UpdateGhost(evt.position);
+                }
+                else if (evt.button == 1) { // 우클릭 분기
+                    if (data.item.category == ItemCategory.Accessories) _equipService.AutoEquip(_expeditionInventory, index);
+                    else if (data.item.category == ItemCategory.Consume) UseItemInExpedition(index);
+                }
             });
 
-            _root.Add(slot);
+            slot.RegisterCallback<PointerMoveEvent>(evt => {
+                if (_localGhost.style.visibility == Visibility.Visible) UpdateGhost(evt.position);
+            });
+
+            slot.RegisterCallback<PointerUpEvent>(evt => {
+                _localGhost.style.visibility = Visibility.Hidden;
+                if (InventoryView.CurrentSourceInventory != null) {
+                    _transferService.ExecuteDragDrop(InventoryView.CurrentSourceInventory, InventoryView.CurrentDraggingIndex, _expeditionInventory, index);
+                    InventoryView.ResetDraggingState();
+                }
+            });
+
+            _slotContainer.Add(slot);
             _slots.Add(slot);
         }
     }
 
-    private void UseItemInExpedition(int index)
+    private void UpdateGhost(Vector2 pos)
+    {
+        _localGhost.style.left = pos.x - 25;
+        _localGhost.style.top = pos.y - 25;
+    }
+
+    private void UseItemInExpedition(int index) // 복구된 소모품 사용 로직
     {
         var slot = _expeditionInventory.GetSlot(index);
         if (slot.IsEmpty || slot.item.category != ItemCategory.Consume) return;
-
         if (AdminTestTool.testHero != null)
         {
             slot.item.Use(AdminTestTool.testHero);
             _expeditionInventory.RemoveFromSlot(index, 1);
         }
-    }
-    
-    public void RefreshUI() 
-    {
-        // 1. [핵심] 건설 등으로 용량이 늘어났을 경우를 대비해 슬롯 UI 생성
-        SyncSlots();
-
-        // 2. 기존 슬롯 데이터 갱신
-        for (int i = 0; i < _slots.Count; i++)
-        {
-            var slotData = _expeditionInventory.GetSlot(i);
-            var visual = _slots[i];
-            visual.Clear();
-
-            if (!slotData.IsEmpty)
-            {
-                var icon = new VisualElement();
-                icon.style.backgroundImage = new StyleBackground(slotData.item.icon);
-                icon.style.width = icon.style.height = Length.Percent(100);
-                icon.pickingMode = PickingMode.Ignore;
-                visual.Add(icon);
-
-                // 수량 표시가 필요하다면 여기에 Label 추가 로직 삽입
-            }
-        }
-    }
-
-    private void OnDestroy()
-    {
-        if (_expeditionInventory != null)
-            _expeditionInventory.OnChanged -= RefreshUI;
     }
 }

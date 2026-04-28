@@ -11,6 +11,7 @@ public class AccessoryBagView : MonoBehaviour
     private VisualElement _grid;
     private List<VisualElement> _uiSlots = new();
     private List<int> _mappedIndices = new();
+    public static bool IsWindowActive = true;
 
     [Inject]
     public void Construct(ITotalInventory total, CharacterEquipService equip) 
@@ -97,5 +98,11 @@ public class AccessoryBagView : MonoBehaviour
     private void OnDestroy()
     {
         if (_totalInventory != null) _totalInventory.OnChanged -= RefreshUI;
+    }
+
+    public void ToggleWindow()
+    {
+        IsWindowActive = !IsWindowActive;
+        _grid.style.display = IsWindowActive ? DisplayStyle.Flex : DisplayStyle.None;
     }
 }

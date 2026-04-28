@@ -21,6 +21,8 @@ public class InventoryView : MonoBehaviour
     private InventoryTransferService _transferService;
     private CharacterEquipService _equipService;
 
+    public static bool IsWindowActive = false;
+
     public BaseItem[] testItems; // 인스펙터 할당용
     private string _currentSearch = "";
     private ItemCategory? _currentFilter = null;
@@ -37,18 +39,12 @@ public class InventoryView : MonoBehaviour
         SetupUI();
         // 초기 데이터 세팅
         _totalInventory.AddItemAt(0, testItems[0], 1);
+        _totalInventory.AddItemAt(5, testItems[0], 1);
         _totalInventory.AddItemAt(1, testItems[1], 1);
+        _totalInventory.AddItemAt(6, testItems[1], 1);
         _totalInventory.AddItemAt(2, testItems[2], 5);
         _totalInventory.AddItemAt(3, testItems[3], 5);
         _totalInventory.AddItemAt(4, testItems[4], 5);
-        // _totalInventory.AddItemAt(5, testItems[5], 1);
-        // _totalInventory.AddItemAt(6, testItems[6], 1);
-        // _totalInventory.AddItemAt(7, testItems[7], 1);
-        // _totalInventory.AddItemAt(8, testItems[8], 1);
-        // _totalInventory.AddItemAt(9, testItems[9], 1);
-        // _totalInventory.AddItemAt(10, testItems[10], 1);
-        // _totalInventory.AddItemAt(11, testItems[11], 1);
-        // _totalInventory.AddItemAt(12, testItems[12], 1);
         
         ToggleWindow(false);
     }
@@ -89,8 +85,9 @@ public class InventoryView : MonoBehaviour
 
     public void ToggleWindow(bool show)
     {
+        IsWindowActive = show;
         _root.Q<VisualElement>("inventory-container").style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
-        if (show) { if (_totalScroll != null) _totalScroll.scrollOffset = Vector2.zero; RefreshUI(); }
+        if (show) { if (_totalScroll != null) _totalScroll.scrollOffset = Vector2.zero; RefreshUI();}
     }
 
     private void SyncSlotCount(VisualElement container, int targetCount, List<VisualElement> list, IInventory inv)

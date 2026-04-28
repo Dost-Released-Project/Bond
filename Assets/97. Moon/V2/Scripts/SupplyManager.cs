@@ -38,13 +38,13 @@ public class SupplyManager : MonoBehaviour, ISupplyManager
 
         if (type == SupplyType.Normal_Supply)
         {
-            //_totalInventory.AddItemAuto(normalSupplyPackage, 5);
-            //Debug.Log("<color=green>[보급]</color> 일반 보급품(붕대 등) 3개가 창고에 추가되었습니다.");
+            _totalInventory.AddItemAuto(normalSupplyPackage, 3);
+            Debug.Log("<color=green>[보급]</color> 일반 보급품(붕대 등) 3개가 창고에 추가되었습니다.");
         }
         else if (type == SupplyType.Special_Supply)
         {
-            //_totalInventory.AddItemAuto(specialSupplyItem, 5);
-            //Debug.Log("<color=green>[보급]</color> 특수 보급품(정신 각성제) 1개가 창고에 추가되었습니다.");
+            _totalInventory.AddItemAuto(specialSupplyItem, 1);
+            Debug.Log("<color=green>[보급]</color> 특수 보급품(정신 각성제) 1개가 창고에 추가되었습니다.");
         }
     }
 
