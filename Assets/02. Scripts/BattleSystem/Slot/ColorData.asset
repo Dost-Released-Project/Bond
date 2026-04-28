@@ -12,11 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 714a72578501f8a4395d45e5907feafe, type: 3}
   m_Name: ColorData
   m_EditorClassIdentifier: Assembly-CSharp::ColorData
-  cornerRadius: 12
-  thickness: 2
-  padding: 5
-  normalColor: {r: 1, g: 1, b: 1, a: 0.1}
-  bgColor: {r: 1, g: 1, b: 1, a: 0.1}
-  hoverColor: {r: 0, g: 1, b: 1, a: 0.3}
+  normalColor: {r: 1, g: 1, b: 1, a: 0}
+  bgColor: {r: 0, g: 0, b: 0, a: 0}
+  hoverColor: {r: 0, g: 0, b: 0, a: 1}
   pressedColor: {r: 0, g: 1, b: 1, a: 0.6}
   lerpSpeed: 15

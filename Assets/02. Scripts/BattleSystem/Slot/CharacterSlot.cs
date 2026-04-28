@@ -37,7 +37,7 @@ namespace _02._Scripts.BattleSystem
         private bool m_IsHovered;
         private bool m_IsPressed;
 
-        private void OnEnable()
+        private void Start()
         {
             m_CurrentColor = colorData.normalColor;
             m_TargetColor = colorData.normalColor;
