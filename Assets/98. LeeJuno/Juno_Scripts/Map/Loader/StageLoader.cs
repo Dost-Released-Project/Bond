@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.EventSystems;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 using VContainer;
+using Object = UnityEngine.Object;
 
 /// <summary>
 /// IStageLoader 구현체.
@@ -22,10 +25,16 @@ public class StageLoader : IStageLoader
 {
     private readonly List<StageConfig> _stageConfigs;
     private readonly MonsterGroupConfig _monsterGroupConfig;
+    private readonly Dictionary<StageType, StageConfig> _stageConfigMap;
 
-    private SceneInstance _currentScene;    // 현재 로드된 씬 인스턴스
-    private bool _hasLoadedScene;           // 현재 로드된 씬이 있는지 여부
-    private bool _isLoading;               // 비동기 로딩 진행 중 여부 (이중 호출 방지)
+    private SceneInstance _currentScene;         // 현재 로드된 씬 인스턴스
+    private bool _hasLoadedScene;               // 현재 로드된 씬이 있는지 여부
+    private bool _isLoading;                    // 비동기 로딩 진행 중 여부 (이중 호출 방지)
+
+    // 스테이지 씬 로드 중 비활성화할 맵 씬 컴포넌트 — 언로드 후 복구
+    private AudioListener _mapAudioListener;
+    private Camera _mapCamera;
+    private EventSystem _mapEventSystem;
 
     [Inject]
     public StageLoader(List<StageConfig> stageConfigs, MonsterGroupConfig monsterGroupConfig)
@@ -33,12 +42,28 @@ public class StageLoader : IStageLoader
         _stageConfigs = stageConfigs;
         _monsterGroupConfig = monsterGroupConfig;
         _hasLoadedScene = false;
+
+        _stageConfigMap = new Dictionary<StageType, StageConfig>();
+
+        if (_stageConfigs != null)
+        {
+            foreach (StageConfig cfg in _stageConfigs)
+            {
+                if (cfg != null)
+                    _stageConfigMap[cfg.Type] = cfg;
+            }
+        }
     }
 
     /// <summary>
     /// 스테이지 완료 시 발생하는 이벤트. 스테이지 씬에서 NotifyStageCompleted()로 발생시킨다.
     /// </summary>
     public event Action<StageResult> OnStageCompleted;
+
+    /// <summary>
+    /// 현재 씬 로드/언로드가 진행 중인지 여부.
+    /// </summary>
+    public bool IsLoading => _isLoading;
 
     /// <summary>
     /// 지정한 StageType에 대응하는 씬을 Additive로 비동기 로드한다.
@@ -56,13 +81,22 @@ public class StageLoader : IStageLoader
         _isLoading = true;
         try
         {
+            // 맵 씬 컴포넌트를 먼저 캡처하고 비활성화한다.
+            // UnloadCurrentStage 이전에 처리해야 복구→재비활성화 왕복을 방지한다.
+            DisableMapComponents();
+
+            // 기존 씬 언로드 시 맵 컴포넌트는 복구하지 않는다 (연속 로드 흐름)
             if (_hasLoadedScene)
-                await UnloadCurrentStage();
+                await UnloadCurrentStageInternal(restoreMapComponents: false);
 
             StageConfig config = FindConfig(stageType);
 
             if (config == null)
+            {
+                // config가 없으면 씬 로드 없이 반환 — 맵 컴포넌트를 반드시 복구한다
+                RestoreMapComponents();
                 return;
+            }
 
             // ARCH-04: SetNormalStageContext 직전 잔류 데이터 제거
             if (stageType == StageType.Normal)
@@ -81,8 +115,11 @@ public class StageLoader : IStageLoader
                 _currentScene = await handle.ToUniTask();
                 _hasLoadedScene = true;
             }
-            catch
+            catch (Exception e)
             {
+                // 로드 실패 시 맵 컴포넌트 복구
+                RestoreMapComponents();
+                Debug.LogError($"[StageLoader] 씬 로드 실패: {e.Message}");
                 _hasLoadedScene = false;
                 throw;
             }
@@ -94,7 +131,7 @@ public class StageLoader : IStageLoader
     }
 
     /// <summary>
-    /// 현재 로드된 스테이지 씬을 언로드한다.
+    /// 현재 로드된 스테이지 씬을 언로드하고 맵 씬 컴포넌트(Camera, AudioListener, EventSystem)를 복구한다.
     /// 로드된 씬이 없으면 아무 동작도 하지 않는다.
     /// </summary>
     public async UniTask UnloadCurrentStage()
@@ -102,8 +139,72 @@ public class StageLoader : IStageLoader
         if (_hasLoadedScene == false)
             return;
 
-        await Addressables.UnloadSceneAsync(_currentScene).ToUniTask();
-        _hasLoadedScene = false;
+        await UnloadCurrentStageInternal(restoreMapComponents: true);
+    }
+
+    /// <summary>
+    /// 씬 언로드 내부 구현.
+    /// restoreMapComponents: LoadStage 연속 흐름에서는 false, 독립 호출에서는 true.
+    /// </summary>
+    private async UniTask UnloadCurrentStageInternal(bool restoreMapComponents)
+    {
+        try
+        {
+            await Addressables.UnloadSceneAsync(_currentScene).ToUniTask();
+            _hasLoadedScene = false;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[StageLoader] 씬 언로드 실패: {e.Message}");
+            _hasLoadedScene = false;
+            throw;
+        }
+        finally
+        {
+            if (restoreMapComponents)
+                RestoreMapComponents();
+        }
+    }
+
+    /// <summary>
+    /// 맵 씬의 Camera, AudioListener, EventSystem을 캡처하고 비활성화한다.
+    /// Additive 씬 로드 전에 호출해 중복 렌더링·입력·사운드를 방지한다.
+    /// </summary>
+    private void DisableMapComponents()
+    {
+        if (_mapCamera == null)
+            _mapCamera = Object.FindFirstObjectByType<Camera>();
+
+        if (_mapAudioListener == null)
+            _mapAudioListener = Object.FindFirstObjectByType<AudioListener>();
+
+        if (_mapEventSystem == null)
+            _mapEventSystem = Object.FindFirstObjectByType<EventSystem>();
+
+        if (_mapCamera != null)
+            _mapCamera.enabled = false;
+
+        if (_mapAudioListener != null)
+            _mapAudioListener.enabled = false;
+
+        if (_mapEventSystem != null)
+            _mapEventSystem.enabled = false;
+    }
+
+    /// <summary>
+    /// DisableMapComponents()로 비활성화한 맵 씬 컴포넌트를 복구한다.
+    /// 씬 언로드 완료 후 또는 로드 실패/조기 반환 시 호출한다.
+    /// </summary>
+    private void RestoreMapComponents()
+    {
+        if (_mapCamera != null)
+            _mapCamera.enabled = true;
+
+        if (_mapAudioListener != null)
+            _mapAudioListener.enabled = true;
+
+        if (_mapEventSystem != null)
+            _mapEventSystem.enabled = true;
     }
 
     /// <summary>
@@ -121,13 +222,10 @@ public class StageLoader : IStageLoader
     /// </summary>
     private StageConfig FindConfig(StageType stageType)
     {
-        foreach (StageConfig config in _stageConfigs)
-        {
-            if (config.Type == stageType)
-                return config;
-        }
-
-        return null;
+        // 생성자에서 미리 인덱싱한 딕셔너리로 O(1) 조회
+        StageConfig result;
+        _stageConfigMap.TryGetValue(stageType, out result);
+        return result;
     }
 
     /// <summary>
@@ -158,11 +256,14 @@ public class StageLoader : IStageLoader
     /// </summary>
     private MonsterGroupData FindMonsterGroup(string groupId)
     {
-        if (_monsterGroupConfig == null)
+        if (_monsterGroupConfig == null || _monsterGroupConfig.Groups == null)
             return null;
 
         foreach (MonsterGroupData group in _monsterGroupConfig.Groups)
         {
+            if (group == null)
+                continue;
+
             if (group.Id == groupId)
                 return group;
         }

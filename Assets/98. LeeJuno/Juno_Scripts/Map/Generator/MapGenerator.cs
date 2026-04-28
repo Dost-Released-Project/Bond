@@ -338,7 +338,7 @@ public class MapGenerator : IMapGenerator
 
     /// <summary>
     /// 층 번호에 따라 스테이지 타입 가중치 배열을 반환한다.
-    /// 배열 순서: [Normal, Elite, Event, Camping, Shop]
+    /// 배열 순서: [Normal, Elite, Event, Camping]
     /// </summary>
     private float[] GetWeights(int layer)
     {
