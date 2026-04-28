@@ -39,6 +39,12 @@ public class Stat
     // 장착 중인 기본 장비 참조 (다키스트 던전식 고정 장비)
     public Equipment baseWeapon;
     public Equipment baseArmor;
+
+    private BaseCharacter character;
+    public void Init(BaseCharacter character)
+    {
+        this.character = character;
+    }
     
     public void StatCalculate(string str) // 테스트용으로 스트링 매개 변수를 추가한 스탯 계산 로직
     {
@@ -54,10 +60,9 @@ public class Stat
         int extraINT = (baseWeapon?.bonusINT ?? 0) + (baseArmor?.bonusINT ?? 0);
         
         // [추가] 악세서리 슬롯(equip 배열) 수치 합산
-        var character = GetComponent<BaseCharacter>();
-        if (character != null && character.equip != null)
+        if (character != null && character.Data.Equips != null)
         {
-            foreach (var equipment in character.equip)
+            foreach (var equipment in character.Data.Equips)
             {
                 if (equipment != null) // 장착된 악세서리가 있다면
                 {

@@ -24,7 +24,7 @@ public class CharacterEquipService
         if (hero == null || slot.IsEmpty || slot.item is not AccessoryItem accItem) return;
 
         // 기존 장비가 있다면 해제 (현재 열린 UI 상황에 맞춰 귀환)
-        if (hero.equip[charSlotIndex]?.originItem != null)
+        if (hero.Data.Equips[charSlotIndex]?.originItem != null)
         {
             UnequipToInventory(hero, charSlotIndex);
         }
@@ -32,7 +32,7 @@ public class CharacterEquipService
         // 새 장비 장착
         var newEquip = accItem.equipmentData.Clone(accItem);
         newEquip.originItem = accItem;
-        hero.equip[charSlotIndex] = newEquip;
+        hero.Data.Equips[charSlotIndex] = newEquip;
 
         sourceInv.RemoveFromSlot(invIndex, 1);
         UpdateHeroStats(hero);
@@ -40,7 +40,7 @@ public class CharacterEquipService
 
     public void UnequipToInventory(BaseCharacter target, int slotIdx)
     {
-        var eq = target.equip[slotIdx];
+        var eq = target.Data.Equips[slotIdx];
         if (eq?.originItem == null) return;
 
         // [귀환 로직] 전체 인벤토리나 장신구 가방이 켜져있으면 전체로, 아니면 탐사로
@@ -56,7 +56,7 @@ public class CharacterEquipService
             fallback.AddItemAuto(eq.originItem, remain);
         }
 
-        target.equip[slotIdx] = null;
+        target.Data.Equips[slotIdx] = null;
         UpdateHeroStats(target);
     }
 
@@ -66,12 +66,12 @@ public class CharacterEquipService
         var slot = sourceInv.GetSlot(invIndex);
         if (hero == null || slot.item is not AccessoryItem accItem) return false;
 
-        for (int i = 0; i < hero.equip.Length; i++)
+        for (int i = 0; i < hero.Data.Equips.Length; i++)
         {
-            if (hero.equip[i] == null || hero.equip[i].originItem == null)
+            if (hero.Data.Equips[i] == null || hero.Data.Equips[i].originItem == null)
             {
-                hero.equip[i] = accItem.equipmentData.Clone(accItem);
-                hero.equip[i].originItem = accItem;
+                hero.Data.Equips[i] = accItem.equipmentData.Clone(accItem);
+                hero.Data.Equips[i].originItem = accItem;
                 sourceInv.RemoveFromSlot(invIndex, 1);
                 UpdateHeroStats(hero);
                 return true;
@@ -82,7 +82,7 @@ public class CharacterEquipService
 
     private void UpdateHeroStats(BaseCharacter hero)
     {
-        hero.TryGetComponent<Stat>(out var stat);
+        Stat stat = hero.Stat;
         stat?.StatCalculate();
         OnEquipmentChanged?.Invoke(); // 모든 UI에 알림
     }

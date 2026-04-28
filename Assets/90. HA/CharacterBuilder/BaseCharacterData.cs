@@ -11,6 +11,14 @@ public enum RoleType
 
 public partial class BaseCharacterData
 {
+    /// <summary>
+    /// 테스트 용 객체
+    /// </summary>
+    public static BaseCharacterData Empty => new BaseCharacterData()
+    {
+        Name = "CharacterData for Test"
+    };
+    
     public string Id;
     public string ImageAddress;
 
@@ -22,7 +30,7 @@ public partial class BaseCharacterData
 
     public SkillBase[] Skills = new SkillBase[4];
     public Trait[] Traits = new Trait[4];
-    public Equipment[] Trinkets = new Equipment[2];
+    public Equipment[] Equips = new Equipment[2];
 
     public Dictionary<BaseCharacter, int>
         Relation = new Dictionary<BaseCharacter, int>(); // 딕셔너리 선택 이유: 동료는 언제든 교체될 수 있기에 딕셔너리로 관리 및 저장.

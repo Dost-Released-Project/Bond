@@ -62,7 +62,7 @@ public class EquipmentSlotUI : MonoBehaviour
     {
         if (_slotVisual == null) return;
         _slotVisual.Clear();
-        var eq = AdminTestTool.testHero?.equip[slotIndex];
+        var eq = AdminTestTool.testHero?.Data.Equips[slotIndex];
         if (eq?.originItem != null) {
             var icon = new VisualElement();
             icon.style.backgroundImage = new StyleBackground(eq.originItem.icon);

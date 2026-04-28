@@ -11,6 +11,7 @@ public class AdminTestTool : MonoBehaviour
 
     private void Awake()
     {
+        hero = BaseCharacter.Empty;
         testHero = hero;
     }
 
@@ -19,22 +20,22 @@ public class AdminTestTool : MonoBehaviour
         // 1. 캐릭터 데미지 입히기 (식당 테스트용)
         if (Keyboard.current.f1Key.wasPressedThisFrame)
         {
-            testHero.GetComponent<Stat>().ReduceHP(20); 
-            Debug.Log($"테스트 캐릭터 HP 감소 {testHero.GetComponent<Stat>().current_Hp} / {testHero.GetComponent<Stat>().max_Hp}");
+            testHero.ReduceHP(20); 
+            Debug.Log($"테스트 캐릭터 HP 감소 {testHero.Stat.current_Hp} / {testHero.Stat.max_Hp}");
         }
 
         // 2. 스트레스 증가 (여관 테스트용)
         if (Keyboard.current.f2Key.wasPressedThisFrame)
         {
-            testHero.GetComponent<Stat>().ReduceInsanity(20);
-            Debug.Log($"테스트 캐릭터 스트레스 증가: {testHero.GetComponent<Stat>().insanity}");
+            testHero.ReduceInsanity(20);
+            Debug.Log($"테스트 캐릭터 스트레스 증가: {testHero.Insanity}");
         }
 
         // 3. 캐릭터 선택 (SettlementManager에 전달)
         if (Keyboard.current.f3Key.wasPressedThisFrame)
         {
-            FindObjectOfType<SettlementManager>().SelectCharacter(testHero.GetComponent<Stat>());
-            testHero.GetComponent<Stat>().StatCalculate();
+            FindObjectOfType<SettlementManager>().SelectCharacter(testHero);
+            testHero.Stat.StatCalculate();
         }
         
         // 4. 강화 대상 전환 (무기 <-> 방어구)

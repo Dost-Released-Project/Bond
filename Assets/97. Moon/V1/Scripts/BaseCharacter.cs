@@ -9,8 +9,13 @@ using UnityEngine.InputSystem;
 
 public class BaseCharacter : ITurnUseUnit
 {
+    /// <summary>
+    /// 테스트 용 객체
+    /// </summary>
+    public static BaseCharacter Empty => new BaseCharacter(BaseCharacterData.Empty);
+    
     public BaseCharacterData Data;
-    private Stat stat = new Stat();
+    public Stat Stat { get; } = new Stat();
     
     // 읽는 쪽에서 편하라고 일단 만들어두긴 했는데 너무 길어지면 지우는게 나을지도
     public int Level => Data.Level;
@@ -46,20 +51,20 @@ public class BaseCharacter : ITurnUseUnit
         };
     }
     
-    public void ReduceHP(int amount) => stat.current_Hp = Mathf.Max(stat.current_Hp - amount, 0); // 체력 감소
+    public void ReduceHP(int amount) => Stat.current_Hp = Mathf.Max(Stat.current_Hp - amount, 0); // 체력 감소
     public void ReduceInsanity(int amount) => Data.Insanity = Mathf.Min(Data.Insanity + amount, 100); // 스트레스 증가
     
     // 회복 관련 메서드 추가
-    public void RecoverHp(int amount) => stat.current_Hp = Mathf.Min(stat.current_Hp + amount, stat.max_Hp);
+    public void RecoverHp(int amount) => Stat.current_Hp = Mathf.Min(Stat.current_Hp + amount, Stat.max_Hp);
     public void RecoverInsanity(int amount) => Data.Insanity = Mathf.Max(Data.Insanity - amount, 0);
 
     #region ITurnUseUnit
 
-    public int Speed => stat.speed;
+    public int Speed => Stat.speed;
     public bool IsDead { get; private set; } = false;
     public string ImageAddress => Data.ImageAddress;
     public string UnitName => Data.Name;
-    public Stat StatComponent => stat;
+    public Stat StatComponent => Stat;
     public int RandomSpeed { get; set; }
     
     private AutoResetUniTaskCompletionSource<bool> _tcs;

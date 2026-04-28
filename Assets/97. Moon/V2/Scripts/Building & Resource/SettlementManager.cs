@@ -185,16 +185,16 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         Debug.Log($"길드에서 {reward}의 개척 데이터를 수급했습니다!");
     }
     
-    private Stat _selectedCharacter; // 현재 선택된 캐릭터
+    private BaseCharacter _selectedCharacter; // 현재 선택된 캐릭터
 
     // 캐릭터 선택 (InteractionManager나 외부에서 호출)
-    public void SelectCharacter(Stat characterStat)
+    public void SelectCharacter(BaseCharacter character)
     {
-        _selectedCharacter = characterStat;
-        Debug.Log($"<color=green>[선택됨]</color> {characterStat.ClassType} 클래스 캐릭터");
+        _selectedCharacter = character;
+        Debug.Log($"<color=green>[선택됨]</color> {character.Profession} 클래스 캐릭터");
     }
 
-    private Stat GetSelectedCharacterStat()
+    private BaseCharacter GetSelectedCharacterStat()
     {
         if (_selectedCharacter == null)
         {
@@ -207,40 +207,40 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
 
     private void ProcessTavern(BuildingObject tavern)
     {
-        Stat target = GetSelectedCharacterStat();
+        BaseCharacter target = GetSelectedCharacterStat();
         if (target == null) return;
 
-        int hp = target.current_Hp;
+        int hp = target.Stat.current_Hp;
         int amount = tavern.Data.GetLevelData(tavern.CurrentLevel).effectValue;
 
         // 식당: HP 회복 (effectValue만큼)
         // StatCalculate를 호출하여 최대 체력을 갱신한 뒤 회복
         target.RecoverHp(amount);
 
-        Debug.Log($"식당 이용: {amount}만큼 HP 회복. {hp} => {target.current_Hp}");
+        Debug.Log($"식당 이용: {amount}만큼 HP 회복. {hp} => {target.Stat.current_Hp}");
     }
 
     private void ProcessInn(BuildingObject inn)
     {
-        Stat target = GetSelectedCharacterStat();
+        BaseCharacter target = GetSelectedCharacterStat();
         if (target == null) return;
 
-        int insanity = target.insanity;
+        int insanity = target.Insanity;
         int amount = inn.Data.GetLevelData(inn.CurrentLevel).effectValue;
 
         // 여관: 스트레스(광기) 감소
         target.RecoverInsanity(amount);
         
-        Debug.Log($"여관 이용: {amount}만큼 스트레스 감소. {insanity} => {target.insanity}");
+        Debug.Log($"여관 이용: {amount}만큼 스트레스 감소. {insanity} => {target.Insanity}");
     }
     
     private void ProcessSmithy(BuildingObject smithy)
     {
-        Stat target = GetSelectedCharacterStat();
+        BaseCharacter target = GetSelectedCharacterStat();
         if (target == null) return;
 
         // 관리자 도구 등에서 설정된 현재 강화 타겟 장비를 가져옵니다. (무기 또는 방어구)
-        Equipment targetEquipment = GetCurrentUpgradeTarget(target);
+        Equipment targetEquipment = GetCurrentUpgradeTarget(target.Stat);
     
         if (targetEquipment == null) 
         {
@@ -250,7 +250,7 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
 
         // BuildingService의 강화 로직 호출 (자원 소모 포함)
         // 인자로 target(Stat)을 넘겨서 강화 후 StatCalculate가 실행되게 합니다.
-        _buildingService.UpgradeEquipment(target, targetEquipment, smithy.CurrentLevel);
+        _buildingService.UpgradeEquipment(target.Stat, targetEquipment, smithy.CurrentLevel);
     }
 
     // AdminTool 등에서 무기/방어구 중 무엇을 강화할지 결정하는 보조 메서드
