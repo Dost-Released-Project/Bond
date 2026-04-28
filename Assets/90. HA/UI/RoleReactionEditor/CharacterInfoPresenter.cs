@@ -47,7 +47,7 @@ namespace Bond.UI.RoleReactionEditor
             _nameLabel.text = character.UnitName;
 
             var data = character.Data;
-            var stat = character.StatComponent;
+            var stat = character.Stat;
             _classLabel.text      = data != null ? data.Profession.Name      : "—";
             _statStrLabel.text    = stat != null ? stat.STR.ToString()       : "—";
             _statAgiLabel.text    = stat != null ? stat.AGI.ToString()       : "—";

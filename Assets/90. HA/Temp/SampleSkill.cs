@@ -1,5 +1,5 @@
 
-public class TempSkill : SkillBase
+public class SampleSkill : SkillBase
 {
     public override void UseSkill()
     {

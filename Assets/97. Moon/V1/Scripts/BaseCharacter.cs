@@ -12,7 +12,7 @@ public class BaseCharacter : ITurnUseUnit
     /// <summary>
     /// 테스트 용 객체
     /// </summary>
-    public static BaseCharacter Empty => new BaseCharacter(BaseCharacterData.Empty);
+    public static BaseCharacter Sample => new BaseCharacter(BaseCharacterData.Sample);
     
     public BaseCharacterData Data;
     public Stat Stat { get; } = new Stat();
@@ -64,7 +64,6 @@ public class BaseCharacter : ITurnUseUnit
     public bool IsDead { get; private set; } = false;
     public string ImageAddress => Data.ImageAddress;
     public string UnitName => Data.Name;
-    public Stat StatComponent => Stat;
     public int RandomSpeed { get; set; }
     
     private AutoResetUniTaskCompletionSource<bool> _tcs;

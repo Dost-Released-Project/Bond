@@ -123,7 +123,7 @@ namespace Bond.UI.PartySelection
         private VisualElement BuildFilledSlot(int index)
         {
             var character = _slots[index].AssignedCharacter;
-            var stat      = character.StatComponent;
+            var stat      = character.Stat;
 
             bool isDanger = stat != null &&
                             ((float)stat.current_Hp / stat.max_Hp <= 0.3f ||

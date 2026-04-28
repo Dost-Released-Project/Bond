@@ -93,7 +93,7 @@ namespace Bond.UI.PartySelection
 
         private CardViewModel BuildCard(BaseCharacter character)
         {
-            var stat        = character.StatComponent;
+            var stat        = character.Stat;
             string classKey = character.Profession.ToString();
             Debug.Log($"is stat null? {stat == null}");
             Debug.Log(classKey);

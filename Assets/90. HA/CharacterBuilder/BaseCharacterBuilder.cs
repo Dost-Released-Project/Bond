@@ -95,7 +95,7 @@ public partial class BaseCharacterData
 
         public Builder AddRandomSkill()
         {
-            SkillBase randomSkill = new TempSkill();
+            SkillBase randomSkill = new SampleSkill();
 
             int i = Array.FindIndex(data.Skills, trait => trait == null);
             if (i == -1)

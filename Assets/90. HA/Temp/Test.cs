@@ -16,7 +16,7 @@ namespace Ha
         {
             foreach (var chara in characters)
             {
-                chara.StatComponent.StatCalculate();
+                chara.Stat.StatCalculate();
             }
         }
 

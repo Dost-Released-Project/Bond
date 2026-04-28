@@ -11,7 +11,7 @@ public class AdminTestTool : MonoBehaviour
 
     private void Awake()
     {
-        hero = BaseCharacter.Empty;
+        hero = BaseCharacter.Sample;
         testHero = hero;
     }
 

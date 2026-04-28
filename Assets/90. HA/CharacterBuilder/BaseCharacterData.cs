@@ -14,7 +14,7 @@ public partial class BaseCharacterData
     /// <summary>
     /// 테스트 용 객체
     /// </summary>
-    public static BaseCharacterData Empty => new BaseCharacterData()
+    public static BaseCharacterData Sample => new BaseCharacterData()
     {
         Name = "CharacterData for Test"
     };
