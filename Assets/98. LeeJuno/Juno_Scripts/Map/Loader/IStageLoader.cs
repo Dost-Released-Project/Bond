@@ -25,4 +25,10 @@ public interface IStageLoader
     /// 로드된 씬이 없으면 아무 동작도 하지 않는다.
     /// </summary>
     public UniTask UnloadCurrentStage();
+
+    /// <summary>
+    /// 스테이지 씬 내부에서 결과가 확정되면 호출한다.
+    /// OnStageCompleted 이벤트를 발생시켜 맵 복귀 처리를 시작한다.
+    /// </summary>
+    public void NotifyStageCompleted(StageResult result);
 }

@@ -1,3 +1,4 @@
+using System;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
@@ -11,6 +12,7 @@ using VContainer;
 ///   - HideMap()  : 맵 패널 비활성화 (스테이지 진입 시 호출)
 ///   - 노드 클릭 → MapNavigator.MoveToNode() → HideMap()
 ///   - OnNodeEntered → RefreshNodeStates() + StageLoader.LoadStage()
+///   - OnStageCompleted → 씬 언로드 → ShowMap() 으로 맵 복귀
 ///
 /// Inspector 연결 필요:
 ///   _mapView   — MapView 컴포넌트
@@ -23,6 +25,7 @@ public class MapUIController : MonoBehaviour
 
     private IMapNavigator _navigator;
     private IStageLoader _stageLoader;
+    private MapData _cachedMapData;
 
     /// <summary>VContainer가 의존성을 주입하는 메서드.</summary>
     [Inject]
@@ -30,17 +33,16 @@ public class MapUIController : MonoBehaviour
     {
         _navigator = navigator;
         _stageLoader = stageLoader;
-    }
-
-    private void Start()
-    {
-        // 노드 진입 이벤트 구독 — 씬 로드 및 노드 상태 갱신 트리거
         _navigator.OnNodeEntered += OnNodeEntered;
+        _stageLoader.OnStageCompleted += HandleStageCompleted;
     }
 
     private void OnDestroy()
     {
-        _navigator.OnNodeEntered -= OnNodeEntered;
+        if (_navigator != null)
+            _navigator.OnNodeEntered -= OnNodeEntered;
+        if (_stageLoader != null)
+            _stageLoader.OnStageCompleted -= HandleStageCompleted;
     }
 
     /// <summary>
@@ -49,6 +51,7 @@ public class MapUIController : MonoBehaviour
     /// </summary>
     public void ShowMap(MapData mapData)
     {
+        _cachedMapData = mapData;
         _mapPanel.SetActive(true);
         _mapView.Initialize(mapData, OnNodeButtonClicked);
     }
@@ -85,8 +88,45 @@ public class MapUIController : MonoBehaviour
         LoadStageAsync(node).Forget();
     }
 
+    /// <summary>
+    /// StageLoader.OnStageCompleted 이벤트 핸들러.
+    /// 게임 오버 시 별도 처리, 정상 완료 시 씬 언로드 후 맵으로 복귀한다.
+    /// </summary>
+    private void HandleStageCompleted(StageResult result)
+    {
+        if (result.IsGameOver)
+        {
+            // 게임 오버 흐름은 별도 시스템에서 처리 (FlowManager 등)
+            return;
+        }
+
+        _mapView.RefreshNodeStates();
+        UnloadAndShowMapAsync().Forget();
+    }
+
     private async UniTaskVoid LoadStageAsync(MapNode node)
     {
-        await _stageLoader.LoadStage(node.StageType, node);
+        try
+        {
+            await _stageLoader.LoadStage(node.StageType, node);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[MapUIController] 씬 로드 실패: {e.Message}");
+            ShowMap(_cachedMapData);
+        }
+    }
+
+    private async UniTaskVoid UnloadAndShowMapAsync()
+    {
+        try
+        {
+            await _stageLoader.UnloadCurrentStage();
+            ShowMap(_cachedMapData);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[MapUIController] 씬 언로드 실패: {e.Message}");
+        }
     }
 }

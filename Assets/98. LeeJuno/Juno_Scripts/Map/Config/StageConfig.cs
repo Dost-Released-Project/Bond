@@ -7,11 +7,9 @@ using UnityEngine;
 /// 생성 위치: Assets 우클릭 → Create → Bond → StageConfig
 /// </summary>
 [CreateAssetMenu(menuName = "Bond/StageConfig")]
-public class StageConfig : ScriptableObject
+public class StageConfig : BaseSO
 {
     public StageType Type;          // 이 설정이 대응하는 스테이지 타입
-
-    public string DisplayName;      // UI에 표시할 이름 (예: "일반 전투", "엘리트")
     public Sprite Icon;             // 맵 노드에 표시할 아이콘 스프라이트 (직접 참조)
     public string IconAddress;      // Addressables로 동적 로드할 때 사용하는 아이콘 주소
     public string SceneAddress;     // Addressables로 로드할 스테이지 씬 주소

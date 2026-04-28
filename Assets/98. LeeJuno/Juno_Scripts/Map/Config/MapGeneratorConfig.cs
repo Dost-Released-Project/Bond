@@ -7,7 +7,7 @@ using UnityEngine;
 /// 생성 위치: Assets 우클릭 → Create → Bond → MapGeneratorConfig
 /// </summary>
 [CreateAssetMenu(menuName = "Bond/MapGeneratorConfig")]
-public class MapGeneratorConfig : ScriptableObject
+public class MapGeneratorConfig : BaseSO
 {
     [Header("맵 크기")]
     public int TotalLayers = 15;        // 맵의 총 층 수 (시작층 0 포함)
@@ -24,10 +24,19 @@ public class MapGeneratorConfig : ScriptableObject
 
     [Header("가중치 (기본값)")]
     // EliteMinLayer 이상인 일반 중간 층에서 사용되는 스테이지 타입 출현 비율.
-    // 합계가 1.0이 되도록 설정할 것. (검증: MapGeneratorConfig.OnValidate 추가 권장)
+    // 합계가 1.0이 되도록 설정할 것.
     [Range(0f, 1f)] public float WeightNormal  = 0.45f;
     [Range(0f, 1f)] public float WeightElite   = 0.15f;
     [Range(0f, 1f)] public float WeightEvent   = 0.22f;
     [Range(0f, 1f)] public float WeightCamping = 0.12f;
 
+#if UNITY_EDITOR
+    protected override void OnValidate()
+    {
+        base.OnValidate();
+        float sum = WeightNormal + WeightElite + WeightEvent + WeightCamping;
+        if (Mathf.Abs(sum - 1f) > 0.01f)
+            Debug.LogWarning($"[MapGeneratorConfig] 가중치 합={sum:F2}, 1.0이어야 합니다.", this);
+    }
+#endif
 }

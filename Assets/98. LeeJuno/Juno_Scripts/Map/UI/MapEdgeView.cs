@@ -52,6 +52,16 @@ public class MapEdgeView : MonoBehaviour
     }
 
     /// <summary>
+    /// 엣지의 활성화 상태(색상)만 갱신한다.
+    /// RefreshNodeStates 후 경로 방문 여부가 바뀌었을 때 호출된다.
+    /// </summary>
+    /// <param name="isActive">true면 불투명 흰색, false면 반투명</param>
+    public void RefreshState(bool isActive)
+    {
+        _image.color = isActive ? Color.white : new Color(1f, 1f, 1f, 0.3f);
+    }
+
+    /// <summary>
     /// 정규화 좌표(0~1)를 RectTransform의 로컬 좌표로 변환한다.
     /// 컨테이너 중심이 (0, 0)이 되도록 0.5를 빼고 rect 크기를 곱한다.
     /// </summary>

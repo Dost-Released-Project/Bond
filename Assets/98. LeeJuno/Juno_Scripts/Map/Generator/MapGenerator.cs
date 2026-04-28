@@ -4,7 +4,7 @@ using VContainer;
 
 /// <summary>
 /// Slay the Spire 스타일의 절차적 맵 생성기.
-/// 7단계 파이프라인으로 DAG(방향 비순환 그래프) 구조의 맵을 생성한다.
+/// 8단계 파이프라인으로 DAG(방향 비순환 그래프) 구조의 맵을 생성한다.
 ///
 /// 생성 흐름:
 ///   1. DetermineNodeCounts  — 층별 노드 수 결정
@@ -14,15 +14,18 @@ using VContainer;
 ///   5. AssignStageTypes     — 스테이지 타입 가중치 배정
 ///   6. ApplyPlacementRules  — 배치 규칙 강제 적용 (보스·캠핑·엘리트 보장)
 ///   7. InitializeNodeStates — 초기 노드 상태 설정 (0층만 Available)
+///   8. AssignMonsterGroups  — Normal 노드에 몬스터 그룹 랜덤 배정
 /// </summary>
 public class MapGenerator : IMapGenerator
 {
     private readonly MapGeneratorConfig _config;
+    private readonly MonsterGroupConfig _monsterGroupConfig;
 
     [Inject]
-    public MapGenerator(MapGeneratorConfig config)
+    public MapGenerator(MapGeneratorConfig config, MonsterGroupConfig monsterGroupConfig)
     {
         _config = config;
+        _monsterGroupConfig = monsterGroupConfig;
     }
 
     public MapData GenerateMap(int seed)
@@ -44,6 +47,7 @@ public class MapGenerator : IMapGenerator
         AssignStageTypes(data, rng);
         ApplyPlacementRules(data, rng);
         InitializeNodeStates(data);
+        AssignMonsterGroups(data, rng); // Step 8: Normal 노드에 몬스터 그룹 랜덤 배정
 
         return data;
     }
@@ -339,10 +343,10 @@ public class MapGenerator : IMapGenerator
     private float[] GetWeights(int layer)
     {
         if (layer < 4)
-            return new float[] { 0.70f, 0f, 0.30f, 0f, 0f };
+            return new float[] { 0.70f, 0f, 0.30f, 0f };
 
         if (layer < _config.EliteMinLayer)
-            return new float[] { 0.55f, 0f, 0.25f, 0.15f, 0.05f };
+            return new float[] { 0.55f, 0f, 0.25f, 0.15f };
 
         return new float[] {
             _config.WeightNormal,
@@ -402,12 +406,33 @@ public class MapGenerator : IMapGenerator
         foreach (MapNode node in data.NodesByLayer[preBossLayer])
             node.StageType = StageType.Camping;
 
-        // 규칙 3: Elite 최소 1개 보장
-        if (HasTypeInRange(data, StageType.Elite, _config.EliteMinLayer, preBossLayer - 1) == false)
+        // 규칙 3 & 4 전처리: EliteMinLayer ~ preBossLayer-1 구간을 단일 순회로 통합
+        // HasTypeInRange + FindRandomNormalInRange 를 동일 구간에서 연속 호출하는
+        // 중복 순회를 제거하기 위해 구간 내 노드를 한 번만 순회한다.
+        int eliteRangeEnd = preBossLayer - 1;
+        bool hasElite = false;
+        List<MapNode> eliteRangeCandidates = new List<MapNode>(); // Elite 보장용 Normal 후보
+
+        for (int layer = _config.EliteMinLayer; layer <= eliteRangeEnd; layer++)
         {
-            MapNode target = FindRandomNormalInRange(data, _config.EliteMinLayer, preBossLayer - 1, rng);
-            if (target != null)
-                target.StageType = StageType.Elite;
+            if (data.NodesByLayer.ContainsKey(layer) == false)
+                continue;
+
+            foreach (MapNode node in data.NodesByLayer[layer])
+            {
+                if (node.StageType == StageType.Elite)
+                    hasElite = true;
+
+                if (node.StageType == StageType.Normal)
+                    eliteRangeCandidates.Add(node);
+            }
+        }
+
+        // 규칙 3: Elite 최소 1개 보장
+        if (hasElite == false && eliteRangeCandidates.Count > 0)
+        {
+            MapNode target = eliteRangeCandidates[rng.Next(eliteRangeCandidates.Count)];
+            target.StageType = StageType.Elite;
         }
 
         // 규칙 4: Camping 최소 개수 보장
@@ -432,30 +457,24 @@ public class MapGenerator : IMapGenerator
     }
 
     /// <summary>
-    /// fromLayer~toLayer 구간에 특정 타입의 노드가 존재하는지 확인한다.
-    /// </summary>
-    private bool HasTypeInRange(MapData data, StageType type, int fromLayer, int toLayer)
-    {
-        foreach (MapNode node in data.Nodes)
-        {
-            if (node.Layer >= fromLayer && node.Layer <= toLayer && node.StageType == type)
-                return true;
-        }
-        return false;
-    }
-
-    /// <summary>
     /// fromLayer~toLayer 구간의 Normal 노드 중 하나를 무작위로 반환한다.
+    /// NodesByLayer를 활용해 해당 층만 접근한다.
     /// 후보가 없으면 null을 반환한다.
     /// </summary>
     private MapNode FindRandomNormalInRange(MapData data, int fromLayer, int toLayer, System.Random rng)
     {
         List<MapNode> candidates = new List<MapNode>();
 
-        foreach (MapNode node in data.Nodes)
+        for (int layer = fromLayer; layer <= toLayer; layer++)
         {
-            if (node.Layer >= fromLayer && node.Layer <= toLayer && node.StageType == StageType.Normal)
-                candidates.Add(node);
+            if (data.NodesByLayer.ContainsKey(layer) == false)
+                continue;
+
+            foreach (MapNode node in data.NodesByLayer[layer])
+            {
+                if (node.StageType == StageType.Normal)
+                    candidates.Add(node);
+            }
         }
 
         if (candidates.Count == 0)
@@ -517,5 +536,60 @@ public class MapGenerator : IMapGenerator
             list[i] = list[j];
             list[j] = tmp;
         }
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // Step 8: Normal 노드 몬스터 그룹 배정
+    // ─────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Normal 타입 노드에 MonsterGroupConfig 에서 층 범위에 맞는 그룹을 랜덤으로 배정한다.
+    /// rng 는 파이프라인 전체에서 공유되므로 Step 7 완료 후 호출해야
+    /// 같은 seed 에서 항상 동일한 결과가 보장된다.
+    /// </summary>
+    private void AssignMonsterGroups(MapData data, System.Random rng)
+    {
+        if (_monsterGroupConfig == null)
+            return;
+
+        if (_monsterGroupConfig.Groups == null)
+            return;
+
+        if (_monsterGroupConfig.Groups.Count == 0)
+            return;
+
+        foreach (MapNode node in data.Nodes)
+        {
+            if (node.StageType != StageType.Normal)
+                continue;
+
+            List<MonsterGroupData> candidates = GetCandidateGroups(node.Layer);
+
+            if (candidates.Count == 0)
+                continue;
+
+            MonsterGroupData chosen = candidates[rng.Next(candidates.Count)];
+            node.AssignedMonsterGroupId = chosen.Id;
+        }
+    }
+
+    /// <summary>
+    /// 지정 층 번호에 등장 가능한 몬스터 그룹 목록을 반환한다.
+    /// MinLayer == 0 &amp;&amp; MaxLayer == 0 이면 층 제한 없음으로 처리한다.
+    /// </summary>
+    private List<MonsterGroupData> GetCandidateGroups(int layer)
+    {
+        List<MonsterGroupData> candidates = new List<MonsterGroupData>();
+
+        foreach (MonsterGroupData group in _monsterGroupConfig.Groups)
+        {
+            bool noLayerLimit = group.MinLayer == 0 && group.MaxLayer == 0;
+            bool inRange = layer >= group.MinLayer && layer <= group.MaxLayer;
+
+            if (noLayerLimit || inRange)
+                candidates.Add(group);
+        }
+
+        return candidates;
     }
 }

@@ -20,6 +20,7 @@ public class MapView : MonoBehaviour
 
     private MapData _mapData;
     private Dictionary<int, MapNodeView> _nodeViews; // NodeId → MapNodeView 빠른 접근용
+    private List<(int FromNodeId, MapEdgeView EdgeView)> _edgeViews; // 엣지 캐싱 (출발 노드 ID + 뷰)
     private System.Action<int> _onNodeClickedCallback;
 
     /// <summary>
@@ -30,9 +31,13 @@ public class MapView : MonoBehaviour
     /// <param name="onNodeClicked">노드 버튼 클릭 시 호출할 콜백 (인자: 노드 Id)</param>
     public void Initialize(MapData mapData, System.Action<int> onNodeClicked)
     {
+        foreach (Transform child in _mapContainer)
+            UnityEngine.Object.Destroy(child.gameObject);
+
         _mapData = mapData;
         _onNodeClickedCallback = onNodeClicked;
         _nodeViews = new Dictionary<int, MapNodeView>();
+        _edgeViews = new List<(int, MapEdgeView)>();
 
         DrawEdges();
         DrawNodes();
@@ -40,12 +45,24 @@ public class MapView : MonoBehaviour
 
     /// <summary>
     /// 모든 노드뷰의 상태(버튼 활성화, 강조)를 현재 MapNode.State에 맞게 갱신한다.
+    /// 엣지뷰의 색상도 함께 갱신해 방문한 경로를 시각적으로 반영한다.
     /// MapUIController.OnNodeEntered 후 호출된다.
     /// </summary>
     public void RefreshNodeStates()
     {
         foreach (KeyValuePair<int, MapNodeView> pair in _nodeViews)
             pair.Value.RefreshState();
+
+        // 엣지 상태 갱신: 출발 노드가 Visited 또는 Current이면 활성(불투명) 표시
+        foreach ((int fromNodeId, MapEdgeView edgeView) in _edgeViews)
+        {
+            if (_mapData.NodeById.ContainsKey(fromNodeId) == false)
+                continue;
+
+            MapNode fromNode = _mapData.NodeById[fromNodeId];
+            bool isActive = fromNode.State == NodeState.Visited || fromNode.State == NodeState.Current;
+            edgeView.RefreshState(isActive);
+        }
     }
 
     /// <summary>
@@ -66,6 +83,9 @@ public class MapView : MonoBehaviour
 
                 bool isActive = node.State == NodeState.Visited || node.State == NodeState.Current;
                 edgeView.Setup(node.NormalizedPosition, nextNode.NormalizedPosition, _mapContainer, isActive);
+
+                // 엣지 캐싱: 출발 노드 ID와 뷰를 함께 저장해 RefreshNodeStates에서 갱신 가능하게 한다
+                _edgeViews.Add((node.Id, edgeView));
             }
         }
     }
