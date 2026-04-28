@@ -1,4 +1,4 @@
-using Bond.PartyManagement;
+using Bond.Embark;
 using VContainer;
 using VContainer.Unity;
 
@@ -8,6 +8,7 @@ public class TestScope : LifetimeScope
     protected override void Configure(IContainerBuilder builder)
     {
         builder.Register<PartyManager>(Lifetime.Singleton);
+        builder.Register<StageCoach>(Lifetime.Singleton);
         builder.RegisterComponent(t);
     }
 }

@@ -197,8 +197,8 @@ namespace Bond.UI.PartySelection
             traitTags.AddToClassList("trait-tags");
             foreach (var trait in character.traits)
             {
-                if (trait == null || string.IsNullOrEmpty(trait.traitName)) continue;
-                var tag = new Label(trait.traitName);
+                if (trait == null || string.IsNullOrEmpty(trait.Name)) continue;
+                var tag = new Label(trait.Name);
                 tag.AddToClassList("trait-tag");
                 traitTags.Add(tag);
             }

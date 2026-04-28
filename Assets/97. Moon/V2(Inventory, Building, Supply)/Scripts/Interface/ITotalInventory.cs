@@ -4,5 +4,4 @@ using UnityEngine;
 public interface ITotalInventory : IInventory
 {
     void ProcessExcessToLog(BaseItem item, int quantity);
-    void ExpandStorage(int additionalSlots);
 }

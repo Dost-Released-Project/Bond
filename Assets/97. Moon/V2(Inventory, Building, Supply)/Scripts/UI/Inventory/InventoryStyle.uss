@@ -1,0 +1,26 @@
+.grid-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    padding: 10px;
+}
+
+#expedition-inventory-grid {
+    width: 200px;
+    height: 100px;
+}
+
+.inventory-slot-base {
+    width: 100px;
+    height: 100px;
+    margin: 5px;
+    background-color: rgba(40, 40, 40, 0.8);
+    border-width: 2px;
+    border-color: rgb(85, 85, 85);
+}
+
+#unity-vertical-scroller,
+#unity-horizontal-scroller {
+    display: none;
+    visibility: hidden;
+}

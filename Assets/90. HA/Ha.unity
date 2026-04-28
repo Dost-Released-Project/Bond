@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &39269389
+--- !u!1 &168338041
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,93 +127,269 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 39269392}
-  - component: {fileID: 39269391}
-  - component: {fileID: 39269390}
+  - component: {fileID: 168338044}
+  - component: {fileID: 168338043}
+  - component: {fileID: 168338042}
   m_Layer: 0
-  m_Name: Player (5)
+  m_Name: Player (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &39269390
+--- !u!114 &168338042
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 39269389}
+  m_GameObject: {fileID: 168338041}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3882a424dfcc07944a96845ab974539e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BaseCharacter
+  Data:
+    Id: 
+    ImageAddress: 
+    Name: 
+    Class: {fileID: 0}
+    Level: 0
+    Insanity: 0
+    RoleType: 0
+    Skills:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    Traits:
+    - Name: Missing
+      Description: Missing
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - Name: Missing
+      Description: Missing
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - Name: Missing
+      Description: Missing
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - Name: Missing
+      Description: Missing
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    Trinkets:
+    - {fileID: 0}
+    - {fileID: 0}
+    RoleReactions:
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    TraitReactions:
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
   equip:
   - {fileID: 0}
   - {fileID: 0}
   traits:
-  - traitName: 
-    description: 
-    fixedTrigger:
+  - Name: Missing
+    Description: Missing
+    Trigger:
       Id: 0
       Category: 0
       TriggerKey: 
       Description: 
       ValueParam: 0
-  - traitName: 
-    description: 
-    fixedTrigger:
+  - Name: Missing
+    Description: Missing
+    Trigger:
       Id: 0
       Category: 0
       TriggerKey: 
       Description: 
       ValueParam: 0
-  - traitName: 
-    description: 
-    fixedTrigger:
+  - Name: Missing
+    Description: Missing
+    Trigger:
       Id: 0
       Category: 0
       TriggerKey: 
       Description: 
       ValueParam: 0
-  - traitName: 
-    description: 
-    fixedTrigger:
+  - Name: Missing
+    Description: Missing
+    Trigger:
       Id: 0
       Category: 0
       TriggerKey: 
       Description: 
       ValueParam: 0
   skills:
-  - {fileID: 2021698591}
-  - {fileID: 1790513478}
-  - {fileID: 1297400546}
-  - {fileID: 271946004}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  level: 1
   roleType: 0
+  roleReactions:
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  traitReactions:
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
   TestSkillManager: {fileID: 0}
-  unitName: "\uC300\uC22D\uC774"
-  imageAddress: RiceSummoner
---- !u!114 &39269391
+  unitName: "\uC2E0\uCC3D\uC12D"
+  imageAddress: GodOfNormalization
+--- !u!114 &168338043
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 39269389}
+  m_GameObject: {fileID: 168338041}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4a20e10fbdb726443b0682f4ab551dea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stat
   insanity: 0
---- !u!4 &39269392
+  baseWeapon: {fileID: 0}
+  baseArmor: {fileID: 0}
+--- !u!4 &168338044
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 39269389}
+  m_GameObject: {fileID: 168338041}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: -0, z: -0}
@@ -267,7 +443,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &482685079
+--- !u!1 &853938952
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -275,332 +451,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 482685082}
-  - component: {fileID: 482685081}
-  - component: {fileID: 482685080}
-  m_Layer: 0
-  m_Name: Player (4)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &482685080
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 482685079}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3882a424dfcc07944a96845ab974539e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BaseCharacter
-  equip:
-  - {fileID: 0}
-  - {fileID: 0}
-  traits:
-  - traitName: 
-    description: 
-    fixedTrigger:
-      Id: 0
-      Category: 0
-      TriggerKey: 
-      Description: 
-      ValueParam: 0
-  - traitName: 
-    description: 
-    fixedTrigger:
-      Id: 0
-      Category: 0
-      TriggerKey: 
-      Description: 
-      ValueParam: 0
-  - traitName: 
-    description: 
-    fixedTrigger:
-      Id: 0
-      Category: 0
-      TriggerKey: 
-      Description: 
-      ValueParam: 0
-  - traitName: 
-    description: 
-    fixedTrigger:
-      Id: 0
-      Category: 0
-      TriggerKey: 
-      Description: 
-      ValueParam: 0
-  skills:
-  - {fileID: 2021698591}
-  - {fileID: 1790513478}
-  - {fileID: 1297400546}
-  - {fileID: 271946004}
-  roleType: 0
-  TestSkillManager: {fileID: 0}
-  unitName: "\uD604\uC6B0"
-  imageAddress: Wildboar
---- !u!114 &482685081
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 482685079}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a20e10fbdb726443b0682f4ab551dea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Stat
-  insanity: 0
---- !u!4 &482685082
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 482685079}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: -0, z: -0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &781777820
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 781777823}
-  - component: {fileID: 781777822}
-  - component: {fileID: 781777821}
-  m_Layer: 0
-  m_Name: Player (7)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &781777821
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 781777820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3882a424dfcc07944a96845ab974539e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BaseCharacter
-  equip:
-  - {fileID: 0}
-  - {fileID: 0}
-  traits:
-  - traitName: 
-    description: 
-    fixedTrigger:
-      Id: 0
-      Category: 0
-      TriggerKey: 
-      Description: 
-      ValueParam: 0
-  - traitName: 
-    description: 
-    fixedTrigger:
-      Id: 0
-      Category: 0
-      TriggerKey: 
-      Description: 
-      ValueParam: 0
-  - traitName: 
-    description: 
-    fixedTrigger:
-      Id: 0
-      Category: 0
-      TriggerKey: 
-      Description: 
-      ValueParam: 0
-  - traitName: 
-    description: 
-    fixedTrigger:
-      Id: 0
-      Category: 0
-      TriggerKey: 
-      Description: 
-      ValueParam: 0
-  skills:
-  - {fileID: 2021698591}
-  - {fileID: 1790513478}
-  - {fileID: 1297400546}
-  - {fileID: 271946004}
-  roleType: 0
-  TestSkillManager: {fileID: 0}
-  unitName: "\uBB49\uD0F1\uC774"
-  imageAddress: MTE
---- !u!114 &781777822
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 781777820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a20e10fbdb726443b0682f4ab551dea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Stat
-  insanity: 0
---- !u!4 &781777823
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 781777820}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: -0, z: -0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &933490008
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 933490011}
-  - component: {fileID: 933490010}
-  - component: {fileID: 933490009}
-  - component: {fileID: 933490012}
-  m_Layer: 0
-  m_Name: Player (6)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &933490009
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 933490008}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3882a424dfcc07944a96845ab974539e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BaseCharacter
-  equip:
-  - {fileID: 0}
-  - {fileID: 0}
-  traits:
-  - traitName: 
-    description: 
-    fixedTrigger:
-      Id: 0
-      Category: 0
-      TriggerKey: 
-      Description: 
-      ValueParam: 0
-  - traitName: 
-    description: 
-    fixedTrigger:
-      Id: 0
-      Category: 0
-      TriggerKey: 
-      Description: 
-      ValueParam: 0
-  - traitName: 
-    description: 
-    fixedTrigger:
-      Id: 0
-      Category: 0
-      TriggerKey: 
-      Description: 
-      ValueParam: 0
-  - traitName: 
-    description: 
-    fixedTrigger:
-      Id: 0
-      Category: 0
-      TriggerKey: 
-      Description: 
-      ValueParam: 0
-  skills:
-  - {fileID: 2021698591}
-  - {fileID: 1790513478}
-  - {fileID: 1297400546}
-  - {fileID: 271946004}
-  roleType: 0
-  TestSkillManager: {fileID: 0}
-  unitName: "\uC2E0\uCC3D\uC12D"
-  imageAddress: GodOfNormalization
---- !u!114 &933490010
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 933490008}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a20e10fbdb726443b0682f4ab551dea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Stat
-  insanity: 0
---- !u!4 &933490011
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 933490008}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: -0, z: -0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &933490012
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 933490008}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a17806bcf2e847643956ed86af6bc3be, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TestSkillAttack
-  _targetSkillId: 
---- !u!1 &1246891319
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1246891322}
-  - component: {fileID: 1246891321}
-  - component: {fileID: 1246891320}
+  - component: {fileID: 853938955}
+  - component: {fileID: 853938954}
+  - component: {fileID: 853938953}
   m_Layer: 0
   m_Name: Player (3)
   m_TagString: Untagged
@@ -608,83 +461,259 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1246891320
+--- !u!114 &853938953
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1246891319}
+  m_GameObject: {fileID: 853938952}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3882a424dfcc07944a96845ab974539e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BaseCharacter
+  Data:
+    Id: 
+    ImageAddress: 
+    Name: 
+    Class: {fileID: 0}
+    Level: 0
+    Insanity: 0
+    RoleType: 0
+    Skills:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    Traits:
+    - Name: Missing
+      Description: Missing
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - Name: Missing
+      Description: Missing
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - Name: Missing
+      Description: Missing
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - Name: Missing
+      Description: Missing
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    Trinkets:
+    - {fileID: 0}
+    - {fileID: 0}
+    RoleReactions:
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    TraitReactions:
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
   equip:
   - {fileID: 0}
   - {fileID: 0}
   traits:
-  - traitName: 
-    description: 
-    fixedTrigger:
+  - Name: Missing
+    Description: Missing
+    Trigger:
       Id: 0
       Category: 0
       TriggerKey: 
       Description: 
       ValueParam: 0
-  - traitName: 
-    description: 
-    fixedTrigger:
+  - Name: Missing
+    Description: Missing
+    Trigger:
       Id: 0
       Category: 0
       TriggerKey: 
       Description: 
       ValueParam: 0
-  - traitName: 
-    description: 
-    fixedTrigger:
+  - Name: Missing
+    Description: Missing
+    Trigger:
       Id: 0
       Category: 0
       TriggerKey: 
       Description: 
       ValueParam: 0
-  - traitName: 
-    description: 
-    fixedTrigger:
+  - Name: Missing
+    Description: Missing
+    Trigger:
       Id: 0
       Category: 0
       TriggerKey: 
       Description: 
       ValueParam: 0
   skills:
-  - {fileID: 2021698591}
-  - {fileID: 1790513478}
-  - {fileID: 1297400546}
-  - {fileID: 271946004}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  level: 1
   roleType: 0
+  roleReactions:
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  traitReactions:
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
   TestSkillManager: {fileID: 0}
   unitName: "\uD2B8\uB7FC\uD504"
   imageAddress: GodOfWar
---- !u!114 &1246891321
+--- !u!114 &853938954
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1246891319}
+  m_GameObject: {fileID: 853938952}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4a20e10fbdb726443b0682f4ab551dea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stat
   insanity: 0
---- !u!4 &1246891322
+  baseWeapon: {fileID: 0}
+  baseArmor: {fileID: 0}
+--- !u!4 &853938955
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1246891319}
+  m_GameObject: {fileID: 853938952}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: -0, z: -0}
@@ -737,6 +766,285 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1288204701
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1288204704}
+  - component: {fileID: 1288204703}
+  - component: {fileID: 1288204702}
+  m_Layer: 0
+  m_Name: Player (5)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1288204702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288204701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3882a424dfcc07944a96845ab974539e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BaseCharacter
+  Data:
+    Id: 
+    ImageAddress: 
+    Name: 
+    Class: {fileID: 0}
+    Level: 0
+    Insanity: 0
+    RoleType: 0
+    Skills:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    Traits:
+    - Name: Missing
+      Description: Missing
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - Name: Missing
+      Description: Missing
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - Name: Missing
+      Description: Missing
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - Name: Missing
+      Description: Missing
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    Trinkets:
+    - {fileID: 0}
+    - {fileID: 0}
+    RoleReactions:
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    TraitReactions:
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+  equip:
+  - {fileID: 0}
+  - {fileID: 0}
+  traits:
+  - Name: Missing
+    Description: Missing
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  - Name: Missing
+    Description: Missing
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  - Name: Missing
+    Description: Missing
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  - Name: Missing
+    Description: Missing
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  skills:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  level: 1
+  roleType: 0
+  roleReactions:
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  traitReactions:
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  TestSkillManager: {fileID: 0}
+  unitName: "\uC300\uC22D\uC774"
+  imageAddress: RiceSummoner
+--- !u!114 &1288204703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288204701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a20e10fbdb726443b0682f4ab551dea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Stat
+  insanity: 0
+  baseWeapon: {fileID: 0}
+  baseArmor: {fileID: 0}
+--- !u!4 &1288204704
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288204701}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: -0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -924,6 +1232,285 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!1 &1778660484
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1778660487}
+  - component: {fileID: 1778660486}
+  - component: {fileID: 1778660485}
+  m_Layer: 0
+  m_Name: Player (7)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1778660485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1778660484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3882a424dfcc07944a96845ab974539e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BaseCharacter
+  Data:
+    Id: 
+    ImageAddress: 
+    Name: 
+    Class: {fileID: 0}
+    Level: 0
+    Insanity: 0
+    RoleType: 0
+    Skills:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    Traits:
+    - Name: Missing
+      Description: Missing
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - Name: Missing
+      Description: Missing
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - Name: Missing
+      Description: Missing
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - Name: Missing
+      Description: Missing
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    Trinkets:
+    - {fileID: 0}
+    - {fileID: 0}
+    RoleReactions:
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    TraitReactions:
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+  equip:
+  - {fileID: 0}
+  - {fileID: 0}
+  traits:
+  - Name: Missing
+    Description: Missing
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  - Name: Missing
+    Description: Missing
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  - Name: Missing
+    Description: Missing
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  - Name: Missing
+    Description: Missing
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  skills:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  level: 1
+  roleType: 0
+  roleReactions:
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  traitReactions:
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  TestSkillManager: {fileID: 0}
+  unitName: "\uBB49\uD0F1\uC774"
+  imageAddress: MTE
+--- !u!114 &1778660486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1778660484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a20e10fbdb726443b0682f4ab551dea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Stat
+  insanity: 0
+  baseWeapon: {fileID: 0}
+  baseArmor: {fileID: 0}
+--- !u!4 &1778660487
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1778660484}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: -0, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1790513477
 GameObject:
   m_ObjectHideFlags: 0
@@ -1009,6 +1596,285 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2024260657
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2024260660}
+  - component: {fileID: 2024260659}
+  - component: {fileID: 2024260658}
+  m_Layer: 0
+  m_Name: Player (4)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2024260658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2024260657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3882a424dfcc07944a96845ab974539e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BaseCharacter
+  Data:
+    Id: 
+    ImageAddress: 
+    Name: 
+    Class: {fileID: 0}
+    Level: 0
+    Insanity: 0
+    RoleType: 0
+    Skills:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    Traits:
+    - Name: Missing
+      Description: Missing
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - Name: Missing
+      Description: Missing
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - Name: Missing
+      Description: Missing
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    - Name: Missing
+      Description: Missing
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+    Trinkets:
+    - {fileID: 0}
+    - {fileID: 0}
+    RoleReactions:
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    TraitReactions:
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+    - Agent: {fileID: 0}
+      Source: 0
+      Trigger:
+        Id: 0
+        Category: 0
+        TriggerKey: 
+        Description: 
+        ValueParam: 0
+      Behaviour: {fileID: 0}
+      AnomalySkill: {fileID: 0}
+  equip:
+  - {fileID: 0}
+  - {fileID: 0}
+  traits:
+  - Name: Missing
+    Description: Missing
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  - Name: Missing
+    Description: Missing
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  - Name: Missing
+    Description: Missing
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  - Name: Missing
+    Description: Missing
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+  skills:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  level: 1
+  roleType: 0
+  roleReactions:
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  traitReactions:
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  - Agent: {fileID: 0}
+    Source: 0
+    Trigger:
+      Id: 0
+      Category: 0
+      TriggerKey: 
+      Description: 
+      ValueParam: 0
+    Behaviour: {fileID: 0}
+    AnomalySkill: {fileID: 0}
+  TestSkillManager: {fileID: 0}
+  unitName: "\uD604\uC6B0"
+  imageAddress: Wildboar
+--- !u!114 &2024260659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2024260657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a20e10fbdb726443b0682f4ab551dea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Stat
+  insanity: 0
+  baseWeapon: {fileID: 0}
+  baseArmor: {fileID: 0}
+--- !u!4 &2024260660
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2024260657}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: -0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1192,47 +2058,99 @@ PrefabInstance:
     - target: {fileID: 642968211895033654, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
       propertyPath: 'characters.Array.data[0]'
       value: 
-      objectReference: {fileID: 933490009}
+      objectReference: {fileID: 0}
     - target: {fileID: 642968211895033654, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
       propertyPath: 'characters.Array.data[1]'
       value: 
-      objectReference: {fileID: 39269390}
+      objectReference: {fileID: 0}
     - target: {fileID: 642968211895033654, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
       propertyPath: 'characters.Array.data[2]'
       value: 
-      objectReference: {fileID: 1246891320}
+      objectReference: {fileID: 0}
     - target: {fileID: 642968211895033654, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
       propertyPath: 'characters.Array.data[3]'
       value: 
-      objectReference: {fileID: 781777821}
+      objectReference: {fileID: 0}
     - target: {fileID: 642968211895033654, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
       propertyPath: 'characters.Array.data[4]'
       value: 
-      objectReference: {fileID: 482685080}
+      objectReference: {fileID: 0}
     - target: {fileID: 2977709028049973198, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
       propertyPath: m_Name
       value: Ha's
       objectReference: {fileID: 0}
+    - target: {fileID: 4876109518623903123, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6621883425403598065, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: roster.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6621883425403598065, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: 'roster.Array.data[0]'
+      value: 
+      objectReference: {fileID: 168338042}
+    - target: {fileID: 6621883425403598065, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: 'roster.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1288204702}
+    - target: {fileID: 6621883425403598065, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: 'roster.Array.data[2]'
+      value: 
+      objectReference: {fileID: 853938953}
+    - target: {fileID: 6621883425403598065, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: 'roster.Array.data[3]'
+      value: 
+      objectReference: {fileID: 1778660485}
+    - target: {fileID: 6621883425403598065, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: 'roster.Array.data[4]'
+      value: 
+      objectReference: {fileID: 2024260658}
+    - target: {fileID: 7431985782134365108, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: partyMembers.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7431985782134365108, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: 'partyMembers.Array.data[0]'
+      value: 
+      objectReference: {fileID: 168338042}
+    - target: {fileID: 7431985782134365108, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: 'partyMembers.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1288204702}
+    - target: {fileID: 7431985782134365108, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: 'partyMembers.Array.data[2]'
+      value: 
+      objectReference: {fileID: 853938953}
+    - target: {fileID: 7431985782134365108, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: 'partyMembers.Array.data[3]'
+      value: 
+      objectReference: {fileID: 1778660485}
+    - target: {fileID: 7431985782134365108, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
+      propertyPath: 'partyMembers.Array.data[4]'
+      value: 
+      objectReference: {fileID: 2024260658}
     - target: {fileID: 8225046686097492084, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
       propertyPath: 'partyMembers.Array.data[0]'
       value: 
-      objectReference: {fileID: 933490009}
+      objectReference: {fileID: 0}
     - target: {fileID: 8225046686097492084, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
       propertyPath: 'partyMembers.Array.data[1]'
       value: 
-      objectReference: {fileID: 39269390}
+      objectReference: {fileID: 0}
     - target: {fileID: 8225046686097492084, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
       propertyPath: 'partyMembers.Array.data[2]'
       value: 
-      objectReference: {fileID: 1246891320}
+      objectReference: {fileID: 0}
     - target: {fileID: 8225046686097492084, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
       propertyPath: 'partyMembers.Array.data[3]'
       value: 
-      objectReference: {fileID: 781777821}
+      objectReference: {fileID: 0}
     - target: {fileID: 8225046686097492084, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
       propertyPath: 'partyMembers.Array.data[4]'
       value: 
-      objectReference: {fileID: 482685080}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1245,13 +2163,13 @@ SceneRoots:
   - {fileID: 1593176489}
   - {fileID: 2105560891}
   - {fileID: 1286466974}
-  - {fileID: 933490011}
-  - {fileID: 39269392}
-  - {fileID: 1246891322}
-  - {fileID: 781777823}
-  - {fileID: 482685082}
   - {fileID: 5884302327856978558}
   - {fileID: 2021698592}
   - {fileID: 1790513479}
   - {fileID: 1297400547}
   - {fileID: 271946005}
+  - {fileID: 168338044}
+  - {fileID: 1288204704}
+  - {fileID: 853938955}
+  - {fileID: 1778660487}
+  - {fileID: 2024260660}

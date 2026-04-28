@@ -3,22 +3,18 @@ using System.Collections.Generic;
 
 public interface IInventory
 {
-    // --- 기본 관리 ---
-    int Capacity { get; } // VContainer에서 접근 가능하도록 추가
-    int AddItem(BaseItem item, int quantity);
-    bool TryRemoveItem(string itemID, int quantity);
-    IReadOnlyDictionary<string, int> GetItemList();
-    InventorySlot GetSlot(int index); // 사용자님이 옮긴 위치 확인
+    // --- 기본 관리 (인덱스 기반) ---
+    int AddItemAt(int index, BaseItem item, int quantity); // 특정 슬롯에 추가
+    int AddItemAuto(BaseItem item, int quantity);          // 자동 추가 (우클릭 등)
+    void RemoveFromSlot(int index, int quantity);         // 특정 슬롯에서 제거
+    void ClearSlot(int index);
     
-    void SwapSlots(int indexA, int indexB);
+    InventorySlot GetSlot(int index);
+    int Capacity { get; }
 
-    // --- 편의 기능 (신규) ---
-    /// <summary>ID 기반 자동 정렬</summary>
+    // --- 검색 및 정렬 ---
     void SortById();
-
-    /// <summary>카테고리별(소모품, 재료, 장신구 등) 아이템 필터링 결과 반환</summary>
-    IEnumerable<BaseItem> FilterByCategory(ItemCategory category);
-
-    /// <summary>이름 검색을 통한 아이템 탐색</summary>
-    IEnumerable<BaseItem> SearchByName(string name);
+    IEnumerable<int> GetFilteredIndices(string searchField, ItemCategory? category);
+    
+    void ExpandStorage(int additionalSlots);
 }

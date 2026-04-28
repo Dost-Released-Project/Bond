@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Bond.PartyManagement;
+using Bond.Embark;
 using UnityEngine.UIElements;
 
 namespace Bond.UI.RoleReactionEditor

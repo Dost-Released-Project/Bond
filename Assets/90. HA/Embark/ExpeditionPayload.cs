@@ -17,7 +17,7 @@ namespace Bond.Expedition
         // 에셋이라 씬 전환 후에도 유지됨
         // OnEnable에서 초기화하여 플레이 시작마다 찌꺼기 제거
 
-        public List<BaseCharacter> Party { get; private set; }
+        public IReadOnlyList<CharacterData> Party { get; private set; }
         public IInventory Supplies { get; private set; }
         public string DungeonId { get; private set; }
 
@@ -29,8 +29,8 @@ namespace Bond.Expedition
             Clear();
         }
 
-        public void SetPayload(
-            List<BaseCharacter> party,
+        public void SetContents(
+            IReadOnlyList<CharacterData> party,
             IInventory supplies,
             string dungeonId)
         {
@@ -46,7 +46,7 @@ namespace Bond.Expedition
 
         public void Clear()
         {
-            Party = new List<BaseCharacter>();
+            Party = new List<CharacterData>();
             DungeonId = string.Empty;
             Outcome = ExpeditionOutcome.None;
         }

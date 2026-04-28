@@ -35,7 +35,11 @@ public class Stat : MonoBehaviour
     public float Insanity_Ctrl { get; private set; } // INT x Insanity_Ctrl_rate (전사 도적 1, 신관 2), 스트레스 제어율
     public float Reaction_Ctrl { get; private set; } // INT x Reaction_Ctrl_rate (전사 도적 1, 신관 2), 리액션 통제율
     public int Sp_Atk { get; private set; } // INT x Sp_Atk_rate (전사 도적 2, 신관 3), 주문 스킬 반영
-
+    
+    // 장착 중인 기본 장비 참조 (다키스트 던전식 고정 장비)
+    public Equipment baseWeapon;
+    public Equipment baseArmor;
+    
     private void Start()
     {
         // 기본 스탯 랜덤
@@ -94,46 +98,64 @@ public class Stat : MonoBehaviour
     
     public void StatCalculate() // 실제로 사용될 스탯 계산 로직
     {
+        // 1. 장비 수치 합산
+        int extraSTR = (baseWeapon?.bonusSTR ?? 0) + (baseArmor?.bonusSTR ?? 0);
+        int extraAGI = (baseWeapon?.bonusAGI ?? 0) + (baseArmor?.bonusAGI ?? 0);
+        int extraINT = (baseWeapon?.bonusINT ?? 0) + (baseArmor?.bonusINT ?? 0);
+
+        // 2. 최종 적용 스탯 (기본값 + 장비 보너스)
+        int finalSTR = STR + extraSTR;
+        int finalAGI = AGI + extraAGI;
+        int finalINT = INT + extraINT;
+        
         if (classType == ClassType.Warrior) // 전사 특화 스탯
         {
-            max_Hp = STR * 15;
-            def = STR * 3;
-            atk = STR * 3;
+            max_Hp = finalSTR * 15;
+            def = finalSTR * 3;
+            atk = finalSTR * 3;
         }
         else
         {
-            max_Hp = STR * 10;
-            def = STR * 2;
-            atk = STR * 2;
+            max_Hp = finalSTR * 10;
+            def = finalSTR * 2;
+            atk = finalSTR * 2;
         }
 
         if (classType == ClassType.Assassin) // 도적 특화 스탯
         {
-            speed = AGI * 2;
-            crt = AGI * 2;
-            acc = AGI * 2;
+            speed = finalAGI * 2;
+            crt = finalAGI * 2;
+            acc = finalAGI * 2;
         }
         else
         {
-            speed = AGI * 1;
-            crt = AGI * 1;
-            acc = AGI * 1;
+            speed = finalAGI * 1;
+            crt = finalAGI * 1;
+            acc = finalAGI * 1;
         }
 
         if (classType == ClassType.Cleric) // 신관 특화 스탯
         {
-            Insanity_Ctrl = INT * 2;
-            Reaction_Ctrl = INT * 2;
-            Sp_Atk = INT * 3;
+            Insanity_Ctrl = finalINT * 2;
+            Reaction_Ctrl = finalINT * 2;
+            Sp_Atk = finalINT * 3;
         }
         else
         {
-            Insanity_Ctrl = INT * 1;
-            Reaction_Ctrl = INT * 1;
-            Sp_Atk = INT * 2;
+            Insanity_Ctrl = finalINT * 1;
+            Reaction_Ctrl = finalINT * 1;
+            Sp_Atk = finalINT * 2;
         }
 
         current_Hp = max_Hp;
-        Debug.Log($"STR: {STR} AGI: {AGI} INT: {INT}\nHP: {max_Hp} DEF: {def} ATK: {atk}\nSPD: {speed} CRT: {crt} ACC: {acc}\nInsanity_Ctrl: {Insanity_Ctrl} Reaction_Ctrl: {Reaction_Ctrl} Sp_Atk: {Sp_Atk}");
+        Debug.Log($"STR: {finalSTR} AGI: {finalAGI} INT: {finalINT}\nHP: {max_Hp} DEF: {def} ATK: {atk}\nSPD: {speed} CRT: {crt} ACC: {acc}\nInsanity_Ctrl: {Insanity_Ctrl} Reaction_Ctrl: {Reaction_Ctrl} Sp_Atk: {Sp_Atk}");
     }
+    
+    public void ReduceHP(int amount) => current_Hp = Mathf.Max(current_Hp - amount, 0); // 체력 감소
+    public void ReduceInsanity(int amount) => insanity = Mathf.Min(insanity + amount, 100); // 스트레스 증가
+    
+    // 회복 관련 메서드 추가
+    public void RecoverHp(int amount) => current_Hp = Mathf.Min(current_Hp + amount, max_Hp);
+    public void RecoverInsanity(int amount) => insanity = Mathf.Max(insanity - amount, 0);
+    
 }
