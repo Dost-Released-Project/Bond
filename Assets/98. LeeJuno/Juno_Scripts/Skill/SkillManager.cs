@@ -81,7 +81,7 @@ public class SkillManager : ISkillManager
             _coolTimeTracker[character] = new Dictionary<string, int>();
 
         _coolTimeTracker[character][skillId] = coolTime;
-        Debug.Log($"[SkillManager] 쿨타임 등록: {character.name} / {skillId} = {coolTime}턴");
+        Debug.Log($"[SkillManager] 쿨타임 등록: {character.Name} / {skillId} = {coolTime}턴");
     }
 
     // 턴마다 쿨타임 감소 — _keyBuffer 재사용으로 할당 없음

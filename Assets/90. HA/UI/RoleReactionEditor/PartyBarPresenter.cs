@@ -33,7 +33,7 @@ namespace Bond.UI.RoleReactionEditor
 
                 var tree = _iconTemplate.CloneTree();
                 var btn  = tree.Q<Button>();
-                tree.Q<Label>("iconName").text = character.UnitName;
+                tree.Q<Label>("iconName").text = character.Name;
                 btn.clicked += () => OnCharacterSelected?.Invoke(capturedIndex);
 
                 _iconContainer.Add(tree);

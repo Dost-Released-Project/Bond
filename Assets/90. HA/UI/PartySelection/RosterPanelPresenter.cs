@@ -23,7 +23,7 @@ namespace Bond.UI.PartySelection
         {
             public BaseCharacter Character;
             public VisualElement Root;
-            public string        ClassKey; // "Warrior" / "Assassin" / "Cleric"
+            public string        ClassKey;
         }
 
         public RosterPanelPresenter(VisualElement root)
@@ -94,9 +94,7 @@ namespace Bond.UI.PartySelection
         private CardViewModel BuildCard(BaseCharacter character)
         {
             var stat        = character.Stat;
-            string classKey = character.Profession.ToString();
-            Debug.Log($"is stat null? {stat == null}");
-            Debug.Log(classKey);
+            string classKey = character.Profession.Name;
 
             bool isDanger = stat != null &&
                             ((float)stat.current_Hp / Mathf.Max(1, stat.max_Hp) <= 0.3f ||
@@ -124,16 +122,10 @@ namespace Bond.UI.PartySelection
             var charMeta = new VisualElement();
             charMeta.AddToClassList("roster-card__meta");
 
-            var nameLabel = new Label(character.UnitName);
+            var nameLabel = new Label(character.Name);
             nameLabel.AddToClassList("char-name");
 
-            string classDisplay = classKey switch
-            {
-                "Warrior"  => "전사",
-                "Assassin" => "도적",
-                "Cleric"   => "성직자",
-                _          => classKey
-            };
+            string classDisplay = classKey;
             var classLabel = new Label($"{classDisplay} · Lv.{character.Level}");
             classLabel.AddToClassList("char-class");
 

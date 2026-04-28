@@ -44,7 +44,7 @@ namespace Bond.UI.RoleReactionEditor
         {
             _current = character;
 
-            _nameLabel.text = character.UnitName;
+            _nameLabel.text = character.Name;
 
             var data = character.Data;
             var stat = character.Stat;

@@ -134,7 +134,7 @@ namespace Bond.UI.PartySelection
             root.AddToClassList("party-slot--filled");
             if (isDanger) root.AddToClassList("party-slot--danger");
 
-            var name = new Label(character.UnitName);
+            var name = new Label(character.Name);
             name.AddToClassList("party-slot__name");
 
             var cls = new Label(stat != null

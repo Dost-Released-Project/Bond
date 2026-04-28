@@ -18,6 +18,7 @@ public class BaseCharacter : ITurnUseUnit
     public Stat Stat { get; } = new Stat();
     
     // 읽는 쪽에서 편하라고 일단 만들어두긴 했는데 너무 길어지면 지우는게 나을지도
+    public string Name => Data.Name;
     public int Level => Data.Level;
     public Profession Profession => Data.Profession;
     public SkillBase[] Skills => Data.Skills;
@@ -45,9 +46,9 @@ public class BaseCharacter : ITurnUseUnit
         Data.RoleType = role;
         battleType = role switch
         {
-            RoleType.Dealer => new AutoBattle_Atk(UnitName),
-            RoleType.Tanker => new AutoBattle_Def(UnitName),
-            RoleType.Supporter => new AutoBattle_Sup(UnitName)
+            RoleType.Dealer => new AutoBattle_Atk(Name),
+            RoleType.Tanker => new AutoBattle_Def(Name),
+            RoleType.Supporter => new AutoBattle_Sup(Name)
         };
     }
     
@@ -63,14 +64,13 @@ public class BaseCharacter : ITurnUseUnit
     public int Speed => Stat.speed;
     public bool IsDead { get; private set; } = false;
     public string ImageAddress => Data.ImageAddress;
-    public string UnitName => Data.Name;
     public int RandomSpeed { get; set; }
     
     private AutoResetUniTaskCompletionSource<bool> _tcs;
     
     public async UniTask TakeTurnAsync()
     {
-        Debug.Log($"<color=green>{UnitName} 차례! 역할군: {battleType} 플레이어의 명령을 기다립니다...</color>");
+        Debug.Log($"<color=green>{Name} 차례! 역할군: {battleType} 플레이어의 명령을 기다립니다...</color>");
         
         if (isPlayable)
         {
@@ -87,7 +87,7 @@ public class BaseCharacter : ITurnUseUnit
         BattleContext battleContext = new BattleContext();
         onBattleAction?.Invoke(battleContext);
     
-        Debug.Log($"<color=lightblue>{UnitName} 행동 완료!</color>");
+        Debug.Log($"<color=lightblue>{Name} 행동 완료!</color>");
         
         _tcs = null;
     }
@@ -96,7 +96,7 @@ public class BaseCharacter : ITurnUseUnit
     {
         if (_tcs == null) return;
         IsDead = true;
-        Debug.Log($"<color=red>[테스트] {UnitName} 강제 사망!</color>");
+        Debug.Log($"<color=red>[테스트] {Name} 강제 사망!</color>");
         _tcs?.TrySetResult(true);
     }
     
