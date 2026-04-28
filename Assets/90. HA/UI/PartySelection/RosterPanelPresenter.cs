@@ -94,13 +94,13 @@ namespace Bond.UI.PartySelection
         private CardViewModel BuildCard(BaseCharacter character)
         {
             var stat        = character.StatComponent;
-            string classKey = stat != null ? stat.ClassType.ToString() : "";
+            string classKey = character.Profession.ToString();
             Debug.Log($"is stat null? {stat == null}");
             Debug.Log(classKey);
 
             bool isDanger = stat != null &&
                             ((float)stat.current_Hp / Mathf.Max(1, stat.max_Hp) <= 0.3f ||
-                             stat.insanity >= 80);
+                             character.Insanity >= 80);
 
             var root = new Button(() => OnCharacterSelected?.Invoke(character));
             root.AddToClassList("roster-card");
@@ -134,7 +134,7 @@ namespace Bond.UI.PartySelection
                 "Cleric"   => "성직자",
                 _          => classKey
             };
-            var classLabel = new Label($"{classDisplay} · Lv.{character.level}");
+            var classLabel = new Label($"{classDisplay} · Lv.{character.Level}");
             classLabel.AddToClassList("char-class");
 
             charMeta.Add(nameLabel);
@@ -178,10 +178,10 @@ namespace Bond.UI.PartySelection
 
             if (stat != null)
             {
-                float stressRatio = stat.insanity / 100f;
+                float stressRatio = character.Insanity / 100f;
                 stressFill.style.width = Length.Percent(stressRatio * 100f);
-                string stressClass = stat.insanity >= 80 ? "bar-fill--stress-crit"
-                                   : stat.insanity >= 50 ? "bar-fill--stress-warn"
+                string stressClass = character.Insanity >= 80 ? "bar-fill--stress-crit"
+                                   : character.Insanity >= 50 ? "bar-fill--stress-warn"
                                                          : "bar-fill--stress-safe";
                 stressFill.AddToClassList(stressClass);
             }
@@ -195,7 +195,7 @@ namespace Bond.UI.PartySelection
             // ── 성향 태그 ──
             var traitTags = new VisualElement();
             traitTags.AddToClassList("trait-tags");
-            foreach (var trait in character.traits)
+            foreach (var trait in character.Traits)
             {
                 if (trait == null || string.IsNullOrEmpty(trait.Name)) continue;
                 var tag = new Label(trait.Name);

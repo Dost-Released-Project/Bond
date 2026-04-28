@@ -6,166 +6,85 @@ using Cysharp.Threading.Tasks;
 using Reactions;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Random = UnityEngine.Random;
 
-public class BaseCharacter : MonoBehaviour, ITurnUseUnit
+public class BaseCharacter : ITurnUseUnit
 {
-    public CharacterData Data;
-    public Equipment[] equip = new Equipment[2]; // 2개
-    public Trait[] traits = new Trait[4]; // 4개
-    public SkillBase[] skills = new SkillBase[4]; // 4개
-    public Class classType { get; set; }
-    public AutoBattle battleType { get; set; }
+    public BaseCharacterData Data;
+    private Stat stat = new Stat();
+    
+    // 읽는 쪽에서 편하라고 일단 만들어두긴 했는데 너무 길어지면 지우는게 나을지도
+    public int Level => Data.Level;
+    public Profession Profession => Data.Profession;
+    public SkillBase[] Skills => Data.Skills;
+    public Trait[] Traits => Data.Traits;
+    public Reaction[] RoleReactions => Data.RoleReactions;
+    public Reaction[] TraitReactions => Data.TraitReactions;
+    public RoleType RoleType => Data.RoleType;
+    public int Insanity => Data.Insanity;
+    
     public bool isPlayable { get; set; }
-
-    public int level = 1;
-
-    public RoleType roleType = RoleType.None;
-    public Reaction[] roleReactions  = new Reaction[2]; // 역할 슬롯, 최대 2개
-    public Reaction[] traitReactions = new Reaction[4]; // 성향 슬롯 (traits[]와 인덱스 대응)
+    public AutoBattle battleType { get; set; }
 
     public BaseCharacter sup_Character { get; set; } // 지원 선택 대상. 대상이 행동할 때 역할군에 따른 지원. 탱커: 피격 시 엄호, 서포터: 피격 후 치유, 딜러: 공격 시 지원 공격.\
-    private Stat stat;
     
     // BattleManager가 구독할 이벤트. BattleContext는 공격자, 방어자, 스킬 정보 등을 담는 클래스. BattleManager는 이 이벤트를 구독하여 BattleContext를 받아 처리.
     public Action<BattleContext> onBattleAction;
 
-    public GameObject TestSkillManager;
-    private ISkillManager _skillManager;
-
-    private void Awake()
+    public BaseCharacter(BaseCharacterData data)
     {
-        if (battleType == null) AssignDefaultBattleType(); // 역할군 랜덤 지정
-
-        for (int i = 0; i < roleReactions.Length; i++)
-            roleReactions[i] = new Reaction(i) { Agent = this };
-
-        for (int i = 0; i < traitReactions.Length; i++)
-            traitReactions[i] = new Reaction(10 + i) { Agent = this };
+        Data = data;
     }
 
-    private void Start()
+    public void SetRole(RoleType role)
     {
-        _skillManager = TestSkillManager.GetComponent<ISkillManager>();
-        
-        // 2. 스킬 초기화 (Init 호출)
-        InitializeSkills();
-        
-        stat = GetComponent<Stat>(); // 스탯 컴포넌트 가져오기
-        stat.StatCalculate(unitName);
-        Speed = stat.speed; // ITurnUseUnit에 포함된 Speed 변수를 스탯 스피트로 맞춰주기
-        _input = new Juno_TestInput();
-        _input.Space.space.performed += OnActionButtonClicked;
-        _input.Space.FkeyDie.performed += OnDie;
-        _input.Enable();
-    }
-
-    private void Update()
-    {
-        if (Keyboard.current.f1Key.wasPressedThisFrame) // 플레이어블 선택 여부(아직 개별로 작동하지 않기 때문에 여럿이 있을 땐 사용 못함)
+        Data.RoleType = role;
+        battleType = role switch
         {
-            if (battleType == null)
-            {
-                Debug.Log("역할군이 비어있습니다.");
-                return;
-            }
-            
-            isPlayable = !isPlayable;
-            battleType.isPlayable = isPlayable;
-            
-            if (isPlayable)
-            {
-                Debug.Log("얘는 내가 조종할게");
-            }
-            else
-            {
-                Debug.Log("걔는 네가 조종하렴");
-            }
-        }
-        
-        if (stat.current_Hp <= 0)
-            IsDead = true;
-    }
-    
-    private void InitializeSkills()
-    {
-        if (_skillManager == null)
-        {
-            Debug.LogError("SkillManager를 찾을 수 없습니다!");
-            return;
-        }
-
-        foreach (var skill in skills)
-        {
-            if (skill == null) continue;
-
-            // TestSkill로 캐스팅하여 인스펙터에 적힌 ID를 가져옴
-            if (skill is TestSkillAttack atkSkill) 
-                skill.Init(atkSkill.TargetSkillId, _skillManager);
-            else if (skill is TestSkillShield defSkill)
-                skill.Init(defSkill.TargetSkillId, _skillManager);
-            else if (skill is TestSkillSpellAtk spellSkill)
-                skill.Init(spellSkill.TargetSkillId, _skillManager);
-            else if (skill is TestSkillBuff buff)
-                skill.Init(buff.TargetSkillId, _skillManager);
-            
-        }
-    }
-    
-    // 역할군 랜덤 지정 로직
-    private void AssignDefaultBattleType()
-    {
-        int rand = Random.Range(0, 3);
-        battleType = rand switch
-        {
-            0 => new AutoBattle_Atk(unitName),
-            1 => new AutoBattle_Def(unitName),
-            _ => new AutoBattle_Sup(unitName)
+            RoleType.Dealer => new AutoBattle_Atk(UnitName),
+            RoleType.Tanker => new AutoBattle_Def(UnitName),
+            RoleType.Supporter => new AutoBattle_Sup(UnitName)
         };
-        battleType.isPlayable = this.isPlayable;
     }
     
-    /*
-     스킬 사용 여부 - and계산(플레이어 위치, 사용 가능 칸, 적 진영 아군 진영) -> 다른 스크립트에서 처리
-    */
+    public void ReduceHP(int amount) => stat.current_Hp = Mathf.Max(stat.current_Hp - amount, 0); // 체력 감소
+    public void ReduceInsanity(int amount) => Data.Insanity = Mathf.Min(Data.Insanity + amount, 100); // 스트레스 증가
+    
+    // 회복 관련 메서드 추가
+    public void RecoverHp(int amount) => stat.current_Hp = Mathf.Min(stat.current_Hp + amount, stat.max_Hp);
+    public void RecoverInsanity(int amount) => Data.Insanity = Mathf.Max(Data.Insanity - amount, 0);
 
-    // 주노 테스트 플레이어 및 ITurnUseUnit 인터페이스 변수들
-    public int Speed { get; private set; }
-    
-    [SerializeField] private string unitName;
-    [SerializeField] private string imageAddress;
-    private Juno_TestInput _input;
-    
+    #region ITurnUseUnit
+
+    public int Speed => stat.speed;
     public bool IsDead { get; private set; } = false;
-    public string ImageAddress => imageAddress;
-    public string UnitName => unitName;
+    public string ImageAddress => Data.ImageAddress;
+    public string UnitName => Data.Name;
     public Stat StatComponent => stat;
     public int RandomSpeed { get; set; }
     
     private AutoResetUniTaskCompletionSource<bool> _tcs;
     
-    private void OnDestroy()
-    {
-        _input.Space.space.performed -= OnActionButtonClicked;
-        _input.Space.FkeyDie.performed -= OnDie;
-        _input.Disable();
-    }
-    
     public async UniTask TakeTurnAsync()
     {
-        Debug.Log($"<color=green>{unitName} 차례! 역할군: {battleType} 플레이어의 명령을 기다립니다...</color>");
-    
-        _tcs = AutoResetUniTaskCompletionSource<bool>.Create();
+        Debug.Log($"<color=green>{UnitName} 차례! 역할군: {battleType} 플레이어의 명령을 기다립니다...</color>");
         
-        // [수정됨] 랜덤으로 하나를 뽑지 않고, 스킬 배열 전체를 넘겨서 역할군 클래스가 판단하게 합니다.
-        battleType.BattleAction(skills);
+        if (isPlayable)
+        {
+            _tcs = AutoResetUniTaskCompletionSource<bool>.Create();
+            // 플레이어 입력으로 스킬을 결정하고
+            await _tcs.Task;
+        }
+        else
+        {
+            // 배틀액션에서 스킬을 직접 실행하는데 아마 직접 실행이 아닌 스킬을 선택해 반환하고 여기서 사용하는 방식으로 변경이 필요할거임.
+            battleType.BattleAction(Skills);
+        }
         
         BattleContext battleContext = new BattleContext();
         onBattleAction?.Invoke(battleContext);
     
-        Debug.Log($"<color=lightblue>{unitName} 행동 완료!</color>");
+        Debug.Log($"<color=lightblue>{UnitName} 행동 완료!</color>");
         
-        await _tcs.Task;
         _tcs = null;
     }
     
@@ -173,7 +92,7 @@ public class BaseCharacter : MonoBehaviour, ITurnUseUnit
     {
         if (_tcs == null) return;
         IsDead = true;
-        Debug.Log($"<color=red>[테스트] {unitName} 강제 사망!</color>");
+        Debug.Log($"<color=red>[테스트] {UnitName} 강제 사망!</color>");
         _tcs?.TrySetResult(true);
     }
     
@@ -199,4 +118,5 @@ public class BaseCharacter : MonoBehaviour, ITurnUseUnit
         // 스피드가 다르면 그냥 스피드 비교 결과를 반환
         return speedComparison;
     }
+    #endregion
 }

@@ -127,7 +127,7 @@ namespace Bond.UI.PartySelection
 
             bool isDanger = stat != null &&
                             ((float)stat.current_Hp / stat.max_Hp <= 0.3f ||
-                             stat.insanity >= 80);
+                             character.Insanity >= 80);
 
             var root = new Button(() => Release(index));
             root.AddToClassList("party-slot");
@@ -138,8 +138,8 @@ namespace Bond.UI.PartySelection
             name.AddToClassList("party-slot__name");
 
             var cls = new Label(stat != null
-                ? $"{stat.ClassType}  Lv.{character.level}"
-                : $"Lv.{character.level}");
+                ? $"{character.Profession}  Lv.{character.Level}"
+                : $"Lv.{character.Level}");
             cls.AddToClassList("party-slot__class");
 
             root.Add(name);

@@ -57,7 +57,7 @@ namespace Bond.UI.RoleReactionEditor
             int tanker = 0, dealer = 0, supporter = 0;
             foreach (var c in party)
             {
-                switch (c.roleType)
+                switch (c.RoleType)
                 {
                     case RoleType.Tanker:    tanker++;    break;
                     case RoleType.Dealer:    dealer++;    break;

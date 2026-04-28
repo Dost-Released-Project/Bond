@@ -75,7 +75,7 @@ namespace Bond.UI.RoleReactionEditor
 
             _partyBar.SetSelected(index);
             _charInfo.Bind(character);
-            _reactionEditor.BindCharacter(character, GetRoleTriggers(character.roleType));
+            _reactionEditor.BindCharacter(character, GetRoleTriggers(character.RoleType));
         }
 
         private void OnCharacterSelected(int index) => SelectCharacter(index);

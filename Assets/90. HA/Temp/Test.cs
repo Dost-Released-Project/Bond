@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VContainer;
@@ -28,7 +29,7 @@ namespace Ha
             }
         }
 
-        private void Show(CharacterData data)
+        private void Show(BaseCharacterData data)
         {
             string str = "";
             str += data.Name;

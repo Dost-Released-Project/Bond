@@ -2081,7 +2081,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4876109518623903123, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6621883425403598065, guid: 159eed6cb299adf4da3c7f268e99cb96, type: 3}
       propertyPath: roster.Array.size
