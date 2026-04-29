@@ -92,20 +92,29 @@ public class MapView : MonoBehaviour
 
     /// <summary>
     /// 모든 노드를 순회해 MapNodeView를 생성하고 정규화 좌표로 위치를 지정한다.
-    /// StageConfig에서 아이콘과 색상을 가져와 노드뷰를 초기화한다.
+    /// StageConfig에서 아이콘 주소·fallback 스프라이트·색상을 가져와 노드뷰를 초기화한다.
+    /// 아이콘 실제 로드는 MapNodeView 내부에서 비동기로 처리된다.
     /// </summary>
     private void DrawNodes()
     {
+        if (_stageConfigs == null)
+        {
+            Debug.LogError("[MapView] _stageConfigs가 연결되지 않았습니다.", this);
+            return;
+        }
+
         foreach (MapNode node in _mapData.Nodes)
         {
             MapNodeView nodeView = Instantiate(_nodeViewPrefab, _mapContainer);
-            nodeView.GetComponent<RectTransform>().anchoredPosition = NormalizedToAnchored(node.NormalizedPosition);
+            RectTransform rt = nodeView.GetComponent<RectTransform>();
+            rt.anchoredPosition = NormalizedToAnchored(node.NormalizedPosition);
 
             StageConfig config = FindConfig(node.StageType);
-            Sprite icon = (config != null) ? config.Icon : null;
+            string iconAddress = (config != null) ? config.IconAddress : string.Empty;
+            Sprite fallbackIcon = (config != null) ? config.Icon : null;
             Color color = (config != null) ? config.NodeColor : Color.white;
 
-            nodeView.Setup(node, icon, _onNodeClickedCallback);
+            nodeView.Setup(node, iconAddress, fallbackIcon, _onNodeClickedCallback);
             nodeView.SetColor(color);
 
             _nodeViews[node.Id] = nodeView;
