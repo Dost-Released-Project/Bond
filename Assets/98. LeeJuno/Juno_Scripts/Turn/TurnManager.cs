@@ -14,9 +14,9 @@ public class TurnManager : ITurnManager, IStartable, IDisposable
     public IReadOnlyList<ITurnUseUnit> TurnQueue => _turnQueue;
     
     
-    private readonly IExpeditionFlowManager _expeditionFlowManager;
+    private readonly IBattleFlowManager _expeditionFlowManager;
     
-    public TurnManager(IExpeditionFlowManager expeditionFlowManager) {
+    public TurnManager(IBattleFlowManager expeditionFlowManager) {
         _expeditionFlowManager = expeditionFlowManager;
     }
     

@@ -9,11 +9,11 @@ namespace _02._Scripts.BattleSystem
     /// Logic<CharacterSlotVisualizer>를 상속받아 비주얼과 연결됩니다.
     /// </summary>
     public class CharacterSlot : MonoBehaviour,IPointerEnterHandler, IPointerExitHandler, INeedBind<ICharacterSlotVisualizer>,
-        IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
+        IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, ISlot
     {
-        [Header("Slot Configuration")]
-        public E_BattleSide side;
-        public FormationMask rank;
+        [Header("Slot Configuration")] 
+        public E_BattleSide side { get; }
+        public FormationMask rank { get; }
 
         public BaseCharacter Occupant { get; private set; }
         public bool IsEmpty => Occupant == null;
@@ -22,7 +22,10 @@ namespace _02._Scripts.BattleSystem
         
         private ICharacterSlotVisualizer m_CharacterSlotVisualizer;
 
-        public void SetOccupant(BaseCharacter character) => Occupant = character;       
+        public void SetOccupant(BaseCharacter character)
+        { 
+            Occupant = character;
+        }      
         public void Clear() => Occupant = null;
         
         public void OnPointerEnter(PointerEventData eventData) => MouseCheck(true, false);
@@ -32,15 +35,21 @@ namespace _02._Scripts.BattleSystem
         
         public ColorData colorData;
         
-        private Color m_TargetColor;
-        private Color m_CurrentColor;
-        private bool m_IsHovered;
-        private bool m_IsPressed;
+        private Color m_targetColor;
+        private Color m_currentColor;
+        private bool m_isHovered;
+        private bool m_isPressed;
+
+        public CharacterSlot(E_BattleSide side, FormationMask rank)
+        {
+            this.side = side;
+            this.rank = rank;
+        }
 
         private void Start()
         {
-            m_CurrentColor = colorData.normalColor;
-            m_TargetColor = colorData.normalColor;
+            m_currentColor = colorData.normalColor;
+            m_targetColor = colorData.normalColor;
             m_CharacterSlotVisualizer.SetBG(colorData.bgColor);
         }
 
@@ -51,18 +60,18 @@ namespace _02._Scripts.BattleSystem
 
         private void MouseCheck(bool isHover, bool isPressed)
         {
-            m_IsHovered = isHover;
-            m_IsPressed = isPressed;
+            m_isHovered = isHover;
+            m_isPressed = isPressed;
         }
 
         private void VisualUpdate()
         {
-            if (m_IsPressed) m_TargetColor = colorData.pressedColor;
-            else if (m_IsHovered) m_TargetColor = colorData.hoverColor;
-            else m_TargetColor = colorData.normalColor;
+            if (m_isPressed) m_targetColor = colorData.pressedColor;
+            else if (m_isHovered) m_targetColor = colorData.hoverColor;
+            else m_targetColor = colorData.normalColor;
 
-            m_CurrentColor = Color.Lerp(m_CurrentColor, m_TargetColor, Time.unscaledDeltaTime * colorData.lerpSpeed);
-            m_CharacterSlotVisualizer.SetCurrentColor(m_CurrentColor);
+            m_currentColor = Color.Lerp(m_currentColor, m_targetColor, Time.unscaledDeltaTime * colorData.lerpSpeed);
+            m_CharacterSlotVisualizer.SetCurrentColor(m_currentColor);
         }
         
         public void OnPointerClick(PointerEventData eventData)

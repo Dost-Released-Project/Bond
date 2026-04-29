@@ -1,5 +1,6 @@
 using System;
 using _03._PipeLine;
+using Bond.Expedition;
 using Reactions;
 using UnityEngine;
 using VContainer;
@@ -9,27 +10,27 @@ namespace _02._Scripts.BattleSystem
 {
     public class BattleManager : IBattleManager, IStartable, IDisposable
     {
-        private readonly ReactionSystem _reactionSystem;
-        private readonly IBattlePipeLine _skillApplyPipeline;
-        private readonly IExpeditionFlowManager _expeditionFlowManager;
+        private readonly ReactionSystem m_reactionSystem;
+        private readonly IBattlePipeLine m_skillApplyPipeline;
+        private readonly IBattleFlowManager m_expeditionFlowManager;
         
         public BattleManager(ReactionSystem reactionSystem, 
-            IBattlePipeLine  skillApplyPipeline, IExpeditionFlowManager expeditionFlowManager)
+            IBattlePipeLine  skillApplyPipeline, IBattleFlowManager expeditionFlowManager)
         {
-            this._expeditionFlowManager = expeditionFlowManager;
-            this._reactionSystem = reactionSystem;
-            this._skillApplyPipeline = skillApplyPipeline;
+            m_expeditionFlowManager = expeditionFlowManager;
+            m_reactionSystem = reactionSystem;
+            m_skillApplyPipeline = skillApplyPipeline;
             Init();
         }
         
         void IStartable.Start()
         {
-            _expeditionFlowManager.OnBattleStart += StartBattle;
+            m_expeditionFlowManager.OnBattleStart += StartBattle;
         }
 
         void IDisposable.Dispose()
         {
-            _expeditionFlowManager.OnBattleStart -= StartBattle;
+            m_expeditionFlowManager.OnBattleStart -= StartBattle;
         }
 
         private void StartBattle(BaseCharacter[] players, BaseCharacter[] enemies)
@@ -39,15 +40,15 @@ namespace _02._Scripts.BattleSystem
 
         private void Init()
         {
-            _skillApplyPipeline.SetReactionSystem(_reactionSystem);
+            m_skillApplyPipeline.SetReactionSystem(m_reactionSystem);
         }
 
         public BattleContext SkillApplyLogic(BattleContext context)
         {
             // [입구] 로직 파이프라인 실행
-            if (_skillApplyPipeline != null)
+            if (m_skillApplyPipeline != null)
             {
-                return _skillApplyPipeline.Run(context);
+                return m_skillApplyPipeline.Run(context);
             }
 
             return context;
