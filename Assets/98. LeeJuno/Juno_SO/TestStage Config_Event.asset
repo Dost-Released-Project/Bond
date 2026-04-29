@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f8a22d5c065efe4db0f627b89d38849, type: 3}
   m_Name: TestStage Config_Event
   m_EditorClassIdentifier: Assembly-CSharp::StageConfig
+  _id: 
+  _displayName: 
+  _description: 
   Type: 4
-  DisplayName: Event
   Icon: {fileID: 21300000, guid: c545ffb0c1796a340b5b252dfe074217, type: 3}
   IconAddress: 
-  SceneAddress: 
+  SceneAddress: EventTestScene
   NodeColor: {r: 1, g: 1, b: 1, a: 1}
-  BaseWeight: 0

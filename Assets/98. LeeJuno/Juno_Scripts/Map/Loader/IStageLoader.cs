@@ -15,6 +15,12 @@ public interface IStageLoader
     public event Action<StageResult> OnStageCompleted;
 
     /// <summary>
+    /// 현재 씬 로드/언로드가 진행 중인지 여부.
+    /// 호출 전에 확인해 이중 호출을 방지할 수 있다.
+    /// </summary>
+    public bool IsLoading { get; }
+
+    /// <summary>
     /// 지정한 스테이지 타입에 해당하는 씬을 Additive 방식으로 비동기 로드한다.
     /// 이전에 로드된 씬이 있으면 먼저 언로드한 후 새 씬을 로드한다.
     /// </summary>

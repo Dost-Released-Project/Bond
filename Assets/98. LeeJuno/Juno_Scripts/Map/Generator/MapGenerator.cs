@@ -338,7 +338,7 @@ public class MapGenerator : IMapGenerator
 
     /// <summary>
     /// 층 번호에 따라 스테이지 타입 가중치 배열을 반환한다.
-    /// 배열 순서: [Normal, Elite, Event, Camping, Shop]
+    /// 배열 순서: [Normal, Elite, Event, Camping]
     /// </summary>
     private float[] GetWeights(int layer)
     {
@@ -539,11 +539,11 @@ public class MapGenerator : IMapGenerator
     }
 
     // ─────────────────────────────────────────────────────────
-    // Step 8: Normal 노드 몬스터 그룹 배정
+    // Step 8: Normal/Elite 노드 몬스터 그룹 배정
     // ─────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Normal 타입 노드에 MonsterGroupConfig 에서 층 범위에 맞는 그룹을 랜덤으로 배정한다.
+    /// Normal 타입 노드에는 IsElite == false 그룹을, Elite 타입 노드에는 IsElite == true 그룹을 배정한다.
     /// rng 는 파이프라인 전체에서 공유되므로 Step 7 완료 후 호출해야
     /// 같은 seed 에서 항상 동일한 결과가 보장된다.
     /// </summary>
@@ -560,29 +560,42 @@ public class MapGenerator : IMapGenerator
 
         foreach (MapNode node in data.Nodes)
         {
-            if (node.StageType != StageType.Normal)
+            bool isElite;
+
+            if (node.StageType == StageType.Normal)
+                isElite = false;
+            else if (node.StageType == StageType.Elite)
+                isElite = true;
+            else
                 continue;
 
-            List<MonsterGroupData> candidates = GetCandidateGroups(node.Layer);
+            List<MonsterGroupData> candidates = GetCandidateGroups(node.Layer, isElite);
 
             if (candidates.Count == 0)
                 continue;
 
-            MonsterGroupData chosen = candidates[rng.Next(candidates.Count)];
-            node.AssignedMonsterGroupId = chosen.Id;
+            node.AssignedMonsterGroupId = candidates[rng.Next(candidates.Count)].Id;
         }
     }
 
     /// <summary>
-    /// 지정 층 번호에 등장 가능한 몬스터 그룹 목록을 반환한다.
+    /// 지정 층 번호와 등급에 맞는 몬스터 그룹 목록을 반환한다.
     /// MinLayer == 0 &amp;&amp; MaxLayer == 0 이면 층 제한 없음으로 처리한다.
+    /// isElite: true이면 IsElite == true 그룹만, false이면 IsElite == false 그룹만 반환한다.
     /// </summary>
-    private List<MonsterGroupData> GetCandidateGroups(int layer)
+    private List<MonsterGroupData> GetCandidateGroups(int layer, bool isElite)
     {
         List<MonsterGroupData> candidates = new List<MonsterGroupData>();
 
         foreach (MonsterGroupData group in _monsterGroupConfig.Groups)
         {
+            // Inspector에서 리스트에 빈 슬롯이 있을 경우 NullReferenceException 방지
+            if (group == null)
+                continue;
+
+            if (group.IsElite != isElite)
+                continue;
+
             bool noLayerLimit = group.MinLayer == 0 && group.MaxLayer == 0;
             bool inRange = layer >= group.MinLayer && layer <= group.MaxLayer;
 

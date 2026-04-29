@@ -16,4 +16,7 @@ public class MonsterGroupData : BaseSO
     [Header("층 범위 제한")]
     public int MinLayer; // 등장 가능 최소 층 (0 = 제한 없음)
     public int MaxLayer; // 등장 가능 최대 층 (0 = 제한 없음)
+
+    [Header("그룹 등급")]
+    public bool IsElite; // true = 엘리트 전용 그룹, false = 노말 전용 그룹
 }

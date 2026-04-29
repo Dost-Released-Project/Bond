@@ -35,6 +35,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0a59ea44516d6b4aacc4ce06f8b3dbf
+    m_Address: LeeJunoTestScene
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dd8015d9871a0f347b2efb21d5ae8d65
+    m_Address: EventTestScene
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e9d7bce1284d37548a69ce2c71723c6a
     m_Address: RiceSummoner
     m_ReadOnly: 0
