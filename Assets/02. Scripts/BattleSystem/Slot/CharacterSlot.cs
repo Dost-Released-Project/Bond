@@ -25,8 +25,13 @@ namespace _02._Scripts.BattleSystem
         public void SetOccupant(BaseCharacter character)
         { 
             Occupant = character;
+            //character.CurrentSlot = this;
         }      
-        public void Clear() => Occupant = null;
+        public void Clear()
+        {
+            //Occupant.CurrentSlot = null;
+            Occupant = null;
+        }
         
         public void OnPointerEnter(PointerEventData eventData) => MouseCheck(true, false);
         public void OnPointerExit(PointerEventData eventData) => MouseCheck(false, false);

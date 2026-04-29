@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using _02._Scripts.BattleSystem;
+using _02._Scripts.BattleSystem.Interface;
 using _03._PipeLine;
 using Bond.Embark;
 using Cysharp.Threading.Tasks;
@@ -35,6 +37,7 @@ public class BaseCharacter : ITurnUseUnit
     
     // BattleManager가 구독할 이벤트. BattleContext는 공격자, 방어자, 스킬 정보 등을 담는 클래스. BattleManager는 이 이벤트를 구독하여 BattleContext를 받아 처리.
     public Action<BattleContext> onBattleAction;
+    private IFormationManager m_formationManager;
 
     public BaseCharacter(BaseCharacterData data)
     {
@@ -59,6 +62,28 @@ public class BaseCharacter : ITurnUseUnit
     public void RecoverHp(int amount) => Stat.current_Hp = Mathf.Min(Stat.current_Hp + amount, Stat.max_Hp);
     public void RecoverInsanity(int amount) => Data.Insanity = Mathf.Max(Data.Insanity - amount, 0);
 
+    #region Formaiton
+
+    public ISlot CurrentSlot { get; set; }
+    private FormationMask CurrentFormation => CurrentSlot?.rank ?? FormationMask.None;
+
+    private bool[] GetUsableSkills()
+    {
+        bool[] availability = new bool[Skills.Length];
+        for (int i = 0; i < Skills.Length; i++)
+        {
+            if (Data.Skills[i] == null) continue;
+            bool rankMatch = (Data.Skills[i].Data.UseableSlots & (int)CurrentSlot.rank) != 0;
+
+            bool targetExists = m_formationManager.HasAnyValidTarget(this, Data.Skills[i].Data);
+            
+            availability[i] = rankMatch && targetExists;
+        }
+        return availability;
+    }
+
+    #endregion
+    
     #region ITurnUseUnit
 
     public int Speed => Stat.speed;
