@@ -49,7 +49,7 @@ namespace Bond.Embark
 
         // 조회
         public IReadOnlyList<BaseCharacter> GetCurrentParty() => currentParty.AsReadOnly();
-        public IReadOnlyList<CharacterData> GetCurrentPartyDataOnly()
+        public IReadOnlyList<BaseCharacterData> GetCurrentPartyDataOnly()
         {
             return currentParty.Select((character => character.Data)).ToList().AsReadOnly();
         }

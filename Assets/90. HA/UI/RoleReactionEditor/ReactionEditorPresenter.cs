@@ -78,9 +78,9 @@ namespace Bond.UI.RoleReactionEditor
             _roleSlotContainer.Clear();
             _roleSlotVMs.Clear();
 
-            for (int i = 0; i < _current.roleReactions.Length; i++)
+            for (int i = 0; i < _current.RoleReactions.Length; i++)
             {
-                var vm = CreateSlot(_current.roleReactions[i], isTraitSlot: false,
+                var vm = CreateSlot(_current.RoleReactions[i], isTraitSlot: false,
                                     roleTriggers);
                 _roleSlotContainer.Add(vm.Root);
                 _roleSlotVMs.Add(vm);
@@ -92,13 +92,13 @@ namespace Bond.UI.RoleReactionEditor
             _traitSlotContainer.Clear();
             _traitSlotVMs.Clear();
 
-            for (int i = 0; i < _current.traits.Length; i++)
+            for (int i = 0; i < _current.Traits.Length; i++)
             {
-                var trait = _current.traits[i];
+                var trait = _current.Traits[i];
                 if (trait == null || trait.Trigger == null) continue;
 
                 // 트리거는 Trait에서 고정. 스킬(Behaviour)은 traitReactions[i]에 저장
-                var reaction = _current.traitReactions[i];
+                var reaction = _current.TraitReactions[i];
                 reaction.Trigger = trait.Trigger;
 
                 var vm = CreateSlot(reaction, isTraitSlot: true,
@@ -170,7 +170,7 @@ namespace Bond.UI.RoleReactionEditor
             CloseSkillPanel();
             vm.SkillPanel.style.display = DisplayStyle.Flex;
             _openSlot = vm;
-            _skillPanel.Show(vm.SkillGrid, _current.skills, vm.Reaction.Behaviour);
+            _skillPanel.Show(vm.SkillGrid, _current.Skills, vm.Reaction.Behaviour);
         }
 
         private void CloseSkillPanel()
