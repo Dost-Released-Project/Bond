@@ -1,4 +1,4 @@
-param (
+﻿param (
     [string]$userPrompt,
     [string]$targetFilePath,
     [string]$lang = "C# (Unity 6.0)",

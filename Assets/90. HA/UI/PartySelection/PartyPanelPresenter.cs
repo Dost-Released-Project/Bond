@@ -123,23 +123,23 @@ namespace Bond.UI.PartySelection
         private VisualElement BuildFilledSlot(int index)
         {
             var character = _slots[index].AssignedCharacter;
-            var stat      = character.StatComponent;
+            var stat      = character.Stat;
 
             bool isDanger = stat != null &&
                             ((float)stat.current_Hp / stat.max_Hp <= 0.3f ||
-                             stat.insanity >= 80);
+                             character.Insanity >= 80);
 
             var root = new Button(() => Release(index));
             root.AddToClassList("party-slot");
             root.AddToClassList("party-slot--filled");
             if (isDanger) root.AddToClassList("party-slot--danger");
 
-            var name = new Label(character.UnitName);
+            var name = new Label(character.Name);
             name.AddToClassList("party-slot__name");
 
             var cls = new Label(stat != null
-                ? $"{stat.ClassType}  Lv.{character.level}"
-                : $"Lv.{character.level}");
+                ? $"{character.Profession}  Lv.{character.Level}"
+                : $"Lv.{character.Level}");
             cls.AddToClassList("party-slot__class");
 
             root.Add(name);

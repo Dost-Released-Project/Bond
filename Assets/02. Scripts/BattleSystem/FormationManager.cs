@@ -127,6 +127,22 @@ namespace _02._Scripts.BattleSystem
             m_visualizer?.PlayConsolidationEffect(side);
         }
 
+        public bool HasAnyValidTarget(BaseCharacter caster, SkillData skillData)
+        {
+            var enemySide = (caster.CurrentSlot.side == E_BattleSide.Player)? E_BattleSide.Enemy :  E_BattleSide.Player;
+
+            for (int i = 0; i < 4; i++)
+            {
+                FormationMask rankToCheck = (FormationMask)(1 << i);
+                if ((skillData.EnemyTargetMask & (int)rankToCheck) != 0)
+                {
+                    if (GetCharacterAt(enemySide, rankToCheck) != null) return true;
+                }
+            }
+
+            return false;
+        }
+
         #region Helper Methods
         public CharacterSlot GetSlotAt(E_BattleSide side, FormationMask rank)
         {

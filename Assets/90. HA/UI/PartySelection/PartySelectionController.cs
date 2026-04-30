@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using Bond.Embark;
 using UnityEngine;
 using UnityEngine.UIElements;
+using VContainer;
 
 namespace Bond.UI.PartySelection
 {
@@ -13,7 +15,7 @@ namespace Bond.UI.PartySelection
         [SerializeField] private GameObject roleReactionEditorScreen;
 
         [Header("보유 대원 (테스트용 직접 할당)")]
-        [SerializeField] private List<BaseCharacter> roster;
+        public List<BaseCharacter> roster;
 
         private PartyPanelPresenter  _partyPanel;
         private RosterPanelPresenter _rosterPanel;

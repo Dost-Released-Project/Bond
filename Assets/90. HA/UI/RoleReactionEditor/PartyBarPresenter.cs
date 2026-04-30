@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Bond.PartyManagement;
+using Bond.Embark;
 using UnityEngine.UIElements;
 
 namespace Bond.UI.RoleReactionEditor
@@ -33,7 +33,7 @@ namespace Bond.UI.RoleReactionEditor
 
                 var tree = _iconTemplate.CloneTree();
                 var btn  = tree.Q<Button>();
-                tree.Q<Label>("iconName").text = character.UnitName;
+                tree.Q<Label>("iconName").text = character.Name;
                 btn.clicked += () => OnCharacterSelected?.Invoke(capturedIndex);
 
                 _iconContainer.Add(tree);
@@ -57,7 +57,7 @@ namespace Bond.UI.RoleReactionEditor
             int tanker = 0, dealer = 0, supporter = 0;
             foreach (var c in party)
             {
-                switch (c.roleType)
+                switch (c.RoleType)
                 {
                     case RoleType.Tanker:    tanker++;    break;
                     case RoleType.Dealer:    dealer++;    break;

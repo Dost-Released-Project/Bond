@@ -1,13 +1,23 @@
-using Bond.PartyManagement;
+using Bond.Embark;
+using Bond.UI.PartySelection;
+using Bond.UI.RoleReactionEditor;
 using VContainer;
 using VContainer.Unity;
 
-public class TestScope : LifetimeScope
+namespace Ha
 {
-    public Ha.Test t;
-    protected override void Configure(IContainerBuilder builder)
+    public class TestScope : LifetimeScope
     {
-        builder.Register<PartyManager>(Lifetime.Singleton);
-        builder.RegisterComponent(t);
+        public Ha.Test t;
+        public RoleReactionEditorController roleReactionEditorController;
+        public PartySelectionController partySelectionController;
+        protected override void Configure(IContainerBuilder builder)
+        {
+            builder.Register<PartyManager>(Lifetime.Singleton);
+            builder.Register<StageCoach>(Lifetime.Singleton);
+            builder.RegisterComponent(t);
+            builder.RegisterComponent(roleReactionEditorController);
+            builder.RegisterComponent(partySelectionController);
+        }
     }
 }

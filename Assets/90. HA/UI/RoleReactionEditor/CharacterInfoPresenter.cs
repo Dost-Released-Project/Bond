@@ -1,5 +1,5 @@
 using System;
-using Bond.PartyManagement;
+using Bond.Embark;
 using UnityEngine.UIElements;
 
 namespace Bond.UI.RoleReactionEditor
@@ -44,17 +44,18 @@ namespace Bond.UI.RoleReactionEditor
         {
             _current = character;
 
-            _nameLabel.text = character.UnitName;
+            _nameLabel.text = character.Name;
 
-            var stat = character.StatComponent;
-            _classLabel.text      = stat != null ? stat.ClassType.ToString() : "—";
+            var data = character.Data;
+            var stat = character.Stat;
+            _classLabel.text      = data != null ? data.Profession.Name      : "—";
             _statStrLabel.text    = stat != null ? stat.STR.ToString()       : "—";
             _statAgiLabel.text    = stat != null ? stat.AGI.ToString()       : "—";
             _statIntLabel.text    = stat != null ? stat.INT.ToString()       : "—";
-            _statStressLabel.text = stat != null ? stat.insanity.ToString()  : "—";
+            _statStressLabel.text = data != null ? data.Insanity.ToString()  : "—";
 
             RefreshTraits();
-            RefreshRoleButtons(character.roleType);
+            RefreshRoleButtons(character.RoleType);
         }
 
         private void RefreshTraits()
@@ -62,14 +63,14 @@ namespace Bond.UI.RoleReactionEditor
             _traitContainer.Clear();
             if (_current == null) return;
 
-            foreach (var trait in _current.traits)
+            foreach (var trait in _current.Traits)
             {
-                if (trait == null || string.IsNullOrEmpty(trait.traitName)) continue;
+                if (trait == null || string.IsNullOrEmpty(trait.Name)) continue;
 
                 var tag = new VisualElement();
                 tag.AddToClassList("rre-trait-tag");
 
-                var lbl = new Label(trait.traitName);
+                var lbl = new Label(trait.Name);
                 lbl.AddToClassList("rre-trait-tag__label");
                 tag.Add(lbl);
 
@@ -80,7 +81,7 @@ namespace Bond.UI.RoleReactionEditor
         private void ApplyRole(RoleType role)
         {
             if (_current == null) return;
-            _current.roleType = role;
+            _current.SetRole(role);
             RefreshRoleButtons(role);
             OnRoleChanged?.Invoke(role);
         }

@@ -1,0 +1,181 @@
+using UnityEngine;
+using UnityEngine.UIElements;
+using System.Collections.Generic;
+using VContainer;
+
+public class InventoryView : MonoBehaviour
+{
+    // 드래그 공유를 위한 정적 변수
+    public static int CurrentDraggingIndex = -1;
+    public static IInventory CurrentSourceInventory = null;
+    public static VisualElement GlobalDragGhost; 
+
+    private VisualElement _root;
+    private VisualElement _totalGrid, _expeditionGrid, _dragGhost;
+    private List<VisualElement> _totalSlotElements = new(), _expeditionSlotElements = new();
+    private TextField _searchField;
+    private ScrollView _totalScroll;
+
+    private ITotalInventory _totalInventory;
+    private IExpeditionInventory _expeditionInventory;
+    private InventoryTransferService _transferService;
+    private CharacterEquipService _equipService;
+
+    public static bool IsWindowActive = false;
+
+    public BaseItem[] testItems; // 인스펙터 할당용
+    private string _currentSearch = "";
+    private ItemCategory? _currentFilter = null;
+
+    [Inject]
+    public void Construct(ITotalInventory total, IExpeditionInventory expedition, InventoryTransferService service, CharacterEquipService equipService)
+    {
+        _totalInventory = total; _expeditionInventory = expedition;
+        _transferService = service; _equipService = equipService;
+    }
+
+    private void Start()
+    {
+        SetupUI();
+        // 초기 데이터 세팅
+        _totalInventory.AddItemAt(0, testItems[0], 1);
+        _totalInventory.AddItemAt(5, testItems[0], 1);
+        _totalInventory.AddItemAt(1, testItems[1], 1);
+        _totalInventory.AddItemAt(6, testItems[1], 1);
+        _totalInventory.AddItemAt(2, testItems[2], 5);
+        _totalInventory.AddItemAt(3, testItems[3], 5);
+        _totalInventory.AddItemAt(4, testItems[4], 5);
+        
+        ToggleWindow(false);
+    }
+
+    private void SetupUI()
+    {
+        _root = GetComponent<UIDocument>().rootVisualElement;
+        _totalScroll = _root.Q<ScrollView>("total-inventory-grid");
+        _totalGrid = _root.Q<VisualElement>("total-grid");
+        _expeditionGrid = _root.Q<VisualElement>("expedition-inventory-grid");
+
+        // 드래그 고스트 설정
+        _dragGhost = new VisualElement();
+        _dragGhost.style.position = Position.Absolute;
+        _dragGhost.pickingMode = PickingMode.Ignore;
+        _dragGhost.style.visibility = Visibility.Hidden;
+        _dragGhost.style.width = 60; _dragGhost.style.height = 60;
+        _root.Add(_dragGhost);
+        GlobalDragGhost = _dragGhost;
+        _root.RegisterCallback<PointerMoveEvent>(OnPointerMove);
+
+        // 버튼 및 필드 연결
+        _searchField = _root.Q<TextField>("inventory-search");
+        _searchField?.RegisterValueChangedCallback(evt => { _currentSearch = evt.newValue; RefreshUI(); });
+
+        _root.Q<Button>("btn-sort")?.RegisterCallback<ClickEvent>(evt => { _totalInventory.SortById(); _expeditionInventory.SortById(); RefreshUI(); });
+        _root.Q<Button>("btn-filter-consumable")?.RegisterCallback<ClickEvent>(evt => SetFilter(ItemCategory.Consume));
+        _root.Q<Button>("btn-filter-accessory")?.RegisterCallback<ClickEvent>(evt => SetFilter(ItemCategory.Accessories));
+        _root.Q<Button>("btn-filter-all")?.RegisterCallback<ClickEvent>(evt => SetFilter(null));
+        _root.Q<Button>("btn-close")?.RegisterCallback<ClickEvent>(evt => ToggleWindow(false));
+
+        _totalInventory.OnChanged += RefreshUI;
+        _expeditionInventory.OnChanged += RefreshUI;
+        
+        SyncSlotCount(_totalGrid, _totalInventory.Capacity, _totalSlotElements, _totalInventory);
+        SyncSlotCount(_expeditionGrid, _expeditionInventory.Capacity, _expeditionSlotElements, _expeditionInventory);
+    }
+
+    public void ToggleWindow(bool show)
+    {
+        IsWindowActive = show;
+        _root.Q<VisualElement>("inventory-container").style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
+        if (show) { if (_totalScroll != null) _totalScroll.scrollOffset = Vector2.zero; RefreshUI();}
+    }
+
+    private void SyncSlotCount(VisualElement container, int targetCount, List<VisualElement> list, IInventory inv)
+    {
+        while (list.Count < targetCount)
+        {
+            int index = list.Count;
+            var slot = new VisualElement();
+            slot.AddToClassList("inventory-slot-base");
+            slot.RegisterCallback<PointerDownEvent>(evt => OnPointerDown(evt, inv, index));
+            slot.RegisterCallback<PointerUpEvent>(evt => OnPointerUp(evt, inv, index));
+            container.Add(slot);
+            list.Add(slot);
+        }
+    }
+
+    public void RefreshUI()
+    {
+        // [중요] 1. 용량이 변화했을 수 있으므로, 현재 용량에 맞춰 UI 슬롯 개수를 먼저 동기화합니다.
+        // 이 메서드가 실행되어야 새로 늘어난 Capacity만큼 VisualElement가 생성됩니다.
+        SyncSlotCount(_totalGrid, _totalInventory.Capacity, _totalSlotElements, _totalInventory);
+        SyncSlotCount(_expeditionGrid, _expeditionInventory.Capacity, _expeditionSlotElements, _expeditionInventory);
+
+        // 2. 필터링된 인덱스 가져오기
+        var totalVisible = _totalInventory.GetFilteredIndices(_currentSearch, _currentFilter);
+        var expeditionVisible = _expeditionInventory.GetFilteredIndices(_currentSearch, _currentFilter);
+
+        // 3. 동기화된 슬롯들에 데이터를 입힘
+        UpdateGrid(_totalSlotElements, _totalInventory, totalVisible);
+        UpdateGrid(_expeditionSlotElements, _expeditionInventory, expeditionVisible);
+    }
+
+    private void UpdateGrid(List<VisualElement> elements, IInventory inv, IEnumerable<int> visibleIndices)
+    {
+        var visibleSet = new HashSet<int>(visibleIndices);
+        for (int i = 0; i < elements.Count; i++)
+        {
+            var visual = elements[i];
+            visual.Clear();
+            if (visibleSet.Contains(i))
+            {
+                visual.style.display = DisplayStyle.Flex;
+                var data = inv.GetSlot(i);
+                if (!data.IsEmpty)
+                {
+                    var icon = new VisualElement();
+                    icon.style.backgroundImage = new StyleBackground(data.item.icon);
+                    icon.style.width = Length.Percent(100); icon.style.height = Length.Percent(100);
+                    visual.Add(icon);
+                    var label = new Label(data.quantity.ToString());
+                    label.AddToClassList("slot-quantity-label");
+                    visual.Add(label);
+                }
+            }
+            else visual.style.display = DisplayStyle.None;
+        }
+    }
+
+    private void OnPointerDown(PointerDownEvent evt, IInventory inv, int index)
+    {
+        if (evt.button == 0)
+        {
+            var slot = inv.GetSlot(index);
+            if (slot.IsEmpty) return;
+            CurrentDraggingIndex = index;
+            CurrentSourceInventory = inv;
+            _dragGhost.style.backgroundImage = new StyleBackground(slot.item.icon);
+            _dragGhost.style.visibility = Visibility.Visible;
+            UpdateGhostPosition(evt.position);
+        }
+        else if (evt.button == 1)
+        {
+            var target = (inv is ITotalInventory) ? (IInventory)_expeditionInventory : (IInventory)_totalInventory;
+            _transferService.MoveOneFromSlot(inv, index, target);
+        }
+    }
+
+    private void OnPointerUp(PointerUpEvent evt, IInventory targetInv, int targetIndex)
+    {
+        if (CurrentSourceInventory != null)
+        {
+            _transferService.ExecuteDragDrop(CurrentSourceInventory, CurrentDraggingIndex, targetInv, targetIndex);
+            ResetDraggingState();
+        }
+    }
+
+    private void OnPointerMove(PointerMoveEvent evt) { if (CurrentSourceInventory != null) UpdateGhostPosition(evt.position); }
+    private void UpdateGhostPosition(Vector2 pos) { _dragGhost.style.left = pos.x - 30; _dragGhost.style.top = pos.y - 30; }
+    public static void ResetDraggingState() { CurrentDraggingIndex = -1; CurrentSourceInventory = null; if(GlobalDragGhost != null) GlobalDragGhost.style.visibility = Visibility.Hidden; }
+    private void SetFilter(ItemCategory? cat) { _currentFilter = cat; RefreshUI(); }
+}

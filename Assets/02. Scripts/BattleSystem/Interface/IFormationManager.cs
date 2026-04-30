@@ -42,5 +42,7 @@ namespace _02._Scripts.BattleSystem.Interface
         /// 진영 내 빈 공간을 메우기 위해 캐릭터들을 앞으로 당깁니다. (다키스트 던전 스타일)
         /// </summary>
         void ConsolidationFormation(E_BattleSide side);
+
+        bool HasAnyValidTarget(BaseCharacter character, SkillData skill);
     }
 }

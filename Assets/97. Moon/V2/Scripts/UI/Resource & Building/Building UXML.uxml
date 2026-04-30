@@ -1,0 +1,12 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 1; background-color: rgb(255, 255, 255); width: auto; height: auto;">
+        <ui:Button text="Storage" name="btn-storage" style="align-self: flex-start; justify-content: flex-start; align-items: stretch; background-size: 100px 100px; width: 200px; height: 200px; font-size: 50px; top: 500px; left: 500px; position: absolute;"/>
+        <ui:Button text="Tavern" name="btn-tavern" style="align-self: flex-start; justify-content: flex-start; align-items: stretch; background-size: 100px 100px; width: 200px; height: 200px; font-size: 60px; top: 200px; left: 500px; position: absolute;"/>
+        <ui:Button text="Smithy" name="btn-smithy" style="align-self: flex-start; justify-content: flex-start; align-items: stretch; background-size: 100px 100px; width: 200px; height: 200px; font-size: 60px; top: 200px; position: absolute; left: 800px;"/>
+        <ui:Button text="Guild" name="btn-guild" style="align-self: flex-start; justify-content: flex-start; align-items: stretch; background-size: 100px 100px; width: 200px; height: 200px; font-size: 80px; top: 500px; left: 200px; position: absolute;"/>
+        <ui:Button text="X" name="btn-close" style="align-self: flex-end; justify-content: flex-start; align-items: stretch; background-size: 100px 100px; width: 200px; height: 200px; font-size: 250px; top: auto; left: auto; align-content: flex-start; position: absolute;"/>
+        <ui:Button text="Supply" name="btn-supply" style="align-self: flex-start; justify-content: flex-start; align-items: stretch; background-size: 100px 100px; width: 200px; height: 200px; font-size: 60px; top: 800px; left: 200px; position: absolute;"/>
+        <ui:Button text="Carriage" name="btn-carriage" style="align-self: flex-start; justify-content: flex-start; align-items: stretch; background-size: 100px 100px; width: 200px; height: 200px; font-size: 50px; top: 500px; left: 800px; position: absolute;"/>
+        <ui:Button text="Inn" name="btn-inn" style="align-self: flex-start; justify-content: flex-start; align-items: stretch; background-size: 100px 100px; width: 200px; height: 200px; font-size: 100px; top: 200px; position: absolute; left: 200px;"/>
+    </ui:VisualElement>
+</ui:UXML>
