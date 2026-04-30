@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using _02._Scripts.BattleSystem;
-using _02._Scripts.BattleSystem.Interface;
+using BattleSystem;
+using BattleSystem.Interface;
 using _03._PipeLine;
 using Bond.Embark;
 using Cysharp.Threading.Tasks;

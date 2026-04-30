@@ -1,11 +1,12 @@
+using BattleStage;
+using BattleSystem.Interface;
 using UnityEngine;
-using UnityEngine.Serialization;
 using VContainer;
 using VContainer.Unity;
 
-namespace _02._Scripts.BattleSystem
+namespace BattleSystem.VContainer
 {
-    public class ExpeditionFlowManagerScope : LifetimeScope
+    public class BattleFlowManagerScope : LifetimeScope
     {
         [SerializeField] private BattleFlowManager expeditionFlowManager;
         protected override void Configure(IContainerBuilder builder)

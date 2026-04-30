@@ -1,4 +1,5 @@
 using System;
+using BattleSystem.Interface;
 using _03._PipeLine;
 using Bond.Expedition;
 using Reactions;
@@ -6,7 +7,7 @@ using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace _02._Scripts.BattleSystem
+namespace BattleSystem
 {
     public class BattleManager : IBattleManager, IStartable, IDisposable
     {

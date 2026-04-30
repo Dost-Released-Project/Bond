@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using _02._Scripts.BattleSystem;
+using BattleSystem;
 using UnityEngine;
 
 namespace Bond.Expedition

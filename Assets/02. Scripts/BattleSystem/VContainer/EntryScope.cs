@@ -1,9 +1,10 @@
+using BattleSystem.Interface;
 using UnityEngine;
 using UnityEngine.Serialization;
 using VContainer;
 using VContainer.Unity;
 
-namespace _02._Scripts.BattleSystem
+namespace BattleSystem.VContainer
 {
     public class EntryScope : LifetimeScope
     {

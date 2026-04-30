@@ -1,7 +1,7 @@
 using UnityEngine;
 using Shapes;
 
-namespace _02._Scripts.BattleSystem
+namespace BattleSystem
 {
     /// <summary>
     /// [V] 전투 씬 전용 Shapes UI 캔버스.

@@ -1,6 +1,6 @@
 using _03._PipeLine;
 
-namespace _02._Scripts.BattleSystem
+namespace BattleSystem.Interface
 {
     public interface IBattleManager
     {

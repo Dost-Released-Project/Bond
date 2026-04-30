@@ -1,6 +1,6 @@
 using System;
 
-namespace _02._Scripts.BattleSystem
+namespace BattleSystem
 {
     /// <summary>
     /// 다키스트 던전 스타일의 진영 위치(Rank)를 비트마스크로 정의합니다.

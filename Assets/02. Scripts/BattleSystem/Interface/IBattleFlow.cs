@@ -1,7 +1,8 @@
-using UnityEngine;
-
-public interface IBattleFlow
+namespace BattleSystem.Interface
 {
-    public void SetPlayerUnits(ITurnUseUnit[] playerUnits);
-    public void StartBattle(ITurnUseUnit[] enemyUnits);
+    public interface IBattleFlow
+    {
+        public void SetPlayerUnits(ITurnUseUnit[] playerUnits);
+        public void StartBattle(ITurnUseUnit[] enemyUnits);
+    }
 }

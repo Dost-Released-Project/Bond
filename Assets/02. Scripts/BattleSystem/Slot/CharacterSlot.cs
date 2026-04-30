@@ -1,8 +1,9 @@
 using System;
+using BattleSystem.Interface;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace _02._Scripts.BattleSystem
+namespace BattleSystem
 {
     /// <summary>
     /// [L] Logic: 슬롯의 데이터와 상태를 관리합니다.

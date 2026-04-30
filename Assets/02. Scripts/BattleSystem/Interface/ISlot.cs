@@ -1,7 +1,10 @@
-using _02._Scripts.BattleSystem;
+using BattleSystem;
 
-public interface ISlot
+namespace BattleSystem.Interface
 {
-    FormationMask rank { get; }
-    E_BattleSide side { get; }
+    public interface ISlot
+    {
+        FormationMask rank { get; }
+        E_BattleSide side { get; }
+    }
 }

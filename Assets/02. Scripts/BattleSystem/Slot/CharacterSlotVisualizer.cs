@@ -1,5 +1,5 @@
 using System;
-using _02._Scripts.BattleSystem;
+using BattleSystem;
 using Shapes;
 using UnityEngine;
 using UnityEngine.EventSystems;

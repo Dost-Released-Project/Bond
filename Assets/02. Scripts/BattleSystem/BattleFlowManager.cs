@@ -1,4 +1,5 @@
 using System;
+using BattleSystem.Interface;
 using _03._PipeLine;
 using Cysharp.Threading.Tasks;
 using juno_Test;
@@ -7,7 +8,7 @@ using UnityEngine.InputSystem;
 using VContainer;
 using VContainer.Unity;
 
-namespace _02._Scripts.BattleSystem
+namespace BattleStage
 {
     public class BattleFlowManager : MonoBehaviour, IBattleFlowManager
     {

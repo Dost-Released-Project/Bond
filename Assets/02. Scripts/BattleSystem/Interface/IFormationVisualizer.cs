@@ -1,6 +1,6 @@
-using _02._Scripts.BattleSystem;
+using BattleSystem;
 
-namespace _02._Scripts.BattleSystem.Interface
+namespace BattleSystem.Interface
 {
     /// <summary>
     /// [V] Visual Interface: Logic이 Visual에게 내리는 명령 명세서입니다.

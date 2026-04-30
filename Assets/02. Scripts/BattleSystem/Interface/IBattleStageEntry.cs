@@ -1,6 +1,9 @@
 
 
-public interface IBattleStageEntry
+namespace BattleSystem.Interface
 {
+    public interface IBattleStageEntry
+    {
     
+    }
 }

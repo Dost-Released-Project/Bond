@@ -1,13 +1,15 @@
 using System;
-using UnityEngine;
 
-public interface IBattleFlowManager
+namespace BattleSystem.Interface
 {
-    event Action<BaseCharacter[], BaseCharacter[]> OnBattleStart;
+    public interface IBattleFlowManager
+    {
+        event Action<BaseCharacter[], BaseCharacter[]> OnBattleStart;
 
-    void PartySetting(BaseCharacter[] playerUnits);
+        void PartySetting(BaseCharacter[] playerUnits);
     
-    void EnemySetting(BaseCharacter[] enemyUnits);
+        void EnemySetting(BaseCharacter[] enemyUnits);
     
-    void StartBattle();
+        void StartBattle();
+    }
 }

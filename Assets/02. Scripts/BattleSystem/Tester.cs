@@ -1,4 +1,4 @@
-using _02._Scripts.BattleSystem;
+using BattleSystem;
 using juno_Test;
 using UnityEngine;
 using UnityEngine.InputSystem;

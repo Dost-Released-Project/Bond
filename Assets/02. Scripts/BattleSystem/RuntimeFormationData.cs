@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace _02._Scripts.BattleSystem
+namespace BattleSystem
 {
     /// <summary>
     /// [D] Runtime Data: 특정 진영의 슬롯 참조 데이터만 관리합니다.

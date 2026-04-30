@@ -1,4 +1,4 @@
-using _02._Scripts.BattleSystem;
+using BattleSystem;
 using UnityEngine;
 
 public class SlotBinder : BaseBinder<ICharacterSlotVisualizer, CharacterSlot>

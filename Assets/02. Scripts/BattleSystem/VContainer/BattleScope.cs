@@ -1,4 +1,4 @@
-using _02._Scripts.BattleSystem.Interface;
+using BattleSystem.Interface;
 using _03._PipeLine;
 using juno_Test;
 using Reactions;
@@ -6,7 +6,7 @@ using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace _02._Scripts.BattleSystem
+namespace BattleSystem.VContainer
 {
     public class BattleScope : LifetimeScope
     {

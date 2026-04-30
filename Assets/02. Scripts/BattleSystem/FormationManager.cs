@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using _02._Scripts.BattleSystem;
-using _02._Scripts.BattleSystem.Interface;
+using BattleSystem;
+using BattleSystem.Interface;
 using UnityEngine;
 using VContainer;
 
@@ -11,7 +11,7 @@ public enum E_BattleSide
     Enemy
 }
 
-namespace _02._Scripts.BattleSystem
+namespace BattleSystem
 {
     /// <summary>
     /// [L] Logic (System): 진영 배치를 판단하고 제어하는 유일한 중심점입니다.
@@ -90,12 +90,6 @@ namespace _02._Scripts.BattleSystem
 
                 m_visualizer?.PlayMoveEffect(character, targetSlot.rank);
             }
-        }
-
-        public bool IsSkillUsable(BaseCharacter character, FormationMask skillUsableMask)
-        {
-            var slot = GetSlot(character);
-            return slot != null && (slot.rank & skillUsableMask) != 0;
         }
 
         public bool IsTargetable(BaseCharacter target, FormationMask targetMask)
