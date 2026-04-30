@@ -556,7 +556,7 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
-  _generatorConfig: {fileID: 11400000, guid: 57febdb423838ce4b989a309e81e1d88, type: 2}
+  _generatorConfig: {fileID: 11400000, guid: a70db73209a8af5499210822a73aee08, type: 2}
   _stageConfigs:
   - {fileID: 11400000, guid: 5829dfea3bf92414cabef2f0b3188982, type: 2}
   - {fileID: 11400000, guid: 93cf7406a56a157468bd2aed65a57560, type: 2}
@@ -564,6 +564,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9a21ccc01d9d2c046b3208da40a1ab4a, type: 2}
   - {fileID: 11400000, guid: 1a176e6e889a2784ca731d13e099c11d, type: 2}
   _monsterGroupConfig: {fileID: 11400000, guid: 497e20e9361da434a85e53d0072be087, type: 2}
+  _eventConfig: {fileID: 11400000, guid: 8ce9dafd601a5e941b5b5d431e1a6bf6, type: 2}
   _mapUIController: {fileID: 1979411112}
 --- !u!114 &1988441807 stripped
 MonoBehaviour:

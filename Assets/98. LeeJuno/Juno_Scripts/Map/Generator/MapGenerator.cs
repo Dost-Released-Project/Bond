@@ -4,7 +4,7 @@ using VContainer;
 
 /// <summary>
 /// Slay the Spire 스타일의 절차적 맵 생성기.
-/// 8단계 파이프라인으로 DAG(방향 비순환 그래프) 구조의 맵을 생성한다.
+/// 9단계 파이프라인으로 DAG(방향 비순환 그래프) 구조의 맵을 생성한다.
 ///
 /// 생성 흐름:
 ///   1. DetermineNodeCounts  — 층별 노드 수 결정
@@ -15,17 +15,20 @@ using VContainer;
 ///   6. ApplyPlacementRules  — 배치 규칙 강제 적용 (보스·캠핑·엘리트 보장)
 ///   7. InitializeNodeStates — 초기 노드 상태 설정 (0층만 Available)
 ///   8. AssignMonsterGroups  — Normal 노드에 몬스터 그룹 랜덤 배정
+///   9. AssignEvents         — Event 노드에 이벤트 랜덤 배정
 /// </summary>
 public class MapGenerator : IMapGenerator
 {
     private readonly MapGeneratorConfig _config;
     private readonly MonsterGroupConfig _monsterGroupConfig;
+    private readonly EventConfig _eventConfig;
 
     [Inject]
-    public MapGenerator(MapGeneratorConfig config, MonsterGroupConfig monsterGroupConfig)
+    public MapGenerator(MapGeneratorConfig config, MonsterGroupConfig monsterGroupConfig, EventConfig eventConfig)
     {
         _config = config;
         _monsterGroupConfig = monsterGroupConfig;
+        _eventConfig = eventConfig;
     }
 
     public MapData GenerateMap(int seed)
@@ -47,7 +50,8 @@ public class MapGenerator : IMapGenerator
         AssignStageTypes(data, rng);
         ApplyPlacementRules(data, rng);
         InitializeNodeStates(data);
-        AssignMonsterGroups(data, rng); // Step 8: Normal 노드에 몬스터 그룹 랜덤 배정
+        AssignMonsterGroups(data, rng); // Step 8: Normal/Elite 노드에 몬스터 그룹 랜덤 배정
+        AssignEvents(data, rng);        // Step 9: Event 노드에 이벤트 랜덤 배정
 
         return data;
     }
@@ -330,7 +334,7 @@ public class MapGenerator : IMapGenerator
             return StageType.Camping;
 
         if (layer == 0)
-            return StageType.Normal;
+            return StageType.Event;
 
         float[] weights = GetWeights(layer);
         return WeightedRandom(weights, rng);
@@ -601,6 +605,61 @@ public class MapGenerator : IMapGenerator
 
             if (noLayerLimit || inRange)
                 candidates.Add(group);
+        }
+
+        return candidates;
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // Step 9: Event 노드 이벤트 배정
+    // ─────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Event 타입 노드에 EventConfig 목록에서 랜덤으로 EventData 를 배정한다.
+    /// rng 는 파이프라인 전체에서 공유되므로 Step 8 완료 후 호출해야
+    /// 같은 seed 에서 항상 동일한 결과가 보장된다.
+    /// </summary>
+    private void AssignEvents(MapData data, System.Random rng)
+    {
+        if (_eventConfig == null)
+            return;
+
+        if (_eventConfig.Events == null)
+            return;
+
+        if (_eventConfig.Events.Count == 0)
+            return;
+
+        List<EventData> candidates = GetCandidateEvents(); // 루프 밖에서 한 번만 호출한다
+
+        if (candidates.Count == 0)
+            return;
+
+        foreach (MapNode node in data.Nodes)
+        {
+            if (node.StageType != StageType.Event)
+                continue;
+
+            node.AssignedEventId = candidates[rng.Next(candidates.Count)].Id;
+        }
+    }
+
+    /// <summary>
+    /// 배정 가능한 이벤트 목록을 반환한다.
+    /// 현재 EventData 에 층 범위 필드가 없으므로 전체 목록을 반환한다.
+    /// 추후 EventData 에 MinLayer/MaxLayer 가 추가되면 이 메서드에 범위 필터를 추가한다.
+    /// </summary>
+    private List<EventData> GetCandidateEvents()
+    {
+        List<EventData> candidates = new List<EventData>();
+
+        foreach (EventData ev in _eventConfig.Events)
+        {
+            // Inspector 에서 리스트에 빈 슬롯이 있을 경우 NullReferenceException 방지
+            if (ev == null)
+                continue;
+
+            candidates.Add(ev);
         }
 
         return candidates;
