@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 2056413712046027917}
   - component: {fileID: 2998969141867531512}
   m_Layer: 5
-  m_Name: Juno_Canvas
+  m_Name: Combat_Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
