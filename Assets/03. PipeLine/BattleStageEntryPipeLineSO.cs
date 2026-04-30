@@ -6,7 +6,7 @@ using Reactions;
 
 namespace _03._PipeLine
 {
-    // 혹시 동일한 Type이 들어가는 파이프라인이 여러 개 생길 수 있으므로, 인터페이스로 구분해줌
+    /*// 혹시 동일한 Type이 들어가는 파이프라인이 여러 개 생길 수 있으므로, 인터페이스로 구분해줌
     public interface IBattleStageEntryPipeLineSO : IPipeLine<CharacterData>
     {
         
@@ -37,7 +37,7 @@ namespace _03._PipeLine
             
             return context;
         }
-    }
+    }*/
 
-    #endregion
+    //#endregion
 }
