@@ -12,14 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f0df188d0682c7429f9d5a0ba9968fe, type: 3}
   m_Name: EventData
   m_EditorClassIdentifier: Assembly-CSharp::EventData
-  _eventId: 1010
-  _title: EventTest
+  _id: 12345677
+  _displayName: 
   _description: Test
   _choices:
   - _label: choise1
     _outcomeDescription: One
-    _rewardIds: []
-    _hpChange: 0
+    _rewardIds:
+    - 12451562
+    _hpChange: -10
   - _label: choise2
     _outcomeDescription: Two
     _rewardIds: []

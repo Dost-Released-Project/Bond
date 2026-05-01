@@ -11,6 +11,7 @@ using VContainer.Unity;
 ///   - MapGeneratorConfig  : 맵 생성 파라미터 (Instance)
 ///   - List(StageConfig)   : 스테이지 타입별 설정 (Instance)
 ///   - MonsterGroupConfig  : 몬스터 그룹 목록 (Instance)
+///   - EventConfig         : 이벤트 목록 (Instance)
 ///   - IMapGenerator       → MapGenerator (Singleton)
 ///   - IMapRepository      → MapRepository (Singleton)
 ///   - IMapNavigator       → MapNavigator  (Singleton)
@@ -21,6 +22,7 @@ using VContainer.Unity;
 ///   _generatorConfig     — MapGeneratorConfig ScriptableObject
 ///   _stageConfigs        — StageConfig 목록 (Normal, Elite, Boss, Camping, Event, Shop 각 1개)
 ///   _monsterGroupConfig  — MonsterGroupConfig ScriptableObject
+///   _eventConfig         — EventConfig ScriptableObject
 ///   _mapUIController     — 씬에 배치된 MapUIController MonoBehaviour
 /// </summary>
 public class MapLifetimeScope : LifetimeScope
@@ -28,14 +30,31 @@ public class MapLifetimeScope : LifetimeScope
     [SerializeField] private MapGeneratorConfig _generatorConfig;
     [SerializeField] private List<StageConfig> _stageConfigs;
     [SerializeField] private MonsterGroupConfig _monsterGroupConfig; // Inspector 연결 필요
+    [SerializeField] private EventConfig _eventConfig;              // Inspector 연결 필요
     [SerializeField] private MapUIController _mapUIController;
 
     protected override void Configure(IContainerBuilder builder)
     {
         // ScriptableObject 인스턴스를 컨테이너에 직접 등록
-        builder.RegisterInstance(_generatorConfig);
-        builder.RegisterInstance(_stageConfigs);
-        builder.RegisterInstance(_monsterGroupConfig);
+        if (_generatorConfig != null)
+            builder.RegisterInstance(_generatorConfig);
+        else
+            Debug.LogError("[MapLifetimeScope] _generatorConfig 가 연결되지 않았습니다.", this);
+
+        if (_stageConfigs != null)
+            builder.RegisterInstance(_stageConfigs);
+        else
+            Debug.LogError("[MapLifetimeScope] _stageConfigs 가 연결되지 않았습니다.", this);
+
+        if (_monsterGroupConfig != null)
+            builder.RegisterInstance(_monsterGroupConfig);
+        else
+            Debug.LogError("[MapLifetimeScope] _monsterGroupConfig 가 연결되지 않았습니다.", this);
+
+        if (_eventConfig != null)
+            builder.RegisterInstance(_eventConfig);
+        else
+            Debug.LogError("[MapLifetimeScope] _eventConfig 가 연결되지 않았습니다.", this);
 
         // 맵 시스템 핵심 서비스 등록 (인터페이스 → 구현체 바인딩)
         builder.Register<IMapGenerator, MapGenerator>(Lifetime.Singleton);

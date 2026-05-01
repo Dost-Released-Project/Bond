@@ -25,6 +25,7 @@ public class StageLoader : IStageLoader
 {
     private readonly List<StageConfig> _stageConfigs;
     private readonly MonsterGroupConfig _monsterGroupConfig;
+    private readonly EventConfig _eventConfig;
     private readonly Dictionary<StageType, StageConfig> _stageConfigMap;
 
     private SceneInstance _currentScene;         // 현재 로드된 씬 인스턴스
@@ -37,10 +38,11 @@ public class StageLoader : IStageLoader
     private EventSystem _mapEventSystem;
 
     [Inject]
-    public StageLoader(List<StageConfig> stageConfigs, MonsterGroupConfig monsterGroupConfig)
+    public StageLoader(List<StageConfig> stageConfigs, MonsterGroupConfig monsterGroupConfig, EventConfig eventConfig)
     {
         _stageConfigs = stageConfigs;
         _monsterGroupConfig = monsterGroupConfig;
+        _eventConfig = eventConfig;
         _hasLoadedScene = false;
 
         _stageConfigMap = new Dictionary<StageType, StageConfig>();
@@ -78,6 +80,12 @@ public class StageLoader : IStageLoader
         if (_isLoading)
             return;
 
+        if (node == null)
+        {
+            Debug.LogError("[StageLoader] node 가 null 입니다.");
+            return;
+        }
+
         _isLoading = true;
         try
         {
@@ -104,6 +112,14 @@ public class StageLoader : IStageLoader
                 NormalStageContext.Clear();
                 SetNormalStageContext(node);
             }
+            else if (stageType == StageType.Event)
+            {
+                EventContext.Clear();
+                SetEventContext(node);
+            }
+
+            // 씬 로드 직전 콜백을 채널에 등록한다
+            StageCompletionChannel.Register(NotifyStageCompleted);
 
             AsyncOperationHandle<SceneInstance> handle = Addressables.LoadSceneAsync(
                 config.SceneAddress,
@@ -138,8 +154,18 @@ public class StageLoader : IStageLoader
     {
         if (_hasLoadedScene == false)
             return;
+        if (_isLoading)
+            return;
 
-        await UnloadCurrentStageInternal(restoreMapComponents: true);
+        _isLoading = true;
+        try
+        {
+            await UnloadCurrentStageInternal(restoreMapComponents: true);
+        }
+        finally
+        {
+            _isLoading = false;
+        }
     }
 
     /// <summary>
@@ -152,6 +178,7 @@ public class StageLoader : IStageLoader
         {
             await Addressables.UnloadSceneAsync(_currentScene).ToUniTask();
             _hasLoadedScene = false;
+            StageCompletionChannel.Unregister();
         }
         catch (Exception e)
         {
@@ -266,6 +293,49 @@ public class StageLoader : IStageLoader
 
             if (group.Id == groupId)
                 return group;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Event 스테이지 로드 직전 EventContext 에 이벤트 정보를 기록한다.
+    /// AssignedEventId 가 비어 있거나 이벤트를 찾지 못하면 빈 컨텍스트를 기록한다.
+    /// </summary>
+    private void SetEventContext(MapNode node)
+    {
+        if (string.IsNullOrEmpty(node.AssignedEventId))
+        {
+            EventContext.Set(string.Empty, new List<EventChoice>());
+            return;
+        }
+
+        EventData ev = FindEventData(node.AssignedEventId);
+
+        if (ev == null)
+        {
+            EventContext.Set(string.Empty, new List<EventChoice>());
+            return;
+        }
+
+        EventContext.Set(ev.Id, ev.Choices);
+    }
+
+    /// <summary>
+    /// Id 로 EventData 를 목록에서 찾아 반환한다. 없으면 null.
+    /// </summary>
+    private EventData FindEventData(string eventId)
+    {
+        if (_eventConfig == null || _eventConfig.Events == null)
+            return null;
+
+        foreach (EventData ev in _eventConfig.Events)
+        {
+            if (ev == null)
+                continue;
+
+            if (ev.Id == eventId)
+                return ev;
         }
 
         return null;

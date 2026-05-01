@@ -37,6 +37,6 @@ public static class NormalStageContext
     public static void Clear()
     {
         MonsterGroupId = string.Empty;
-        MonsterIds = new List<string>();
+        MonsterIds.Clear();
     }
 }
