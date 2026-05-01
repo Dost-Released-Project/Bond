@@ -76,6 +76,6 @@ public class EventSceneController : MonoBehaviour
 
         StageCompletionChannel.Invoke(result);
 
-        Debug.Log($"[EventSceneController] 선택 완료: {choice.Label}, IsSuccess={result.IsSuccess}");
+        Debug.Log($"[EventSceneController] 선택 완료: {choice.Label}, IsSuccess={result.IsSuccess}, itemID={result.RewardIds[0]}");
     }
 }
