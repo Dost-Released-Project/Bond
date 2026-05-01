@@ -1,8 +1,9 @@
+using Bond.Embark;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-public class GetLifetimeScope : LifetimeScope
+public class TownScope : LifetimeScope
 {
     protected override void Configure(IContainerBuilder builder)
     {
@@ -16,6 +17,10 @@ public class GetLifetimeScope : LifetimeScope
         builder.Register<BuildingService>(Lifetime.Singleton);
         // 장비
         builder.Register<CharacterEquipService>(Lifetime.Singleton);
+        //
+        builder.Register<EmbarkManager>(Lifetime.Scoped);
+        builder.Register<PartyManager>(Lifetime.Scoped);
+        builder.Register<StageCoach>(Lifetime.Scoped);
 
 
         // 씬에 배치된 컴포넌트

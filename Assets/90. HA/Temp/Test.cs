@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using Bond.Expedition;
 using Bond.UI.PartySelection;
 using Bond.UI.RoleReactionEditor;
 using UnityEngine;
@@ -13,30 +14,26 @@ namespace Ha
         [Inject] StageCoach stageCoach;
         [Inject] PartySelectionController partySelectionController;
         [Inject] RoleReactionEditorController roleReactionEditorController;
+        [Inject] ExpeditionPayload payload;
 
         List<BaseCharacter> characters = new List<BaseCharacter>();
         
         private void Awake()
         {
-            for (int i = 0; i < 3; i++)
-            {
-                characters.Add(CreateCharacter());
-            }
-
-            partySelectionController.roster = characters;
+            
         }
 
         private void Update()
         {
             if (Keyboard.current.numpad0Key.wasPressedThisFrame)
             {
-                CreateCharacter();
+                Debug.Log(payload);
             }
         }
 
         private BaseCharacter CreateCharacter()
         {
-            var c = new BaseCharacter(stageCoach.GetRandomCharacter());
+            var c = stageCoach.GetRandomCharacter();
             Show(c.Data);
             return c;
         }

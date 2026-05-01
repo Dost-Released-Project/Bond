@@ -7,7 +7,7 @@ using Reactions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class BaseCharacter : ITurnUseUnit
+public partial class BaseCharacter : ITurnUseUnit
 {
     /// <summary>
     /// 테스트 용 객체

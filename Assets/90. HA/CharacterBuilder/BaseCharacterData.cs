@@ -9,7 +9,7 @@ public enum RoleType
     Supporter // 활성 트리거: TRG_SIT_ALLY_TURN_END (아군 턴 종료 시), TRG_DEF_STATUS (상태이상 시)
 }
 
-public partial class BaseCharacterData
+public class BaseCharacterData
 {
     /// <summary>
     /// 테스트 용 객체

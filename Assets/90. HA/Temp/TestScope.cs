@@ -13,8 +13,8 @@ namespace Ha
         public PartySelectionController partySelectionController;
         protected override void Configure(IContainerBuilder builder)
         {
-            builder.Register<PartyManager>(Lifetime.Singleton);
-            builder.Register<StageCoach>(Lifetime.Singleton);
+            builder.Register<PartyManager>(Lifetime.Scoped);
+            builder.Register<StageCoach>(Lifetime.Scoped);
             builder.RegisterComponent(t);
             builder.RegisterComponent(roleReactionEditorController);
             builder.RegisterComponent(partySelectionController);
