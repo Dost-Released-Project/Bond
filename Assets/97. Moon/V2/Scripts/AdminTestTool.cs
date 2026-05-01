@@ -4,7 +4,7 @@ using UnityEngine.Serialization;
 
 public class AdminTestTool : MonoBehaviour
 {
-    public BaseCharacter hero;// 인스펙터에서 캐릭터 큐브 할당
+    public BaseCharacter hero;
     public static bool isTargetingWeapon = true;
     
     public static BaseCharacter testHero;

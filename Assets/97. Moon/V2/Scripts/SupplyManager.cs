@@ -22,7 +22,7 @@ public class SupplyManager : MonoBehaviour, ISupplyManager
         int cost = GetRequiredData(SupplyType.Reinforcements);
         if (_resourceManager.ConsumeResources(cost, 0, 0))
         {
-            // TODO: 팀원이 작업 중인 캐릭터 생성(증원) 로직 호출
+            AdminTestTool.testHero.Data =  new BaseCharacterData.Builder().Build(); // 임시 증원
             Debug.Log("<color=green>[보급]</color> 증원 요청 완료.");
         }
     }
