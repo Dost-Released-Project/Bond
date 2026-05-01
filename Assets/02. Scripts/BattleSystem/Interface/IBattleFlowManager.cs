@@ -4,7 +4,7 @@ namespace BattleSystem.Interface
 {
     public interface IBattleFlowManager
     {
-        event Action<BaseCharacter[], BaseCharacter[]> OnBattleStart;
+        event Action<BaseCharacter[], BaseCharacter[]> OnBattle;
 
         void PartySetting(BaseCharacter[] playerUnits);
     

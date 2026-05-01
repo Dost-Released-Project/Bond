@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using BattleSystem;
 using BattleSystem.Interface;
-using _03._PipeLine;
-using Bond.Embark;
+using PipeLine;
 using Cysharp.Threading.Tasks;
 using Reactions;
 using UnityEngine;
@@ -64,7 +62,7 @@ public class BaseCharacter : ITurnUseUnit
 
     #region Formaiton
 
-    public ISlot CurrentSlot { get; set; }
+    public CharacterSlot CurrentSlot { get; set; }
     private FormationMask CurrentFormation => CurrentSlot?.rank ?? FormationMask.None;
 
     private bool[] GetUsableSkills()
@@ -75,9 +73,9 @@ public class BaseCharacter : ITurnUseUnit
             if (Data.Skills[i] == null) continue;
             bool rankMatch = (Data.Skills[i].Data.UseableSlots & (int)CurrentSlot.rank) != 0;
 
-            bool targetExists = m_formationManager.HasAnyValidTarget(this, Data.Skills[i].Data);
+            bool targetMatch = m_formationManager.HasAnyValidTarget(this, Data.Skills[i].Data);
             
-            availability[i] = rankMatch && targetExists;
+            availability[i] = rankMatch && targetMatch;
         }
         return availability;
     }
@@ -96,7 +94,6 @@ public class BaseCharacter : ITurnUseUnit
     public async UniTask TakeTurnAsync()
     {
         Debug.Log($"<color=green>{Name} 차례! 역할군: {battleType} 플레이어의 명령을 기다립니다...</color>");
-        
         if (isPlayable)
         {
             _tcs = AutoResetUniTaskCompletionSource<bool>.Create();

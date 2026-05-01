@@ -1,10 +1,9 @@
 using System;
+using System.Linq;
 using BattleSystem.Interface;
-using _03._PipeLine;
-using Bond.Expedition;
+using PipeLine;
 using Reactions;
 using UnityEngine;
-using VContainer;
 using VContainer.Unity;
 
 namespace BattleSystem
@@ -13,38 +12,56 @@ namespace BattleSystem
     {
         private readonly ReactionSystem m_reactionSystem;
         private readonly IBattlePipeLine m_skillApplyPipeline;
-        private readonly IBattleFlowManager m_expeditionFlowManager;
+        private readonly IBattleFlowManager m_battleFlowManager;
+        private bool m_isBattle;
         
         public BattleManager(ReactionSystem reactionSystem, 
             IBattlePipeLine  skillApplyPipeline, IBattleFlowManager expeditionFlowManager)
         {
-            m_expeditionFlowManager = expeditionFlowManager;
+            m_battleFlowManager = expeditionFlowManager;
             m_reactionSystem = reactionSystem;
             m_skillApplyPipeline = skillApplyPipeline;
+            m_isBattle = false;
             Init();
         }
         
         void IStartable.Start()
         {
-            m_expeditionFlowManager.OnBattleStart += StartBattle;
+            m_battleFlowManager.OnBattle += Battle;
         }
 
         void IDisposable.Dispose()
         {
-            m_expeditionFlowManager.OnBattleStart -= StartBattle;
+            m_battleFlowManager.OnBattle -= Battle;
         }
-
-        private void StartBattle(BaseCharacter[] players, BaseCharacter[] enemies)
-        {
-            Debug.Log($"BattleManager received battle start event with {players.Length} player units and {enemies.Length} enemy units.");
-        }
-
+        
         private void Init()
         {
             m_skillApplyPipeline.SetReactionSystem(m_reactionSystem);
         }
 
-        public BattleContext SkillApplyLogic(BattleContext context)
+        private void ApplyAct(BattleContext battleContext)
+        {
+            // BattleContext 적용 로직이 들어가야함
+        }
+        private void Battle(BaseCharacter[] players, BaseCharacter[] enemies)
+        {
+            // 모든 캐릭터 구독 / 해제
+            m_isBattle = !m_isBattle;
+            switch (m_isBattle)
+            {
+                case true:
+                    SubCharacter(players);
+                    SubCharacter(enemies);
+                    break;
+                case false:
+                    UnSubCharacter(players);
+                    UnSubCharacter(enemies);
+                    break;
+            }
+        }
+        
+        private BattleContext SkillApplyLogic(BattleContext context)
         {
             // [입구] 로직 파이프라인 실행
             if (m_skillApplyPipeline != null)
@@ -54,5 +71,23 @@ namespace BattleSystem
 
             return context;
         }
+        
+        #region 전투 시작 시 참여하는 캐릭터 구독 / 해제 하는 로직
+        private void SubCharacter(BaseCharacter[] characters)
+        {
+            foreach (var character in characters)
+            {
+                character.onBattleAction += ApplyAct;
+            }
+        }
+
+        private void UnSubCharacter(BaseCharacter[] characters)
+        {
+            foreach (var character in characters)
+            {
+                character.onBattleAction -= ApplyAct;
+            }
+        }
+        #endregion
     }
 }

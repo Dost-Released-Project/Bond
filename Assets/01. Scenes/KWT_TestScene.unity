@@ -152,13 +152,12 @@ MonoBehaviour:
     TypeName: BattleSystem.VContainer.BattleFlowManagerScope
   autoRun: 1
   autoInjectGameObjects: []
-  _BattlePipeLineSo: {fileID: 11400000, guid: f6d7bc105c3672744b9425aaa988c32e, type: 2}
-  playerUnits:
-  - {fileID: 1377312406}
-  - {fileID: 1194974106}
-  - {fileID: 1680525791}
+  battlePipeLineSo: {fileID: 11400000, guid: f6d7bc105c3672744b9425aaa988c32e, type: 2}
+  slots:
   - {fileID: 1410344349}
-  enemyUnits:
+  - {fileID: 1680525791}
+  - {fileID: 1194974106}
+  - {fileID: 1377312406}
   - {fileID: 524783354}
   - {fileID: 1760238656}
   - {fileID: 230072094}
@@ -533,6 +532,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f25c83b6afce6d8459a5bb051a863222, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02._Scripts.BattleSystem.CharacterSlot
+  side: 1
+  rank: 4
   colorData: {fileID: 11400000, guid: 1b6ce13548bc05e419c7272eb4a33971, type: 2}
 --- !u!114 &230072095
 MonoBehaviour:
@@ -1051,6 +1052,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f25c83b6afce6d8459a5bb051a863222, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02._Scripts.BattleSystem.CharacterSlot
+  side: 1
+  rank: 1
   colorData: {fileID: 11400000, guid: 1b6ce13548bc05e419c7272eb4a33971, type: 2}
 --- !u!114 &524783355
 MonoBehaviour:
@@ -1496,6 +1499,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f25c83b6afce6d8459a5bb051a863222, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02._Scripts.BattleSystem.CharacterSlot
+  side: 0
+  rank: 4
   colorData: {fileID: 11400000, guid: 1b6ce13548bc05e419c7272eb4a33971, type: 2}
 --- !u!114 &1194974107
 MonoBehaviour:
@@ -1640,8 +1645,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 800873649}
   - {fileID: 14760989}
+  - {fileID: 800873649}
   - {fileID: 331466409}
   m_Father: {fileID: 192782864}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1714,6 +1719,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f25c83b6afce6d8459a5bb051a863222, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02._Scripts.BattleSystem.CharacterSlot
+  side: 0
+  rank: 8
   colorData: {fileID: 11400000, guid: 1b6ce13548bc05e419c7272eb4a33971, type: 2}
 --- !u!114 &1377312408
 MonoBehaviour:
@@ -1863,6 +1870,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f25c83b6afce6d8459a5bb051a863222, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02._Scripts.BattleSystem.CharacterSlot
+  side: 0
+  rank: 1
   colorData: {fileID: 11400000, guid: 1b6ce13548bc05e419c7272eb4a33971, type: 2}
 --- !u!114 &1410344350
 MonoBehaviour:
@@ -2135,6 +2144,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f25c83b6afce6d8459a5bb051a863222, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02._Scripts.BattleSystem.CharacterSlot
+  side: 0
+  rank: 2
   colorData: {fileID: 11400000, guid: 1b6ce13548bc05e419c7272eb4a33971, type: 2}
 --- !u!114 &1680525792
 MonoBehaviour:
@@ -2255,6 +2266,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f25c83b6afce6d8459a5bb051a863222, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02._Scripts.BattleSystem.CharacterSlot
+  side: 1
+  rank: 8
   colorData: {fileID: 11400000, guid: 1b6ce13548bc05e419c7272eb4a33971, type: 2}
 --- !u!114 &1734522397
 MonoBehaviour:
@@ -2375,6 +2388,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f25c83b6afce6d8459a5bb051a863222, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02._Scripts.BattleSystem.CharacterSlot
+  side: 1
+  rank: 2
   colorData: {fileID: 11400000, guid: 1b6ce13548bc05e419c7272eb4a33971, type: 2}
 --- !u!114 &1760238657
 MonoBehaviour:

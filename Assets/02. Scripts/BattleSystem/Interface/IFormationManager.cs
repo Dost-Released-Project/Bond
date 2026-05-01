@@ -1,5 +1,5 @@
 using BattleSystem;
-using _03._PipeLine;
+using PipeLine;
 
 namespace BattleSystem.Interface
 {
@@ -32,6 +32,8 @@ namespace BattleSystem.Interface
         /// 캐릭터가 현재 위치에서 해당 스킬을 사용할 수 있는지 확인합니다.
         /// </summary>
         bool HasAnyValidTarget(BaseCharacter character, SkillData skill);
+        
+        void SetCharacterToSlot(BaseCharacter character, E_BattleSide side, int index);
 
         /// <summary>
         /// 대상이 해당 스킬의 타겟 범위 내에 있는지 확인합니다.

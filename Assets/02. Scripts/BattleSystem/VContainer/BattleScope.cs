@@ -1,8 +1,9 @@
 using BattleSystem.Interface;
-using _03._PipeLine;
+using PipeLine;
 using juno_Test;
 using Reactions;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VContainer;
 using VContainer.Unity;
 
@@ -11,19 +12,14 @@ namespace BattleSystem.VContainer
     public class BattleScope : LifetimeScope
     {
         [SerializeField] 
-        private BattlePipeLineSo _BattlePipeLineSo;
+        private BattlePipeLineSo battlePipeLineSo;
         
-        public CharacterSlot[] playerUnits;
-        public CharacterSlot[] enemyUnits;
         
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterEntryPoint<BattleManager>(Lifetime.Singleton).As<IBattleManager>();
             builder.Register<ReactionSystem>(Lifetime.Singleton);
-            builder.Register<FormationManager>(Lifetime.Singleton).As<IFormationManager>();
-            builder.RegisterInstance(_BattlePipeLineSo).As<IBattlePipeLine>();
-            // builder.RegisterInstance(playerUnits);
-            // builder.RegisterInstance(enemyUnits);
+            builder.RegisterInstance(battlePipeLineSo).As<IBattlePipeLine>();
         }
     }
 }

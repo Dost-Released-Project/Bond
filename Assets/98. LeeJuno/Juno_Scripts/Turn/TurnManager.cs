@@ -15,20 +15,20 @@ public class TurnManager : ITurnManager, IStartable, IDisposable
     public IReadOnlyList<ITurnUseUnit> TurnQueue => _turnQueue;
     
     
-    private readonly IBattleFlowManager _expeditionFlowManager;
+    private readonly IBattleFlowManager _battleFlowManager;
     
     public TurnManager(IBattleFlowManager expeditionFlowManager) {
-        _expeditionFlowManager = expeditionFlowManager;
+        _battleFlowManager = expeditionFlowManager;
     }
     
     void IStartable.Start()
     {
-        _expeditionFlowManager.OnBattleStart += StartBattle;
+        _battleFlowManager.OnBattle += StartBattle;
     }
 
     void IDisposable.Dispose()
     {
-        _expeditionFlowManager.OnBattleStart -= StartBattle;
+        _battleFlowManager.OnBattle -= StartBattle;
     }
 
     // 전체 유닛

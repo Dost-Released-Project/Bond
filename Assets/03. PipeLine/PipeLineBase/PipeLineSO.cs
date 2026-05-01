@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace _03._PipeLine.PipeLineBase
+namespace PipeLine.PipeLineBase
 {
     public interface IPipeLine<T>
     {

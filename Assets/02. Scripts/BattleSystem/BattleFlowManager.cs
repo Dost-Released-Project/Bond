@@ -1,6 +1,6 @@
 using System;
 using BattleSystem.Interface;
-using _03._PipeLine;
+using PipeLine;
 using Cysharp.Threading.Tasks;
 using juno_Test;
 using UnityEngine;
@@ -12,7 +12,7 @@ namespace BattleStage
 {
     public class BattleFlowManager : MonoBehaviour, IBattleFlowManager
     {
-        public event Action<BaseCharacter[], BaseCharacter[]> OnBattleStart;
+        public event Action<BaseCharacter[], BaseCharacter[]> OnBattle;
         
         private BaseCharacter[] m_playerUnits;
         private BaseCharacter[] m_enemyUnits;
@@ -34,7 +34,7 @@ namespace BattleStage
         public void StartBattle()
         {
             // 구독하고 있는 매니저들 한테 전투 시작 신호(플레이어 파티, 적 파티)
-            OnBattleStart?.Invoke(m_playerUnits, m_enemyUnits);
+            OnBattle?.Invoke(m_playerUnits, m_enemyUnits);
         }
         
         private void Update()

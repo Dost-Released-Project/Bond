@@ -1,4 +1,4 @@
-namespace _03._PipeLine.PipeLineBase
+namespace PipeLine.PipeLineBase
 {
     public interface IPipeLineStep<T>
     {

@@ -10,11 +10,11 @@ namespace BattleSystem
     /// Logic<CharacterSlotVisualizer>를 상속받아 비주얼과 연결됩니다.
     /// </summary>
     public class CharacterSlot : MonoBehaviour,IPointerEnterHandler, IPointerExitHandler, INeedBind<ICharacterSlotVisualizer>,
-        IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, ISlot
+        IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
     {
         [Header("Slot Configuration")] 
-        public E_BattleSide side { get; }
-        public FormationMask rank { get; }
+        public E_BattleSide side;
+        public FormationMask rank;
 
         public BaseCharacter Occupant { get; private set; }
         public bool IsEmpty => Occupant == null;
@@ -26,11 +26,11 @@ namespace BattleSystem
         public void SetOccupant(BaseCharacter character)
         { 
             Occupant = character;
-            //character.CurrentSlot = this;
+            character.CurrentSlot = this;
         }      
         public void Clear()
         {
-            //Occupant.CurrentSlot = null;
+            Occupant.CurrentSlot = null;
             Occupant = null;
         }
         

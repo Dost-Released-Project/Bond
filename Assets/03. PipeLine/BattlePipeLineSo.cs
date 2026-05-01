@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
-using _03._PipeLine.PipeLineBase;
+using PipeLine.PipeLineBase;
 using UnityEngine;
 using Reactions;
 
-namespace _03._PipeLine
+namespace PipeLine
 {
     // [D] Runtime Data: 전투 계산 및 연출 상태를 담는 컨텍스트
     public class BattleContext
     {
         public BaseCharacter caster;
-        public BaseCharacter target;
+        public BaseCharacter[] targets;
         public SkillBase runtimeSkill; // 캐릭터의 스탯, 장비, 버프 등이 적용된 스킬
         
         public bool isCritical;

@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-namespace _03._PipeLine.PipeLineBase
+namespace PipeLine.PipeLineBase
 {
     public class PipelineLoader
     {

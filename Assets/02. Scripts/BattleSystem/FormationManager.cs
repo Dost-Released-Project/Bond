@@ -22,11 +22,13 @@ namespace BattleSystem
         private RuntimeFormationData m_playerData;
         private RuntimeFormationData m_enemyData;
         private IFormationVisualizer m_visualizer;
-
-        [Inject]
-        public FormationManager(CharacterSlot playerUnit)
+        private readonly CharacterSlot[] slots;
+        
+        public FormationManager(CharacterSlot[] slots)
         {
-            
+            m_playerData = new RuntimeFormationData(E_BattleSide.Player, slots);
+            m_enemyData = new RuntimeFormationData(E_BattleSide.Enemy, slots);
+            this.slots = slots;
         }
 
         public void SetVisualizer(IFormationVisualizer visualizer)
@@ -119,6 +121,17 @@ namespace BattleSystem
             }
 
             m_visualizer?.PlayConsolidationEffect(side);
+        }
+
+        public void ClearCharacter(BaseCharacter character)
+        {
+            foreach (var slot in slots)
+            {
+                if (slot.Occupant == character)
+                {
+                    slot.Clear();
+                }
+            }
         }
 
         public bool HasAnyValidTarget(BaseCharacter caster, SkillData skillData)

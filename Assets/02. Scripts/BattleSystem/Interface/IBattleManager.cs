@@ -1,9 +1,9 @@
-using _03._PipeLine;
+using PipeLine;
 
 namespace BattleSystem.Interface
 {
     public interface IBattleManager
     {
-        public BattleContext SkillApplyLogic(BattleContext context);
+        // public BattleContext SkillApplyLogic(BattleContext context);
     }
 }
