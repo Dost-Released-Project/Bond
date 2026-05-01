@@ -88,6 +88,12 @@ public abstract class InventoryBase : IInventory
     }
 
     public InventorySlot GetSlot(int index) => _slots[index];
+
+    public List<InventorySlot> GetAll()
+    {
+        return _slots;
+    }
+    
     public void SortById() { _slots = _slots.OrderBy(s => s.item?.id ?? "ZZZ").ToList(); OnChanged?.Invoke(); }
     public abstract int AddItemAuto(BaseItem item, int quantity);
 }
