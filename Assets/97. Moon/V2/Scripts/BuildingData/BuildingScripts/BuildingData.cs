@@ -4,6 +4,7 @@ using UnityEngine;
 [System.Serializable]
 public struct BuildingLevelData
 {
+    public string id;
     public int level;
     public int frontierCost;
     public int woodCost;

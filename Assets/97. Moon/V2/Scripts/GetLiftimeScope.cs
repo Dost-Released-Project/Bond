@@ -11,11 +11,12 @@ public class GetLifetimeScope : LifetimeScope
         builder.Register<TotalInventory>(Lifetime.Singleton).WithParameter("capacity", 16).AsImplementedInterfaces().AsSelf();
         builder.Register<ExpeditionInventory>(Lifetime.Singleton).WithParameter("capacity", 2).AsImplementedInterfaces().AsSelf();
         builder.Register<InventoryTransferService>(Lifetime.Singleton);
+        builder.Register<InventoryUIService>(Lifetime.Singleton);
         // 자원 및 건물
         builder.Register<ResourceManager>(Lifetime.Singleton);
         builder.Register<BuildingService>(Lifetime.Singleton);
         // 장비
-        builder.Register<CharacterEquipService>(Lifetime.Singleton);
+        builder.Register<CharacterItemService>(Lifetime.Singleton);
 
 
         // 씬에 배치된 컴포넌트

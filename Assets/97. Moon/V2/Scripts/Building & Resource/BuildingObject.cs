@@ -12,7 +12,7 @@ public class BuildingObject : MonoBehaviour
     {
         Data = data;
         _manager = manager;
-//        GetComponent<SpriteRenderer>().sprite = data.buildingSprite;
+        // GetComponent<SpriteRenderer>().sprite = data.buildingSprite;
     }
 
     private void OnMouseDown() // 건물 클릭 시

@@ -6,30 +6,31 @@ using System.Collections.Generic;
 public class EquipmentSlotUI : MonoBehaviour
 {
     private VisualElement _root;
-    // 단일 슬롯이 아닌 슬롯 리스트를 관리합니다.
     private List<VisualElement> _accSlots = new();
-    private CharacterEquipService _equipService;
+    
+    private CharacterItemService _itemService; // 이름 및 타입 변경
+    private InventoryUIService _uiService;     // 드래그 상태 확인용 추가
 
     [Inject]
-    public void Construct(CharacterEquipService es) => _equipService = es;
+    public void Construct(CharacterItemService itemService, InventoryUIService uiService)
+    {
+        _itemService = itemService;
+        _uiService = uiService;
+    }
 
     private void Start()
     {
         var uiDoc = GetComponent<UIDocument>();
-        if (uiDoc == null || uiDoc.rootVisualElement == null) {
-            Debug.LogError($"{gameObject.name}: UIDocument 또는 Root가 없습니다.");
-            return;
-        }
+        if (uiDoc == null || uiDoc.rootVisualElement == null) return;
 
         _root = uiDoc.rootVisualElement;
 
-        // [핵심] 영웅의 장비 슬롯 개수만큼 루프를 돌며 슬롯을 찾아 등록합니다.
         var hero = AdminTestTool.testHero;
         if (hero != null && hero.Data != null)
         {
             for (int i = 0; i < hero.Data.Equips.Length; i++)
             {
-                int index = i; // 클로저 캡처 방지
+                int index = i; 
                 var slotVisual = _root.Q<VisualElement>($"char-acc-slot-{index}");
                 
                 if (slotVisual != null)
@@ -40,35 +41,38 @@ public class EquipmentSlotUI : MonoBehaviour
             }
         }
 
-        // 서비스 이벤트를 구독하여 데이터 변경 시 전체 슬롯 갱신
-        _equipService.OnEquipmentChanged += RefreshUI;
+        _itemService.OnEquipmentChanged += RefreshUI;
         RefreshUI();
     }
 
     private void RegisterEvents(VisualElement slotVisual, int index)
     {
-        // 드래그 드롭 (장착)
+        // [장착] 드래그 드롭 성공 시
         slotVisual.RegisterCallback<PointerUpEvent>(evt => {
-            if (InventoryView.CurrentSourceInventory != null) {
-                _equipService.EquipFromDrag(InventoryView.CurrentSourceInventory, InventoryView.CurrentDraggingIndex, index);
-                InventoryView.ResetDraggingState();
+            if (_uiService.CurrentSourceInventory != null) {
+                // UIService를 통해 소스 인벤토리와 인덱스 참조
+                _itemService.EquipFromDrag(_uiService.CurrentSourceInventory, _uiService.CurrentDraggingIndex, index);
+                _uiService.ResetDrag();
             }
         });
 
-        // 우클릭 (해제)
+        // [해제] 우클릭 시 인벤토리로 반환
         slotVisual.RegisterCallback<PointerDownEvent>(evt => {
-            if (evt.button == 1) _equipService.UnequipToInventory(AdminTestTool.testHero, index);
+            if (evt.button == 1) _itemService.UnequipToInventory(AdminTestTool.testHero, index);
         });
     }
 
-    public void ToggleWindow() => _root.style.display = (_root.style.display == DisplayStyle.Flex) ? DisplayStyle.None : DisplayStyle.Flex;
+    public void ToggleWindow()
+    {
+        bool isShowing = _root.style.display == DisplayStyle.Flex;
+        _root.style.display = isShowing ? DisplayStyle.None : DisplayStyle.Flex;
+    }
 
     public void RefreshUI()
     {
         var hero = AdminTestTool.testHero;
         if (hero?.Data?.Equips == null) return;
 
-        // 리스트에 등록된 모든 슬롯을 순회하며 데이터 동기화
         for (int i = 0; i < _accSlots.Count; i++)
         {
             var visual = _accSlots[i];
@@ -91,7 +95,6 @@ public class EquipmentSlotUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (_equipService != null)
-            _equipService.OnEquipmentChanged -= RefreshUI;
+        if (_itemService != null) _itemService.OnEquipmentChanged -= RefreshUI;
     }
 }

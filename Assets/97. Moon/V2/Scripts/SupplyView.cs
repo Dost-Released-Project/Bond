@@ -5,40 +5,27 @@ using VContainer;
 public class SupplyView : MonoBehaviour
 {
     private VisualElement _root;
-    private ISupplyManager _supplyManager;
-    private ITotalInventory _totalInventory;
+    private SupplyManager _supplyManager;
 
     [Inject]
-    public void Construct(SupplyManager supplyManager, ITotalInventory totalInventory)
+    public void Construct(SupplyManager supplyManager)
     {
+        // ITotalInventory는 Manager에서 처리하므로 View에서는 Manager만 주입받으면 됨
         _supplyManager = supplyManager;
-        _totalInventory = totalInventory;
     }
 
     private void Awake()
     {
         _root = GetComponent<UIDocument>().rootVisualElement;
-        _root.style.display = DisplayStyle.None; // 초기엔 비활성
+        _root.style.display = DisplayStyle.None;
 
-        // 버튼 연결 (UXML의 Name과 일치해야 함)
+        // 버튼 연결 및 람다식을 통한 직접 호출 (불필요한 내부 함수 제거)
         _root.Q<Button>("btn-reinforce").clicked += () => _supplyManager.RequestReinforcement();
-        _root.Q<Button>("btn-normal").clicked += () => RequestNormalSupply();
-        _root.Q<Button>("btn-special").clicked += () => RequestSpecialSupply();
+        _root.Q<Button>("btn-normal").clicked += () => _supplyManager.RequestSupply(SupplyType.Normal_Supply);
+        _root.Q<Button>("btn-special").clicked += () => _supplyManager.RequestSupply(SupplyType.Special_Supply);
         _root.Q<Button>("btn-close-supply").clicked += Close;
     }
 
     public void Open() => _root.style.display = DisplayStyle.Flex;
     public void Close() => _root.style.display = DisplayStyle.None;
-
-    private void RequestNormalSupply()
-    {
-        // SupplyManager에서 아이템을 직접 받는 대신, 여기서 인벤토리에 추가 명령
-        // (SupplyManager가 TotalInventory를 주입받아 처리하도록 설계됨)
-        _supplyManager.RequestSupply(SupplyType.Normal_Supply);
-    }
-
-    private void RequestSpecialSupply()
-    {
-        _supplyManager.RequestSupply(SupplyType.Special_Supply);
-    }
 }

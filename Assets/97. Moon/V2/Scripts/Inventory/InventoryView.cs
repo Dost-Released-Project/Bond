@@ -5,13 +5,7 @@ using VContainer;
 
 public class InventoryView : MonoBehaviour
 {
-    // 드래그 공유를 위한 정적 변수
-    public static int CurrentDraggingIndex = -1;
-    public static IInventory CurrentSourceInventory = null;
-    public static VisualElement GlobalDragGhost; 
-
-    private VisualElement _root;
-    private VisualElement _totalGrid, _expeditionGrid, _dragGhost;
+    private VisualElement _root, _totalGrid, _expeditionGrid, _dragGhost;
     private List<VisualElement> _totalSlotElements = new(), _expeditionSlotElements = new();
     private TextField _searchField;
     private ScrollView _totalScroll;
@@ -19,25 +13,25 @@ public class InventoryView : MonoBehaviour
     private ITotalInventory _totalInventory;
     private IExpeditionInventory _expeditionInventory;
     private InventoryTransferService _transferService;
-    private CharacterEquipService _equipService;
+    private CharacterItemService _itemService; // 변경된 서비스
+    private InventoryUIService _uiService;     // 추가된 서비스
 
-    public static bool IsWindowActive = false;
-
-    public BaseItem[] testItems; // 인스펙터 할당용
+    public BaseItem[] testItems;
     private string _currentSearch = "";
     private ItemCategory? _currentFilter = null;
 
     [Inject]
-    public void Construct(ITotalInventory total, IExpeditionInventory expedition, InventoryTransferService service, CharacterEquipService equipService)
+    public void Construct(ITotalInventory total, IExpeditionInventory expedition, 
+        InventoryTransferService service, CharacterItemService itemService, InventoryUIService uiService)
     {
         _totalInventory = total; _expeditionInventory = expedition;
-        _transferService = service; _equipService = equipService;
+        _transferService = service; _itemService = itemService; _uiService = uiService;
     }
 
     private void Start()
     {
         SetupUI();
-        // 초기 데이터 세팅
+        // 초기 데이터 세팅 (기존 로직 유지)
         _totalInventory.AddItemAt(0, testItems[0], 1);
         _totalInventory.AddItemAt(5, testItems[0], 1);
         _totalInventory.AddItemAt(1, testItems[1], 1);
@@ -56,21 +50,23 @@ public class InventoryView : MonoBehaviour
         _totalGrid = _root.Q<VisualElement>("total-grid");
         _expeditionGrid = _root.Q<VisualElement>("expedition-inventory-grid");
 
-        // 드래그 고스트 설정
+        // 드래그 고스트 설정 (UIService로 관리)
         _dragGhost = new VisualElement();
         _dragGhost.style.position = Position.Absolute;
         _dragGhost.pickingMode = PickingMode.Ignore;
         _dragGhost.style.visibility = Visibility.Hidden;
         _dragGhost.style.width = 60; _dragGhost.style.height = 60;
         _root.Add(_dragGhost);
-        GlobalDragGhost = _dragGhost;
+        
         _root.RegisterCallback<PointerMoveEvent>(OnPointerMove);
 
-        // 버튼 및 필드 연결
+        // 버튼 및 필드 연결 (기존 기능 100% 유지)
         _searchField = _root.Q<TextField>("inventory-search");
         _searchField?.RegisterValueChangedCallback(evt => { _currentSearch = evt.newValue; RefreshUI(); });
 
-        _root.Q<Button>("btn-sort")?.RegisterCallback<ClickEvent>(evt => { _totalInventory.SortById(); _expeditionInventory.SortById(); RefreshUI(); });
+        _root.Q<Button>("btn-sort")?.RegisterCallback<ClickEvent>(evt => { 
+            _totalInventory.SortById(); _expeditionInventory.SortById(); RefreshUI(); 
+        });
         _root.Q<Button>("btn-filter-consumable")?.RegisterCallback<ClickEvent>(evt => SetFilter(ItemCategory.Consume));
         _root.Q<Button>("btn-filter-accessory")?.RegisterCallback<ClickEvent>(evt => SetFilter(ItemCategory.Accessories));
         _root.Q<Button>("btn-filter-all")?.RegisterCallback<ClickEvent>(evt => SetFilter(null));
@@ -85,7 +81,7 @@ public class InventoryView : MonoBehaviour
 
     public void ToggleWindow(bool show)
     {
-        IsWindowActive = show;
+        _uiService.IsInventoryWindowActive = show; // UIService 상태 갱신
         _root.Q<VisualElement>("inventory-container").style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
         if (show) { if (_totalScroll != null) _totalScroll.scrollOffset = Vector2.zero; RefreshUI();}
     }
@@ -106,16 +102,12 @@ public class InventoryView : MonoBehaviour
 
     public void RefreshUI()
     {
-        // [중요] 1. 용량이 변화했을 수 있으므로, 현재 용량에 맞춰 UI 슬롯 개수를 먼저 동기화합니다.
-        // 이 메서드가 실행되어야 새로 늘어난 Capacity만큼 VisualElement가 생성됩니다.
         SyncSlotCount(_totalGrid, _totalInventory.Capacity, _totalSlotElements, _totalInventory);
         SyncSlotCount(_expeditionGrid, _expeditionInventory.Capacity, _expeditionSlotElements, _expeditionInventory);
 
-        // 2. 필터링된 인덱스 가져오기
         var totalVisible = _totalInventory.GetFilteredIndices(_currentSearch, _currentFilter);
         var expeditionVisible = _expeditionInventory.GetFilteredIndices(_currentSearch, _currentFilter);
 
-        // 3. 동기화된 슬롯들에 데이터를 입힘
         UpdateGrid(_totalSlotElements, _totalInventory, totalVisible);
         UpdateGrid(_expeditionSlotElements, _expeditionInventory, expeditionVisible);
     }
@@ -148,15 +140,12 @@ public class InventoryView : MonoBehaviour
 
     private void OnPointerDown(PointerDownEvent evt, IInventory inv, int index)
     {
+        var slot = inv.GetSlot(index);
         if (evt.button == 0)
         {
-            var slot = inv.GetSlot(index);
             if (slot.IsEmpty) return;
-            CurrentDraggingIndex = index;
-            CurrentSourceInventory = inv;
-            _dragGhost.style.backgroundImage = new StyleBackground(slot.item.icon);
-            _dragGhost.style.visibility = Visibility.Visible;
-            UpdateGhostPosition(evt.position);
+            // UIService를 통해 드래그 시작
+            _uiService.StartDrag(inv, index, slot.item.icon, _dragGhost, evt.position, new Vector2(30, 30));
         }
         else if (evt.button == 1)
         {
@@ -167,15 +156,16 @@ public class InventoryView : MonoBehaviour
 
     private void OnPointerUp(PointerUpEvent evt, IInventory targetInv, int targetIndex)
     {
-        if (CurrentSourceInventory != null)
+        if (_uiService.CurrentSourceInventory != null)
         {
-            _transferService.ExecuteDragDrop(CurrentSourceInventory, CurrentDraggingIndex, targetInv, targetIndex);
-            ResetDraggingState();
+            _transferService.ExecuteDragDrop(_uiService.CurrentSourceInventory, _uiService.CurrentDraggingIndex, targetInv, targetIndex);
+            _uiService.ResetDrag();
         }
     }
 
-    private void OnPointerMove(PointerMoveEvent evt) { if (CurrentSourceInventory != null) UpdateGhostPosition(evt.position); }
-    private void UpdateGhostPosition(Vector2 pos) { _dragGhost.style.left = pos.x - 30; _dragGhost.style.top = pos.y - 30; }
-    public static void ResetDraggingState() { CurrentDraggingIndex = -1; CurrentSourceInventory = null; if(GlobalDragGhost != null) GlobalDragGhost.style.visibility = Visibility.Hidden; }
+    private void OnPointerMove(PointerMoveEvent evt) { 
+        if (_uiService.CurrentSourceInventory != null) _uiService.UpdateGhostPosition(evt.position, new Vector2(30, 30)); 
+    }
+
     private void SetFilter(ItemCategory? cat) { _currentFilter = cat; RefreshUI(); }
 }

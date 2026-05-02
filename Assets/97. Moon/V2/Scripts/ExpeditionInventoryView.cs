@@ -7,20 +7,19 @@ public class ExpeditionInventoryView : MonoBehaviour
 {
     private IExpeditionInventory _expeditionInventory;
     private InventoryTransferService _transferService;
-    private CharacterEquipService _equipService;
+    private CharacterItemService _itemService;
+    private InventoryUIService _uiService;
     
-    private VisualElement _slotContainer;
-    private VisualElement _localGhost; // 독립 고스트
+    private VisualElement _slotContainer, _localGhost;
     private List<VisualElement> _slots = new();
-
     private bool IsWindowActive = true;
 
     [Inject]
-    public void Construct(IExpeditionInventory inventory, InventoryTransferService transfer, CharacterEquipService equip)
+    public void Construct(IExpeditionInventory inventory, InventoryTransferService transfer, 
+        CharacterItemService itemService, InventoryUIService uiService)
     {
-        _expeditionInventory = inventory;
-        _transferService = transfer;
-        _equipService = equip;
+        _expeditionInventory = inventory; _transferService = transfer;
+        _itemService = itemService; _uiService = uiService;
     }
 
     private void Start()
@@ -28,7 +27,7 @@ public class ExpeditionInventoryView : MonoBehaviour
         var doc = GetComponent<UIDocument>().rootVisualElement;
         _slotContainer = doc.Q<VisualElement>("expedition-container");
         
-        // 독립 고스트 생성
+        // 탐사 전용 고스트 (UIService가 사용할 수 있게 설정)
         _localGhost = new VisualElement();
         _localGhost.style.position = Position.Absolute;
         _localGhost.style.width = _localGhost.style.height = 50;
@@ -76,50 +75,28 @@ public class ExpeditionInventoryView : MonoBehaviour
                 var data = _expeditionInventory.GetSlot(index);
                 if (data.IsEmpty) return;
 
-                if (evt.button == 0) { // 드래그 시작
-                    InventoryView.CurrentDraggingIndex = index;
-                    InventoryView.CurrentSourceInventory = _expeditionInventory;
-                    _localGhost.style.backgroundImage = new StyleBackground(data.item.icon);
-                    _localGhost.style.visibility = Visibility.Visible;
-                    UpdateGhost(evt.position);
+                if (evt.button == 0) {
+                    _uiService.StartDrag(_expeditionInventory, index, data.item.icon, _localGhost, evt.position, new Vector2(25, 25));
                 }
-                else if (evt.button == 1) { // 우클릭 분기
-                    if (data.item.category == ItemCategory.Accessories) _equipService.AutoEquip(_expeditionInventory, index);
-                    else if (data.item.category == ItemCategory.Consume) UseItemInExpedition(index);
+                else if (evt.button == 1) {
+                    if (data.item.category == ItemCategory.Accessories) _itemService.AutoEquip(_expeditionInventory, index);
+                    else if (data.item.category == ItemCategory.Consume) _itemService.UseItem(AdminTestTool.testHero, _expeditionInventory, index);
                 }
             });
 
             slot.RegisterCallback<PointerMoveEvent>(evt => {
-                if (_localGhost.style.visibility == Visibility.Visible) UpdateGhost(evt.position);
+                if (_uiService.CurrentSourceInventory != null) _uiService.UpdateGhostPosition(evt.position, new Vector2(25, 25));
             });
 
             slot.RegisterCallback<PointerUpEvent>(evt => {
-                _localGhost.style.visibility = Visibility.Hidden;
-                if (InventoryView.CurrentSourceInventory != null) {
-                    _transferService.ExecuteDragDrop(InventoryView.CurrentSourceInventory, InventoryView.CurrentDraggingIndex, _expeditionInventory, index);
-                    InventoryView.ResetDraggingState();
+                if (_uiService.CurrentSourceInventory != null) {
+                    _transferService.ExecuteDragDrop(_uiService.CurrentSourceInventory, _uiService.CurrentDraggingIndex, _expeditionInventory, index);
+                    _uiService.ResetDrag();
                 }
             });
 
             _slotContainer.Add(slot);
             _slots.Add(slot);
-        }
-    }
-
-    private void UpdateGhost(Vector2 pos)
-    {
-        _localGhost.style.left = pos.x - 25;
-        _localGhost.style.top = pos.y - 25;
-    }
-
-    private void UseItemInExpedition(int index) // 복구된 소모품 사용 로직
-    {
-        var slot = _expeditionInventory.GetSlot(index);
-        if (slot.IsEmpty || slot.item.category != ItemCategory.Consume) return;
-        if (AdminTestTool.testHero != null)
-        {
-            slot.item.Use(AdminTestTool.testHero);
-            _expeditionInventory.RemoveFromSlot(index, 1);
         }
     }
 }
