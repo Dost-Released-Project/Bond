@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a1e6c871ed930948bd8c3a1827cf81f, type: 3}
   m_Name: 08000000
   m_EditorClassIdentifier: Assembly-CSharp::AccessoryItem
-  id: 
-  itemName: 
-  category: 0
+  id: 08000000
+  itemName: The Ring of Power
+  category: 1
   icon: {fileID: 0}
-  totalGlobalMax: 10
-  expeditionSlotMax: 2
+  totalGlobalMax: 1
+  expeditionSlotMax: 1
   equipmentData:
-    itemName: 
-    type: 0
+    itemName: The Ring of Power
+    type: 1
     upgradeLevel: 0
-    bonusSTR: 0
+    bonusSTR: 5
     bonusAGI: 0
     bonusINT: 0
-    originItem: {fileID: 0}
+    originItem: {fileID: 11400000}

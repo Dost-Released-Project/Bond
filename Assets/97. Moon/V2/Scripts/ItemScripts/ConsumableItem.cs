@@ -23,11 +23,11 @@ public class ConsumableItem : BaseItem
         {
             case ConsumableType.Bandage:
                 target.RecoverHp(healValue);
-                Debug.Log($"[사용] {itemName}: {target.Data.Name}의 HP 회복");
+                Debug.Log($"[사용] {itemName}: {target.Data.Name}의 HP {healValue} 만큼 회복");
                 break;
             case ConsumableType.Sedative:
                 target.RecoverInsanity(healValue);
-                Debug.Log($"[사용] {itemName}: {target.Data.Name}의 스트레스 감소");
+                Debug.Log($"[사용] {itemName}: {target.Data.Name}의 {healValue} 만큼 스트레스 감소");
                 break;
             case ConsumableType.Stimulant:
                 // 성향 시스템은 팀원이 작업 중이므로 연동 지점만 만듭니다.

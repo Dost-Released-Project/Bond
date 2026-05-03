@@ -12,9 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1baee2dc12d61c48b84ff93d984d696, type: 3}
   m_Name: 09050000
   m_EditorClassIdentifier: Assembly-CSharp::BuildingData
-  id: 
-  buildingName: 
-  buildingType: 0
+  id: 09050000
+  buildingName: Supply
+  buildingType: 6
   buildingSprite: {fileID: 0}
-  levels: []
-  description: 
+  levels:
+  - level: 1
+    frontierCost: 1000
+    woodCost: 100
+    oreCost: 100
+    effectValue: 0
+    slotExpansion: 0
+    frontierCapAdd: 0
+    materialCapAdd: 0
+  description: Give me

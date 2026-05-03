@@ -42,15 +42,15 @@ public class InventoryView : MonoBehaviour
         BaseItem item_ring3 = Resources.Load<BaseItem>("Data/Items/Accessories/08020000");
         BaseItem item_ring4 = Resources.Load<BaseItem>("Data/Items/Accessories/08030000");
 
-        if (item_oldBandage != null) _totalInventory.AddItemAt(0, item_bandage, 5);
-        if (item_bandage != null) _totalInventory.AddItemAt(0, item_bandage, 5);
-        if (item_stimulant != null) _totalInventory.AddItemAt(1, item_sedative, 5);
-        if (item_oldSedative != null) _totalInventory.AddItemAt(1, item_sedative, 5);
-        if (item_sedative != null) _totalInventory.AddItemAt(1, item_sedative, 5);
-        if (item_ring1 != null) _totalInventory.AddItemAt(2, item_ring1, 1);
-        if (item_ring2 != null) _totalInventory.AddItemAt(3, item_ring2, 1);
-        if (item_ring3 != null) _totalInventory.AddItemAt(4, item_ring3, 1);
-        if (item_ring4 != null) _totalInventory.AddItemAt(5, item_ring4, 1);
+        if (item_oldBandage != null) _totalInventory.AddItemAt(0, item_oldBandage, 5);
+        if (item_bandage != null) _totalInventory.AddItemAt(1, item_bandage, 5);
+        if (item_stimulant != null) _totalInventory.AddItemAt(2, item_stimulant, 5);
+        if (item_oldSedative != null) _totalInventory.AddItemAt(3, item_oldSedative, 5);
+        if (item_sedative != null) _totalInventory.AddItemAt(4, item_sedative, 5);
+        if (item_ring1 != null) _totalInventory.AddItemAt(5, item_ring1, 1);
+        if (item_ring2 != null) _totalInventory.AddItemAt(6, item_ring2, 1);
+        if (item_ring3 != null) _totalInventory.AddItemAt(7, item_ring3, 1);
+        if (item_ring4 != null) _totalInventory.AddItemAt(8, item_ring4, 1);
         
         ToggleWindow(false);
     }

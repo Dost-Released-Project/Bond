@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27468c34ac32e3c4d89982d98d425da1, type: 3}
   m_Name: 07030000
   m_EditorClassIdentifier: Assembly-CSharp::ConsumableItem
-  id: 
-  itemName: 
+  id: 07030000
+  itemName: Bandage
   category: 0
   icon: {fileID: 0}
   totalGlobalMax: 10

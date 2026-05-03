@@ -12,9 +12,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1baee2dc12d61c48b84ff93d984d696, type: 3}
   m_Name: 09030000
   m_EditorClassIdentifier: Assembly-CSharp::BuildingData
-  id: 
-  buildingName: 
-  buildingType: 0
+  id: 09030000
+  buildingName: Guild
+  buildingType: 4
   buildingSprite: {fileID: 0}
-  levels: []
-  description: 
+  levels:
+  - level: 1
+    frontierCost: 100
+    woodCost: 0
+    oreCost: 0
+    effectValue: 1000
+    slotExpansion: 0
+    frontierCapAdd: 0
+    materialCapAdd: 0
+  - level: 2
+    frontierCost: 1000
+    woodCost: 50
+    oreCost: 50
+    effectValue: 2000
+    slotExpansion: 0
+    frontierCapAdd: 0
+    materialCapAdd: 0
+  - level: 3
+    frontierCost: 5000
+    woodCost: 200
+    oreCost: 200
+    effectValue: 5000
+    slotExpansion: 0
+    frontierCapAdd: 0
+    materialCapAdd: 0
+  description: Data
