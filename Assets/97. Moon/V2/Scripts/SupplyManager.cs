@@ -6,16 +6,18 @@ public class SupplyManager : MonoBehaviour, ISupplyManager
 {
     private ResourceManager _resourceManager;
     private ITotalInventory _totalInventory;
+    private StageCoach _stageCoach;
     
     // 내부에서 사용할 에셋 리스트 (런타임 로드)
     private List<BaseItem> _normalSupplyPool = new();
     private BaseItem _specialSupplyItem;
 
     [Inject]
-    public void Construct(ResourceManager rm, ITotalInventory total)
+    public void Construct(ResourceManager rm, ITotalInventory total, StageCoach stageCoach)
     {
         _resourceManager = rm;
         _totalInventory = total;
+        _stageCoach = stageCoach;
     }
     
     private void Awake() // 테스트 용도
@@ -56,7 +58,7 @@ public class SupplyManager : MonoBehaviour, ISupplyManager
         TryProcessSupply(SupplyType.Reinforcements, () => 
         {
             // 기존 기능 유지: AdminTestTool 참조 및 빌더 패턴 유지
-            AdminTestTool.testHero.Data = new BaseCharacterData.Builder().Build(); 
+            AdminTestTool.testHero = _stageCoach.GetRandomCharacter();
             Debug.Log("<color=green>[보급]</color> 증원 요청 완료.");
         });
     }
