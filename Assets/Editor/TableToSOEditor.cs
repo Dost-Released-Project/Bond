@@ -39,7 +39,7 @@ public class TableToSOEditor : EditorWindow
             so.buildingName = row["BuildingName"];
             so.buildingType = (BuildingType)Enum.Parse(typeof(BuildingType), row["BuildingType"], true);
             so.description = row["Description"];
-            so.buildingSprite = AssetDatabase.LoadAssetAtPath<Sprite>($"{row["SpritePath"]}.png");
+            so.buildingSprite = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/{row["SpritePath"]}.png");
             so.levels = new List<BuildingLevelData>();
             
             buildingDict[so.id] = so;
@@ -81,7 +81,7 @@ public class TableToSOEditor : EditorWindow
             so.healValue = int.Parse(row["HealValue"]);
             so.totalGlobalMax = int.Parse(row["TotalMax"]);
             so.expeditionSlotMax = int.Parse(row["ExpSlotMax"]);
-            so.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"{row["IconPath"]}.png");
+            so.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/{row["IconPath"]}.png");
             EditorUtility.SetDirty(so);
         }
     }
@@ -97,7 +97,7 @@ public class TableToSOEditor : EditorWindow
             so.category = ItemCategory.Accessories;
             so.totalGlobalMax = int.Parse(row["TotalMax"]);
             so.expeditionSlotMax = int.Parse(row["ExpSlotMax"]);
-            so.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"{row["IconPath"]}.png");
+            so.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/{row["IconPath"]}.png");
 
             // Equipment 데이터 주입
             so.equipmentData = new Equipment

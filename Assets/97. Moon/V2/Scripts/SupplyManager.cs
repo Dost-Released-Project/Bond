@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
 
@@ -5,16 +6,32 @@ public class SupplyManager : MonoBehaviour, ISupplyManager
 {
     private ResourceManager _resourceManager;
     private ITotalInventory _totalInventory;
-
-    [Header("보급 아이템 에셋")]
-    public BaseItem normalSupplyPackage; // 붕대 등 묶음
-    public BaseItem specialSupplyItem;   // 정신 각성제
+    
+    // 내부에서 사용할 에셋 리스트 (런타임 로드)
+    private List<BaseItem> _normalSupplyPool = new();
+    private BaseItem _specialSupplyItem;
 
     [Inject]
     public void Construct(ResourceManager rm, ITotalInventory total)
     {
         _resourceManager = rm;
         _totalInventory = total;
+    }
+    
+    private void Awake() // 테스트 용도
+    {
+        // 일반 보급품 풀 구성 (붕대, 진정제 등 ID 기반 로드)
+        var oldBandage = Resources.Load<BaseItem>("Data/Items/Consumables/07000000");
+        var bandage = Resources.Load<BaseItem>("Data/Items/Consumables/07030000");
+        var oldSedative = Resources.Load<BaseItem>("Data/Items/Consumables/07010000");
+        var sedative = Resources.Load<BaseItem>("Data/Items/Consumables/07040000");
+        if (bandage != null) _normalSupplyPool.Add(oldBandage);
+        if (bandage != null) _normalSupplyPool.Add(bandage);
+        if (sedative != null) _normalSupplyPool.Add(oldSedative);
+        if (sedative != null) _normalSupplyPool.Add(sedative);
+
+        // 특수 보급품 로드
+        _specialSupplyItem = Resources.Load<BaseItem>("Data/Items/Consumables/07020000");
     }
 
     // [리팩토링] 공통 실행 로직: 비용 확인 및 소모 처리를 하나로 통합
@@ -43,19 +60,21 @@ public class SupplyManager : MonoBehaviour, ISupplyManager
             Debug.Log("<color=green>[보급]</color> 증원 요청 완료.");
         });
     }
-
+    
     public void RequestSupply(SupplyType type)
     {
         TryProcessSupply(type, () => 
         {
-            if (type == SupplyType.Normal_Supply)
+            if (type == SupplyType.Normal_Supply && _normalSupplyPool.Count > 0)
             {
-                _totalInventory.AddItemAuto(normalSupplyPackage, 3);
-                Debug.Log("<color=green>[보급]</color> 일반 보급품 3개가 창고에 추가되었습니다.");
+                // 랜덤하게 하나를 골라서 3개 지급
+                int randomIndex = Random.Range(0, _normalSupplyPool.Count);
+                _totalInventory.AddItemAuto(_normalSupplyPool[randomIndex], 3);
+                Debug.Log($"<color=green>[보급]</color> {_normalSupplyPool[randomIndex].itemName} 3개가 보급되었습니다.");
             }
-            else if (type == SupplyType.Special_Supply)
+            else if (type == SupplyType.Special_Supply && _specialSupplyItem != null)
             {
-                _totalInventory.AddItemAuto(specialSupplyItem, 1);
+                _totalInventory.AddItemAuto(_specialSupplyItem, 1);
                 Debug.Log("<color=green>[보급]</color> 특수 보급품 1개가 창고에 추가되었습니다.");
             }
         });

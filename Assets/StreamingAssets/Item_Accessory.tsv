@@ -8,7 +8,7 @@
 	6									
 ID	ItemName	Category	BonusSTR	BonusAGI	BonusINT	TotalMax	ExpSlotMax	IconPath		
 (string)	(string)	(enum)	(int)	(int)	(int)	(int)	(int)	(string)		
-8000000	The Ring of Power	Accessories	5	0	0	1	1	Sprite/Item/Ring_STR		
-8010000	The Ring of Agility	Accessories	0	5	0	1	1	Sprite/Item/Ring_AGI		
-8020000	The Ring of Intelligence	Accessories	0	0	5	1	1	Sprite/Item/Ring_INT		
-8030000	The Ring of Master	Accessories	2	2	2	1	1	Sprite/Item/Ring_Master		
+08000000	The Ring of Power	Accessories	5	0	0	1	1	Sprite/Item/Ring_STR		
+08010000	The Ring of Agility	Accessories	0	5	0	1	1	Sprite/Item/Ring_AGI		
+08020000	The Ring of Intelligence	Accessories	0	0	5	1	1	Sprite/Item/Ring_INT		
+08030000	The Ring of Master	Accessories	2	2	2	1	1	Sprite/Item/Ring_Master		

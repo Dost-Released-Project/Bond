@@ -1,10 +1,11 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VContainer;
 
 public class SettlementManager : MonoBehaviour, ISettlementManager
 {
-    [SerializeField] private Transform[] constructionSlots; 
+    private Transform[] constructionSlots; 
     
     private BuildingService _buildingService;
     private ResourceManager _resourceManager;
@@ -20,6 +21,17 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     {
         _buildingService = bs; _resourceManager = rm; _inventoryView = iv;
         _supplyView = supply; _totalInv = total; _expeditionInv = exp;
+    }
+    
+    private void Awake()
+    {
+        // "ConstructionSlot" 태그가 붙은 모든 오브젝트를 찾아 이름순으로 정렬하여 배열에 할당
+        constructionSlots = GameObject.FindGameObjectsWithTag("ConstructionSlot")
+            .OrderBy(go => go.name)
+            .Select(go => go.transform)
+            .ToArray();
+
+        Debug.Log($"<color=cyan>[시스템]</color> {constructionSlots.Length}개의 건설 슬롯이 자동으로 등록되었습니다.");
     }
     
     private void Update()
@@ -71,8 +83,6 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
             // 슬롯 컴포넌트나 메쉬를 꺼서 더 이상 건설 창이 뜨지 않게 합니다.
             if (slotTransform.TryGetComponent<MeshRenderer>(out var mr)) mr.enabled = false;
             if (slotTransform.TryGetComponent<BoxCollider>(out var bc)) bc.enabled = false;
-        
-            // 만약 슬롯 자체가 UI를 여는 스크립트를 가지고 있다면 비활성화
             if (slotTransform.TryGetComponent<ConstructionSlot>(out var slotScript)) slotScript.enabled = false;
 
             // 실제 건물 비주얼 생성

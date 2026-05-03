@@ -8,10 +8,10 @@
 	6									
 ID	BuildingName	BuildingType	Description	SpritePath						
 (string)	(string)	(enum)	(string)	(string)						
-9000000	Storage	Storage	Item	Sprite/Build/Storage						
-9010000	Tavern	Tavern	Heal	Sprite/Build/Tavern						
-9020000	Inn	Inn	Stress	Sprite/Build/Tavern						
-9030000	Guild	Guild	Data	Sprite/Build/Tavern						
-9040000	Smithy	Smithy	Upgrade	Sprite/Build/Tavern						
-9050000	Supply	Supply	Give me	Sprite/Build/Tavern						
-9060000	Carriage	Carriage	Item	Sprite/Build/Tavern						
+09000000	Storage	Storage	Item	Sprite/Build/Storage						
+09010000	Tavern	Tavern	Heal	Sprite/Build/Tavern						
+09020000	Inn	Inn	Stress	Sprite/Build/Tavern						
+09030000	Guild	Guild	Data	Sprite/Build/Tavern						
+09040000	Smithy	Smithy	Upgrade	Sprite/Build/Tavern						
+09050000	Supply	Supply	Give me	Sprite/Build/Tavern						
+09060000	Carriage	Carriage	Item	Sprite/Build/Tavern						

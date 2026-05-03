@@ -8,8 +8,8 @@
 	6						
 ID	ItemName	Category	ConsumableType	HealValue	TotalMax	ExpSlotMax	IconPath
 (string)	(string)	(enum)	(enum/null)	(int)	(int)	(int)	(string)
-7000000	Old Bandage	Consume	Bandage	10	10	2	Sprite/Item/Bandage
-7010000	Old Sedative	Consume	Sedative	10	10	2	Sprite/Item/Sedative
-7020000	Stimulant	Consume	Stimulant	0	10	2	Sprite/Item/Stimulant
-7030000	Bandage	Consume	Bandage	20	10	2	Sprite/Item/Bandage
-7040000	Sedative	Consume	Sedative	20	10	2	Sprite/Item/Sedative
+07000000	Old Bandage	Consume	Bandage	10	10	2	Sprite/Item/OldBandage
+07010000	Old Sedative	Consume	Sedative	10	10	2	Sprite/Item/OldSedative
+07020000	Stimulant	Consume	Stimulant	0	10	2	Sprite/Item/Stimulant
+07030000	Bandage	Consume	Bandage	20	10	2	Sprite/Item/Bandage
+07040000	Sedative	Consume	Sedative	20	10	2	Sprite/Item/Sedative
