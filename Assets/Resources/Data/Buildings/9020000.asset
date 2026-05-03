@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1baee2dc12d61c48b84ff93d984d696, type: 3}
+  m_Name: 9020000
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingData
+  id: 9020000
+  buildingName: Inn
+  buildingType: 0
+  buildingSprite: {fileID: 0}
+  levels:
+  - level: 1
+    frontierCost: 100
+    woodCost: 0
+    oreCost: 0
+    effectValue: 10
+    slotExpansion: 0
+    frontierCapAdd: 0
+    materialCapAdd: 0
+  - level: 2
+    frontierCost: 1000
+    woodCost: 50
+    oreCost: 50
+    effectValue: 25
+    slotExpansion: 0
+    frontierCapAdd: 0
+    materialCapAdd: 0
+  - level: 3
+    frontierCost: 5000
+    woodCost: 200
+    oreCost: 200
+    effectValue: 75
+    slotExpansion: 0
+    frontierCapAdd: 0
+    materialCapAdd: 0
+  description: Stress

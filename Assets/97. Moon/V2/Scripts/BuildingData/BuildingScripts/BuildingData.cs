@@ -4,7 +4,6 @@ using UnityEngine;
 [System.Serializable]
 public struct BuildingLevelData
 {
-    public string id;
     public int level;
     public int frontierCost;
     public int woodCost;
@@ -20,6 +19,7 @@ public struct BuildingLevelData
 [CreateAssetMenu(fileName = "NewBuildingData", menuName = "Settle/Building Data")]
 public class BuildingData : ScriptableObject
 {
+    public string id;
     public string buildingName;
     public BuildingType buildingType;
     public Sprite buildingSprite;

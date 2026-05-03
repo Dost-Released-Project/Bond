@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27468c34ac32e3c4d89982d98d425da1, type: 3}
   m_Name: Bandage
   m_EditorClassIdentifier: Assembly-CSharp::ConsumableItem
-  id: 19990001
+  id: 09010000
   itemName: Bandage
   category: 0
   icon: {fileID: 21300000, guid: 0059bb35168a8284ba3b807f0695a93b, type: 3}

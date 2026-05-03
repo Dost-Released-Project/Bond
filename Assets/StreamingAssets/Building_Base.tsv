@@ -1,0 +1,17 @@
+시트 페이지 2자리	캐릭터 클래스				아군 / 적군 여부		동일 타입 번호		
+9	0	전사								
+	1	도적								
+	2	마법사								
+	3	성직자								
+	4									
+	5									
+	6									
+ID	BuildingName	BuildingType	Description	SpritePath						
+(string)	(string)	(enum)	(string)	(string)						
+9000000	Storage	Storage	Item	Sprite/Build/Storage						
+9010000	Tavern	Tavern	Heal	Sprite/Build/Tavern						
+9020000	Inn	Inn	Stress	Sprite/Build/Tavern						
+9030000	Guild	Guild	Data	Sprite/Build/Tavern						
+9040000	Smithy	Smithy	Upgrade	Sprite/Build/Tavern						
+9050000	Supply	Supply	Give me	Sprite/Build/Tavern						
+9060000	Carriage	Carriage	Item	Sprite/Build/Tavern						

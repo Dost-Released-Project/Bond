@@ -150,58 +150,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &370315474
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 370315476}
-  - component: {fileID: 370315475}
-  m_Layer: 0
-  m_Name: UIManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &370315475
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 370315474}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cf1985cb3e961a4aae11f1e25269604, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UIManager
-  inventoryUI: {fileID: 523916759}
-  accessoryBagUI: {fileID: 1800259149}
-  expeditionBagUI: {fileID: 1774592930}
---- !u!4 &370315476
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 370315474}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: 0.7, z: 1}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &523916759 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8538849848531038939, guid: d0fd1b6a5cd2e0a4eb26d21c1087acac, type: 3}
-  m_PrefabInstance: {fileID: 7853990047997760716}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &532350729
 GameObject:
   m_ObjectHideFlags: 0
@@ -1066,16 +1014,6 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!1 &1774592930 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 993773826071575261, guid: 53451fb9a8aa949498be1c4798553b6a, type: 3}
-  m_PrefabInstance: {fileID: 3926958938200105149}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1800259149 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3109070349529303998, guid: 060e3ad6ee2319e44b236c5c902bdf62, type: 3}
-  m_PrefabInstance: {fileID: 8417305574144143243}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1847836181
 GameObject:
   m_ObjectHideFlags: 0
@@ -2166,7 +2104,6 @@ SceneRoots:
   - {fileID: 8907240481671697636}
   - {fileID: 3655294504051136659}
   - {fileID: 8685628641871102160}
-  - {fileID: 370315476}
   - {fileID: 1847836182}
   - {fileID: 7853990047997760716}
   - {fileID: 109133779923696020}

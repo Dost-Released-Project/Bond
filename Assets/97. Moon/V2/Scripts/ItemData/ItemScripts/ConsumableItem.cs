@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum ConsumableType { Bandage, Sedative, Awakening }
+public enum ConsumableType { Bandage, Sedative, Stimulant }
 
 [CreateAssetMenu(fileName = "NewConsumable", menuName = "Items/Consumable")]
 public class ConsumableItem : BaseItem
@@ -29,7 +29,7 @@ public class ConsumableItem : BaseItem
                 target.RecoverInsanity(healValue);
                 Debug.Log($"[사용] {itemName}: {target.Data.Name}의 스트레스 감소");
                 break;
-            case ConsumableType.Awakening:
+            case ConsumableType.Stimulant:
                 // 성향 시스템은 팀원이 작업 중이므로 연동 지점만 만듭니다.
                 TryAwakenTrait(target);
                 break;
