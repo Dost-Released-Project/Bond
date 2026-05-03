@@ -6,7 +6,7 @@ using System.Linq;
 
 public class ConstructionUI : MonoBehaviour
 {
-    [SerializeField] private List<BuildingData> buildingTemplates; // 인스펙터에서 6종 데이터를 넣어주세요.
+    private List<BuildingData> _buildingTemplates = new(); // 런타임에 로드
 
     private VisualElement _root;
     private SettlementManager _settlementManager;
@@ -14,6 +14,13 @@ public class ConstructionUI : MonoBehaviour
 
     [Inject]
     public void Construct(SettlementManager sm) => _settlementManager = sm;
+    
+    private void Awake()
+    {
+        // 리소스 폴더의 모든 건물 데이터를 자동으로 리스트에 담음
+        _buildingTemplates = Resources.LoadAll<BuildingData>("Data/Buildings").ToList();
+        Debug.Log($"<color=cyan>[UI]</color> {_buildingTemplates.Count}종의 건물 템플릿 로드 완료.");
+    }
 
     private void OnEnable()
     {
@@ -50,7 +57,7 @@ public class ConstructionUI : MonoBehaviour
     private void Build(BuildingType type)
     {
         // 템플릿 리스트에서 해당 타입의 데이터를 찾음
-        var data = buildingTemplates.FirstOrDefault(d => d.buildingType == type);
+        var data = _buildingTemplates.FirstOrDefault(d => d.buildingType == type);
         
         if (data != null)
         {

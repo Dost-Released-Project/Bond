@@ -11,7 +11,7 @@ public class InteractionManager : MonoBehaviour
     private InventoryView _inventoryView;
     private ExpeditionInventoryView _expeditionView;
     private AccessoryBagView _accessoryBagView;
-    private IEnumerable<EquipmentSlotUI> _equipSlots; // 여러 슬롯을 리스트로 받음
+    private EquipmentSlotUI _equipSlots; // 여러 슬롯을 리스트로 받음
 
     private Camera _mainCam;
 
@@ -22,7 +22,7 @@ public class InteractionManager : MonoBehaviour
         InventoryView iv, 
         ExpeditionInventoryView ev, 
         AccessoryBagView av,
-        IEnumerable<EquipmentSlotUI> slots) // VContainer가 모든 인스턴스를 찾아 넣어줌
+        EquipmentSlotUI slots) // VContainer가 모든 인스턴스를 찾아 넣어줌
     {
         _settlementManager = sm;
         _constructionUI = ui;
@@ -43,7 +43,7 @@ public class InteractionManager : MonoBehaviour
         //if (kb.iKey.wasPressedThisFrame) _inventoryView.ToggleWindow(!InventoryView.IsWindowActive);
         if (kb.eKey.wasPressedThisFrame) _expeditionView.ToggleWindow();
         if (kb.bKey.wasPressedThisFrame) _accessoryBagView.ToggleWindow();
-        if (kb.uKey.wasPressedThisFrame) foreach(var s in _equipSlots) s.ToggleWindow();
+        if (kb.uKey.wasPressedThisFrame) _equipSlots.ToggleWindow();
 
         // 마우스 상호작용
         if (Mouse.current.leftButton.wasPressedThisFrame && !EventSystem.current.IsPointerOverGameObject())

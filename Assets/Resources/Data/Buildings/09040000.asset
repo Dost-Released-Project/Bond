@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1baee2dc12d61c48b84ff93d984d696, type: 3}
+  m_Name: 09040000
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingData
+  id: 09040000
+  buildingName: Smithy
+  buildingType: 2
+  buildingSprite: {fileID: 0}
+  levels:
+  - level: 1
+    frontierCost: 100
+    woodCost: 0
+    oreCost: 0
+    effectValue: 0
+    slotExpansion: 0
+    frontierCapAdd: 0
+    materialCapAdd: 0
+  - level: 2
+    frontierCost: 1000
+    woodCost: 50
+    oreCost: 50
+    effectValue: 0
+    slotExpansion: 0
+    frontierCapAdd: 0
+    materialCapAdd: 0
+  - level: 3
+    frontierCost: 5000
+    woodCost: 200
+    oreCost: 200
+    effectValue: 0
+    slotExpansion: 0
+    frontierCapAdd: 0
+    materialCapAdd: 0
+  description: Upgrade
