@@ -153,15 +153,6 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   battlePipeLineSo: {fileID: 11400000, guid: f6d7bc105c3672744b9425aaa988c32e, type: 2}
-  slots:
-  - {fileID: 1410344349}
-  - {fileID: 1680525791}
-  - {fileID: 1194974106}
-  - {fileID: 1377312406}
-  - {fileID: 524783354}
-  - {fileID: 1760238656}
-  - {fileID: 230072094}
-  - {fileID: 1734522396}
 --- !u!4 &14760989
 Transform:
   m_ObjectHideFlags: 0
@@ -758,16 +749,6 @@ MonoBehaviour:
     TypeName: BattleSystem.VContainer.BattleFlowManagerScope
   autoRun: 1
   autoInjectGameObjects: []
-  playerCharacterSlots:
-  - {fileID: 1410344349}
-  - {fileID: 1680525791}
-  - {fileID: 1194974106}
-  - {fileID: 1377312406}
-  enemyCharacterSlots:
-  - {fileID: 524783354}
-  - {fileID: 1760238656}
-  - {fileID: 230072094}
-  - {fileID: 1734522396}
 --- !u!1 &386506325
 GameObject:
   m_ObjectHideFlags: 0
@@ -1667,6 +1648,7 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   expeditionFlowManager: {fileID: 192782865}
+  slots: []
 --- !u!1 &1377312404
 GameObject:
   m_ObjectHideFlags: 0

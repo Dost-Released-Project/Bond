@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ColorData
   normalColor: {r: 1, g: 1, b: 1, a: 0}
   bgColor: {r: 0, g: 0, b: 0, a: 0}
-  hoverColor: {r: 0, g: 0, b: 0, a: 1}
+  hoverColor: {r: 1, g: 0.80166054, b: 0, a: 1}
   pressedColor: {r: 0, g: 1, b: 1, a: 0.6}
   lerpSpeed: 15

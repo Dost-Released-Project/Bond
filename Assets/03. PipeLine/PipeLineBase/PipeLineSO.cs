@@ -5,6 +5,7 @@ namespace PipeLine.PipeLineBase
 {
     public interface IPipeLine<T>
     {
+        void Enqueue(IPipeLineStep<T> step, int priority);
         T Run(T context);
     }
 
@@ -17,6 +18,11 @@ namespace PipeLine.PipeLineBase
     {
         [SerializeReference]
         protected List<IPipeLineStep<T>> steps = new List<IPipeLineStep<T>>();
+
+        public void Enqueue(IPipeLineStep<T> step, int priority)
+        {
+            throw new System.NotImplementedException();
+        }
 
         public T Run(T context)
         {
