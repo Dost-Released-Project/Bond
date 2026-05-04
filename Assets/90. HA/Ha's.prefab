@@ -183,8 +183,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6096493242922304413}
-  - component: {fileID: 736028046372952516}
-  - component: {fileID: 4908336317782483477}
+  - component: {fileID: 813924256211596363}
   m_Layer: 0
   m_Name: Test
   m_TagString: Untagged
@@ -207,7 +206,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 413019195709310118}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &736028046372952516
+--- !u!114 &813924256211596363
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -216,25 +215,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 6071759986490397064}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fedb486383314f3a9b8b5dfbd7c35227, type: 3}
+  m_Script: {fileID: 11500000, guid: f1707140ce9847f2b6158a774732b5fc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Ha.Test
---- !u!114 &4908336317782483477
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6071759986490397064}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e54c8860025d45b691d4931edc6d4f7e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TestScope
-  parentReference:
-    TypeName: RootVContainer.RootScope
-  autoRun: 1
-  autoInjectGameObjects: []
-  t: {fileID: 736028046372952516}
-  roleReactionEditorController: {fileID: 7431985782134365108}
-  partySelectionController: {fileID: 6621883425403598065}
+  m_EditorClassIdentifier: Assembly-CSharp::_90._HA.Temp.Test.S1Test
+  items:
+  - {fileID: 11400000, guid: 019cc815310479d4ab3f22b04f5ddb2e, type: 2}
+  - {fileID: 11400000, guid: c0e289c02ea68ff41b6e99f2644437e6, type: 2}
+  - {fileID: 11400000, guid: 79a3f3b43a306d043936189b4f005a40, type: 2}
+  - {fileID: 11400000, guid: ad9ac3c0466c8134994a26d0b260e6ea, type: 2}
+  - {fileID: 11400000, guid: fcdc5e272ebf2fe4fb3fac7df8519cdb, type: 2}
+  - {fileID: 11400000, guid: 4b8cc943813d76b4fba6278e09bc4d6e, type: 2}
+  - {fileID: 11400000, guid: e75570ad13d163b428fde68863d15426, type: 2}
+  - {fileID: 11400000, guid: 7f805646301c7ed41835f010cdd648b8, type: 2}
+  - {fileID: 11400000, guid: 65eb6c50376659a478e3f3dce7db0128, type: 2}
