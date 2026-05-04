@@ -10,9 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 802da45069c146b8883fe3a90d113b92, type: 3}
-  m_Name: DataSheetConfig
+  m_Name: GoogleSheetConfig
   m_EditorClassIdentifier: Assembly-CSharp-Editor::GoogleSheetConfig
   spreadsheetId: 1df1V7NEohwTiojIu69NrKxxIFCgivuYLD8ZVuSeR_BQ
   sheets:
   - sheetName: ConditionSheet
     gid: 304206235
+  - sheetName: RoleTrigger
+    gid: 2025509780
+  - sheetName: Trait
+    gid: 672817270
