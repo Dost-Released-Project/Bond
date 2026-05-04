@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 07010000
   itemName: Old Sedative
   category: 0
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 37a77d80b6d90c8459fc191dd8b51561, type: 3}
   totalGlobalMax: 10
   expeditionSlotMax: 2
   consumableType: 1
