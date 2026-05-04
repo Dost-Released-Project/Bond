@@ -15,5 +15,5 @@ public interface ISettlementManager
     /// <summary>건물 기능 실행 (체력 회복, 스트레스 감소, 방어구 강화 등)</summary>
     /// <remarks>실제 수치 연산 외의 연출은 Debug.Log로 처리</remarks>
     public void OnBuildingClicked(BuildingObject building); // 현재: 따로 선택된 플레이어에게 접근하는 로직 작성, 빌딩 오브젝트만 하나로 접근.
-    void ExecuteBuildingFunction(int slotIndex, BaseCharacter target); // 과거: 인덱스와 타겟 데이터로 접근.
+    //void ExecuteBuildingFunction(int slotIndex, BaseCharacter target); // 과거: 인덱스와 타겟 데이터로 접근.
 }

@@ -1,8 +1,13 @@
-using UnityEngine;
-
-public enum ResourceData
+public class ResourceData
 {
-    FrontierData, // 개척 데이터(골드)
-    Wood, // 목재
-    Ore // 광석
+    public string Name;
+    public int Current;
+    public int Max;
+
+    public ResourceData(string name, int initialMax)
+    {
+        Name = name;
+        Max = initialMax;
+        Current = 0;
+    }
 }
