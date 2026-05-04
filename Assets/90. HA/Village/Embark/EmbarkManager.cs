@@ -6,7 +6,7 @@ namespace Bond.Embark
     public class EmbarkManager
     {
         [Inject] private IPartyProvider partyManager;
-        [Inject] private IExpeditionInventory expeditionInventory;
+        [Inject] private ExpeditionInventory expeditionInventory;
         [Inject] private ExpeditionPayload payload;
 
         public void SavePayload()

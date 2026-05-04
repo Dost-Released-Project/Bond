@@ -18,7 +18,7 @@ namespace Bond.Expedition
         // OnEnable에서 초기화하여 플레이 시작마다 찌꺼기 제거
 
         public IReadOnlyList<BaseCharacter> Party { get; private set; }
-        public IExpeditionInventory Supplies { get; private set; }
+        public ExpeditionInventory Supplies { get; private set; }
         public string DungeonId { get; private set; }
 
         // 탐사 결과 (귀환 후 마을 씬이 읽음)
@@ -31,7 +31,7 @@ namespace Bond.Expedition
 
         public void SetContents(
             IReadOnlyList<BaseCharacter> party,
-            IExpeditionInventory supplies,
+            ExpeditionInventory supplies,
             string dungeonId)
         {
             Party = party;
@@ -57,6 +57,11 @@ namespace Bond.Expedition
             foreach (var c in Party)
             {
                 str += $"{c.Data.Name}\n";
+            }
+
+            foreach (var slot in Supplies.GetAll())
+            {
+                str += $"{slot.item.itemName}\n";
             }
             return str;
         }
