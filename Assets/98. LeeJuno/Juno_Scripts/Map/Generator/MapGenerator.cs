@@ -19,39 +19,45 @@ using VContainer;
 /// </summary>
 public class MapGenerator : IMapGenerator
 {
-    private readonly MapGeneratorConfig _config;
-    private readonly MonsterGroupConfig _monsterGroupConfig;
-    private readonly EventConfig _eventConfig;
+    private readonly MapConfigCache _mapConfigCache;
 
     [Inject]
-    public MapGenerator(MapGeneratorConfig config, MonsterGroupConfig monsterGroupConfig, EventConfig eventConfig)
+    public MapGenerator(MapConfigCache mapConfigCache)
     {
-        _config = config;
-        _monsterGroupConfig = monsterGroupConfig;
-        _eventConfig = eventConfig;
+        _mapConfigCache = mapConfigCache;
     }
 
     public MapData GenerateMap(int seed)
     {
+        if (_mapConfigCache.IsReady == false)
+        {
+            Debug.LogError("[MapGenerator] MapConfigCache 가 아직 준비되지 않았습니다. MapInitializer.StartAsync() 완료 후 호출해야 합니다.");
+            return null;
+        }
+
+        MapGeneratorConfig config = _mapConfigCache.GeneratorConfig;
+        MonsterGroupConfig monsterGroupConfig = _mapConfigCache.MonsterGroupConfig;
+        EventConfig eventConfig = _mapConfigCache.EventConfig;
+
         // 시드 고정 난수 — 같은 시드면 항상 동일한 맵 생성
         System.Random rng = new System.Random(seed);
 
         MapData data = new MapData
         {
             Seed = seed,
-            TotalLayers = _config.TotalLayers,
-            MaxNodesPerLayer = _config.MaxNodesPerLayer,
+            TotalLayers = config.TotalLayers,
+            MaxNodesPerLayer = config.MaxNodesPerLayer,
         };
 
-        int[] nodeCounts = DetermineNodeCounts(rng, data.TotalLayers);
+        int[] nodeCounts = DetermineNodeCounts(rng, data.TotalLayers, config);
         CreateNodes(data, nodeCounts, rng);
-        ConnectNodes(data, rng);
+        ConnectNodes(data, rng, config);
         RemoveCrossings(data);
-        AssignStageTypes(data, rng);
-        ApplyPlacementRules(data, rng);
+        AssignStageTypes(data, rng, config);
+        ApplyPlacementRules(data, rng, config);
         InitializeNodeStates(data);
-        AssignMonsterGroups(data, rng); // Step 8: Normal/Elite 노드에 몬스터 그룹 랜덤 배정
-        AssignEvents(data, rng);        // Step 9: Event 노드에 이벤트 랜덤 배정
+        AssignMonsterGroups(data, rng, monsterGroupConfig); // Step 8: Normal/Elite 노드에 몬스터 그룹 랜덤 배정
+        AssignEvents(data, rng, eventConfig);               // Step 9: Event 노드에 이벤트 랜덤 배정
 
         return data;
     }
@@ -64,7 +70,7 @@ public class MapGenerator : IMapGenerator
     /// 각 층에 배치할 노드 수를 결정한다.
     /// 0층(시작)과 마지막층(보스)은 항상 노드 1개로 고정한다.
     /// </summary>
-    private int[] DetermineNodeCounts(System.Random rng, int totalLayers)
+    private int[] DetermineNodeCounts(System.Random rng, int totalLayers, MapGeneratorConfig config)
     {
         int[] counts = new int[totalLayers];
 
@@ -72,7 +78,7 @@ public class MapGenerator : IMapGenerator
         counts[totalLayers - 1] = 1;   // 보스층: 항상 노드 1개
 
         for (int i = 1; i < totalLayers - 1; i++)
-            counts[i] = rng.Next(_config.MinNodesPerLayer, _config.MaxNodesPerLayer + 1);
+            counts[i] = rng.Next(config.MinNodesPerLayer, config.MaxNodesPerLayer + 1);
 
         return counts;
     }
@@ -147,7 +153,7 @@ public class MapGenerator : IMapGenerator
     /// 연결 후보는 열 간격 ±1 이내의 노드로 제한해 경로가 자연스럽게 흐르도록 한다.
     /// 고립 노드(아무도 연결하지 않은 다음 층 노드)가 생기지 않도록 강제 연결도 수행한다.
     /// </summary>
-    private void ConnectNodes(MapData data, System.Random rng)
+    private void ConnectNodes(MapData data, System.Random rng, MapGeneratorConfig config)
     {
         for (int layer = 0; layer < data.TotalLayers - 1; layer++)
         {
@@ -158,7 +164,7 @@ public class MapGenerator : IMapGenerator
             foreach (MapNode current in currentLayer)
             {
                 List<MapNode> candidates = FindCandidates(current, nextLayer);
-                int edgeCount = rng.Next(_config.MinEdgesPerNode, Mathf.Min(_config.MaxEdgesPerNode, candidates.Count) + 1);
+                int edgeCount = rng.Next(config.MinEdgesPerNode, Mathf.Min(config.MaxEdgesPerNode, candidates.Count) + 1);
 
                 ShuffleList(candidates, rng);
 
@@ -307,14 +313,14 @@ public class MapGenerator : IMapGenerator
     /// 각 노드에 층 번호에 따른 가중치 테이블로 스테이지 타입을 무작위 배정한다.
     /// 보스층·보스직전층은 이 단계에서 예비 배정하고, Step 6에서 강제 교체된다.
     /// </summary>
-    private void AssignStageTypes(MapData data, System.Random rng)
+    private void AssignStageTypes(MapData data, System.Random rng, MapGeneratorConfig config)
     {
         int lastLayer = data.TotalLayers - 1;
         int preBossLayer = lastLayer - 1;
 
         foreach (MapNode node in data.Nodes)
         {
-            node.StageType = PickType(node.Layer, lastLayer, preBossLayer, rng);
+            node.StageType = PickType(node.Layer, lastLayer, preBossLayer, rng, config);
         }
     }
 
@@ -325,7 +331,7 @@ public class MapGenerator : IMapGenerator
     ///   - 0층: Normal 확정 (첫 노드는 항상 일반 전투)
     ///   - 나머지: 층별 가중치 테이블로 결정
     /// </summary>
-    private StageType PickType(int layer, int lastLayer, int preBossLayer, System.Random rng)
+    private StageType PickType(int layer, int lastLayer, int preBossLayer, System.Random rng, MapGeneratorConfig config)
     {
         if (layer == lastLayer)
             return StageType.Boss;
@@ -334,9 +340,9 @@ public class MapGenerator : IMapGenerator
             return StageType.Camping;
 
         if (layer == 0)
-            return StageType.Event;
+            return StageType.Normal;
 
-        float[] weights = GetWeights(layer);
+        float[] weights = GetWeights(layer, config);
         return WeightedRandom(weights, rng);
     }
 
@@ -344,19 +350,19 @@ public class MapGenerator : IMapGenerator
     /// 층 번호에 따라 스테이지 타입 가중치 배열을 반환한다.
     /// 배열 순서: [Normal, Elite, Event, Camping]
     /// </summary>
-    private float[] GetWeights(int layer)
+    private float[] GetWeights(int layer, MapGeneratorConfig config)
     {
         if (layer < 4)
             return new float[] { 0.70f, 0f, 0.30f, 0f };
 
-        if (layer < _config.EliteMinLayer)
+        if (layer < config.EliteMinLayer)
             return new float[] { 0.55f, 0f, 0.25f, 0.15f };
 
         return new float[] {
-            _config.WeightNormal,
-            _config.WeightElite,
-            _config.WeightEvent,
-            _config.WeightCamping,
+            config.WeightNormal,
+            config.WeightElite,
+            config.WeightEvent,
+            config.WeightCamping,
         };
     }
 
@@ -397,7 +403,7 @@ public class MapGenerator : IMapGenerator
     ///   규칙 4: Camping 최소 MinCampingCount개 보장 (보스 직전층 제외한 구간)
     ///   규칙 5: 보스층 외에 Boss 타입이 남아있으면 Normal로 교체
     /// </summary>
-    private void ApplyPlacementRules(MapData data, System.Random rng)
+    private void ApplyPlacementRules(MapData data, System.Random rng, MapGeneratorConfig config)
     {
         int lastLayer = data.TotalLayers - 1;
         int preBossLayer = lastLayer - 1;
@@ -417,7 +423,7 @@ public class MapGenerator : IMapGenerator
         bool hasElite = false;
         List<MapNode> eliteRangeCandidates = new List<MapNode>(); // Elite 보장용 Normal 후보
 
-        for (int layer = _config.EliteMinLayer; layer <= eliteRangeEnd; layer++)
+        for (int layer = config.EliteMinLayer; layer <= eliteRangeEnd; layer++)
         {
             if (data.NodesByLayer.ContainsKey(layer) == false)
                 continue;
@@ -441,9 +447,9 @@ public class MapGenerator : IMapGenerator
 
         // 규칙 4: Camping 최소 개수 보장
         int campingCount = CountTypeExcluding(data, StageType.Camping, preBossLayer);
-        if (campingCount < _config.MinCampingCount)
+        if (campingCount < config.MinCampingCount)
         {
-            int needed = _config.MinCampingCount - campingCount;
+            int needed = config.MinCampingCount - campingCount;
             for (int i = 0; i < needed; i++)
             {
                 MapNode target = FindRandomNormalInRange(data, 4, preBossLayer - 1, rng);
@@ -551,15 +557,15 @@ public class MapGenerator : IMapGenerator
     /// rng 는 파이프라인 전체에서 공유되므로 Step 7 완료 후 호출해야
     /// 같은 seed 에서 항상 동일한 결과가 보장된다.
     /// </summary>
-    private void AssignMonsterGroups(MapData data, System.Random rng)
+    private void AssignMonsterGroups(MapData data, System.Random rng, MonsterGroupConfig monsterGroupConfig)
     {
-        if (_monsterGroupConfig == null)
+        if (monsterGroupConfig == null)
             return;
 
-        if (_monsterGroupConfig.Groups == null)
+        if (monsterGroupConfig.Groups == null)
             return;
 
-        if (_monsterGroupConfig.Groups.Count == 0)
+        if (monsterGroupConfig.Groups.Count == 0)
             return;
 
         foreach (MapNode node in data.Nodes)
@@ -573,7 +579,7 @@ public class MapGenerator : IMapGenerator
             else
                 continue;
 
-            List<MonsterGroupData> candidates = GetCandidateGroups(node.Layer, isElite);
+            List<MonsterGroupData> candidates = GetCandidateGroups(node.Layer, isElite, monsterGroupConfig);
 
             if (candidates.Count == 0)
                 continue;
@@ -587,11 +593,11 @@ public class MapGenerator : IMapGenerator
     /// MinLayer == 0 &amp;&amp; MaxLayer == 0 이면 층 제한 없음으로 처리한다.
     /// isElite: true이면 IsElite == true 그룹만, false이면 IsElite == false 그룹만 반환한다.
     /// </summary>
-    private List<MonsterGroupData> GetCandidateGroups(int layer, bool isElite)
+    private List<MonsterGroupData> GetCandidateGroups(int layer, bool isElite, MonsterGroupConfig monsterGroupConfig)
     {
         List<MonsterGroupData> candidates = new List<MonsterGroupData>();
 
-        foreach (MonsterGroupData group in _monsterGroupConfig.Groups)
+        foreach (MonsterGroupData group in monsterGroupConfig.Groups)
         {
             // Inspector에서 리스트에 빈 슬롯이 있을 경우 NullReferenceException 방지
             if (group == null)
@@ -619,18 +625,18 @@ public class MapGenerator : IMapGenerator
     /// rng 는 파이프라인 전체에서 공유되므로 Step 8 완료 후 호출해야
     /// 같은 seed 에서 항상 동일한 결과가 보장된다.
     /// </summary>
-    private void AssignEvents(MapData data, System.Random rng)
+    private void AssignEvents(MapData data, System.Random rng, EventConfig eventConfig)
     {
-        if (_eventConfig == null)
+        if (eventConfig == null)
             return;
 
-        if (_eventConfig.Events == null)
+        if (eventConfig.Events == null)
             return;
 
-        if (_eventConfig.Events.Count == 0)
+        if (eventConfig.Events.Count == 0)
             return;
 
-        List<EventData> candidates = GetCandidateEvents(); // 루프 밖에서 한 번만 호출한다
+        List<EventData> candidates = GetCandidateEvents(eventConfig); // 루프 밖에서 한 번만 호출한다
 
         if (candidates.Count == 0)
             return;
@@ -649,11 +655,11 @@ public class MapGenerator : IMapGenerator
     /// 현재 EventData 에 층 범위 필드가 없으므로 전체 목록을 반환한다.
     /// 추후 EventData 에 MinLayer/MaxLayer 가 추가되면 이 메서드에 범위 필터를 추가한다.
     /// </summary>
-    private List<EventData> GetCandidateEvents()
+    private List<EventData> GetCandidateEvents(EventConfig eventConfig)
     {
         List<EventData> candidates = new List<EventData>();
 
-        foreach (EventData ev in _eventConfig.Events)
+        foreach (EventData ev in eventConfig.Events)
         {
             // Inspector 에서 리스트에 빈 슬롯이 있을 경우 NullReferenceException 방지
             if (ev == null)

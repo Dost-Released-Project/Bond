@@ -20,8 +20,48 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1a176e6e889a2784ca731d13e099c11d
+    m_Address: Map_Boss
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 301e2dc6bcc763647adf0a35fc4dbb8e
     m_Address: GodOfNormalization
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 497e20e9361da434a85e53d0072be087
+    m_Address: MonsterGroupConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 57febdb423838ce4b989a309e81e1d88
+    m_Address: GeneratorConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5829dfea3bf92414cabef2f0b3188982
+    m_Address: Map_Camping
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ce9dafd601a5e941b5b5d431e1a6bf6
+    m_Address: EventConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 936f873768d048e4e88276a544eed5b6
+    m_Address: Map_Event
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 93cf7406a56a157468bd2aed65a57560
+    m_Address: Map_Elite
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9a21ccc01d9d2c046b3208da40a1ab4a
+    m_Address: Map_Normal
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
