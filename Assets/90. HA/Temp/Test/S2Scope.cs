@@ -12,5 +12,6 @@ public class S2Scope : LifetimeScope
         
         builder.RegisterComponentInHierarchy<S2Test>();
         builder.RegisterComponentInHierarchy<ExpeditionInventoryView>();
+        builder.RegisterComponentInHierarchy<EquipmentSlotUI>();
     }
 }

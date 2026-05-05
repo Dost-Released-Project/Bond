@@ -1,5 +1,6 @@
 using _90._HA.Temp.Test;
 using Bond.Embark;
+using Bond.Expedition;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -10,7 +11,9 @@ public class TownScope : LifetimeScope
     {
         // Manager & Service (싱글톤처럼 유지)
         // 인벤토리
-        builder.Register<ExpeditionInventory>(Lifetime.Scoped).WithParameter("capacity", 2).AsImplementedInterfaces().AsSelf();
+        var payload = Parent.Container.Resolve<ExpeditionPayload>();
+    
+        builder.RegisterInstance(payload.Supplies).AsImplementedInterfaces().AsSelf();
         builder.Register<TotalInventory>(Lifetime.Scoped).WithParameter("capacity", 16).AsImplementedInterfaces().AsSelf();
         builder.Register<InventoryTransferService>(Lifetime.Singleton);
         builder.Register<InventoryUIService>(Lifetime.Singleton);
