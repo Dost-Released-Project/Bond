@@ -20,12 +20,15 @@ using Object = UnityEngine.Object;
 ///   3. StageConfig에서 SceneAddress 조회 → Addressables.LoadSceneAsync
 ///   4. 스테이지 씬 내부 로직이 완료되면 NotifyStageCompleted(result) 호출
 ///   5. OnStageCompleted 이벤트 → 맵으로 복귀
+///
+/// Config 참조 방식:
+///   Inspector SO 직접 주입 방식에서 MapConfigCache 주입 방식으로 변경됐다.
+///   MapInitializer.StartAsync() 에서 MapConfigCache.Set() 이 호출된 뒤에
+///   LoadStage() 가 호출되므로 MapConfigCache.IsReady 가 보장된다.
 /// </summary>
 public class StageLoader : IStageLoader
 {
-    private readonly List<StageConfig> _stageConfigs;
-    private readonly MonsterGroupConfig _monsterGroupConfig;
-    private readonly EventConfig _eventConfig;
+    private readonly MapConfigCache _mapConfigCache;
     private readonly Dictionary<StageType, StageConfig> _stageConfigMap;
 
     private SceneInstance _currentScene;         // 현재 로드된 씬 인스턴스
@@ -38,22 +41,39 @@ public class StageLoader : IStageLoader
     private EventSystem _mapEventSystem;
 
     [Inject]
-    public StageLoader(List<StageConfig> stageConfigs, MonsterGroupConfig monsterGroupConfig, EventConfig eventConfig)
+    public StageLoader(MapConfigCache mapConfigCache)
     {
-        _stageConfigs = stageConfigs;
-        _monsterGroupConfig = monsterGroupConfig;
-        _eventConfig = eventConfig;
+        _mapConfigCache = mapConfigCache;
         _hasLoadedScene = false;
-
         _stageConfigMap = new Dictionary<StageType, StageConfig>();
+    }
 
-        if (_stageConfigs != null)
+    /// <summary>
+    /// MapConfigCache 가 준비된 시점에 StageConfig 딕셔너리를 구성한다.
+    /// LoadStage() 호출 전에 MapInitializer.StartAsync() 가 완료되므로
+    /// IsReady 가 보장된 상태에서 호출된다.
+    /// </summary>
+    private void EnsureStageConfigMap()
+    {
+        // IsReady 가 false 이면 이전 챕터 데이터를 무효화하고 재구성을 허용한다
+        if (_stageConfigMap.Count > 0 && _mapConfigCache.IsReady)
+            return;
+
+        _stageConfigMap.Clear();
+
+        if (_mapConfigCache.IsReady == false)
         {
-            foreach (StageConfig cfg in _stageConfigs)
-            {
-                if (cfg != null)
-                    _stageConfigMap[cfg.Type] = cfg;
-            }
+            Debug.LogError("[StageLoader] MapConfigCache 가 아직 준비되지 않았습니다. MapInitializer.StartAsync() 완료 후 호출해야 합니다.");
+            return;
+        }
+
+        if (_mapConfigCache.StageConfigs == null)
+            return;
+
+        foreach (StageConfig cfg in _mapConfigCache.StageConfigs)
+        {
+            if (cfg != null)
+                _stageConfigMap[cfg.Type] = cfg;
         }
     }
 
@@ -89,6 +109,10 @@ public class StageLoader : IStageLoader
         _isLoading = true;
         try
         {
+            // MapConfigCache 에서 StageConfig 딕셔너리를 지연 초기화한다.
+            // MapInitializer.StartAsync() 완료 후 호출이 보장되므로 IsReady 가 참이다.
+            EnsureStageConfigMap();
+
             // 맵 씬 컴포넌트를 먼저 캡처하고 비활성화한다.
             // UnloadCurrentStage 이전에 처리해야 복구→재비활성화 왕복을 방지한다.
             DisableMapComponents();
@@ -121,10 +145,7 @@ public class StageLoader : IStageLoader
             // 씬 로드 직전 콜백을 채널에 등록한다
             StageCompletionChannel.Register(NotifyStageCompleted);
 
-            AsyncOperationHandle<SceneInstance> handle = Addressables.LoadSceneAsync(
-                config.SceneAddress,
-                LoadSceneMode.Additive
-            );
+            AsyncOperationHandle<SceneInstance> handle = Addressables.LoadSceneAsync(config.SceneAddress, LoadSceneMode.Additive);
 
             try
             {
@@ -280,13 +301,16 @@ public class StageLoader : IStageLoader
 
     /// <summary>
     /// Id 로 MonsterGroupData 를 목록에서 찾아 반환한다. 없으면 null.
+    /// MapConfigCache 를 통해 MonsterGroupConfig 에 접근한다.
     /// </summary>
     private MonsterGroupData FindMonsterGroup(string groupId)
     {
-        if (_monsterGroupConfig == null || _monsterGroupConfig.Groups == null)
+        MonsterGroupConfig monsterGroupConfig = _mapConfigCache.MonsterGroupConfig;
+
+        if (monsterGroupConfig == null || monsterGroupConfig.Groups == null)
             return null;
 
-        foreach (MonsterGroupData group in _monsterGroupConfig.Groups)
+        foreach (MonsterGroupData group in monsterGroupConfig.Groups)
         {
             if (group == null)
                 continue;
@@ -323,13 +347,16 @@ public class StageLoader : IStageLoader
 
     /// <summary>
     /// Id 로 EventData 를 목록에서 찾아 반환한다. 없으면 null.
+    /// MapConfigCache 를 통해 EventConfig 에 접근한다.
     /// </summary>
     private EventData FindEventData(string eventId)
     {
-        if (_eventConfig == null || _eventConfig.Events == null)
+        EventConfig eventConfig = _mapConfigCache.EventConfig;
+
+        if (eventConfig == null || eventConfig.Events == null)
             return null;
 
-        foreach (EventData ev in _eventConfig.Events)
+        foreach (EventData ev in eventConfig.Events)
         {
             if (ev == null)
                 continue;

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -7,66 +6,49 @@ using VContainer.Unity;
 /// 맵 시스템의 VContainer 의존성 등록 스코프.
 /// 이 씬에 올라가 있으면 맵 시스템 전체가 DI 컨테이너로 관리된다.
 ///
+/// 변경 사항:
+///   - Inspector SO 4종 제거 (Addressables 로드로 대체)
+///   - MapInitializer EntryPoint 추가 (Config 로드 + 맵 생성 담당)
+///   - IMapConfigLoader 와 MapConfigCache 는 RootScope(부모)에서 상속 해결된다.
+///   - StageLoader 는 MapConfigCache 를 주입받아 SO 데이터를 참조한다.
+///
 /// 등록 목록:
-///   - MapGeneratorConfig  : 맵 생성 파라미터 (Instance)
-///   - List(StageConfig)   : 스테이지 타입별 설정 (Instance)
-///   - MonsterGroupConfig  : 몬스터 그룹 목록 (Instance)
-///   - EventConfig         : 이벤트 목록 (Instance)
-///   - IMapGenerator       → MapGenerator (Singleton)
-///   - IMapRepository      → MapRepository (Singleton)
-///   - IMapNavigator       → MapNavigator  (Singleton)
-///   - IStageLoader        → StageLoader   (Singleton)
-///   - MapUIController     : MonoBehaviour 컴포넌트 등록
+///   - IMapGenerator   → MapGenerator  (Singleton)
+///   - IMapRepository  → MapRepository (Singleton)
+///   - IMapNavigator   → MapNavigator  (Singleton)
+///   - IStageLoader    → StageLoader   (Singleton)
+///   - MapUIController : MonoBehaviour 컴포넌트 등록
+///   - MapInitializer  : EntryPoint (Config 로드 + 맵 생성)
 ///
 /// Inspector 연결 필요:
-///   _generatorConfig     — MapGeneratorConfig ScriptableObject
-///   _stageConfigs        — StageConfig 목록 (Normal, Elite, Boss, Camping, Event, Shop 각 1개)
-///   _monsterGroupConfig  — MonsterGroupConfig ScriptableObject
-///   _eventConfig         — EventConfig ScriptableObject
-///   _mapUIController     — 씬에 배치된 MapUIController MonoBehaviour
+///   _mapUIController — 씬에 배치된 MapUIController MonoBehaviour
 /// </summary>
 public class MapLifetimeScope : LifetimeScope
 {
-    [SerializeField] private MapGeneratorConfig _generatorConfig;
-    [SerializeField] private List<StageConfig> _stageConfigs;
-    [SerializeField] private MonsterGroupConfig _monsterGroupConfig; // Inspector 연결 필요
-    [SerializeField] private EventConfig _eventConfig;              // Inspector 연결 필요
     [SerializeField] private MapUIController _mapUIController;
 
     protected override void Configure(IContainerBuilder builder)
     {
-        // ScriptableObject 인스턴스를 컨테이너에 직접 등록
-        if (_generatorConfig != null)
-            builder.RegisterInstance(_generatorConfig);
-        else
-            Debug.LogError("[MapLifetimeScope] _generatorConfig 가 연결되지 않았습니다.", this);
-
-        if (_stageConfigs != null)
-            builder.RegisterInstance(_stageConfigs);
-        else
-            Debug.LogError("[MapLifetimeScope] _stageConfigs 가 연결되지 않았습니다.", this);
-
-        if (_monsterGroupConfig != null)
-            builder.RegisterInstance(_monsterGroupConfig);
-        else
-            Debug.LogError("[MapLifetimeScope] _monsterGroupConfig 가 연결되지 않았습니다.", this);
-
-        if (_eventConfig != null)
-            builder.RegisterInstance(_eventConfig);
-        else
-            Debug.LogError("[MapLifetimeScope] _eventConfig 가 연결되지 않았습니다.", this);
-
         // 맵 시스템 핵심 서비스 등록 (인터페이스 → 구현체 바인딩)
         builder.Register<IMapGenerator, MapGenerator>(Lifetime.Singleton);
         builder.Register<IMapRepository, MapRepository>(Lifetime.Singleton);
         builder.Register<IMapNavigator, MapNavigator>(Lifetime.Singleton);
         builder.Register<IStageLoader, StageLoader>(Lifetime.Singleton);
 
-        // 씬에 배치된 MonoBehaviour를 DI 대상으로 등록
-        builder.RegisterComponent(_mapUIController);
+        // 씬에 배치된 MonoBehaviour 를 DI 대상으로 등록
+        if (_mapUIController != null)
+            builder.RegisterComponent(_mapUIController);
+        else
+            Debug.LogError("[MapLifetimeScope] _mapUIController 가 연결되지 않았습니다.", this);
 
+        // Config 로드 + 맵 생성 담당 EntryPoint
+        // 에디터에서는 MapTestStarter 가 전체 흐름을 직접 담당하므로 MapInitializer 를 등록하지 않는다.
+        // IAsyncStartable 은 UniTask.WhenAll 로 병렬 실행되므로 두 EntryPoint 를 동시에 등록하면
+        // MapTestStarter 가 MapInitializer 의 LoadAsync() 완료 전에 GenerateMap() 을 호출하게 된다.
 #if UNITY_EDITOR
-        builder.RegisterEntryPoint<MapTestStarter>();
+        builder.RegisterEntryPoint<MapInitializer>();
+#else
+        builder.RegisterEntryPoint<MapInitializer>();
 #endif
     }
 }

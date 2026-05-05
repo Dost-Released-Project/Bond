@@ -1,0 +1,114 @@
+using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
+using VContainer;
+using VContainer.Unity;
+
+/// <summary>
+/// 맵 씬 진입 시 Config SO 를 Addressables 로 로드하고, 맵을 생성한 뒤 Config 를 캐시에 보관한다.
+/// VContainer EntryPoint(IAsyncStartable)로 등록되어 씬 초기화 시 자동 실행된다.
+///
+/// 실행 순서:
+///   1. IMapRepository.HasSave() 확인 — 저장 데이터가 있으면 2~5 를 건너뜀
+///   2. IMapConfigLoader.LoadAsync()       — Config SO 비동기 로드
+///   3. MapConfigCache.Set()               — StageLoader 참조용 캐시 저장 (SO 해제 전)
+///   4. IMapGenerator.GenerateMap(seed)    — MapData 생성
+///   5. IMapNavigator.Initialize(mapData)  — 맵 내비게이터 초기화
+///   6. MapUIController.ShowMap(mapData)   — UI 표시
+///
+/// 주의:
+///   ReleaseConfigs() 는 챕터 종료 시점(씬 언로드)에 호출한다.
+///   MapConfigCache 가 SO 참조를 보관하는 동안에는 핸들을 해제하면 안 된다.
+/// </summary>
+public class MapInitializer : IAsyncStartable
+{
+    private readonly IMapConfigLoader _mapConfigLoader;
+    private readonly IMapGenerator _mapGenerator;
+    private readonly IMapNavigator _mapNavigator;
+    private readonly IMapRepository _mapRepository;
+    private readonly MapUIController _mapUIController;
+    private readonly MapConfigCache _mapConfigCache;
+
+    /// <summary>
+    /// VContainer 생성자 주입.
+    /// </summary>
+    [Inject]
+    public MapInitializer(
+        IMapConfigLoader mapConfigLoader,
+        IMapGenerator mapGenerator,
+        IMapNavigator mapNavigator,
+        IMapRepository mapRepository,
+        MapUIController mapUIController,
+        MapConfigCache mapConfigCache)
+    {
+        _mapConfigLoader = mapConfigLoader;
+        _mapGenerator    = mapGenerator;
+        _mapNavigator    = mapNavigator;
+        _mapRepository   = mapRepository;
+        _mapUIController = mapUIController;
+        _mapConfigCache  = mapConfigCache;
+    }
+
+    /// <summary>
+    /// 씬 진입 시 VContainer 가 자동으로 호출하는 비동기 진입점.
+    /// 저장된 맵이 있으면 Config 로드를 건너뛰고 저장 데이터를 복원한다.
+    /// </summary>
+    public async UniTask StartAsync(CancellationToken cancellation = default)
+    {
+        // 저장된 맵이 있으면 Config 로드 없이 저장 데이터를 복원한다.
+        if (_mapRepository.HasSave())
+        {
+            MapData savedData = _mapRepository.Load();
+            _mapNavigator.Initialize(savedData);
+            _mapUIController.ShowMap(savedData);
+            return;
+        }
+
+        // Config SO 비동기 로드 — 씬 언로드 시 토큰이 취소되면 Addressables 작업도 중단된다
+        try
+        {
+            await _mapConfigLoader.LoadAsync(cancellation);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[MapInitializer] Config 로드 실패로 맵을 생성할 수 없습니다: {e.Message}");
+            // TODO: 로비 복귀 또는 재시도 UI 표시
+            return;
+        }
+
+        MapConfigPackage package = _mapConfigLoader.GetPackage();
+
+        // SO 해제 전에 MapGenerator, StageLoader 가 참조할 수 있도록 캐시에 저장한다.
+        // MapConfigCache 는 SO 참조를 그대로 보관하므로 ReleaseConfigs() 전에 반드시 호출해야 한다.
+        _mapConfigCache.Set(package.GeneratorConfig, package.StageConfigs, package.MonsterGroupConfig, package.EventConfig);
+
+        MapData mapData;
+
+        try
+        {
+            // seed 는 추후 ExpeditionPayload 또는 서버에서 수신하도록 변경한다.
+            // 현재는 임시 시드값을 사용한다.
+            int seed = UnityEngine.Random.Range(0, int.MaxValue);
+            mapData = _mapGenerator.GenerateMap(seed);
+
+            if (mapData == null)
+            {
+                Debug.LogError("[MapInitializer] GenerateMap() 이 null 을 반환했습니다.");
+                return;
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[MapInitializer] 맵 생성 실패: {e.Message}");
+            // TODO: 로비 복귀 또는 재시도 UI 표시
+            return;
+        }
+
+        // ReleaseConfigs() 는 챕터 종료 시점에 호출한다.
+        // MapConfigCache 가 SO 참조를 유지하므로 이 시점에서 해제하지 않는다.
+
+        _mapNavigator.Initialize(mapData);
+        _mapUIController.ShowMap(mapData);
+    }
+}

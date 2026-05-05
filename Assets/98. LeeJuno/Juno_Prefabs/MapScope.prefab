@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1808470279729906121
+--- !u!1 &6812611938743058197
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,44 +8,44 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8112953814706831647}
-  - component: {fileID: 4780422874119012748}
+  - component: {fileID: 1257321423268158336}
+  - component: {fileID: 5115941051929461589}
   m_Layer: 0
-  m_Name: RootVContainer
+  m_Name: MapScope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8112953814706831647
+--- !u!4 &1257321423268158336
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1808470279729906121}
+  m_GameObject: {fileID: 6812611938743058197}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 858.1411, y: 0, z: 4428.176}
+  m_LocalPosition: {x: 360.43045, y: -0.00002, z: -1179.171}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4780422874119012748
+--- !u!114 &5115941051929461589
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1808470279729906121}
+  m_GameObject: {fileID: 6812611938743058197}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afeaf0515b00e2c4898a8e90717c8efe, type: 3}
+  m_Script: {fileID: 11500000, guid: 08d5b566d6ffd2540803e8dd9509a322, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RootScope
+  m_EditorClassIdentifier: Assembly-CSharp::MapLifetimeScope
   parentReference:
-    TypeName: 
+    TypeName: RootVContainer.RootScope
   autoRun: 1
   autoInjectGameObjects: []
-  _mapConfigLoaderSettings: {fileID: 11400000, guid: 367ba5135ef24a04584f11aa12b154ef, type: 2}
+  _mapUIController: {fileID: 0}
