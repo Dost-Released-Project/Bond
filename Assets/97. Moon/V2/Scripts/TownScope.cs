@@ -14,11 +14,12 @@ public class TownScope : LifetimeScope
         builder.Register<TotalInventory>(Lifetime.Scoped).WithParameter("capacity", 16).AsImplementedInterfaces().AsSelf();
         builder.Register<InventoryTransferService>(Lifetime.Singleton);
         builder.Register<InventoryUIService>(Lifetime.Singleton);
+        builder.Register<CharacterItemService>(Lifetime.Singleton);
+        builder.Register<ExpeditionResultService>(Lifetime.Singleton);
         // 자원 및 건물
         builder.Register<ResourceManager>(Lifetime.Singleton);
         builder.Register<BuildingService>(Lifetime.Singleton);
-        // 장비
-        builder.Register<CharacterItemService>(Lifetime.Singleton);
+
         //
         builder.Register<EmbarkManager>(Lifetime.Scoped);
         builder.Register<PartyManager>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();

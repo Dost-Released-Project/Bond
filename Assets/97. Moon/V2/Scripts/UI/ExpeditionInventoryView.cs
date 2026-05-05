@@ -1,12 +1,15 @@
+using System;
 using System.Collections.Generic;
 using Bond.Expedition;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using VContainer;
+using Random = UnityEngine.Random;
 
 public class ExpeditionInventoryView : MonoBehaviour
 {
-    private IExpeditionInventory _expeditionInventory;
+    public ExpeditionInventory _expeditionInventory;
     [Inject]private InventoryTransferService _transferService;
     [Inject]private CharacterItemService _itemService;
     [Inject]private ExpeditionPayload _payload;
@@ -34,6 +37,19 @@ public class ExpeditionInventoryView : MonoBehaviour
     public void ToggleWindow()
     {
         _slotContainer.style.display = (_slotContainer.style.display == DisplayStyle.None) ? DisplayStyle.Flex : DisplayStyle.None;
+    }
+
+    private void Update()
+    {
+        if (Keyboard.current.f1Key.wasPressedThisFrame)
+        {
+            _expeditionInventory.AddItemAuto(Resources.Load<BaseItem>($"Data/Items/Consumables/070{Random.Range(0,5)}0000"), 2);
+        }
+
+        if (Keyboard.current.eKey.wasPressedThisFrame)
+        {
+            ToggleWindow();
+        }
     }
 
     public void RefreshUI()
@@ -85,6 +101,8 @@ public class ExpeditionInventoryView : MonoBehaviour
 
             _slotContainer.Add(slot);
             _slots.Add(slot);
+            
+            _payload.SetSuplies(_expeditionInventory);
         }
     }
 }

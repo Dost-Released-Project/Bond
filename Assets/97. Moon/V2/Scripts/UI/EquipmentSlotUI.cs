@@ -10,14 +10,14 @@ public class EquipmentSlotUI : MonoBehaviour
     
     private CharacterItemService _itemService;
     private InventoryTransferService _transferService; // 드래그 상태 확인을 위해 추가
-    private IInventory _currentContextInventory; 
+    private IInventory _currentContextInventory;
 
     [Inject]
     public void Construct(CharacterItemService itemService, InventoryTransferService transferService, IInventory contextInventory)
     {
         _itemService = itemService;
         _transferService = transferService;
-        _currentContextInventory = contextInventory; 
+        _currentContextInventory = contextInventory;
     }
 
     private void Start()

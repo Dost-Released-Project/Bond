@@ -15,20 +15,24 @@ public class InventoryView : MonoBehaviour
     private InventoryTransferService _transferService;
     private CharacterItemService _itemService; // 변경된 서비스
     private InventoryUIService _uiService;     // 추가된 서비스
-    
+    private ExpeditionResultService _expeditionResultService;
+
+    public ITotalInventory TotalInventory => _totalInventory;
     private string _currentSearch = "";
     private ItemCategory? _currentFilter = null;
 
     [Inject]
     public void Construct(ITotalInventory total, IExpeditionInventory expedition, 
-        InventoryTransferService service, CharacterItemService itemService, InventoryUIService uiService)
+        InventoryTransferService service, CharacterItemService itemService, InventoryUIService uiService, ExpeditionResultService expeditionResultService)
     {
         _totalInventory = total; _expeditionInventory = expedition;
         _transferService = service; _itemService = itemService; _uiService = uiService;
+        _expeditionResultService = expeditionResultService;
     }
 
     private void Start()
     {
+        _expeditionResultService.ProcessExpeditionReturn();
         SetupUI();
         
         // 생성된 ID를 기반으로 아이템 로드하여 초기 세팅 (예시 ID 사용) 테스트 용도
@@ -42,15 +46,15 @@ public class InventoryView : MonoBehaviour
         BaseItem item_ring3 = Resources.Load<BaseItem>("Data/Items/Accessories/08020000");
         BaseItem item_ring4 = Resources.Load<BaseItem>("Data/Items/Accessories/08030000");
 
-        if (item_oldBandage != null) _totalInventory.AddItemAt(0, item_oldBandage, 5);
-        if (item_bandage != null) _totalInventory.AddItemAt(1, item_bandage, 5);
-        if (item_stimulant != null) _totalInventory.AddItemAt(2, item_stimulant, 5);
-        if (item_oldSedative != null) _totalInventory.AddItemAt(3, item_oldSedative, 5);
-        if (item_sedative != null) _totalInventory.AddItemAt(4, item_sedative, 5);
-        if (item_ring1 != null) _totalInventory.AddItemAt(5, item_ring1, 1);
-        if (item_ring2 != null) _totalInventory.AddItemAt(6, item_ring2, 1);
-        if (item_ring3 != null) _totalInventory.AddItemAt(7, item_ring3, 1);
-        if (item_ring4 != null) _totalInventory.AddItemAt(8, item_ring4, 1);
+        if (item_oldBandage != null) _totalInventory.AddItemAuto(item_oldBandage, 5);
+        if (item_bandage != null) _totalInventory.AddItemAuto(item_bandage, 5);
+        if (item_stimulant != null) _totalInventory.AddItemAuto(item_stimulant, 5);
+        if (item_oldSedative != null) _totalInventory.AddItemAuto(item_oldSedative, 5);
+        if (item_sedative != null) _totalInventory.AddItemAuto(item_sedative, 5);
+        if (item_ring1 != null) _totalInventory.AddItemAuto(item_ring1, 1);
+        if (item_ring2 != null) _totalInventory.AddItemAuto(item_ring2, 1);
+        if (item_ring3 != null) _totalInventory.AddItemAuto(item_ring3, 1);
+        if (item_ring4 != null) _totalInventory.AddItemAuto(item_ring4, 1);
         
         ToggleWindow(false);
     }
