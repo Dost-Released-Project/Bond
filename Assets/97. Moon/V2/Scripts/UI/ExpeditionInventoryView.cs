@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Bond.Expedition;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer;
@@ -6,24 +7,16 @@ using VContainer;
 public class ExpeditionInventoryView : MonoBehaviour
 {
     private IExpeditionInventory _expeditionInventory;
-    private InventoryTransferService _transferService;
-    private CharacterItemService _itemService;
+    [Inject]private InventoryTransferService _transferService;
+    [Inject]private CharacterItemService _itemService;
+    [Inject]private ExpeditionPayload _payload;
     
     private VisualElement _slotContainer, _localGhost;
     private List<VisualElement> _slots = new();
-    private bool IsWindowActive = true;
-
-    [Inject]
-    public void Construct(IExpeditionInventory inventory, InventoryTransferService transfer, 
-        CharacterItemService itemService)
-    {
-        _expeditionInventory = inventory; 
-        _transferService = transfer;
-        _itemService = itemService;
-    }
 
     private void Start()
     {
+        _expeditionInventory = _payload.Supplies;
         var doc = GetComponent<UIDocument>().rootVisualElement;
         _slotContainer = doc.Q<VisualElement>("expedition-container");
         
@@ -40,8 +33,7 @@ public class ExpeditionInventoryView : MonoBehaviour
 
     public void ToggleWindow()
     {
-        IsWindowActive = !IsWindowActive;
-        _slotContainer.style.display = IsWindowActive ? DisplayStyle.Flex : DisplayStyle.None;
+        _slotContainer.style.display = (_slotContainer.style.display == DisplayStyle.None) ? DisplayStyle.Flex : DisplayStyle.None;
     }
 
     public void RefreshUI()
