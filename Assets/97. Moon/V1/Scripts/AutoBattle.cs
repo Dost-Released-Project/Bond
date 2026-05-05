@@ -5,7 +5,7 @@ using System.Linq;
 public abstract class AutoBattle
 {
     public bool isPlayable;
-    public abstract void BattleAction(SkillBase[] skills);
+    public abstract SkillBase BattleAction(SkillBase[] skills);
 
     // 확률에 따라 선호 스킬 또는 일반 스킬을 선택하는 공통 로직
     protected SkillBase DecideSkill(SkillBase[] skills, List<SkillType> favoriteTypes)

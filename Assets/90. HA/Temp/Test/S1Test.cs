@@ -60,7 +60,7 @@ namespace _90._HA.Temp.Test
 
             if (Keyboard.current.numpad9Key.wasPressedThisFrame)
             {
-                SceneManager.LoadSceneAsync("S2");
+                SceneLoader.Load("S2");
             }
         }
     }

@@ -93,7 +93,8 @@ public partial class BaseCharacter : ITurnUseUnit
     
     public async UniTask TakeTurnAsync()
     {
-        Debug.Log($"<color=green>{Name} 차례! 역할군: {battleType} 플레이어의 명령을 기다립니다...</color>");
+        SkillBase skill = null;
+        Debug.Log($"<color=green>{Name} 차례");
         if (isPlayable)
         {
             _tcs = AutoResetUniTaskCompletionSource<bool>.Create();
@@ -103,16 +104,26 @@ public partial class BaseCharacter : ITurnUseUnit
         else
         {
             // 배틀액션에서 스킬을 직접 실행하는데 아마 직접 실행이 아닌 스킬을 선택해 반환하고 여기서 사용하는 방식으로 변경이 필요할거임.
-            battleType.BattleAction(Skills);
+            skill = battleType.BattleAction(Skills);
         }
         
-        BattleContext battleContext = new BattleContext();
+        var battleContext = CreateBattleContext(skill);
         onBattleAction?.Invoke(battleContext);
     
         Debug.Log($"<color=lightblue>{Name} 행동 완료!</color>");
         
         _tcs = null;
-    } 
+    }
+
+    private BattleContext CreateBattleContext(SkillBase skill)
+    {
+        BattleContext battleContext = new BattleContext(
+            this, 
+            skill, 
+            true);
+        // 크리티컬 판단 로직은 따로 추가할 예정)
+        return battleContext;
+    }
     
     private void OnDie(InputAction.CallbackContext context)
     {

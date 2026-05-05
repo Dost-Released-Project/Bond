@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using BattleSystem;
 using PipeLine.PipeLineBase;
 using UnityEngine;
 using Reactions;
@@ -10,13 +11,22 @@ namespace PipeLine
     public class BattleContext
     {
         public BaseCharacter caster;
-        public BaseCharacter[] targets;
+        public int targetMask => (runtimeSkill.Data.Target == SkillTarget.Enemy)?
+            runtimeSkill.Data.EnemyTargetMask : runtimeSkill.Data.AllyTargetMask;
         public SkillBase runtimeSkill; // 캐릭터의 스탯, 장비, 버프 등이 적용된 스킬
         
         public bool isCritical;
         public bool isEvaded;
         
+        public List<BaseCharacter> targets = new List<BaseCharacter>();
         public IReadOnlyList<ReactionExecution> reactions = null;
+
+        public BattleContext(BaseCharacter caster, SkillBase usedSkill, bool isCritical)
+        {
+            this.caster = caster;
+            this.runtimeSkill = usedSkill;
+            this.isCritical = isCritical;
+        }
     }
 
     // 혹시 동일한 Type이 들어가는 파이프라인이 여러 개 생길 수 있으므로, 인터페이스로 구분해줌
