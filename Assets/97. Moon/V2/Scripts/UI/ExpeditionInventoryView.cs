@@ -9,10 +9,10 @@ using Random = UnityEngine.Random;
 
 public class ExpeditionInventoryView : MonoBehaviour
 {
-    public ExpeditionInventory _expeditionInventory;
-    [Inject]private InventoryTransferService _transferService;
-    [Inject]private CharacterItemService _itemService;
-    [Inject]private ExpeditionPayload _payload;
+    private ExpeditionInventory _expeditionInventory;
+    [Inject] private InventoryTransferService _transferService;
+    [Inject] private CharacterItemService _itemService;
+    [Inject] private ExpeditionPayload _payload;
     
     private VisualElement _slotContainer, _localGhost;
     private List<VisualElement> _slots = new();
@@ -30,6 +30,35 @@ public class ExpeditionInventoryView : MonoBehaviour
         _localGhost.pickingMode = PickingMode.Ignore;
         doc.Add(_localGhost);
 
+        // [추가] 최상위 영역 바깥(슬롯 외 구역)에 드롭했을 때 아이템 파괴(버리기) 로직
+        doc.RegisterCallback<PointerUpEvent>(evt => {
+            if (_transferService.IsDragging) 
+            {
+                var sourceInv = _transferService.CurrentSourceInventory;
+                int sourceIdx = _transferService.CurrentDraggingIndex;
+                if (sourceInv != null && sourceIdx != -1) 
+                {
+                    var slotData = sourceInv.GetSlot(sourceIdx);
+                    if (!slotData.IsEmpty) 
+                    {
+                        Debug.Log($"[아이템 파괴] 영역 밖에 드롭하여 {slotData.item.itemName}을(를) 버렸습니다.");
+                        sourceInv.ClearSlot(sourceIdx);
+                    }
+                }
+                _transferService.ResetDrag();
+            }
+            else if (_transferService.IsDraggingFromEquipment)
+            {
+                // 장비 슬롯에서 꺼내서 밖에 버렸을 때 처리
+                var hero = AdminTestTool.testHero;
+                if (hero != null)
+                {
+                    _itemService.DiscardEquipment(hero, _transferService.SourceEquipmentSlotIndex);
+                }
+                _transferService.ResetEquipmentDrag();
+            }
+        }, TrickleDown.NoTrickleDown); // 버블링 단계에서 최상위 도달 시 처리
+
         _expeditionInventory.OnChanged += RefreshUI;
         RefreshUI();
     }
@@ -43,7 +72,12 @@ public class ExpeditionInventoryView : MonoBehaviour
     {
         if (Keyboard.current.f1Key.wasPressedThisFrame)
         {
-            _expeditionInventory.AddItemAuto(Resources.Load<BaseItem>($"Data/Items/Consumables/070{Random.Range(0,5)}0000"), 2);
+            _payload.Supplies.AddItemAuto(Resources.Load<BaseItem>($"Data/Items/Consumables/070{Random.Range(0,5)}0000"), 2);
+        }
+
+        if (Keyboard.current.f2Key.wasPressedThisFrame)
+        {
+            _payload.Supplies.ClearSlot(0);
         }
 
         if (Keyboard.current.eKey.wasPressedThisFrame)
@@ -93,9 +127,18 @@ public class ExpeditionInventoryView : MonoBehaviour
 
             slot.RegisterCallback<PointerUpEvent>(evt => {
                 if (_transferService.IsDragging) {
-                    // 데이터 전송 서비스의 필드를 이용해 위치 교환 실행
                     _transferService.ExecuteDragDrop(_transferService.CurrentSourceInventory, _transferService.CurrentDraggingIndex, _expeditionInventory, index);
                     _transferService.ResetDrag();
+                    evt.StopPropagation(); // 최상위 버리기 이벤트로 전파되는 것을 차단
+                }
+                else if (_transferService.IsDraggingFromEquipment) {
+                    // 장비 슬롯에서 인벤토리 슬롯으로 드래그 앤 드롭했을 때 (해제 혹은 스왑)
+                    var hero = AdminTestTool.testHero;
+                    if (hero != null) {
+                        _itemService.UnequipToInventorySlot(hero, _transferService.SourceEquipmentSlotIndex, _expeditionInventory, index);
+                    }
+                    _transferService.ResetEquipmentDrag();
+                    evt.StopPropagation(); // 전파 차단
                 }
             });
 

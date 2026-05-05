@@ -6,6 +6,23 @@ public class InventoryTransferService
     public IInventory CurrentSourceInventory { get; private set; }
     public int CurrentDraggingIndex { get; private set; } = -1;
     public bool IsDragging => CurrentSourceInventory != null && CurrentDraggingIndex != -1;
+    
+    // ================= 기존 내부 메서드 수정 없이 상단/하단에 추가할 코드 =================
+    public bool IsDraggingFromEquipment { get; private set; }
+    public int SourceEquipmentSlotIndex { get; private set; } = -1;
+
+    public void StartEquipmentDrag(int slotIndex)
+    {
+        IsDraggingFromEquipment = true;
+        SourceEquipmentSlotIndex = slotIndex;
+    }
+
+    public void ResetEquipmentDrag()
+    {
+        IsDraggingFromEquipment = false;
+        SourceEquipmentSlotIndex = -1;
+    }
+// =================================================================================
 
     public void StartDrag(IInventory source, int index)
     {

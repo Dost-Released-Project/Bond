@@ -9,15 +9,13 @@ public class EquipmentSlotUI : MonoBehaviour
     private List<VisualElement> _accSlots = new();
     
     private CharacterItemService _itemService;
-    private InventoryTransferService _transferService; // 드래그 상태 확인을 위해 추가
-    private IInventory _currentContextInventory;
+    private InventoryTransferService _transferService; 
 
     [Inject]
-    public void Construct(CharacterItemService itemService, InventoryTransferService transferService, IInventory contextInventory)
+    public void Construct(CharacterItemService itemService, InventoryTransferService transferService)
     {
         _itemService = itemService;
         _transferService = transferService;
-        _currentContextInventory = contextInventory;
     }
 
     private void Start()
@@ -49,18 +47,29 @@ public class EquipmentSlotUI : MonoBehaviour
 
     private void RegisterEvents(VisualElement slotVisual, int index)
     {
-        // [드래그 장착] 마우스를 뗐을 때 트랜스퍼 서비스에 저장된 데이터로 장착 실행
+        // [드래그 시작] 좌클릭 시 해당 장비 슬롯을 드래그 상태로 기록
+        slotVisual.RegisterCallback<PointerDownEvent>(evt => {
+            if (evt.button == 0) // 좌클릭
+            {
+                var hero = AdminTestTool.testHero;
+                if (hero?.Data?.Equips != null && index < hero.Data.Equips.Length)
+                {
+                    var eq = hero.Data.Equips[index];
+                    if (eq?.originItem != null)
+                    {
+                        _transferService.StartEquipmentDrag(index);
+                    }
+                }
+            }
+        });
+
+        // [드래그 장착] 인벤토리에서 아이템을 들고 와서 장비 슬롯에 놓았을 때
         slotVisual.RegisterCallback<PointerUpEvent>(evt => {
             if (_transferService.IsDragging) 
             {
                 _itemService.EquipFromDrag(_transferService.CurrentSourceInventory, _transferService.CurrentDraggingIndex, index);
                 _transferService.ResetDrag();
             }
-        });
-
-        slotVisual.RegisterCallback<PointerDownEvent>(evt => {
-            if (evt.button == 1) 
-                _itemService.UnequipToInventory(AdminTestTool.testHero, index, _currentContextInventory);
         });
     }
 

@@ -37,6 +37,55 @@ public class CharacterItemService
         return true;
     }
 
+    // [추가] 장착 장신구를 드래그하여 인벤토리의 '특정 슬롯'에 놓았을 때 처리 (해제 및 스왑)
+    public bool UnequipToInventorySlot(BaseCharacter target, int slotIdx, IInventory targetInv, int targetSlotIdx)
+    {
+        if (target?.Data?.Equips == null || slotIdx < 0 || slotIdx >= target.Data.Equips.Length) return false;
+        var eq = target.Data.Equips[slotIdx];
+        if (eq?.originItem == null || targetInv == null) return false;
+
+        var targetSlot = targetInv.GetSlot(targetSlotIdx);
+
+        // 1. 목표 인벤토리 슬롯이 비어있으면 바로 안착
+        if (targetSlot.IsEmpty)
+        {
+            targetInv.AddItemAt(targetSlotIdx, eq.originItem, 1);
+            target.Data.Equips[slotIdx] = null;
+            UpdateHeroStats(target);
+            return true;
+        }
+
+        // 2. 목표 인벤토리 슬롯에 다른 장신구가 있으면 서로 교체(스왑)
+        if (targetSlot.item is AccessoryItem accItem)
+        {
+            var oldEquip = eq;
+            targetInv.RemoveFromSlot(targetSlotIdx, 1);
+
+            var newEquip = accItem.equipmentData.Clone(accItem);
+            newEquip.originItem = accItem;
+            target.Data.Equips[slotIdx] = newEquip;
+
+            targetInv.AddItemAt(targetSlotIdx, oldEquip.originItem, 1);
+            UpdateHeroStats(target);
+            return true;
+        }
+
+        // 3. 만약 교체 불가능한 템이 들어있다면 빈 공간 자동 탐색으로 해제 시도
+        return UnequipToInventory(target, slotIdx, targetInv);
+    }
+
+    // [추가] 장착 장신구를 화면 바깥으로 드래그해서 버렸을 때 처리
+    public void DiscardEquipment(BaseCharacter target, int slotIdx)
+    {
+        if (target?.Data?.Equips == null || slotIdx < 0 || slotIdx >= target.Data.Equips.Length) return;
+        var eq = target.Data.Equips[slotIdx];
+        if (eq == null) return;
+
+        Debug.Log($"[장비 파괴] 영역 밖에 드롭하여 장착 중인 {eq.originItem.itemName}을(를) 버렸습니다.");
+        target.Data.Equips[slotIdx] = null;
+        UpdateHeroStats(target);
+    }
+
     // [추가] 드래그를 통한 장착 로직
     public void EquipFromDrag(IInventory sourceInv, int invIndex, int charSlotIndex)
     {
