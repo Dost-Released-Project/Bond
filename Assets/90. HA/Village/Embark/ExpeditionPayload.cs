@@ -39,6 +39,11 @@ namespace Bond.Expedition
             DungeonId = dungeonId;
         }
 
+        public void SetSuplies(ExpeditionInventory supplies)
+        {
+            Supplies = supplies;
+        }
+
         public void SetResult(ExpeditionOutcome outcome)
         {
             Outcome = outcome;

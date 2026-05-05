@@ -8,7 +8,6 @@ public class ExpeditionInventoryView : MonoBehaviour
     private IExpeditionInventory _expeditionInventory;
     private InventoryTransferService _transferService;
     private CharacterItemService _itemService;
-    private InventoryUIService _uiService;
     
     private VisualElement _slotContainer, _localGhost;
     private List<VisualElement> _slots = new();
@@ -16,10 +15,11 @@ public class ExpeditionInventoryView : MonoBehaviour
 
     [Inject]
     public void Construct(IExpeditionInventory inventory, InventoryTransferService transfer, 
-        CharacterItemService itemService, InventoryUIService uiService)
+        CharacterItemService itemService)
     {
-        _expeditionInventory = inventory; _transferService = transfer;
-        _itemService = itemService; _uiService = uiService;
+        _expeditionInventory = inventory; 
+        _transferService = transfer;
+        _itemService = itemService;
     }
 
     private void Start()
@@ -27,7 +27,6 @@ public class ExpeditionInventoryView : MonoBehaviour
         var doc = GetComponent<UIDocument>().rootVisualElement;
         _slotContainer = doc.Q<VisualElement>("expedition-container");
         
-        // 탐사 전용 고스트 (UIService가 사용할 수 있게 설정)
         _localGhost = new VisualElement();
         _localGhost.style.position = Position.Absolute;
         _localGhost.style.width = _localGhost.style.height = 50;
@@ -74,24 +73,21 @@ public class ExpeditionInventoryView : MonoBehaviour
             slot.RegisterCallback<PointerDownEvent>(evt => {
                 var data = _expeditionInventory.GetSlot(index);
                 if (data.IsEmpty) return;
-
-                if (evt.button == 0) {
-                    _uiService.StartDrag(_expeditionInventory, index, data.item.icon, _localGhost, evt.position, new Vector2(25, 25));
+                
+                if (evt.button == 0) { // 좌클릭 드래그 시작
+                    _transferService.StartDrag(_expeditionInventory, index);
                 }
-                else if (evt.button == 1) {
+                else if (evt.button == 1) { // 우클릭 자동 사용/장착
                     if (data.item.category == ItemCategory.Accessories) _itemService.AutoEquip(_expeditionInventory, index);
                     else if (data.item.category == ItemCategory.Consume) _itemService.UseItem(AdminTestTool.testHero, _expeditionInventory, index);
                 }
             });
 
-            slot.RegisterCallback<PointerMoveEvent>(evt => {
-                if (_uiService.CurrentSourceInventory != null) _uiService.UpdateGhostPosition(evt.position, new Vector2(25, 25));
-            });
-
             slot.RegisterCallback<PointerUpEvent>(evt => {
-                if (_uiService.CurrentSourceInventory != null) {
-                    _transferService.ExecuteDragDrop(_uiService.CurrentSourceInventory, _uiService.CurrentDraggingIndex, _expeditionInventory, index);
-                    _uiService.ResetDrag();
+                if (_transferService.IsDragging) {
+                    // 데이터 전송 서비스의 필드를 이용해 위치 교환 실행
+                    _transferService.ExecuteDragDrop(_transferService.CurrentSourceInventory, _transferService.CurrentDraggingIndex, _expeditionInventory, index);
+                    _transferService.ResetDrag();
                 }
             });
 

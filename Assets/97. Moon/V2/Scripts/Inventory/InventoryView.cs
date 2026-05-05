@@ -93,7 +93,6 @@ public class InventoryView : MonoBehaviour
 
     public void ToggleWindow(bool show)
     {
-        _uiService.IsInventoryWindowActive = show; // UIService 상태 갱신
         _root.Q<VisualElement>("inventory-container").style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
         if (show) { if (_totalScroll != null) _totalScroll.scrollOffset = Vector2.zero; RefreshUI();}
     }

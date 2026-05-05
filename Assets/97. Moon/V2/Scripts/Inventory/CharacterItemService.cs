@@ -1,75 +1,63 @@
-using UnityEngine;
-using VContainer;
 using System;
+using UnityEngine;
 
 public class CharacterItemService
 {
-    private ITotalInventory _totalInventory;
-    private IExpeditionInventory _expeditionInventory;
-    private InventoryUIService _uiService; // UI 상태 참조를 위해 추가
-
     public event Action OnEquipmentChanged;
 
-    [Inject]
-    public void Construct(ITotalInventory total, IExpeditionInventory exp, InventoryUIService uiService)
-    {
-        _totalInventory = total;
-        _expeditionInventory = exp;
-        _uiService = uiService;
-    }
-
-    // [이관된 기능] 아이템 사용 로직
     public void UseItem(BaseCharacter hero, IInventory sourceInv, int index)
     {
         var slot = sourceInv.GetSlot(index);
-        // 소모품 카테고리 체크 및 사용 로직 (기존 기능 보존)
         if (slot.IsEmpty || slot.item.category != ItemCategory.Consume || hero == null) return;
 
         slot.item.Use(hero);
         sourceInv.RemoveFromSlot(index, 1);
-        
-        hero.Stat?.StatCalculate();
-        OnEquipmentChanged?.Invoke();
+        UpdateHeroStats(hero);
     }
 
+    // [개선] 장착 해제 시 인벤토리 공간 확인 (증발 방지)
+    public bool UnequipToInventory(BaseCharacter target, int slotIdx, IInventory targetInv)
+    {
+        var eq = target.Data.Equips[slotIdx];
+        if (eq?.originItem == null || targetInv == null) return false;
+
+        // 1. 아이템을 먼저 넣어보고 남는 개수가 있는지 확인
+        int remain = targetInv.AddItemAuto(eq.originItem, 1);
+        
+        // 2. remain이 0보다 크면 들어갈 자리가 없다는 뜻 -> 해제 취소
+        if (remain > 0) 
+        {
+            Debug.LogWarning("인벤토리에 빈 공간이 없어 장비를 해제할 수 없습니다.");
+            return false;
+        }
+
+        // 3. 성공적으로 들어갔을 때만 슬롯 비우기
+        target.Data.Equips[slotIdx] = null;
+        UpdateHeroStats(target);
+        return true;
+    }
+
+    // [추가] 드래그를 통한 장착 로직
     public void EquipFromDrag(IInventory sourceInv, int invIndex, int charSlotIndex)
     {
         var hero = AdminTestTool.testHero;
         var slot = sourceInv.GetSlot(invIndex);
         if (hero == null || slot.IsEmpty || slot.item is not AccessoryItem accItem) return;
 
+        // 기존 장비가 있다면 먼저 해제 시도 (위의 증발 방지 로직 활용)
         if (hero.Data.Equips[charSlotIndex]?.originItem != null)
         {
-            UnequipToInventory(hero, charSlotIndex);
+            bool unequipSuccess = UnequipToInventory(hero, charSlotIndex, sourceInv);
+            if (!unequipSuccess) return; // 공간 없으면 장착 교체 불가
         }
 
+        // 신규 장비 장착
         var newEquip = accItem.equipmentData.Clone(accItem);
         newEquip.originItem = accItem;
         hero.Data.Equips[charSlotIndex] = newEquip;
 
         sourceInv.RemoveFromSlot(invIndex, 1);
         UpdateHeroStats(hero);
-    }
-
-    public void UnequipToInventory(BaseCharacter target, int slotIdx)
-    {
-        var eq = target.Data.Equips[slotIdx];
-        if (eq?.originItem == null) return;
-
-        // [기존 로직 유지] UIService를 통해 현재 어떤 창이 열려있는지 확인하여 귀환 위치 결정
-        IInventory targetInv = (_uiService.IsInventoryWindowActive || _uiService.IsAccessoryBagActive) 
-                               ? _totalInventory : _expeditionInventory;
-
-        int remain = targetInv.AddItemAuto(eq.originItem, 1);
-        
-        if (remain > 0)
-        {
-            var fallback = (targetInv == _totalInventory) ? (IInventory)_expeditionInventory : _totalInventory;
-            fallback.AddItemAuto(eq.originItem, remain);
-        }
-
-        target.Data.Equips[slotIdx] = null;
-        UpdateHeroStats(target);
     }
 
     public bool AutoEquip(IInventory sourceInv, int invIndex)

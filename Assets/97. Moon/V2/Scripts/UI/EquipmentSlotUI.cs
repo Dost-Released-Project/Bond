@@ -8,14 +8,16 @@ public class EquipmentSlotUI : MonoBehaviour
     private VisualElement _root;
     private List<VisualElement> _accSlots = new();
     
-    private CharacterItemService _itemService; // 이름 및 타입 변경
-    private InventoryUIService _uiService;     // 드래그 상태 확인용 추가
+    private CharacterItemService _itemService;
+    private InventoryTransferService _transferService; // 드래그 상태 확인을 위해 추가
+    private IInventory _currentContextInventory; 
 
     [Inject]
-    public void Construct(CharacterItemService itemService, InventoryUIService uiService)
+    public void Construct(CharacterItemService itemService, InventoryTransferService transferService, IInventory contextInventory)
     {
         _itemService = itemService;
-        _uiService = uiService;
+        _transferService = transferService;
+        _currentContextInventory = contextInventory; 
     }
 
     private void Start()
@@ -47,18 +49,18 @@ public class EquipmentSlotUI : MonoBehaviour
 
     private void RegisterEvents(VisualElement slotVisual, int index)
     {
-        // [장착] 드래그 드롭 성공 시
+        // [드래그 장착] 마우스를 뗐을 때 트랜스퍼 서비스에 저장된 데이터로 장착 실행
         slotVisual.RegisterCallback<PointerUpEvent>(evt => {
-            if (_uiService.CurrentSourceInventory != null) {
-                // UIService를 통해 소스 인벤토리와 인덱스 참조
-                _itemService.EquipFromDrag(_uiService.CurrentSourceInventory, _uiService.CurrentDraggingIndex, index);
-                _uiService.ResetDrag();
+            if (_transferService.IsDragging) 
+            {
+                _itemService.EquipFromDrag(_transferService.CurrentSourceInventory, _transferService.CurrentDraggingIndex, index);
+                _transferService.ResetDrag();
             }
         });
 
-        // [해제] 우클릭 시 인벤토리로 반환
         slotVisual.RegisterCallback<PointerDownEvent>(evt => {
-            if (evt.button == 1) _itemService.UnequipToInventory(AdminTestTool.testHero, index);
+            if (evt.button == 1) 
+                _itemService.UnequipToInventory(AdminTestTool.testHero, index, _currentContextInventory);
         });
     }
 
