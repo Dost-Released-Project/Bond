@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 07000000
   itemName: Old Bandage
   category: 0
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: e65655f7a51345a49ae41cef8d2d244f, type: 3}
   totalGlobalMax: 10
   expeditionSlotMax: 2
   consumableType: 0
