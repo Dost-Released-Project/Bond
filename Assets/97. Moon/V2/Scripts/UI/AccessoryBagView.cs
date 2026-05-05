@@ -11,7 +11,6 @@ public class AccessoryBagView : MonoBehaviour
     private InventoryTransferService _transferService; // 주입 추가
     
     private VisualElement _grid;
-    private VisualElement _dragGhost; 
     private List<VisualElement> _uiSlots = new();
     private List<int> _mappedIndices = new();
 
@@ -27,13 +26,6 @@ public class AccessoryBagView : MonoBehaviour
     {
         var root = GetComponent<UIDocument>().rootVisualElement;
         _grid = root.Q<VisualElement>("accessory-grid");
-
-        _dragGhost = new VisualElement();
-        _dragGhost.style.position = Position.Absolute;
-        _dragGhost.pickingMode = PickingMode.Ignore;
-        _dragGhost.style.visibility = Visibility.Hidden;
-        _dragGhost.style.width = 50; _dragGhost.style.height = 50;
-        root.Add(_dragGhost);
         
         _totalInventory.OnChanged += RefreshUI;
         RefreshUI();
@@ -106,7 +98,8 @@ public class AccessoryBagView : MonoBehaviour
     }
 
     public void ToggleWindow()
-    { 
-        _grid.style.display = (_grid.style.display == DisplayStyle.None) ? DisplayStyle.Flex : DisplayStyle.None;
+    {
+        var root = GetComponent<UIDocument>().rootVisualElement;
+        root.style.display = (root.style.display == DisplayStyle.None) ? DisplayStyle.Flex : DisplayStyle.None;
     }
 }
