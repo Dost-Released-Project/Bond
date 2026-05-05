@@ -112,7 +112,7 @@ public partial class BaseCharacter : ITurnUseUnit
         Debug.Log($"<color=lightblue>{Name} 행동 완료!</color>");
         
         _tcs = null;
-    }
+    } 
     
     private void OnDie(InputAction.CallbackContext context)
     {
