@@ -86,21 +86,25 @@ public class CharacterItemService
         UpdateHeroStats(target);
     }
 
-    // [추가] 드래그를 통한 장착 로직
+    // [수정] 인벤토리 풀 상태에서도 1:1 직접 스왑 해제가 가능하게끔 전면 개편
     public void EquipFromDrag(IInventory sourceInv, int invIndex, int charSlotIndex)
     {
         var hero = AdminTestTool.testHero;
         var slot = sourceInv.GetSlot(invIndex);
         if (hero == null || slot.IsEmpty || slot.item is not AccessoryItem accItem) return;
 
-        // 기존 장비가 있다면 먼저 해제 시도 (위의 증발 방지 로직 활용)
+        // 기존 장비가 있다면 UnequipToInventorySlot을 호출해 동일한 1:1 스왑 연산 수행
         if (hero.Data.Equips[charSlotIndex]?.originItem != null)
         {
-            bool unequipSuccess = UnequipToInventory(hero, charSlotIndex, sourceInv);
-            if (!unequipSuccess) return; // 공간 없으면 장착 교체 불가
+            // 여유 공간 검사 없이 드래그가 시작된 인벤토리의 해당 칸(invIndex)과 즉각 맞교환 진행
+            bool unequipSuccess = UnequipToInventorySlot(hero, charSlotIndex, sourceInv, invIndex);
+            
+            // 성공했다면 이미 장착 및 해제 스왑 처리가 끝난 것이므로 즉시 리턴
+            if (unequipSuccess) return; 
+            return; 
         }
 
-        // 신규 장비 장착
+        // 기존 장비가 장착되어 있지 않았던 빈 슬롯일 때만 아래 장착 로직 수행
         var newEquip = accItem.equipmentData.Clone(accItem);
         newEquip.originItem = accItem;
         hero.Data.Equips[charSlotIndex] = newEquip;

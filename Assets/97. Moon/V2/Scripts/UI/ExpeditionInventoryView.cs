@@ -30,34 +30,46 @@ public class ExpeditionInventoryView : MonoBehaviour
         _localGhost.pickingMode = PickingMode.Ignore;
         doc.Add(_localGhost);
 
-        // [추가] 최상위 영역 바깥(슬롯 외 구역)에 드롭했을 때 아이템 파괴(버리기) 로직
+        // [개선] 마우스 커서가 하얀 영역(_slotContainer)을 완전히 벗어났을 때만 버리기 판정
         doc.RegisterCallback<PointerUpEvent>(evt => {
             if (_transferService.IsDragging) 
             {
-                var sourceInv = _transferService.CurrentSourceInventory;
-                int sourceIdx = _transferService.CurrentDraggingIndex;
-                if (sourceInv != null && sourceIdx != -1) 
+                // 실제 마우스 커서 좌표가 하얀색 인벤토리 컨테이너 바운드 외부에 있을 때만 삭제
+                if (!_slotContainer.worldBound.Contains(evt.position))
                 {
-                    var slotData = sourceInv.GetSlot(sourceIdx);
-                    if (!slotData.IsEmpty) 
+                    var sourceInv = _transferService.CurrentSourceInventory;
+                    int sourceIdx = _transferService.CurrentDraggingIndex;
+                    if (sourceInv != null && sourceIdx != -1) 
                     {
-                        Debug.Log($"[아이템 파괴] 영역 밖에 드롭하여 {slotData.item.itemName}을(를) 버렸습니다.");
-                        sourceInv.ClearSlot(sourceIdx);
+                        var slotData = sourceInv.GetSlot(sourceIdx);
+                        if (!slotData.IsEmpty) 
+                        {
+                            Debug.Log($"[아이템 파괴] 인벤토리 영역 밖에 드롭하여 {slotData.item.itemName}을(를) 버렸습니다.");
+                            sourceInv.ClearSlot(sourceIdx);
+                        }
                     }
+                }
+                else
+                {
+                    // 하얀 공간 안에서 슬롯이 아닌 곳에 놓았다면 아무 일도 하지 않고 복구(제자리)
+                    Debug.Log("[드래그 취소] 인벤토리 내부 빈 공간에 드롭되어 제자리로 복구됩니다.");
                 }
                 _transferService.ResetDrag();
             }
             else if (_transferService.IsDraggingFromEquipment)
             {
-                // 장비 슬롯에서 꺼내서 밖에 버렸을 때 처리
-                var hero = AdminTestTool.testHero;
-                if (hero != null)
+                // 장비 슬롯에서 마우스를 떼었을 때도 하얀 영역 밖일 때만 파괴
+                if (!_slotContainer.worldBound.Contains(evt.position))
                 {
-                    _itemService.DiscardEquipment(hero, _transferService.SourceEquipmentSlotIndex);
+                    var hero = AdminTestTool.testHero;
+                    if (hero != null)
+                    {
+                        _itemService.DiscardEquipment(hero, _transferService.SourceEquipmentSlotIndex);
+                    }
                 }
                 _transferService.ResetEquipmentDrag();
             }
-        }, TrickleDown.NoTrickleDown); // 버블링 단계에서 최상위 도달 시 처리
+        }, TrickleDown.NoTrickleDown); // 슬롯에서 이벤트를 먹지 않았을 때(버블링 최종 단계) 실행
 
         _expeditionInventory.OnChanged += RefreshUI;
         RefreshUI();
@@ -129,16 +141,15 @@ public class ExpeditionInventoryView : MonoBehaviour
                 if (_transferService.IsDragging) {
                     _transferService.ExecuteDragDrop(_transferService.CurrentSourceInventory, _transferService.CurrentDraggingIndex, _expeditionInventory, index);
                     _transferService.ResetDrag();
-                    evt.StopPropagation(); // 최상위 버리기 이벤트로 전파되는 것을 차단
+                    evt.StopPropagation(); // 정상 슬롯에 안착했으므로 최상위 '영역 밖 버리기'로 이벤트가 흐르지 않게 차단
                 }
                 else if (_transferService.IsDraggingFromEquipment) {
-                    // 장비 슬롯에서 인벤토리 슬롯으로 드래그 앤 드롭했을 때 (해제 혹은 스왑)
                     var hero = AdminTestTool.testHero;
                     if (hero != null) {
                         _itemService.UnequipToInventorySlot(hero, _transferService.SourceEquipmentSlotIndex, _expeditionInventory, index);
                     }
                     _transferService.ResetEquipmentDrag();
-                    evt.StopPropagation(); // 전파 차단
+                    evt.StopPropagation(); // 차단
                 }
             });
 
