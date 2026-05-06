@@ -18,10 +18,11 @@ using VContainer.Unity;
 ///   6. MapUIController.ShowMap(mapData)   — UI 표시
 ///
 /// 주의:
-///   ReleaseConfigs() 는 챕터 종료 시점(씬 언로드)에 호출한다.
-///   MapConfigCache 가 SO 참조를 보관하는 동안에는 핸들을 해제하면 안 된다.
+///   IDisposable.Dispose() 는 VContainer 가 씬 언로드 시 자동으로 호출한다.
+///   MapConfigCache 가 SO 참조를 보관하는 동안에는 핸들을 해제하면 안 되므로
+///   Dispose() 에서 ReleaseConfigs() 를 호출해 핸들 누수를 방지한다.
 /// </summary>
-public class MapInitializer : IAsyncStartable
+public class MapInitializer : IAsyncStartable, IDisposable
 {
     private readonly IMapConfigLoader _mapConfigLoader;
     private readonly IMapGenerator _mapGenerator;
@@ -51,19 +52,32 @@ public class MapInitializer : IAsyncStartable
     }
 
     /// <summary>
+    /// VContainer 가 씬 언로드 시 자동으로 호출한다.
+    /// Addressables 핸들을 해제해 메모리 누수를 방지한다.
+    /// </summary>
+    public void Dispose()
+    {
+        // MapConfigCache 참조를 먼저 끊은 뒤 Addressables 핸들을 해제한다.
+        // Clear() 이전에 ReleaseConfigs() 를 호출하면 SO 참조가 댕글링될 수 있다.
+        _mapConfigCache.Clear();
+        _mapConfigLoader.ReleaseConfigs();
+        Debug.Log("[MapInitializer] Addressables 핸들 해제 완료.");
+    }
+
+    /// <summary>
     /// 씬 진입 시 VContainer 가 자동으로 호출하는 비동기 진입점.
     /// 저장된 맵이 있으면 Config 로드를 건너뛰고 저장 데이터를 복원한다.
     /// </summary>
     public async UniTask StartAsync(CancellationToken cancellation = default)
     {
         // 저장된 맵이 있으면 Config 로드 없이 저장 데이터를 복원한다.
-        if (_mapRepository.HasSave())
-        {
-            MapData savedData = _mapRepository.Load();
-            _mapNavigator.Initialize(savedData);
-            _mapUIController.ShowMap(savedData);
-            return;
-        }
+        // if (_mapRepository.HasSave())
+        // {
+        //     MapData savedData = _mapRepository.Load();
+        //     _mapNavigator.Initialize(savedData);
+        //     _mapUIController.ShowMap(savedData);
+        //     return;
+        // }
 
         // Config SO 비동기 로드 — 씬 언로드 시 토큰이 취소되면 Addressables 작업도 중단된다
         try

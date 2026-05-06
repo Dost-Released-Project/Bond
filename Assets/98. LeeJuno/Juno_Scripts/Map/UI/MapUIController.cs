@@ -96,7 +96,9 @@ public class MapUIController : MonoBehaviour
     {
         if (result.IsGameOver)
         {
-            // 게임 오버 흐름은 별도 시스템에서 처리 (FlowManager 등)
+            // TODO: FlowManager 구현 전까지 임시 처리.
+            // StageLoader 가 맵 Camera/AudioListener/EventSystem 을 비활성화한 상태이므로
+            // FlowManager 가 반드시 StageLoader.UnloadCurrentStage() 를 호출해 복구해야 한다.
             return;
         }
 

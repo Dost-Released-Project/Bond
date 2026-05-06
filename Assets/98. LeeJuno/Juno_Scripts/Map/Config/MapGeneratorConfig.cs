@@ -25,7 +25,7 @@ public class MapGeneratorConfig : BaseSO
     [Header("가중치 (기본값)")]
     // EliteMinLayer 이상인 일반 중간 층에서 사용되는 스테이지 타입 출현 비율.
     // 합계가 1.0이 되도록 설정할 것.
-    [Range(0f, 1f)] public float WeightNormal  = 0.45f;
+    [Range(0f, 1f)] public float WeightNormal  = 0.51f;
     [Range(0f, 1f)] public float WeightElite   = 0.15f;
     [Range(0f, 1f)] public float WeightEvent   = 0.22f;
     [Range(0f, 1f)] public float WeightCamping = 0.12f;

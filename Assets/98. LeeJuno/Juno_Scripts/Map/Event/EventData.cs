@@ -26,10 +26,12 @@ public class EventChoice
     [SerializeField] private EventEffectData _effect;     // 선택 시 적용될 효과 데이터
 
     // 하위 호환을 위해 기존 필드는 당분간 유지하되 Obsolete 처리 후 마이그레이션한다.
-    [System.Obsolete("_effect.HpChangeAmount 로 대체됩니다.")]
+    [System.Obsolete("EventEffectData 마이그레이션 완료 후 제거")]
+    [HideInInspector]
     [SerializeField] private int _hpChange;
 
-    [System.Obsolete("_effect 의 아이템 관련 필드로 대체됩니다.")]
+    [System.Obsolete("EventEffectData 마이그레이션 완료 후 제거")]
+    [HideInInspector]
     [SerializeField] private List<string> _rewardIds;
 
     /// <summary>선택지 버튼에 표시될 텍스트.</summary>

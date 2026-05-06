@@ -92,7 +92,7 @@ public class MapNavigator : IMapNavigator
         UnlockNextNodes(target);
 
         // 변경된 맵 상태 저장
-        _repository.Save(_mapData);
+        //_repository.Save(_mapData);
 
         OnNodeEntered?.Invoke(target);
         return true;

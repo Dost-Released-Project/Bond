@@ -41,7 +41,7 @@ public class MapLifetimeScope : LifetimeScope
             builder.RegisterComponent(_mapUIController);
         else
             Debug.LogError("[MapLifetimeScope] _mapUIController 가 연결되지 않았습니다.", this);
-
+        
         // Config 로드 + 맵 생성 담당 EntryPoint
         builder.RegisterEntryPoint<MapInitializer>();
     }

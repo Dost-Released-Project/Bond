@@ -294,7 +294,18 @@ public class StageLoader : IStageLoader
             }
 
             // 이벤트 씬 언로드 — 맵 컴포넌트는 전투 씬 로드 후에도 복구하지 않는다
-            await UnloadCurrentStageInternal(restoreMapComponents: false);
+            try
+            {
+                await UnloadCurrentStageInternal(restoreMapComponents: false);
+            }
+            catch (Exception e)
+            {
+                // 언로드 실패 시 잔류 컨텍스트를 정리하고 맵 컴포넌트를 복구한 뒤 전환을 중단한다.
+                EventBattleContext.Clear();
+                RestoreMapComponents();
+                Debug.LogError($"[StageLoader] 이벤트 씬 언로드 실패로 전환 중단: {e.Message}");
+                return;
+            }
 
             // EventBattleContext 에서 몬스터 정보를 NormalStageContext 로 이전
             NormalStageContext.Set(EventBattleContext.MonsterGroupId, EventBattleContext.MonsterIds);

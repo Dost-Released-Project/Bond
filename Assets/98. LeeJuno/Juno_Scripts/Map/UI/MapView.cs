@@ -19,8 +19,9 @@ public class MapView : MonoBehaviour
     [SerializeField] private List<StageConfig> _stageConfigs;
 
     private MapData _mapData;
-    private Dictionary<int, MapNodeView> _nodeViews; // NodeId → MapNodeView 빠른 접근용
-    private List<(int FromNodeId, MapEdgeView EdgeView)> _edgeViews; // 엣지 캐싱 (출발 노드 ID + 뷰)
+    private Dictionary<int, MapNodeView> _nodeViews;                          // NodeId → MapNodeView 빠른 접근용
+    private List<(int FromNodeId, MapEdgeView EdgeView)> _edgeViews;          // 엣지 캐싱 (출발 노드 ID + 뷰)
+    private Dictionary<StageType, StageConfig> _stageConfigDict;              // StageType → StageConfig O(1) 조회용
     private System.Action<int> _onNodeClickedCallback;
 
     /// <summary>
@@ -39,6 +40,20 @@ public class MapView : MonoBehaviour
         _nodeViews = new Dictionary<int, MapNodeView>();
         _edgeViews = new List<(int, MapEdgeView)>();
 
+        // StageConfig 딕셔너리를 한 번만 구성해 FindConfig() 의 O(n) 순회를 O(1) 조회로 대체한다.
+        _stageConfigDict = new Dictionary<StageType, StageConfig>();
+        if (_stageConfigs != null)
+        {
+            foreach (StageConfig cfg in _stageConfigs)
+            {
+                // Inspector 빈 슬롯에 의한 null 요소 방지
+                if (cfg == null)
+                    continue;
+
+                _stageConfigDict[cfg.Type] = cfg;
+            }
+        }
+
         DrawEdges();
         DrawNodes();
     }
@@ -50,6 +65,9 @@ public class MapView : MonoBehaviour
     /// </summary>
     public void RefreshNodeStates()
     {
+        if (_nodeViews == null || _edgeViews == null)
+            return;
+
         foreach (KeyValuePair<int, MapNodeView> pair in _nodeViews)
             pair.Value.RefreshState();
 
@@ -133,17 +151,17 @@ public class MapView : MonoBehaviour
     }
 
     /// <summary>
-    /// StageType에 대응하는 StageConfig를 목록에서 찾아 반환한다.
+    /// StageType에 대응하는 StageConfig를 딕셔너리에서 O(1) 조회로 반환한다.
+    /// Initialize() 에서 _stageConfigDict 가 구성된 이후에 호출되어야 한다.
     /// 해당하는 Config가 없으면 null을 반환한다.
     /// </summary>
     private StageConfig FindConfig(StageType stageType)
     {
-        foreach (StageConfig config in _stageConfigs)
-        {
-            if (config.Type == stageType)
-                return config;
-        }
+        if (_stageConfigDict == null)
+            return null;
 
-        return null;
+        StageConfig result;
+        _stageConfigDict.TryGetValue(stageType, out result);
+        return result;
     }
 }

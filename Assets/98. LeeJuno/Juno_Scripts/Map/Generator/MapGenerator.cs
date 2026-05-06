@@ -19,6 +19,16 @@ using VContainer;
 /// </summary>
 public class MapGenerator : IMapGenerator
 {
+    // GetWeights() 와 WeightedRandom() 이 동일한 순서를 참조하도록 단일 배열로 관리한다.
+    // 열거형에 새 값이 추가될 경우 이 배열만 수정하면 두 메서드에 동시 반영된다.
+    private static readonly StageType[] WeightTypeOrder =
+    {
+        StageType.Normal,
+        StageType.Elite,
+        StageType.Event,
+        StageType.Camping,
+    };
+
     private readonly MapConfigCache _mapConfigCache;
 
     [Inject]
@@ -348,17 +358,19 @@ public class MapGenerator : IMapGenerator
 
     /// <summary>
     /// 층 번호에 따라 스테이지 타입 가중치 배열을 반환한다.
-    /// 배열 순서: [Normal, Elite, Event, Camping]
+    /// 배열 인덱스는 WeightTypeOrder 와 동일한 순서: [Normal, Elite, Event, Camping]
     /// </summary>
     private float[] GetWeights(int layer, MapGeneratorConfig config)
     {
+        // WeightTypeOrder 순서: Normal=0, Elite=1, Event=2, Camping=3
         if (layer < 4)
             return new float[] { 0.70f, 0f, 0.30f, 0f };
 
         if (layer < config.EliteMinLayer)
             return new float[] { 0.55f, 0f, 0.25f, 0.15f };
 
-        return new float[] {
+        return new float[]
+        {
             config.WeightNormal,
             config.WeightElite,
             config.WeightEvent,
@@ -369,6 +381,7 @@ public class MapGenerator : IMapGenerator
     /// <summary>
     /// 가중치 배열을 기반으로 확률적으로 스테이지 타입 하나를 선택한다.
     /// 가중치 합이 1.0이 아니어도 내부에서 정규화한다.
+    /// WeightTypeOrder 배열 순서를 참조해 인덱스와 타입을 매핑한다.
     /// </summary>
     private StageType WeightedRandom(float[] weights, System.Random rng)
     {
@@ -379,13 +392,11 @@ public class MapGenerator : IMapGenerator
         float roll = (float)rng.NextDouble() * total;
         float cumulative = 0f;
 
-        StageType[] types = { StageType.Normal, StageType.Elite, StageType.Event, StageType.Camping };
-
         for (int i = 0; i < weights.Length; i++)
         {
             cumulative += weights[i];
             if (roll <= cumulative)
-                return types[i];
+                return WeightTypeOrder[i];
         }
 
         return StageType.Normal;
