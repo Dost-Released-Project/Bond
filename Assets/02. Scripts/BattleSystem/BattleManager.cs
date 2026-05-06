@@ -62,6 +62,7 @@ namespace BattleSystem
                     ProcessTargeting(battleContext, battleContext.caster.CurrentSlot.side, (int)battleContext.caster.CurrentSlot.rank);
                     break;
             }
+            SkillApplyLogic(battleContext);
         }
 
         private void ProcessTargeting(BattleContext context, E_BattleSide side, int targetMask)
