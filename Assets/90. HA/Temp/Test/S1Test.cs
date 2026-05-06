@@ -17,6 +17,7 @@ namespace _90._HA.Temp.Test
         [Inject] public ExpeditionPayload payload;
         
         public List<BaseItem> items;
+        public BaseCharacter _character;
 
         public void Start()
         {

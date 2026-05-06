@@ -35,7 +35,7 @@ public partial class BaseCharacter
             chara.Data.ImageAddress = "Missing ImageAddress";
             chara.Data.Name = "Outis";
             chara.Data.Profession = new SampleProfession();
-            chara.Data.Level = 1;
+            chara.Data.Level = 0;
             chara.Data.Insanity = 0; // 스트레스(광기) 지수 0~100, Stress는 STR과 혼동될 수 있어서 명칭 변경
             chara.Data.RoleType = RoleType.None;
         }

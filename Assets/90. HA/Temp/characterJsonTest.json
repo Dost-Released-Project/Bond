@@ -1,0 +1,261 @@
+﻿{
+  "Data": {
+    "Id": "Missing Id",
+    "ImageAddress": "Missing ImageAddress",
+    "Name": "f202248c-d5df-41fc-9d25-8b6ffdcbb8e0",
+    "Profession": {
+      "Name": "Missing"
+    },
+    "Level": 0,
+    "Insanity": 0,
+    "RoleType": 0,
+    "Skills": [
+      {
+        "SkillCooldown": 0.0,
+        "Data": {
+          "Type": 0,
+          "Target": 0,
+          "Value": 0.0,
+          "CoolTime": 0,
+          "Duration": 0,
+          "UseableClasses": 0,
+          "UseableSlots": 0,
+          "EnemyTargetMask": 0,
+          "AllyTargetMask": 0,
+          "IconAddress": null,
+          "Id": null,
+          "DisplayName": null,
+          "Description": null,
+          "name": "U4",
+          "hideFlags": 0
+        }
+      },
+      {
+        "SkillCooldown": 0.0,
+        "Data": {
+          "Type": 0,
+          "Target": 0,
+          "Value": 0.0,
+          "CoolTime": 0,
+          "Duration": 0,
+          "UseableClasses": 0,
+          "UseableSlots": 0,
+          "EnemyTargetMask": 0,
+          "AllyTargetMask": 0,
+          "IconAddress": null,
+          "Id": null,
+          "DisplayName": null,
+          "Description": null,
+          "name": "LL",
+          "hideFlags": 0
+        }
+      },
+      {
+        "SkillCooldown": 0.0,
+        "Data": {
+          "Type": 0,
+          "Target": 0,
+          "Value": 0.0,
+          "CoolTime": 0,
+          "Duration": 0,
+          "UseableClasses": 0,
+          "UseableSlots": 0,
+          "EnemyTargetMask": 0,
+          "AllyTargetMask": 0,
+          "IconAddress": null,
+          "Id": null,
+          "DisplayName": null,
+          "Description": null,
+          "name": "6G",
+          "hideFlags": 0
+        }
+      },
+      null
+    ],
+    "Traits": [
+      {
+        "Name": "C",
+        "Description": "ccc",
+        "Trigger": null
+      },
+      {
+        "Name": "A",
+        "Description": "aaa",
+        "Trigger": null
+      },
+      null,
+      null
+    ],
+    "Equips": [
+      null,
+      null
+    ],
+    "Relation": {},
+    "RoleReactions": [
+      {
+        "Id": "85e5da76-2444-4c75-a6d6-5663beae409d",
+        "Sex": false
+      },
+      {
+        "Id": "ec1d8596-eff0-497b-bd5b-8b33fc5dbdcd",
+        "Sex": false
+      }
+    ],
+    "TraitReactions": [
+      {
+        "Id": "80bb23b7-2675-4fe6-aa63-46a0b650e1f1",
+        "Sex": false
+      },
+      {
+        "Id": "7e391e30-738d-43e7-b5cd-40d00c0bada8",
+        "Sex": false
+      },
+      {
+        "Id": "ef9c0786-1d26-4537-a528-6f3580495163",
+        "Sex": false
+      },
+      {
+        "Id": "8e88c004-de86-49e5-8e92-4f1463da4eaf",
+        "Sex": false
+      }
+    ]
+  },
+  "onBattleAction": null,
+  "Stat": {
+    "INT": 0,
+    "STR": 0,
+    "AGI": 0,
+    "max_Hp": 0,
+    "current_Hp": 0,
+    "def": 0,
+    "atk": 0,
+    "speed": 0,
+    "crt": 0.0,
+    "acc": 0.0,
+    "Insanity_Ctrl": 0.0,
+    "Reaction_Ctrl": 0.0,
+    "Sp_Atk": 0,
+    "baseWeapon": null,
+    "baseArmor": null
+  },
+  "Name": "f202248c-d5df-41fc-9d25-8b6ffdcbb8e0",
+  "Level": 0,
+  "Profession": {
+    "Name": "Missing"
+  },
+  "Skills": [
+    {
+      "SkillCooldown": 0.0,
+      "Data": {
+        "Type": 0,
+        "Target": 0,
+        "Value": 0.0,
+        "CoolTime": 0,
+        "Duration": 0,
+        "UseableClasses": 0,
+        "UseableSlots": 0,
+        "EnemyTargetMask": 0,
+        "AllyTargetMask": 0,
+        "IconAddress": null,
+        "Id": null,
+        "DisplayName": null,
+        "Description": null,
+        "name": "U4",
+        "hideFlags": 0
+      }
+    },
+    {
+      "SkillCooldown": 0.0,
+      "Data": {
+        "Type": 0,
+        "Target": 0,
+        "Value": 0.0,
+        "CoolTime": 0,
+        "Duration": 0,
+        "UseableClasses": 0,
+        "UseableSlots": 0,
+        "EnemyTargetMask": 0,
+        "AllyTargetMask": 0,
+        "IconAddress": null,
+        "Id": null,
+        "DisplayName": null,
+        "Description": null,
+        "name": "LL",
+        "hideFlags": 0
+      }
+    },
+    {
+      "SkillCooldown": 0.0,
+      "Data": {
+        "Type": 0,
+        "Target": 0,
+        "Value": 0.0,
+        "CoolTime": 0,
+        "Duration": 0,
+        "UseableClasses": 0,
+        "UseableSlots": 0,
+        "EnemyTargetMask": 0,
+        "AllyTargetMask": 0,
+        "IconAddress": null,
+        "Id": null,
+        "DisplayName": null,
+        "Description": null,
+        "name": "6G",
+        "hideFlags": 0
+      }
+    },
+    null
+  ],
+  "Traits": [
+    {
+      "Name": "C",
+      "Description": "ccc",
+      "Trigger": null
+    },
+    {
+      "Name": "A",
+      "Description": "aaa",
+      "Trigger": null
+    },
+    null,
+    null
+  ],
+  "RoleReactions": [
+    {
+      "Id": "85e5da76-2444-4c75-a6d6-5663beae409d",
+      "Sex": false
+    },
+    {
+      "Id": "ec1d8596-eff0-497b-bd5b-8b33fc5dbdcd",
+      "Sex": false
+    }
+  ],
+  "TraitReactions": [
+    {
+      "Id": "80bb23b7-2675-4fe6-aa63-46a0b650e1f1",
+      "Sex": false
+    },
+    {
+      "Id": "7e391e30-738d-43e7-b5cd-40d00c0bada8",
+      "Sex": false
+    },
+    {
+      "Id": "ef9c0786-1d26-4537-a528-6f3580495163",
+      "Sex": false
+    },
+    {
+      "Id": "8e88c004-de86-49e5-8e92-4f1463da4eaf",
+      "Sex": false
+    }
+  ],
+  "RoleType": 0,
+  "Insanity": 0,
+  "isPlayable": false,
+  "battleType": null,
+  "sup_Character": null,
+  "CurrentSlot": null,
+  "Speed": 0,
+  "IsDead": false,
+  "ImageAddress": "Missing ImageAddress",
+  "RandomSpeed": 0
+}

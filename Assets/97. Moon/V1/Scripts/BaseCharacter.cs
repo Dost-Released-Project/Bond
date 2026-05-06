@@ -1,19 +1,22 @@
 using System;
+using System.Runtime.Serialization;
 using BattleSystem;
 using BattleSystem.Interface;
 using PipeLine;
 using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
 using Reactions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[Serializable]
 public partial class BaseCharacter : ITurnUseUnit
 {
     /// <summary>
     /// 테스트 용 객체
     /// </summary>
     public static BaseCharacter Sample => new BaseCharacter(BaseCharacterData.Sample);
-    
+
     public BaseCharacterData Data;
     public Stat Stat { get; } = new Stat();
     
