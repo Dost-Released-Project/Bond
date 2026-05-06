@@ -68,6 +68,12 @@ public class MapConfigLoader : IMapConfigLoader
             throw new InvalidOperationException("EventConfigAddress 가 설정되지 않았습니다.");
         }
 
+        if (string.IsNullOrEmpty(_settings.EventBattleConfigAddress))
+        {
+            Debug.LogError("[MapConfigLoader] EventBattleConfigAddress 가 비어 있습니다.");
+            throw new InvalidOperationException("EventBattleConfigAddress 가 설정되지 않았습니다.");
+        }
+
         if (_settings.StageConfigAddresses == null || _settings.StageConfigAddresses.Count == 0)
         {
             Debug.LogError("[MapConfigLoader] StageConfigAddresses 가 비어 있습니다.");
@@ -90,9 +96,13 @@ public class MapConfigLoader : IMapConfigLoader
             AsyncOperationHandle<EventConfig> eventHandle =
                 Addressables.LoadAssetAsync<EventConfig>(_settings.EventConfigAddress);
 
+            AsyncOperationHandle<EventBattleConfig> eventBattleHandle =
+                Addressables.LoadAssetAsync<EventBattleConfig>(_settings.EventBattleConfigAddress);
+
             _handles.Add(generatorHandle);
             _handles.Add(monsterHandle);
             _handles.Add(eventHandle);
+            _handles.Add(eventBattleHandle);
 
             // StageConfig 는 복수이므로 각 주소별 핸들을 따로 보관한다.
             List<AsyncOperationHandle<StageConfig>> stageHandles = new List<AsyncOperationHandle<StageConfig>>();
@@ -106,11 +116,12 @@ public class MapConfigLoader : IMapConfigLoader
                 _handles.Add(stageHandle);
             }
 
-            // 병렬 대기 — 3개 Config 를 동시에 로드하며 취소 토큰을 전달한다
+            // 병렬 대기 — 4개 Config 를 동시에 로드하며 취소 토큰을 전달한다
             await UniTask.WhenAll(
                 generatorHandle.ToUniTask(cancellationToken: cancellation),
                 monsterHandle.ToUniTask(cancellationToken: cancellation),
-                eventHandle.ToUniTask(cancellationToken: cancellation)
+                eventHandle.ToUniTask(cancellationToken: cancellation),
+                eventBattleHandle.ToUniTask(cancellationToken: cancellation)
             );
 
             // StageConfig 핸들 목록 인덱스 순서가 이미 주소 순서와 동일하므로
@@ -126,7 +137,8 @@ public class MapConfigLoader : IMapConfigLoader
                 generatorConfig:    generatorHandle.Result,
                 stageConfigs:       stageConfigs,
                 monsterGroupConfig: monsterHandle.Result,
-                eventConfig:        eventHandle.Result
+                eventConfig:        eventHandle.Result,
+                eventBattleConfig:  eventBattleHandle.Result
             );
 
             _isLoaded = true;

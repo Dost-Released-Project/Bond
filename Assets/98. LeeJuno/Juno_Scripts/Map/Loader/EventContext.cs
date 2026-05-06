@@ -18,16 +18,24 @@ public static class EventContext
     public static List<EventChoice> Choices { get; private set; } = new List<EventChoice>();
 
     /// <summary>
+    /// 이벤트 전투 씬 전환에 필요한 Config.
+    /// Battle 타입 선택지가 있을 때 EventSceneController 가 읽어 EventBattleContext 를 구성한다.
+    /// </summary>
+    public static EventBattleConfig BattleConfig { get; private set; }
+
+    /// <summary>
     /// StageLoader 가 Event 스테이지 씬 로드 직전에 호출한다.
     /// 기존 데이터를 덮어쓰고 choices 는 방어적 복사를 수행한다.
     /// </summary>
     /// <param name="eventId">배정된 이벤트 ID.</param>
     /// <param name="choices">이벤트의 선택지 목록.</param>
-    public static void Set(string eventId, List<EventChoice> choices)
+    /// <param name="battleConfig">이벤트 전투 Config. Battle 선택지가 없으면 null 전달 가능.</param>
+    public static void Set(string eventId, List<EventChoice> choices, EventBattleConfig battleConfig)
     {
         EventId = eventId;
         // 외부 리스트 변경이 내부 상태에 영향을 미치지 않도록 방어적 복사
         Choices = new List<EventChoice>(choices);
+        BattleConfig = battleConfig;
     }
 
     /// <summary>
@@ -38,5 +46,6 @@ public static class EventContext
     {
         EventId = string.Empty;
         Choices.Clear();
+        BattleConfig = null;
     }
 }

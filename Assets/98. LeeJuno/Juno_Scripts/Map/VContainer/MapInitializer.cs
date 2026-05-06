@@ -81,7 +81,7 @@ public class MapInitializer : IAsyncStartable
 
         // SO 해제 전에 MapGenerator, StageLoader 가 참조할 수 있도록 캐시에 저장한다.
         // MapConfigCache 는 SO 참조를 그대로 보관하므로 ReleaseConfigs() 전에 반드시 호출해야 한다.
-        _mapConfigCache.Set(package.GeneratorConfig, package.StageConfigs, package.MonsterGroupConfig, package.EventConfig);
+        _mapConfigCache.Set(package.GeneratorConfig, package.StageConfigs, package.MonsterGroupConfig, package.EventConfig, package.EventBattleConfig);
 
         MapData mapData;
 

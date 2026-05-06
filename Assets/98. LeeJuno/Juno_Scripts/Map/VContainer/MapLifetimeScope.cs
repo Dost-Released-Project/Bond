@@ -34,6 +34,7 @@ public class MapLifetimeScope : LifetimeScope
         builder.Register<IMapRepository, MapRepository>(Lifetime.Singleton);
         builder.Register<IMapNavigator, MapNavigator>(Lifetime.Singleton);
         builder.Register<IStageLoader, StageLoader>(Lifetime.Singleton);
+        builder.Register<IEventEffectApplier, EventEffectApplier>(Lifetime.Singleton);
 
         // 씬에 배치된 MonoBehaviour 를 DI 대상으로 등록
         if (_mapUIController != null)
@@ -42,13 +43,6 @@ public class MapLifetimeScope : LifetimeScope
             Debug.LogError("[MapLifetimeScope] _mapUIController 가 연결되지 않았습니다.", this);
 
         // Config 로드 + 맵 생성 담당 EntryPoint
-        // 에디터에서는 MapTestStarter 가 전체 흐름을 직접 담당하므로 MapInitializer 를 등록하지 않는다.
-        // IAsyncStartable 은 UniTask.WhenAll 로 병렬 실행되므로 두 EntryPoint 를 동시에 등록하면
-        // MapTestStarter 가 MapInitializer 의 LoadAsync() 완료 전에 GenerateMap() 을 호출하게 된다.
-#if UNITY_EDITOR
         builder.RegisterEntryPoint<MapInitializer>();
-#else
-        builder.RegisterEntryPoint<MapInitializer>();
-#endif
     }
 }

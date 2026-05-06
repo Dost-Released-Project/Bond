@@ -10,11 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ab9c3303204f5b040909e41af9eebc17, type: 3}
-  m_Name: New Map Config Loader Settings
+  m_Name: Addressable Settings
   m_EditorClassIdentifier: Assembly-CSharp::MapConfigLoaderSettings
   _mapGeneratorConfigAddress: GeneratorConfig
   _monsterGroupConfigAddress: MonsterGroupConfig
   _eventConfigAddress: EventConfig
+  _eventBattleConfigAddress: EventBattleConfig
   _stageConfigAddresses:
   - Map_Boss
   - Map_Elite

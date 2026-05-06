@@ -19,6 +19,9 @@ public class MapConfigPackage
     /// <summary>이벤트 목록 Config.</summary>
     public EventConfig EventConfig { get; private set; }
 
+    /// <summary>이벤트 전투 씬 및 몬스터 풀 Config.</summary>
+    public EventBattleConfig EventBattleConfig { get; private set; }
+
     /// <summary>
     /// 모든 Config 를 한 번에 초기화하는 생성자.
     /// MapConfigLoader 에서만 생성한다.
@@ -27,11 +30,13 @@ public class MapConfigPackage
         MapGeneratorConfig generatorConfig,
         List<StageConfig> stageConfigs,
         MonsterGroupConfig monsterGroupConfig,
-        EventConfig eventConfig)
+        EventConfig eventConfig,
+        EventBattleConfig eventBattleConfig)
     {
         GeneratorConfig    = generatorConfig;
         StageConfigs       = stageConfigs;
         MonsterGroupConfig = monsterGroupConfig;
         EventConfig        = eventConfig;
+        EventBattleConfig  = eventBattleConfig;
     }
 }

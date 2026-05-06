@@ -13,6 +13,7 @@ public class MapConfigLoaderSettings : ScriptableObject
     [SerializeField] private string _mapGeneratorConfigAddress;
     [SerializeField] private string _monsterGroupConfigAddress;
     [SerializeField] private string _eventConfigAddress;
+    [SerializeField] private string _eventBattleConfigAddress;
 
     [Header("StageConfig 키 목록 (StageType 별 1개씩)")]
     [SerializeField] private List<string> _stageConfigAddresses;
@@ -25,6 +26,9 @@ public class MapConfigLoaderSettings : ScriptableObject
 
     /// <summary>EventConfig Addressables 키.</summary>
     public string EventConfigAddress => _eventConfigAddress;
+
+    /// <summary>EventBattleConfig Addressables 키.</summary>
+    public string EventBattleConfigAddress => _eventBattleConfigAddress;
 
     /// <summary>StageConfig Addressables 키 목록.</summary>
     public List<string> StageConfigAddresses => _stageConfigAddresses;

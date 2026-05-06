@@ -43,6 +43,19 @@ public class EventChoiceButton : MonoBehaviour
         _button.onClick.AddListener(OnButtonClicked);
     }
 
+    /// <summary>
+    /// 버튼의 인터랙션 가능 여부를 설정한다.
+    /// 선택지 클릭 후 중복 입력을 방지하기 위해 EventSceneController 에서 호출한다.
+    /// </summary>
+    /// <param name="interactable">true 면 활성화, false 면 비활성화.</param>
+    public void SetInteractable(bool interactable)
+    {
+        if (_button == null)
+            return;
+
+        _button.interactable = interactable;
+    }
+
     private void OnButtonClicked()
     {
         _onClickCallback?.Invoke();

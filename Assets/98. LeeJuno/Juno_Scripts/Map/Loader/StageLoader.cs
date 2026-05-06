@@ -199,7 +199,6 @@ public class StageLoader : IStageLoader
         {
             await Addressables.UnloadSceneAsync(_currentScene).ToUniTask();
             _hasLoadedScene = false;
-            StageCompletionChannel.Unregister();
         }
         catch (Exception e)
         {
@@ -209,6 +208,7 @@ public class StageLoader : IStageLoader
         }
         finally
         {
+            StageCompletionChannel.Unregister();
             if (restoreMapComponents)
                 RestoreMapComponents();
         }
@@ -257,11 +257,72 @@ public class StageLoader : IStageLoader
 
     /// <summary>
     /// 스테이지 씬 내부에서 결과가 확정되면 이 메서드를 호출한다.
-    /// OnStageCompleted 이벤트를 발생시켜 맵 복귀 처리를 시작한다.
+    /// IsBattleTriggered 가 true 이면 이벤트 전투 씬으로 전환하고,
+    /// 그 외에는 OnStageCompleted 이벤트를 발생시켜 맵 복귀 처리를 시작한다.
     /// </summary>
     public void NotifyStageCompleted(StageResult result)
     {
+        if (result.IsBattleTriggered)
+        {
+            // 이벤트 전투 전환: 이벤트 씬을 언로드하고 전투 씬을 로드한다.
+            // UniTask 메서드를 Forget() 으로 실행한다.
+            // 람다식: 비동기 흐름을 void 컨텍스트에서 실행하기 위해 사용
+            TransitionToEventBattleAsync().Forget();
+            return;
+        }
+
         OnStageCompleted?.Invoke(result);
+    }
+
+    /// <summary>
+    /// 이벤트 전투 전환 비동기 처리.
+    /// 현재 이벤트 씬을 언로드하고 EventBattleContext 의 몬스터 정보를 NormalStageContext 로 이전한 뒤
+    /// EventBattleConfig 에 지정된 전투 씬을 로드한다.
+    /// </summary>
+    private async UniTask TransitionToEventBattleAsync()
+    {
+        _isLoading = true;
+        try
+        {
+            EventBattleConfig battleConfig = _mapConfigCache.EventBattleConfig;
+
+            if (battleConfig == null)
+            {
+                Debug.LogError("[StageLoader] EventBattleConfig 가 캐시에 없습니다.");
+                RestoreMapComponents();
+                return;
+            }
+
+            // 이벤트 씬 언로드 — 맵 컴포넌트는 전투 씬 로드 후에도 복구하지 않는다
+            await UnloadCurrentStageInternal(restoreMapComponents: false);
+
+            // EventBattleContext 에서 몬스터 정보를 NormalStageContext 로 이전
+            NormalStageContext.Set(EventBattleContext.MonsterGroupId, EventBattleContext.MonsterIds);
+            EventBattleContext.Clear();
+
+            // 전투 씬 완료 콜백 재등록 후 씬 로드
+            StageCompletionChannel.Register(NotifyStageCompleted);
+
+            AsyncOperationHandle<SceneInstance> handle =
+                Addressables.LoadSceneAsync(battleConfig.EventBattleSceneAddress, LoadSceneMode.Additive);
+
+            try
+            {
+                _currentScene = await handle.ToUniTask();
+                _hasLoadedScene = true;
+            }
+            catch (Exception e)
+            {
+                RestoreMapComponents();
+                Debug.LogError($"[StageLoader] 이벤트 전투 씬 로드 실패: {e.Message}");
+                _hasLoadedScene = false;
+                throw;
+            }
+        }
+        finally
+        {
+            _isLoading = false;
+        }
     }
 
     /// <summary>
@@ -330,7 +391,7 @@ public class StageLoader : IStageLoader
     {
         if (string.IsNullOrEmpty(node.AssignedEventId))
         {
-            EventContext.Set(string.Empty, new List<EventChoice>());
+            EventContext.Set(string.Empty, new List<EventChoice>(), null);
             return;
         }
 
@@ -338,11 +399,11 @@ public class StageLoader : IStageLoader
 
         if (ev == null)
         {
-            EventContext.Set(string.Empty, new List<EventChoice>());
+            EventContext.Set(string.Empty, new List<EventChoice>(), null);
             return;
         }
 
-        EventContext.Set(ev.Id, ev.Choices);
+        EventContext.Set(ev.Id, ev.Choices, _mapConfigCache.EventBattleConfig);
     }
 
     /// <summary>

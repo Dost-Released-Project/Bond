@@ -74,5 +74,6 @@ public class StageResult
 {
     public bool IsSuccess;          // 스테이지 성공 여부 (전투 승리, 이벤트 선택 완료 등)
     public bool IsGameOver;         // 게임 오버 여부 (전멸 등)
+    public bool IsBattleTriggered;  // 이벤트 전투 전환 여부 (true 면 StageLoader 가 전투 씬으로 전환)
     public List<string> RewardIds;  // 획득한 보상 ID 목록 (아이템 등)
 }

@@ -16,18 +16,28 @@ public class EventData : BaseSO
 
 /// <summary>
 /// 이벤트 내 단일 선택지 데이터.
-/// 선택 시 적용될 보상과 HP 변화량을 정의한다.
+/// 선택 시 적용될 효과를 EventEffectData 로 정의한다.
 /// </summary>
 [System.Serializable]
 public class EventChoice
 {
-    [SerializeField] private string _label;                 // 선택지 버튼에 표시될 텍스트
-    [SerializeField] private string _outcomeDescription;   // 선택 후 표시될 결과 설명
-    [SerializeField] private List<string> _rewardIds;      // 선택 시 획득할 보상 ID 목록
-    [SerializeField] private int _hpChange;                // HP 증감량 (양수 = 회복, 음수 = 피해)
+    [SerializeField] private string _label;               // 선택지 버튼에 표시될 텍스트
+    [SerializeField] private string _outcomeDescription;  // 선택 후 표시될 결과 설명
+    [SerializeField] private EventEffectData _effect;     // 선택 시 적용될 효과 데이터
 
+    // 하위 호환을 위해 기존 필드는 당분간 유지하되 Obsolete 처리 후 마이그레이션한다.
+    [System.Obsolete("_effect.HpChangeAmount 로 대체됩니다.")]
+    [SerializeField] private int _hpChange;
+
+    [System.Obsolete("_effect 의 아이템 관련 필드로 대체됩니다.")]
+    [SerializeField] private List<string> _rewardIds;
+
+    /// <summary>선택지 버튼에 표시될 텍스트.</summary>
     public string Label => _label;
+
+    /// <summary>선택 후 표시될 결과 설명.</summary>
     public string OutcomeDescription => _outcomeDescription;
-    public List<string> RewardIds => _rewardIds;
-    public int HpChange => _hpChange;
+
+    /// <summary>선택 시 적용될 효과 데이터.</summary>
+    public EventEffectData Effect => _effect;
 }

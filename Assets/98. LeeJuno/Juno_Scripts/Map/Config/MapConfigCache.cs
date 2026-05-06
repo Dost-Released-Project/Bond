@@ -26,6 +26,9 @@ public class MapConfigCache
     /// <summary>이벤트 목록 Config. IsReady == false 이면 null.</summary>
     public EventConfig EventConfig { get; private set; }
 
+    /// <summary>이벤트 전투 씬 및 몬스터 풀 Config. IsReady == false 이면 null.</summary>
+    public EventBattleConfig EventBattleConfig { get; private set; }
+
     /// <summary>Set() 이 호출된 이후 true 가 된다.</summary>
     public bool IsReady { get; private set; }
 
@@ -37,16 +40,19 @@ public class MapConfigCache
     /// <param name="stageConfigs">스테이지 타입별 Config 목록.</param>
     /// <param name="monsterGroupConfig">몬스터 그룹 목록 Config.</param>
     /// <param name="eventConfig">이벤트 목록 Config.</param>
+    /// <param name="eventBattleConfig">이벤트 전투 씬 및 몬스터 풀 Config.</param>
     public void Set(
         MapGeneratorConfig generatorConfig,
         List<StageConfig> stageConfigs,
         MonsterGroupConfig monsterGroupConfig,
-        EventConfig eventConfig)
+        EventConfig eventConfig,
+        EventBattleConfig eventBattleConfig)
     {
         GeneratorConfig    = generatorConfig;
         StageConfigs       = stageConfigs;
         MonsterGroupConfig = monsterGroupConfig;
         EventConfig        = eventConfig;
+        EventBattleConfig  = eventBattleConfig;
         IsReady            = true;
     }
 
@@ -60,6 +66,7 @@ public class MapConfigCache
         StageConfigs       = null;
         MonsterGroupConfig = null;
         EventConfig        = null;
+        EventBattleConfig  = null;
         IsReady            = false;
     }
 }

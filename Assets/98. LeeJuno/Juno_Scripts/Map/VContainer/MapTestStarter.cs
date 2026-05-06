@@ -69,7 +69,7 @@ public class MapTestStarter : IAsyncStartable, IDisposable
 
         // MapGenerator, StageLoader 가 SO 데이터를 참조할 수 있도록 캐시에 저장한다.
         // ReleaseConfigs() 는 챕터 종료 시 호출한다 — 이 시점에서 해제하지 않는다.
-        _mapConfigCache.Set(package.GeneratorConfig, package.StageConfigs, package.MonsterGroupConfig, package.EventConfig);
+        _mapConfigCache.Set(package.GeneratorConfig, package.StageConfigs, package.MonsterGroupConfig, package.EventConfig, package.EventBattleConfig);
 
         MapData mapData = _generator.GenerateMap(65732);
 

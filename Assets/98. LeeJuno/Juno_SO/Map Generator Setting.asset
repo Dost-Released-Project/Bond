@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f41bc8db7d51460408c765150f066124, type: 3}
-  m_Name: Test Map Generator Config
+  m_Name: Map Generator Setting
   m_EditorClassIdentifier: Assembly-CSharp::MapGeneratorConfig
   _id: 
   _displayName: 
