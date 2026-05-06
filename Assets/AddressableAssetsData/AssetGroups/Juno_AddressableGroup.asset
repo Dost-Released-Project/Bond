@@ -45,6 +45,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 87fa9ee5570c7e445ac5df9d9fb746aa
+    m_Address: EventBattleConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8ce9dafd601a5e941b5b5d431e1a6bf6
     m_Address: EventConfig
     m_ReadOnly: 0
