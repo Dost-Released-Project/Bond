@@ -15,7 +15,7 @@ namespace _90._HA.Temp.Test
         [Inject] public PartyManager _partyManager;
         [Inject] public StageCoach _stageCoach;
         [Inject] public ExpeditionPayload payload;
-        
+
         public List<BaseItem> items;
 
         public void Start()
@@ -29,7 +29,7 @@ namespace _90._HA.Temp.Test
             {
                 Debug.Log(payload);
             }
-            
+
             if (Keyboard.current.numpad1Key.wasPressedThisFrame)
             {
                 var slots = _expeditionInventory.GetAll();
@@ -54,13 +54,13 @@ namespace _90._HA.Temp.Test
                     var chara = _stageCoach.GetRandomCharacter();
                     _partyManager.TryAddMember(chara);
                 }
-            
+
                 _embarkManager.SavePayload();
             }
 
-            if (Keyboard.current.numpad9Key.wasPressedThisFrame)
+            if (Keyboard.current.numpad9Key.wasPressedThisFrame || Keyboard.current.digit9Key.wasPressedThisFrame)
             {
-                SceneLoader.Load("S2");
+                SceneLoader.Load("Map");
             }
         }
     }
