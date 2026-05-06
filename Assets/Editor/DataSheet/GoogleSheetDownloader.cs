@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using UnityEditor;
@@ -8,11 +9,10 @@ public static class GoogleSheetDownloader
     private static readonly HttpClient _http = new HttpClient();
 
     // 단일 시트 다운로드
-    public static bool Download(GoogleSheetConfig config,
-        GoogleSheetConfig.SheetEntry entry,
+    public static bool Download(GoogleSheetEntry entry,
         string savePath)
     {
-        string url = config.GetExportUrl(entry);
+        string url = entry.GetExportUrl();
 
         try
         {
@@ -21,7 +21,7 @@ public static class GoogleSheetDownloader
 
             if (response.IsSuccessStatusCode == false)
             {
-                Debug.LogError($"[{entry.sheetName}] 다운로드 실패: {response.StatusCode}\n" +
+                Debug.LogError($"[{entry.SheetName}] 다운로드 실패: {response.StatusCode}\n" +
                                $"시트가 '링크 공유'로 설정되어 있는지 확인하세요.");
                 return false;
             }
@@ -32,26 +32,26 @@ public static class GoogleSheetDownloader
             content = content.Replace("\r\n", "\n").Replace("\r", "\n");
 
             File.WriteAllText(savePath, content, System.Text.Encoding.UTF8);
-            Debug.Log($"[{entry.sheetName}] 다운로드 완료: {savePath}");
+            Debug.Log($"[{entry.SheetName}] 다운로드 완료: {savePath}");
             return true;
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"[{entry.sheetName}] 네트워크 오류: {e.Message}");
+            Debug.LogError($"[{entry.SheetName}] 네트워크 오류: {e.Message}");
             return false;
         }
     }
 
     // 전체 시트 일괄 다운로드
-    public static void DownloadAll(GoogleSheetConfig config, string tsvRoot)
+    public static void DownloadAll(IEnumerable<GoogleSheetEntry> entries, string tsvRoot)
     {
         if (Directory.Exists(tsvRoot) == false)
             Directory.CreateDirectory(tsvRoot);
 
-        foreach (var entry in config.sheets)
+        foreach (var entry in entries)
         {
-            string savePath = Path.Combine(tsvRoot, $"{entry.sheetName}.tsv");
-            Download(config, entry, savePath);
+            string savePath = Path.Combine(tsvRoot, $"{entry.SheetName}.tsv");
+            Download(entry, savePath);
         }
     }
 }

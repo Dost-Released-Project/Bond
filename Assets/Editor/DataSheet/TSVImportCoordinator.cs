@@ -1,14 +1,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using UnityEditor;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public static class TSVImportCoordinator
 {
     public const string DATA_ROOT   = "Assets/Data/TSV/";
     private const string OUTPUT_ROOT = "Assets/Data/GeneratedSO/";
-    private const string CONFIG_PATH = "Assets/Data/GoogleSheetConfig.asset";
+    private const string CONFIG_PATH = "Assets/Data/GoogleSheetConfig/";
 
     private static Dictionary<string, ITSVParser> BuildParserMap()
     {
@@ -20,17 +22,61 @@ public static class TSVImportCoordinator
             .ToDictionary(p => p.TargetFileName.ToLower());
     }
 
+    private static IEnumerable<GoogleSheetEntry> GetAllEntries()
+    {
+        var configs = Directory.GetFiles(CONFIG_PATH, "*.asset");
+
+        StringBuilder debugStr = new StringBuilder();
+        
+        debugStr.AppendLine($"Found {configs.Length} Configs");
+        foreach (var config in configs)
+            debugStr.AppendLine(config);
+        Debug.Log(debugStr.ToString());
+        debugStr.Clear();
+
+        if (configs.Length == 0)
+        {
+            Debug.LogError($"GoogleSheetConfig not found at: {CONFIG_PATH}");
+            return null;
+        }
+
+        var list = new List<GoogleSheetEntry>();
+        
+        foreach (var file in configs)
+        {
+            var entries = AssetDatabase.LoadAssetAtPath<GoogleSheetConfig>(file).GetEntries();
+            list.AddRange(entries);
+        }
+
+        var comparer = new GoogleSheetEntry.SheetPageComparer();
+        var distinct = list.Distinct(comparer).ToList();
+        var duplicated = list.Except(distinct).ToList();
+        
+        if (duplicated.Count > 0)
+        {
+            debugStr.AppendLine($"Excluded due to duplication:");
+            foreach (var entry in duplicated)
+                debugStr.AppendLine($"{entry}");
+            Debug.LogWarning(debugStr.ToString());
+            debugStr.Clear();
+        }
+
+        debugStr.AppendLine($"Found {distinct.Count} Entries");
+        foreach (var entry in distinct)
+            debugStr.AppendLine(entry.ToString());
+        Debug.Log(debugStr);
+
+        return distinct;
+    }
+
     [MenuItem("Tools/DataSheet/Download from Google Sheets")]
     public static void DownloadOnly()
     {
-        var config = AssetDatabase.LoadAssetAtPath<GoogleSheetConfig>(CONFIG_PATH);
-        if (config == null)
-        {
-            Debug.LogError($"GoogleSheetConfig not found at: {CONFIG_PATH}");
+        var entries = GetAllEntries();
+        if (entries == null)
             return;
-        }
 
-        GoogleSheetDownloader.DownloadAll(config, DATA_ROOT);
+        GoogleSheetDownloader.DownloadAll(entries, DATA_ROOT);
         AssetDatabase.Refresh();
     }
 
@@ -79,19 +125,20 @@ public static class TSVImportCoordinator
     // 다운로드도 동일하게
     public static void DownloadAndImport(IEnumerable<string> targets = null)
     {
-        var config = AssetDatabase.LoadAssetAtPath<GoogleSheetConfig>(CONFIG_PATH);
-        if (config == null) { Debug.LogError("GoogleSheetConfig not found."); return; }
+        var entries = GetAllEntries();
+        if (entries == null)
+            return;
 
         var targetSet = targets != null
             ? new HashSet<string>(targets.Select(t => t.ToLower()))
             : null;
 
-        foreach (var entry in config.sheets)
+        foreach (var entry in entries)
         {
-            if (targetSet != null && targetSet.Contains(entry.sheetName.ToLower()) == false) continue;
+            if (targetSet != null && targetSet.Contains(entry.SheetName.ToLower()) == false) continue;
 
-            string savePath = Path.Combine(DATA_ROOT, $"{entry.sheetName}.tsv");
-            GoogleSheetDownloader.Download(config, entry, savePath);
+            string savePath = Path.Combine(DATA_ROOT, $"{entry.SheetName}.tsv");
+            GoogleSheetDownloader.Download(entry, savePath);
         }
 
         AssetDatabase.Refresh();
