@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using BattleSystem;
 using PipeLine.PipeLineBase;
 using UnityEngine;
 using Reactions;
@@ -10,13 +11,25 @@ namespace PipeLine
     public class BattleContext
     {
         public BaseCharacter caster;
-        public BaseCharacter[] targets;
+        public int targetMask => (runtimeSkill.Data.Target == SkillTarget.Enemy)?
+            runtimeSkill.Data.EnemyTargetMask : runtimeSkill.Data.AllyTargetMask;
         public SkillBase runtimeSkill; // 캐릭터의 스탯, 장비, 버프 등이 적용된 스킬
         
         public bool isCritical;
         public bool isEvaded;
+
+        public float value;
         
+        public List<BaseCharacter> targets = new List<BaseCharacter>();
         public IReadOnlyList<ReactionExecution> reactions = null;
+        public Dictionary<BaseCharacter, int> targetDamageMap = new Dictionary<BaseCharacter, int>();
+
+        public BattleContext(BaseCharacter caster, SkillBase usedSkill, bool isCritical)
+        {
+            this.caster = caster;
+            this.runtimeSkill = usedSkill;
+            this.isCritical = isCritical;
+        }
     }
 
     // 혹시 동일한 Type이 들어가는 파이프라인이 여러 개 생길 수 있으므로, 인터페이스로 구분해줌
@@ -50,8 +63,13 @@ namespace PipeLine
     {
         public BattleContext Execute(BattleContext context)
         {
-            Debug.Log("Executing EntryStep");
-            // TODO: 공격자의 스탯 정보를 바탕으로 기본 데미지를 설정하는 로직이 추가되어야 합니다.
+            Debug.Log("EntryStep");
+            //시전자의 스탯과 스킬의 수치를 결합하는 로직 자유롭게 수정 가능
+            //지금은 테스트 용으로 간단하게만 만들어놨음
+            float characterStat = context.caster.Stat.atk;
+            float skillValue = context.runtimeSkill.Data.Value;
+            
+            context.value = characterStat + skillValue;
             return context;
         }
     }
@@ -70,10 +88,16 @@ namespace PipeLine
     [System.Serializable]
     public class CriticalStep : IPipeLineStep<BattleContext>
     {
+        public float criticalBonus = 0.5f;
         public BattleContext Execute(BattleContext context)
         {
-            Debug.Log("Executing CriticalStep");
-            // TODO: 공격자의 크리티컬 확률을 계산하고 데미지에 배율을 적용하는 로직이 추가되어야 합니다.
+            Debug.Log("CriticalStep");
+            // 크리티컬 판단은 캐릭터에서 해서 넘어옴
+            if (context.isCritical)
+            {
+                float bonus = context.value * criticalBonus;
+                context.value += bonus;
+            }
             return context;
         }
     }
@@ -84,7 +108,14 @@ namespace PipeLine
         public BattleContext Execute(BattleContext context)
         {
             Debug.Log("Executing DefenseStep");
-            // TODO: 방어자의 방어력 수치를 기반으로 최종 데미지를 감쇄시키는 로직이 추가되어야 합니다.
+            // 리액션 콜 하기전에 개별 데미지 적용 로직
+            context.targetDamageMap.Clear();
+            foreach (var target in context.targets)
+            {
+                if (target == null || target.IsDead) continue;
+                int calculatedDamage = Mathf.Max(0, Mathf.RoundToInt(context.value - target.Stat.def));
+                context.targetDamageMap[target] = calculatedDamage;
+            }
             return context;
         }
     }
@@ -109,6 +140,25 @@ namespace PipeLine
                 {
                     Debug.Log($"<color=yellow>Reaction: {reaction}</color>");
                 }
+            }
+            return context;
+        }
+    }
+    
+    [System.Serializable]
+    public class ApplyStep : IPipeLineStep<BattleContext>
+    {
+        public BattleContext Execute(BattleContext context)
+        {
+            Debug.Log("ApplyStep");
+            // 적용 로직
+            foreach (var pair in context.targetDamageMap)
+            {
+                var target = pair.Key;
+                int damage = pair.Value;
+                
+                target.ReduceHP(damage);
+                //TODO 연출 로직 추가해야함
             }
             return context;
         }

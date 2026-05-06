@@ -13,15 +13,18 @@ namespace BattleSystem
         private readonly ReactionSystem m_reactionSystem;
         private readonly IBattlePipeLine m_skillApplyPipeline;
         private readonly IBattleFlowManager m_battleFlowManager;
+        private readonly IFormationManager m_formationManager;
         private bool m_isBattle;
         
         public BattleManager(ReactionSystem reactionSystem, 
-            IBattlePipeLine  skillApplyPipeline, IBattleFlowManager expeditionFlowManager)
+            IBattlePipeLine  skillApplyPipeline, IBattleFlowManager expeditionFlowManager,
+            IFormationManager formationManager)
         {
             m_battleFlowManager = expeditionFlowManager;
             m_reactionSystem = reactionSystem;
             m_skillApplyPipeline = skillApplyPipeline;
             m_isBattle = false;
+            m_formationManager = formationManager;
             Init();
         }
         
@@ -43,6 +46,36 @@ namespace BattleSystem
         private void ApplyAct(BattleContext battleContext)
         {
             // BattleContext 적용 로직이 들어가야함
+            var enemySide = (battleContext.caster.CurrentSlot.side == E_BattleSide.Player) ? 
+                E_BattleSide.Enemy : 
+                E_BattleSide.Player;
+
+            switch (battleContext.runtimeSkill.Data.Target)
+            {
+                case SkillTarget.Enemy:
+                    ProcessTargeting(battleContext, enemySide, battleContext.runtimeSkill.Data.EnemyTargetMask);
+                    break;
+                case SkillTarget.Party:
+                    ProcessTargeting(battleContext, battleContext.caster.CurrentSlot.side, battleContext.runtimeSkill.Data.AllyTargetMask);
+                    break;
+                case SkillTarget.Self:
+                    ProcessTargeting(battleContext, battleContext.caster.CurrentSlot.side, (int)battleContext.caster.CurrentSlot.rank);
+                    break;
+            }
+            SkillApplyLogic(battleContext);
+        }
+
+        private void ProcessTargeting(BattleContext context, E_BattleSide side, int targetMask)
+        {
+            context.targets.Clear();
+            for (int i = 0; i < 4; i++)
+            {
+                if ((targetMask & (1 << i)) != 0)
+                {
+                    var target = m_formationManager.GetCharacterAt(side, (FormationMask)(1 << i));
+                    if (target != null) context.targets.Add(target);
+                }
+            }
         }
         private void Battle(BaseCharacter[] players, BaseCharacter[] enemies)
         {

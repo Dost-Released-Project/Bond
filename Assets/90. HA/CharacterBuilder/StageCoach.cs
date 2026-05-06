@@ -1,11 +1,12 @@
 
 public class StageCoach
 {
-    public BaseCharacterData GetRandomCharacter()
+    public BaseCharacter GetRandomCharacter()
     {
-        BaseCharacterData.Builder builder = new BaseCharacterData.Builder();
+        BaseCharacter.Builder builder = new BaseCharacter.Builder();
         
         builder
+            .SetRandomName()
             .AddRandomTrait()
             .AddRandomTrait()
             .AddRandomSkill()

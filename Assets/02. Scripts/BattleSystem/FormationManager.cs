@@ -136,14 +136,36 @@ namespace BattleSystem
 
         public bool HasAnyValidTarget(BaseCharacter caster, SkillData skillData)
         {
-            var enemySide = (caster.CurrentSlot.side == E_BattleSide.Player)? E_BattleSide.Enemy :  E_BattleSide.Player;
+            // 스킬의 대상 타입에 따라 달라지는 요소
+            E_BattleSide sideToCheck;
+            int maskToCheck;
+            
+            // 요소에 값을 넣음
+            switch (skillData.Target)
+            {
+                case SkillTarget.Enemy:
+                    sideToCheck = (caster.CurrentSlot.side == E_BattleSide.Player) ?
+                        E_BattleSide.Enemy : E_BattleSide.Player;
+                    maskToCheck = skillData.EnemyTargetMask;
+                    break;
+                case SkillTarget.Party:
+                    sideToCheck = caster.CurrentSlot.side;
+                    maskToCheck = skillData.AllyTargetMask;
+                    break;
+                case SkillTarget.Self:
+                    sideToCheck = caster.CurrentSlot.side;
+                    maskToCheck = (int)caster.CurrentSlot.rank;
+                    break;
+                default:
+                    return false;
+            }
 
             for (int i = 0; i < 4; i++)
             {
                 FormationMask rankToCheck = (FormationMask)(1 << i);
-                if ((skillData.EnemyTargetMask & (int)rankToCheck) != 0)
+                if ((maskToCheck & (int)rankToCheck) != 0)
                 {
-                    if (GetCharacterAt(enemySide, rankToCheck) != null) return true;
+                    if (GetCharacterAt(sideToCheck, rankToCheck) != null) return true;
                 }
             }
 

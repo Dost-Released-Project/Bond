@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Bond.Embark;
 
-public partial class BaseCharacterData
+public partial class BaseCharacter
 {
     public class Builder
     {
@@ -27,54 +27,60 @@ public partial class BaseCharacterData
             }
         };
 
-        private readonly BaseCharacterData data = new();
+        private readonly BaseCharacter chara = Sample;
 
         public Builder()
         {
-            data.Id = "Missing Id";
-            data.ImageAddress = "Missing ImageAddress";
-            data.Name = "Outis";
-            data.Profession = new SampleProfession();
-            data.Level = 1;
-            data.Insanity = 0; // 스트레스(광기) 지수 0~100, Stress는 STR과 혼동될 수 있어서 명칭 변경
-            data.RoleType = RoleType.None;
+            chara.Data.Id = "Missing Id";
+            chara.Data.ImageAddress = "Missing ImageAddress";
+            chara.Data.Name = "Outis";
+            chara.Data.Profession = new SampleProfession();
+            chara.Data.Level = 1;
+            chara.Data.Insanity = 0; // 스트레스(광기) 지수 0~100, Stress는 STR과 혼동될 수 있어서 명칭 변경
+            chara.Data.RoleType = RoleType.None;
         }
 
-        public BaseCharacterData Build() => data;
+        public BaseCharacter Build() => chara;
 
         public Builder SetId(string id)
         {
-            data.Id = id;
+            chara.Data.Id = id;
             return this;
         }
 
         public Builder SetImageAddress(string address)
         {
-            data.ImageAddress = address;
+            chara.Data.ImageAddress = address;
             return this;
         }
 
         public Builder SetName(string name)
         {
-            data.Name = name;
+            chara.Data.Name = name;
+            return this;
+        }
+
+        public Builder SetRandomName()
+        {
+            chara.Data.Name = System.Guid.NewGuid().ToString();
             return this;
         }
 
         public Builder SetClass(Profession pro)
         {
-            data.Profession = pro;
+            chara.Data.Profession = pro;
             return this;
         }
 
         public Builder SetSkills(SkillBase[] skills)
         {
-            data.Skills = skills;
+            chara.Data.Skills = skills;
             return this;
         }
 
         public Builder SetTraits(Trait[] traits)
         {
-            data.Traits = traits;
+            chara.Data.Traits = traits;
             return this;
         }
 
@@ -82,13 +88,13 @@ public partial class BaseCharacterData
         {
             Trait randomTrait = traits.GetRandom();
 
-            int i = Array.FindIndex(data.Traits, trait => trait == null);
+            int i = Array.FindIndex(chara.Traits, trait => trait == null);
             if (i == -1)
             {
-                i = UnityEngine.Random.Range(0, data.Traits.Length);
+                i = UnityEngine.Random.Range(0, chara.Traits.Length);
             }
 
-            data.Traits[i] = randomTrait;
+            chara.Traits[i] = randomTrait;
 
             return this;
         }
@@ -97,13 +103,13 @@ public partial class BaseCharacterData
         {
             SkillBase randomSkill = new SampleSkill();
 
-            int i = Array.FindIndex(data.Skills, trait => trait == null);
+            int i = Array.FindIndex(chara.Skills, trait => trait == null);
             if (i == -1)
             {
-                i = UnityEngine.Random.Range(0, data.Skills.Length);
+                i = UnityEngine.Random.Range(0, chara.Skills.Length);
             }
 
-            data.Skills[i] = randomSkill;
+            chara.Skills[i] = randomSkill;
 
             return this;
         }

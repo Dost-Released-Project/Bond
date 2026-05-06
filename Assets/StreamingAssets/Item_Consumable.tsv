@@ -1,0 +1,15 @@
+시트 페이지 2자리	캐릭터 클래스				아군 / 적군 여부		동일 타입 번호
+7	0	전사			0	아군	0
+	1	도적			1	중립	
+	2	마법사			2	적	
+	3	성직자					
+	4						
+	5						
+	6						
+ID	ItemName	Category	ConsumableType	HealValue	TotalMax	ExpSlotMax	IconPath
+(string)	(string)	(enum)	(enum/null)	(int)	(int)	(int)	(string)
+07000000	Old Bandage	Consume	Bandage	10	10	2	Sprite/Item/OldBandage
+07010000	Old Sedative	Consume	Sedative	10	10	2	Sprite/Item/OldSedative
+07020000	Stimulant	Consume	Stimulant	0	10	2	Sprite/Item/Stimulant
+07030000	Bandage	Consume	Bandage	20	10	2	Sprite/Item/Bandage
+07040000	Sedative	Consume	Sedative	20	10	2	Sprite/Item/Sedative

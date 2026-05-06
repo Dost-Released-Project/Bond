@@ -1,141 +1,104 @@
+using System.Linq;
 using UnityEngine;
-using VContainer;
-using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using VContainer;
 
 public class SettlementManager : MonoBehaviour, ISettlementManager
 {
-    [SerializeField] private Transform[] constructionSlots; 
+    private Transform[] constructionSlots; 
     
     private BuildingService _buildingService;
     private ResourceManager _resourceManager;
     private InventoryView _inventoryView;
+    private SupplyView _supplyView;
     private ITotalInventory _totalInv;
     private IExpeditionInventory _expeditionInv;
-    private SupplyView _supplyView;
     
-    [Inject]
-    public void Construct(
-        BuildingService bs, 
-        ResourceManager rm, 
-        InventoryView iv,
-        SupplyView supply,
-        ITotalInventory totalInv, 
-        IExpeditionInventory expInv)
-    {
-        _buildingService = bs;
-        _resourceManager = rm;
-        _inventoryView = iv;
-        _totalInv = totalInv;
-        _expeditionInv = expInv;
-        _supplyView = supply;
-    }
+    private BaseCharacter _selectedCharacter;
 
+    [Inject]
+    public void Construct(BuildingService bs, ResourceManager rm, InventoryView iv, SupplyView supply, ITotalInventory total, IExpeditionInventory exp)
+    {
+        _buildingService = bs; _resourceManager = rm; _inventoryView = iv;
+        _supplyView = supply; _totalInv = total; _expeditionInv = exp;
+    }
+    
+    private void Awake()
+    {
+        // "ConstructionSlot" 태그가 붙은 모든 오브젝트를 찾아 이름순으로 정렬하여 배열에 할당
+        constructionSlots = GameObject.FindGameObjectsWithTag("ConstructionSlot")
+            .OrderBy(go => go.name)
+            .Select(go => go.transform)
+            .ToArray();
+
+        Debug.Log($"<color=cyan>[시스템]</color> {constructionSlots.Length}개의 건설 슬롯이 자동으로 등록되었습니다.");
+    }
+    
     private void Update()
     {
         if (Keyboard.current.tKey.wasPressedThisFrame) _resourceManager.Admin_AddAllResources(1000);
     }
 
-    // [중요] 기존 BuildingObject가 참조하던 메서드
     public void OnBuildingClicked(BuildingObject building)
     {
-        Debug.Log($"<color=cyan>{building.Data.buildingName}</color> Lv.{building.CurrentLevel} 클릭됨.");
         var levelData = building.Data.GetLevelData(building.CurrentLevel);
+        
+        // 분기 처리: UI 오픈 vs 실제 기능 실행
         switch (building.Data.buildingType)
         {
-            case BuildingType.Storage:
-                _inventoryView.ToggleWindow(true); 
-                break;
-            case BuildingType.Guild:
-                CollectGuildData(building);
-                break;
-            case BuildingType.Tavern: // 식당: HP 회복
-                ProcessTavern(building);
-                break;
-            case BuildingType.Inn:    // 여관: 스트레스(광기) 회복
-                ProcessInn(building);
-                break;
-            case BuildingType.Smithy: // 대장간: 장비 강화
-                ProcessSmithy(building);
-                break;
-            case BuildingType.Carriage:
-                // 탐사 인벤토리 오픈
-                break;
-            case BuildingType.Supply: 
-                _supplyView.Open();
-                break;
+            case BuildingType.Storage: _inventoryView.ToggleWindow(true); break;
+            case BuildingType.Supply: _supplyView.Open(); break;
+            case BuildingType.Tavern: _buildingService.ExecuteTavern(_selectedCharacter, levelData); break;
+            case BuildingType.Inn: _buildingService.ExecuteInn(_selectedCharacter, levelData); break;
+            case BuildingType.Smithy: ProcessSmithy(building); break;
+            case BuildingType.Guild: CollectGuildData(building); break;
         }
     }
 
     public void BuildInSlot(int slotIndex, BuildingData data)
     {
-        if (slotIndex < 0 || slotIndex >= constructionSlots.Length) return;
+        Debug.Log($"<color=white>[시스템]</color> 슬롯 {slotIndex}에 {data.buildingName} 건설 시도 중...");
+
+        if (slotIndex < 0 || slotIndex >= constructionSlots.Length)
+        {
+            Debug.LogError($"[건설 실패] 유효하지 않은 슬롯 인덱스: {slotIndex}");
+            return;
+        }
+
         Transform slotTransform = constructionSlots[slotIndex];
-        if (slotTransform.childCount > 0) return;
-    
+
+        // 이미 건물이 있는지 체크
+        if (slotTransform.childCount > 0)
+        {
+            Debug.LogWarning($"[건설 실패] 슬롯 {slotIndex}에 이미 건물이 존재합니다.");
+            return;
+        }
+
+        // 서비스에서 자원 소모 및 성공 여부 확인
         if (_buildingService.TryBuild(data))
         {
-            // 시각적 처리
+            Debug.Log($"<color=green>[건설 성공]</color> {data.buildingName} 건설을 시작합니다.");
+
+            // [복구] 기존 슬롯 시각적 요소 및 기능 제거
+            // 슬롯 컴포넌트나 메쉬를 꺼서 더 이상 건설 창이 뜨지 않게 합니다.
             if (slotTransform.TryGetComponent<MeshRenderer>(out var mr)) mr.enabled = false;
             if (slotTransform.TryGetComponent<BoxCollider>(out var bc)) bc.enabled = false;
-    
+            if (slotTransform.TryGetComponent<ConstructionSlot>(out var slotScript)) slotScript.enabled = false;
+
+            // 실제 건물 비주얼 생성
             CreateBuildingVisual(slotTransform, data);
-    
-            // [추가] 최초 건설 시 1레벨 효과 적용
+
+            // 최초 건설 시 1레벨 효과 적용
             ApplyBuildingEffect(data, 1); 
+        
+            Debug.Log($"<color=cyan>[시스템]</color> {data.buildingName} 배치가 완료되었습니다.");
         }
-    }
-    
-    // 업그레이드와 건설에서 공통으로 사용하는 효과 적용 메서드
-    private void ApplyBuildingEffect(BuildingData data, int level)
-    {
-        var levelData = data.GetLevelData(level);
-        Debug.Log($"<color=orange>[시스템]</color> {data.buildingName} Lv.{level} 효과 적용 시작");
-    
-        switch (data.buildingType)
+        else
         {
-            case BuildingType.Storage:
-                // 1. 전체 인벤토리 슬롯 확장
-                _totalInv.ExpandStorage(levelData.slotExpansion);
-                // 2. 자원 보유 상한치 확장
-                _resourceManager.ExpandCapacities(levelData.frontierCapAdd, levelData.materialCapAdd, levelData.materialCapAdd);
-                Debug.Log($"창고 효과: 슬롯 +{levelData.slotExpansion}, 상한치 확장됨");
-                break;
-    
-            case BuildingType.Carriage:
-                // 탐사 인벤토리 확장
-                _expeditionInv.ExpandStorage(levelData.slotExpansion);
-                _inventoryView.RefreshUI();
-                Debug.Log($"마차 효과: 탐사 슬롯 +{levelData.slotExpansion}");
-                break;
-                
-            case BuildingType.Guild:
-                // 길드는 클릭 시 수급이므로 건설 직후 특별한 영구 효과가 없다면 비워둠
-                break;
+            Debug.LogWarning($"[자원 부족] {data.buildingName}을 건설하기 위한 자원이 모자랍니다.");
         }
     }
-    
-    // // 건물을 클릭했을 때 호출되거나, 전용 UI에서 '휴식하기' 버튼을 눌렀을 때 호출
-    // public void ProcessRecovery(Stat characterStat, BuildingObject building)
-    // {
-    //     var levelData = building.Data.GetLevelData(building.CurrentLevel);
-    //     int power = levelData.effectValue;
-    //
-    //     if (building.Data.buildingType == BuildingType.Tavern)
-    //     {
-    //         // 식당: HP 회복
-    //         characterStat.RecoverHp(power);
-    //         Debug.Log($"{building.Data.buildingName}: 체력을 {power}만큼 회복했습니다.");
-    //     }
-    //     else if (building.Data.buildingType == BuildingType.Inn)
-    //     {
-    //         // 여관: 스트레스(광기) 감소
-    //         characterStat.RecoverInsanity(power);
-    //         Debug.Log($"{building.Data.buildingName}: 광기를 {power}만큼 진정시켰습니다.");
-    //     }
-    // }
-    
-    // 업그레이드 메서드도 이 공통 메서드를 사용하도록 리팩토링
+
     public void UpgradeBuilding(BuildingObject building)
     {
         int nextLevel = building.CurrentLevel + 1;
@@ -144,10 +107,45 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         if (_buildingService.TryUpgrade(building.Data, nextLevel))
         {
             building.Upgrade();
-            ApplyBuildingEffect(building.Data, nextLevel); // 공통 메서드 호출
+            ApplyBuildingEffect(building.Data, nextLevel);
         }
     }
 
+    private void ApplyBuildingEffect(BuildingData data, int level)
+    {
+        var levelData = data.GetLevelData(level);
+        switch (data.buildingType)
+        {
+            case BuildingType.Storage:
+                _totalInv.ExpandStorage(levelData.slotExpansion);
+                _resourceManager.ExpandCapacities(levelData.frontierCapAdd, levelData.materialCapAdd, levelData.materialCapAdd);
+                break;
+            case BuildingType.Carriage:
+                _expeditionInv.ExpandStorage(levelData.slotExpansion);
+                _inventoryView.RefreshUI();
+                break;
+        }
+    }
+
+    private void ProcessSmithy(BuildingObject smithy)
+    {
+        if (_selectedCharacter == null) return;
+        Equipment target = AdminTestTool.isTargetingWeapon ? _selectedCharacter.Stat.baseWeapon : _selectedCharacter.Stat.baseArmor;
+        _buildingService.UpgradeEquipment(_selectedCharacter.Stat, target, smithy.CurrentLevel);
+    }
+    
+    private void CollectGuildData(BuildingObject guild)
+    {
+        // 길드 레벨에 따른 effectValue만큼 개척 데이터 즉시 수급
+        int reward = guild.Data.GetLevelData(guild.CurrentLevel).effectValue;
+        _resourceManager.AddFrontierData(reward);
+        _resourceManager.AddMaterials((int)(reward*0.05f), (int)(reward*0.05f));
+        Debug.Log($"길드에서 {reward}의 개척 데이터를 수급했습니다!");
+    }
+
+    public void SelectCharacter(BaseCharacter character) => _selectedCharacter = character;
+    
+    // CreateBuildingVisual 및 기타 헬퍼 메서드 (기능 유지)
     private void CreateBuildingVisual(Transform parent, BuildingData data)
     {
         GameObject buildingGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -175,93 +173,5 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
             BuildingType.Supply => Color.black,
             _ => Color.white
         };
-    }
-
-    private void CollectGuildData(BuildingObject guild)
-    {
-        // 길드 레벨에 따른 effectValue만큼 개척 데이터 즉시 수급
-        int reward = guild.Data.GetLevelData(guild.CurrentLevel).effectValue;
-        _resourceManager.AddFrontierData(reward);
-        Debug.Log($"길드에서 {reward}의 개척 데이터를 수급했습니다!");
-    }
-    
-    private BaseCharacter _selectedCharacter; // 현재 선택된 캐릭터
-
-    // 캐릭터 선택 (InteractionManager나 외부에서 호출)
-    public void SelectCharacter(BaseCharacter character)
-    {
-        _selectedCharacter = character;
-        Debug.Log($"<color=green>[선택됨]</color> {character.Profession} 클래스 캐릭터");
-    }
-
-    private BaseCharacter GetSelectedCharacterStat()
-    {
-        if (_selectedCharacter == null)
-        {
-            Debug.LogWarning("선택된 캐릭터가 없습니다! 캐릭터를 먼저 클릭하세요.");
-        }
-        return _selectedCharacter;
-    }
-
-    // --- 건물 실무 로직 완결 ---
-
-    private void ProcessTavern(BuildingObject tavern)
-    {
-        BaseCharacter target = GetSelectedCharacterStat();
-        if (target == null) return;
-
-        int hp = target.Stat.current_Hp;
-        int amount = tavern.Data.GetLevelData(tavern.CurrentLevel).effectValue;
-
-        // 식당: HP 회복 (effectValue만큼)
-        // StatCalculate를 호출하여 최대 체력을 갱신한 뒤 회복
-        target.RecoverHp(amount);
-
-        Debug.Log($"식당 이용: {amount}만큼 HP 회복. {hp} => {target.Stat.current_Hp}");
-    }
-
-    private void ProcessInn(BuildingObject inn)
-    {
-        BaseCharacter target = GetSelectedCharacterStat();
-        if (target == null) return;
-
-        int insanity = target.Insanity;
-        int amount = inn.Data.GetLevelData(inn.CurrentLevel).effectValue;
-
-        // 여관: 스트레스(광기) 감소
-        target.RecoverInsanity(amount);
-        
-        Debug.Log($"여관 이용: {amount}만큼 스트레스 감소. {insanity} => {target.Insanity}");
-    }
-    
-    private void ProcessSmithy(BuildingObject smithy)
-    {
-        BaseCharacter target = GetSelectedCharacterStat();
-        if (target == null) return;
-
-        // 관리자 도구 등에서 설정된 현재 강화 타겟 장비를 가져옵니다. (무기 또는 방어구)
-        Equipment targetEquipment = GetCurrentUpgradeTarget(target.Stat);
-    
-        if (targetEquipment == null) 
-        {
-            Debug.LogWarning("강화할 장비가 장착되어 있지 않습니다.");
-            return;
-        }
-
-        // BuildingService의 강화 로직 호출 (자원 소모 포함)
-        // 인자로 target(Stat)을 넘겨서 강화 후 StatCalculate가 실행되게 합니다.
-        _buildingService.UpgradeEquipment(target.Stat, targetEquipment, smithy.CurrentLevel);
-    }
-
-    // AdminTool 등에서 무기/방어구 중 무엇을 강화할지 결정하는 보조 메서드
-    private Equipment GetCurrentUpgradeTarget(Stat target)
-    {
-        // AdminTestTool에서 설정한 플래그에 따라 반환
-        return AdminTestTool.isTargetingWeapon ? target.baseWeapon : target.baseArmor;
-    }
-
-    public void ExecuteBuildingFunction(int slotIndex, BaseCharacter target)
-    {
-        throw new System.NotImplementedException();
     }
 }

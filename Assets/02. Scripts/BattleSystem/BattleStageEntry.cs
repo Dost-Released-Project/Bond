@@ -32,7 +32,7 @@ namespace BattleSystem
             
             for (int i = 0; i < playerCnt; i++)
             {
-                player[i] = new  BaseCharacter(m_battlePayload.Party[i]);
+                player[i] = m_battlePayload.Party[i];
                 m_formationManager.SetCharacterToSlot(player[i],  E_BattleSide.Player, i);
             }
             
