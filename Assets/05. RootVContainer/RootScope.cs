@@ -26,6 +26,11 @@ namespace RootVContainer
             // MapConfigCache (Singleton)
             // MapInitializer 가 SO 해제 전에 StageLoader 참조용 데이터를 보관하는 캐시.
             builder.Register<MapConfigCache>(Lifetime.Singleton);
+
+            // ISpriteLoader → SpriteLoader (Singleton)
+            // Addressables Sprite 비동기 로드 공용 서비스.
+            // RootScope 등록: TurnLifetimeScope, MapLifetimeScope 등 모든 하위 스코프에서 주입 가능.
+            builder.Register<ISpriteLoader, SpriteLoader>(Lifetime.Singleton);
         }
     }
 }

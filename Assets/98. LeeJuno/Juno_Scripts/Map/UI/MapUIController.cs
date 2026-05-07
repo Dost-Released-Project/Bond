@@ -25,14 +25,16 @@ public class MapUIController : MonoBehaviour
 
     private IMapNavigator _navigator;
     private IStageLoader _stageLoader;
+    private ISpriteLoader _spriteLoader;
     private MapData _cachedMapData;
 
     /// <summary>VContainer가 의존성을 주입하는 메서드.</summary>
     [Inject]
-    public void Construct(IMapNavigator navigator, IStageLoader stageLoader)
+    public void Construct(IMapNavigator navigator, IStageLoader stageLoader, ISpriteLoader spriteLoader)
     {
         _navigator = navigator;
         _stageLoader = stageLoader;
+        _spriteLoader = spriteLoader;
         _navigator.OnNodeEntered += OnNodeEntered;
         _stageLoader.OnStageCompleted += HandleStageCompleted;
     }
@@ -53,7 +55,7 @@ public class MapUIController : MonoBehaviour
     {
         _cachedMapData = mapData;
         _mapPanel.SetActive(true);
-        _mapView.Initialize(mapData, OnNodeButtonClicked);
+        _mapView.Initialize(mapData, OnNodeButtonClicked, _spriteLoader);
     }
 
     /// <summary>

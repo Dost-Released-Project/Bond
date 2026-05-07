@@ -139,7 +139,7 @@ public class TurnManager : ITurnManager, IStartable, IDisposable
         // 살아있는 유닛만 큐에
         for (int i = 0; i < _units.Count; i++)
         {
-            var unit = _units[i];
+            ITurnUseUnit unit = _units[i];
             if (unit.IsDead == false)
             {
                 // 속도 같을때 섞기용
