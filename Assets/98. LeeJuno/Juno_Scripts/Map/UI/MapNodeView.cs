@@ -1,3 +1,4 @@
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -26,6 +27,8 @@ public class MapNodeView : MonoBehaviour
     private System.Action<int> _onClickCallback;
     private AsyncOperationHandle<Sprite> _iconHandle; // 로드 핸들 — OnDestroy에서 Release
     private bool _iconHandleValid;                    // 핸들 유효 여부 플래그
+    private ISpriteLoader _spriteLoader;
+    private CancellationTokenSource _loadCts;          // 비동기 로드 취소용 — Setup 재호출 시 이전 작업 취소
 
     /// <summary>
     /// 노드 데이터와 시각 정보(주소 기반)를 받아 이 뷰를 초기화한다.
@@ -35,8 +38,11 @@ public class MapNodeView : MonoBehaviour
     /// <param name="iconAddress">Addressables 아이콘 주소. 비어 있으면 아이콘 비표시.</param>
     /// <param name="fallbackIcon">iconAddress 로드 실패 또는 빈 경우 사용할 스프라이트</param>
     /// <param name="onClickCallback">버튼 클릭 시 호출할 콜백 (인자: 노드 Id)</param>
-    public void Setup(MapNode node, string iconAddress, Sprite fallbackIcon, System.Action<int> onClickCallback)
+    /// <param name="spriteLoader">Addressables Sprite 비동기 로드 서비스. 호출자(MapView)가 DI로 전달한다.</param>
+    public void Setup(MapNode node, string iconAddress, Sprite fallbackIcon, System.Action<int> onClickCallback, ISpriteLoader spriteLoader)
     {
+        _spriteLoader = spriteLoader;
+
         // _button 미연결 시 즉시 종료
         if (_button == null)
         {
@@ -64,9 +70,15 @@ public class MapNodeView : MonoBehaviour
 
         RefreshState();
 
-        // 주소가 있으면 비동기 로드 시작
+        // 주소가 있으면 비동기 로드 시작 — 이전 로드 작업을 취소한 뒤 새 토큰으로 시작한다
         if (string.IsNullOrEmpty(iconAddress) == false)
-            LoadIconAsync(iconAddress).Forget(); // 반환값 불필요 — 실패 시 catch 내부에서 LogWarning 처리
+        {
+            _loadCts?.Cancel();
+            _loadCts?.Dispose();
+            _loadCts = new CancellationTokenSource();
+            // 람다: UniTaskVoid 반환 메서드에 토큰 전달 후 Forget — 예외는 메서드 내부에서 처리
+            LoadIconAsync(iconAddress, _loadCts.Token).Forget();
+        }
     }
 
     /// <summary>
@@ -97,6 +109,10 @@ public class MapNodeView : MonoBehaviour
 
     private void OnDestroy()
     {
+        // 진행 중인 로드 작업 취소 및 CancellationTokenSource 해제
+        _loadCts?.Cancel();
+        _loadCts?.Dispose();
+
         // 로드된 핸들이 있으면 메모리 해제 — IsValid() 체크로 이미 무효화된 핸들의 크래시 방지
         if (_iconHandleValid && _iconHandle.IsValid())
             Addressables.Release(_iconHandle);
@@ -105,35 +121,43 @@ public class MapNodeView : MonoBehaviour
     /// <summary>
     /// iconAddress로 Sprite를 비동기 로드해 _icon에 적용한다.
     /// 로드 실패 시 fallback(Setup 시 적용된 스프라이트)을 유지한다.
-    /// UniTask.Forget 방식으로 호출 — 람다 없이 메서드 분리로 명확성 확보.
+    /// UniTask.Forget 방식으로 호출 — 예외를 throw하지 않으므로 별도 에러 핸들러 불필요.
     /// </summary>
-    private async UniTaskVoid LoadIconAsync(string iconAddress)
+    private async UniTaskVoid LoadIconAsync(string iconAddress, CancellationToken token)
     {
-        _iconHandle = Addressables.LoadAssetAsync<Sprite>(iconAddress);
+        // ISpriteLoader 에게 로드를 위임. 핸들 소유권은 이 클래스가 유지한다.
+        _iconHandle = await _spriteLoader.LoadAsync(iconAddress);
         _iconHandleValid = true;
 
-        try
+        // 취소된 경우 핸들을 즉시 해제하고 종료 — Setup 재호출 시 이전 작업 취소 처리
+        if (token.IsCancellationRequested)
         {
-            Sprite loaded = await _iconHandle.ToUniTask();
-
-            // 로드 완료 시점에 오브젝트가 이미 파괴되었을 수 있으므로 null 체크
-            if (this == null)
-                return;
-
-            if (_icon != null && loaded != null)
-                _icon.sprite = loaded;
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogWarning($"[MapNodeView] 아이콘 로드 실패 (address={iconAddress}): {e.Message}");
-
-            // 실패 시 핸들 해제 — OnDestroy에서 이중 해제 방지
-            if (_iconHandleValid)
+            if (_iconHandle.IsValid())
             {
                 Addressables.Release(_iconHandle);
                 _iconHandleValid = false;
             }
+            return;
         }
+
+        // 로드 완료 시점에 오브젝트가 이미 파괴되었을 수 있으므로 null 체크
+        if (this == null)
+            return;
+
+        // try-catch 의존 구조 제거 — Status 체크로 성공/실패를 명시적으로 판단한다
+        if (_iconHandle.Status != AsyncOperationStatus.Succeeded)
+        {
+            Debug.LogWarning($"[MapNodeView] 아이콘 로드 실패 (address={iconAddress})");
+            if (_iconHandle.IsValid())
+            {
+                Addressables.Release(_iconHandle);
+                _iconHandleValid = false;
+            }
+            return;
+        }
+
+        if (_icon != null)
+            _icon.sprite = _iconHandle.Result;
     }
 
     private void OnButtonClicked()

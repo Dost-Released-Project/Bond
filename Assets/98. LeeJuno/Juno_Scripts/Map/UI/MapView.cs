@@ -23,6 +23,7 @@ public class MapView : MonoBehaviour
     private List<(int FromNodeId, MapEdgeView EdgeView)> _edgeViews;          // 엣지 캐싱 (출발 노드 ID + 뷰)
     private Dictionary<StageType, StageConfig> _stageConfigDict;              // StageType → StageConfig O(1) 조회용
     private System.Action<int> _onNodeClickedCallback;
+    private ISpriteLoader _spriteLoader;
 
     /// <summary>
     /// 맵 데이터를 받아 노드와 엣지를 생성하고 배치한다.
@@ -30,8 +31,10 @@ public class MapView : MonoBehaviour
     /// </summary>
     /// <param name="mapData">렌더링할 맵 데이터</param>
     /// <param name="onNodeClicked">노드 버튼 클릭 시 호출할 콜백 (인자: 노드 Id)</param>
-    public void Initialize(MapData mapData, System.Action<int> onNodeClicked)
+    /// <param name="spriteLoader">MapNodeView 에 전달할 Addressables Sprite 로드 서비스.</param>
+    public void Initialize(MapData mapData, System.Action<int> onNodeClicked, ISpriteLoader spriteLoader)
     {
+        _spriteLoader = spriteLoader;
         foreach (Transform child in _mapContainer)
             UnityEngine.Object.Destroy(child.gameObject);
 
@@ -132,7 +135,7 @@ public class MapView : MonoBehaviour
             Sprite fallbackIcon = (config != null) ? config.Icon : null;
             Color color = (config != null) ? config.NodeColor : Color.white;
 
-            nodeView.Setup(node, iconAddress, fallbackIcon, _onNodeClickedCallback);
+            nodeView.Setup(node, iconAddress, fallbackIcon, _onNodeClickedCallback, _spriteLoader);
             nodeView.SetColor(color);
 
             _nodeViews[node.Id] = nodeView;
