@@ -21,16 +21,13 @@ namespace BattleStage
         public void PartySetting(BaseCharacter[] playerUnits)
         {
             m_playerUnits =  playerUnits;
-            //TODO 아래에 Slot 세팅 추가 해야함
         }
 
         public void EnemySetting(BaseCharacter[] enemyUnits)
         {
             m_enemyUnits =  enemyUnits;
-            //TODO 아래에 Slot 세팅 추가 해야함
         }
-
-        // 매개변수 : 적 파티
+        
         public void StartBattle()
         {
             // 구독하고 있는 매니저들 한테 전투 시작 신호(플레이어 파티, 적 파티)

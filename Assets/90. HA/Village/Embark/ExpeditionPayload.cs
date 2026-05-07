@@ -24,11 +24,6 @@ namespace Bond.Expedition
         // 탐사 결과 (귀환 후 마을 씬이 읽음)
         public ExpeditionOutcome Outcome { get; private set; }
 
-        private void OnEnable()
-        {
-            Clear();
-        }
-
         public void SetContents(
             IReadOnlyList<BaseCharacter> party,
             ExpeditionInventory supplies,

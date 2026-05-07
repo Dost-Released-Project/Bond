@@ -54,7 +54,11 @@ public class TurnManager : ITurnManager, IStartable, IDisposable
             Debug.LogError("유닛 데이터가 설정되지 않았습니다! SetPlayerUnits를 먼저 호출하세요.");
             return;
         }
+        _units.Clear();
+        _units.AddRange(characters.Where(c => c != null));
+        _units.AddRange(targets.Where(c => c != null));
         Debug.Log($"TurnManager received battle start event with {characters.Length} characters and {targets.Length} targets.");
+        StartBattleAsync().Forget();
     }
 
     public async UniTask StartBattleAsync(CancellationToken token = default)

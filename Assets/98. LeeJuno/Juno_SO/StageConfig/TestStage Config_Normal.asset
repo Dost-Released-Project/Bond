@@ -18,5 +18,5 @@ MonoBehaviour:
   Type: 0
   Icon: {fileID: 21300000, guid: e9d7bce1284d37548a69ce2c71723c6a, type: 3}
   IconAddress: 
-  SceneAddress: LeeJunoTestScene
+  SceneAddress: Stage_Battle
   NodeColor: {r: 1, g: 1, b: 1, a: 1}

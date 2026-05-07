@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Default Local Group
+  m_Name: Battle
   m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
-  m_GroupName: Default Local Group
-  m_GUID: 748404ed84ce7834994ae89f0b5c7ee0
+  m_GroupName: Battle
+  m_GUID: f0a291ef06d34d943b37e549899e07c7
   m_SerializeEntries:
-  - m_GUID: 7df16e3de996a034f920ea43dae45dbf
-    m_Address: S2
+  - m_GUID: 20c3457861b5d874883161d564b9428d
+    m_Address: Stage_Battle
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -24,5 +24,5 @@ MonoBehaviour:
   m_Settings: {fileID: 11400000, guid: 2844d279e9fd27e4a9c0e38b898d6b70, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 47111744f272d9649b2967a95012732d, type: 2}
-    - {fileID: 11400000, guid: dd0c03ec9b3fc8041b68a7f2a2c2d767, type: 2}
+    - {fileID: 11400000, guid: 89672d1b1051dc34881fb434ecb92a27, type: 2}
+    - {fileID: 11400000, guid: a98b177a91bcacf46bfa9717a69868ca, type: 2}

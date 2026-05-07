@@ -1,5 +1,6 @@
 using BattleSystem.Interface;
 using Bond.Expedition;
+using UnityEngine;
 using VContainer.Unity;
 
 namespace BattleSystem
@@ -25,7 +26,6 @@ namespace BattleSystem
 
         private void CharacterSetting()
         {
-            // Root의 ExpeditionPayLoad.party의 CharacterData랑 BaseCharacter결합
             BaseCharacter[] player = new BaseCharacter[4]; 
             
             int playerCnt = m_battlePayload.Party.Count;
@@ -39,6 +39,11 @@ namespace BattleSystem
             // Root의 StageContext.enemyparty의 CharacterData랑 BaseCharacter결합
             // 아래는 임시 코드
             BaseCharacter[] enemy = new BaseCharacter[4];
+            for (int i = 0; i < playerCnt; i++)
+            {
+                enemy[i] = m_battlePayload.Party[i];
+                m_formationManager.SetCharacterToSlot(enemy[i],  E_BattleSide.Enemy, i);
+            }
             CharacterRegister(player, enemy);
         }
 
