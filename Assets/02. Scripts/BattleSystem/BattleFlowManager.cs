@@ -13,7 +13,6 @@ namespace BattleStage
     public class BattleFlowManager : MonoBehaviour, IBattleFlowManager
     {
         public event Action<BaseCharacter[], BaseCharacter[]> OnBattle;
-        public event Action OnBattleEnd;
         
         private BaseCharacter[] m_playerUnits;
         private BaseCharacter[] m_enemyUnits;

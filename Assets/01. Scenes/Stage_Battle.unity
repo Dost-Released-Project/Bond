@@ -1122,7 +1122,7 @@ MonoBehaviour:
     TypeName: BattleSystem.VContainer.BattleFlowManagerScope
   autoRun: 1
   autoInjectGameObjects: []
-  ui: {fileID: 1521924634}
+  _ui: {fileID: 1521924634}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0

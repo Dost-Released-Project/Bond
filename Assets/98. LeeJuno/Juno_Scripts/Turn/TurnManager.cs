@@ -24,12 +24,12 @@ public class TurnManager : ITurnManager, IStartable, IDisposable
     
     void IStartable.Start()
     {
-        _battleFlowManager.OnBattle += StartBattle;
+        _battleFlowManager.OnBattle += SwitchBattle;
     }
 
     void IDisposable.Dispose()
     {
-        _battleFlowManager.OnBattle -= StartBattle;
+        _battleFlowManager.OnBattle -= SwitchBattle;
     }
 
     // 전체 유닛
@@ -48,13 +48,11 @@ public class TurnManager : ITurnManager, IStartable, IDisposable
         _units.AddRange(unit);
     }
 
-    public void StartBattle(BaseCharacter[] characters, BaseCharacter[] targets)
+    public void SwitchBattle(BaseCharacter[] characters, BaseCharacter[] targets)
     {
         if (m_cts != null)
         {
-            m_cts.Cancel();
-            m_cts.Dispose();
-            m_cts = null;
+            BattleEnd();
             return;
         }
         
@@ -155,10 +153,9 @@ public class TurnManager : ITurnManager, IStartable, IDisposable
     // 해당 로직을 외부에서 승패 판정 후 호출
     public void BattleEnd()
     {
-        if (m_cts != null)
-        {
-            m_cts.Cancel();
-        }
+        m_cts.Cancel();
+        m_cts.Dispose();
+        m_cts = null;
         _isBattleActive = false;
         _units.Clear();
         Debug.Log("== 전투 종료 ==");
