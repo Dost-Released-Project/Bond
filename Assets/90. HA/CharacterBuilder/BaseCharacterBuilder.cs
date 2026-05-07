@@ -60,12 +60,6 @@ public partial class BaseCharacter
             return this;
         }
 
-        public Builder SetRandomName()
-        {
-            chara.Data.Name = System.Guid.NewGuid().ToString();
-            return this;
-        }
-
         public Builder SetClass(Profession pro)
         {
             chara.Data.Profession = pro;

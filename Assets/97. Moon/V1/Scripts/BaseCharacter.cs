@@ -94,7 +94,7 @@ public partial class BaseCharacter : ITurnUseUnit
     public async UniTask TakeTurnAsync()
     {
         SkillBase skill = null;
-        Debug.Log($"<color=green>{Name} 차례");
+        Debug.Log($"<color=green>{Name} 차례</color>");
         if (isPlayable)
         {
             _tcs = AutoResetUniTaskCompletionSource<bool>.Create();

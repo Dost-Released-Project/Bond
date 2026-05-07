@@ -98,4 +98,21 @@ public static class RandomUtil
     {
         return GetShuffled(collection.ToArray())[0];
     }
+    
+    public static T GetRandom<T>() where T : Enum
+    {
+        Array values = Enum.GetValues(typeof(T));
+        return (T)values.GetValue(random.Next(values.Length));
+    }
+    
+    public static T GetRandom<T>(T except) where T : Enum
+    {
+        Array values = Enum.GetValues(typeof(T));
+        
+        T reVal = (T)values.GetValue(random.Next(values.Length));
+        while (reVal.Equals(except))
+            reVal = (T)values.GetValue(random.Next(values.Length));
+        
+        return reVal;
+    }
 }
