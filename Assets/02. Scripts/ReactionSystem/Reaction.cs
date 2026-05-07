@@ -23,6 +23,11 @@ namespace Reactions
         {
             Id = System.Guid.NewGuid().ToString();
         }
+
+        public Reaction(SerializationInfo info, StreamingContext context)
+        {
+            Id = info.GetString("Id");
+        }
         
         public override string ToString()
         {
