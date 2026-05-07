@@ -17,7 +17,6 @@ MonoBehaviour:
   - rid: 2186371856142172228
   - rid: 2186371856142172229
   - rid: 2186371856142172230
-  - rid: 2186371856142172231
   references:
     version: 2
     RefIds:
@@ -29,10 +28,8 @@ MonoBehaviour:
       data: 
     - rid: 2186371856142172229
       type: {class: CriticalStep, ns: PipeLine, asm: Assembly-CSharp}
-      data: 
+      data:
+        criticalBonus: 0.5
     - rid: 2186371856142172230
       type: {class: DefenseStep, ns: PipeLine, asm: Assembly-CSharp}
-      data: 
-    - rid: 2186371856142172231
-      type: {class: ReactionCall, ns: PipeLine, asm: Assembly-CSharp}
       data: 

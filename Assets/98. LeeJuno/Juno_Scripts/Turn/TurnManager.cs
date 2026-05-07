@@ -16,6 +16,7 @@ public class TurnManager : ITurnManager, IStartable, IDisposable
     
     
     private readonly IBattleFlowManager _battleFlowManager;
+    private CancellationTokenSource m_cts;
     
     public TurnManager(IBattleFlowManager expeditionFlowManager) {
         _battleFlowManager = expeditionFlowManager;
@@ -49,6 +50,15 @@ public class TurnManager : ITurnManager, IStartable, IDisposable
 
     public void StartBattle(BaseCharacter[] characters, BaseCharacter[] targets)
     {
+        if (m_cts != null)
+        {
+            m_cts.Cancel();
+            m_cts.Dispose();
+            m_cts = null;
+            return;
+        }
+        
+        m_cts = new CancellationTokenSource();
         if (characters == null || targets == null)
         {
             Debug.LogError("유닛 데이터가 설정되지 않았습니다! SetPlayerUnits를 먼저 호출하세요.");
@@ -58,7 +68,7 @@ public class TurnManager : ITurnManager, IStartable, IDisposable
         _units.AddRange(characters.Where(c => c != null));
         _units.AddRange(targets.Where(c => c != null));
         Debug.Log($"TurnManager received battle start event with {characters.Length} characters and {targets.Length} targets.");
-        StartBattleAsync().Forget();
+        StartBattleAsync(m_cts.Token).Forget();
     }
 
     public async UniTask StartBattleAsync(CancellationToken token = default)
@@ -145,6 +155,10 @@ public class TurnManager : ITurnManager, IStartable, IDisposable
     // 해당 로직을 외부에서 승패 판정 후 호출
     public void BattleEnd()
     {
+        if (m_cts != null)
+        {
+            m_cts.Cancel();
+        }
         _isBattleActive = false;
         _units.Clear();
         Debug.Log("== 전투 종료 ==");

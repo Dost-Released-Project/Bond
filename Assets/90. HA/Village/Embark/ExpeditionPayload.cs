@@ -18,6 +18,7 @@ namespace Bond.Expedition
         // OnEnable에서 초기화하여 플레이 시작마다 찌꺼기 제거
 
         public IReadOnlyList<BaseCharacter> Party { get; private set; }
+        public IReadOnlyList<BaseCharacter> EnemyParty { get; private set; }
         public ExpeditionInventory Supplies { get; private set; }
         public string DungeonId { get; private set; }
 
@@ -32,6 +33,11 @@ namespace Bond.Expedition
             Party = party;
             Supplies = supplies;
             DungeonId = dungeonId;
+        }
+
+        public void SetEnemy(IReadOnlyList<BaseCharacter> enemyParty)
+        {
+            EnemyParty = enemyParty;
         }
 
         public void SetResult(ExpeditionOutcome outcome)

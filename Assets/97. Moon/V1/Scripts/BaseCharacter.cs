@@ -107,7 +107,7 @@ public partial class BaseCharacter : ITurnUseUnit
             skill = battleType.BattleAction(Skills);
         }
         
-        var battleContext = CreateBattleContext(skill);
+        BattleContext battleContext = CreateBattleContext(skill);
         onBattleAction?.Invoke(battleContext);
     
         Debug.Log($"<color=lightblue>{Name} 행동 완료!</color>");

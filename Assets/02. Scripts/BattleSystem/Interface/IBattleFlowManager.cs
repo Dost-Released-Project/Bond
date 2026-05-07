@@ -10,6 +10,6 @@ namespace BattleSystem.Interface
     
         void EnemySetting(BaseCharacter[] enemyUnits);
     
-        void StartBattle();
+        void BattleSwitch();
     }
 }

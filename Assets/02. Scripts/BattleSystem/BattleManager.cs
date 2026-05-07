@@ -42,6 +42,22 @@ namespace BattleSystem
         {
             m_skillApplyPipeline.SetReactionSystem(m_reactionSystem);
         }
+        private void Battle(BaseCharacter[] players, BaseCharacter[] enemies)
+        {
+            // 모든 캐릭터 구독 / 해제
+            m_isBattle = !m_isBattle;
+            switch (m_isBattle)
+            {
+                case true:
+                    SubCharacter(players);
+                    SubCharacter(enemies);
+                    break;
+                case false:
+                    UnSubCharacter(players);
+                    UnSubCharacter(enemies);
+                    break;
+            }
+        }
 
         private void ApplyAct(BattleContext battleContext)
         {
@@ -50,6 +66,7 @@ namespace BattleSystem
                 E_BattleSide.Enemy : 
                 E_BattleSide.Player;
 
+            Debug.Log(battleContext.runtimeSkill);
             switch (battleContext.runtimeSkill.Data.Target)
             {
                 case SkillTarget.Enemy:
@@ -67,6 +84,21 @@ namespace BattleSystem
 
         private void ProcessTargeting(BattleContext context, E_BattleSide side, int targetMask)
         {
+            bool isDead = false;
+            foreach (var target in context.targets)
+            {
+                if (target.IsDead)
+                {
+                    isDead = true;
+                } 
+            }
+
+            if (isDead)
+            {
+                Debug.Log("죽은 대상 지정");
+                return;
+            }
+            
             context.targets.Clear();
             for (int i = 0; i < 4; i++)
             {
@@ -75,22 +107,6 @@ namespace BattleSystem
                     var target = m_formationManager.GetCharacterAt(side, (FormationMask)(1 << i));
                     if (target != null) context.targets.Add(target);
                 }
-            }
-        }
-        private void Battle(BaseCharacter[] players, BaseCharacter[] enemies)
-        {
-            // 모든 캐릭터 구독 / 해제
-            m_isBattle = !m_isBattle;
-            switch (m_isBattle)
-            {
-                case true:
-                    SubCharacter(players);
-                    SubCharacter(enemies);
-                    break;
-                case false:
-                    UnSubCharacter(players);
-                    UnSubCharacter(enemies);
-                    break;
             }
         }
         

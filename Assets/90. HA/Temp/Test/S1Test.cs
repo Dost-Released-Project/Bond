@@ -48,13 +48,14 @@ namespace _90._HA.Temp.Test
                 {
                     _expeditionInventory.AddItemAuto(item, Random.Range(1, 5));
                 }
-
+                BaseCharacter[] enemyParty = new  BaseCharacter[4];
                 for (int i = 0; i < 4; i++)
                 {
                     var chara = _stageCoach.GetRandomCharacter();
+                    enemyParty[i] = _stageCoach.GetRandomCharacter();
                     _partyManager.TryAddMember(chara);
                 }
-
+                payload.SetEnemy(enemyParty);
                 _embarkManager.SavePayload();
             }
 

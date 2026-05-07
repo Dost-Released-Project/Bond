@@ -1,11 +1,12 @@
 using BattleSystem.Interface;
 using Bond.Expedition;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using VContainer.Unity;
 
 namespace BattleSystem
 {
-    public class BattleStageEntry : IBattleStageEntry, IPostStartable
+    public class BattleStageEntry : IBattleStageEntry, IPostStartable, ITickable
     {
         private readonly IBattleFlowManager m_battleFlowManager;
         private readonly ExpeditionPayload m_battlePayload;
@@ -24,6 +25,21 @@ namespace BattleSystem
             CharacterSetting();
         }
 
+        public void Tick()
+        {
+            if (Keyboard.current != null && Keyboard.current.digit1Key.wasPressedThisFrame)
+            {
+                Debug.Log("1번 키 눌림");
+                BattleSwitch();
+            }
+            
+            if (Keyboard.current != null && Keyboard.current.digit2Key.wasPressedThisFrame)
+            {
+                Debug.Log("2번 키 눌림");
+                CharacterSetting();
+            }
+        }
+
         private void CharacterSetting()
         {
             BaseCharacter[] player = new BaseCharacter[4]; 
@@ -33,6 +49,7 @@ namespace BattleSystem
             for (int i = 0; i < playerCnt; i++)
             {
                 player[i] = m_battlePayload.Party[i];
+                Debug.Log($"{i}번째 파티원 {m_battlePayload.Party[i]}");
                 m_formationManager.SetCharacterToSlot(player[i],  E_BattleSide.Player, i);
             }
             
@@ -41,7 +58,8 @@ namespace BattleSystem
             BaseCharacter[] enemy = new BaseCharacter[4];
             for (int i = 0; i < playerCnt; i++)
             {
-                enemy[i] = m_battlePayload.Party[i];
+                enemy[i] = m_battlePayload.EnemyParty[i];
+                Debug.Log($"{i}번째 적 {m_battlePayload.EnemyParty[i]}");
                 m_formationManager.SetCharacterToSlot(enemy[i],  E_BattleSide.Enemy, i);
             }
             CharacterRegister(player, enemy);
@@ -52,12 +70,12 @@ namespace BattleSystem
             // ExpeditionFlowManager에 CharacterSetting에서 결합한 객체를 등록
             m_battleFlowManager.PartySetting(playerCharacter);
             m_battleFlowManager.EnemySetting(enemyCharacter);
-            StartBattle();
+            BattleSwitch();
         }
 
-        private void StartBattle()
+        private void BattleSwitch()
         {
-            m_battleFlowManager.StartBattle();
+            m_battleFlowManager.BattleSwitch();
         }
     }
 }

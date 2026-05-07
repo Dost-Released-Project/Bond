@@ -1648,7 +1648,15 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   expeditionFlowManager: {fileID: 192782865}
-  slots: []
+  slots:
+  - {fileID: 1410344349}
+  - {fileID: 1680525791}
+  - {fileID: 1194974106}
+  - {fileID: 1377312406}
+  - {fileID: 524783354}
+  - {fileID: 1760238656}
+  - {fileID: 230072094}
+  - {fileID: 1734522396}
 --- !u!1 &1377312404
 GameObject:
   m_ObjectHideFlags: 0

@@ -19,6 +19,7 @@ public class StageCoach
             .AddRandomTrait()
             .AddRandomSkill()
             .AddRandomSkill()
+            .AddRandomSkill()
             .AddRandomSkill();
         
         var chara = builder.Build();
