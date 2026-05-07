@@ -33,20 +33,5 @@ namespace BattleStage
             // 구독하고 있는 매니저들 한테 전투 시작 신호(플레이어 파티, 적 파티)
             OnBattle?.Invoke(m_playerUnits, m_enemyUnits);
         }
-        
-        
-        private void Update()
-        {
-            if (Keyboard.current != null && Keyboard.current.digit1Key.wasPressedThisFrame)
-            {
-                Debug.Log("1번 키 눌림");
-                BattleSwitch();
-            }
-
-            if (Keyboard.current != null && Keyboard.current.digit2Key.wasPressedThisFrame)
-            {
-                Debug.Log("2번 키 눌림");
-            }
-        }
     }
 }
