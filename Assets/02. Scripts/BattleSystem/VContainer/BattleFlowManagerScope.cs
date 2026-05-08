@@ -16,6 +16,12 @@ namespace BattleSystem.VContainer
             builder.RegisterComponent(expeditionFlowManager).As<IBattleFlowManager>();
             builder.Register<FormationManager>(Lifetime.Singleton).As<IFormationManager>();
             builder.RegisterInstance(slots);
+            
+            builder.Register<CharacterItemService>(Lifetime.Singleton);
+            builder.Register<InventoryTransferService>(Lifetime.Singleton);
+            
+            builder.RegisterComponentInHierarchy<ExpeditionInventoryView>();
+            builder.RegisterComponentInHierarchy<EquipmentSlotUI>();
         }
     }
 }
