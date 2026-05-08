@@ -7,36 +7,25 @@ using VContainer;
 public class AccessoryBagView : MonoBehaviour
 {
     private ITotalInventory _totalInventory;
-    private CharacterItemService _itemService; // 이름 변경 및 타입 변경
-    private InventoryUIService _uiService;     // UI 상태 관리 추가
+    private CharacterItemService _itemService; 
+    private InventoryTransferService _transferService; // 주입 추가
     
     private VisualElement _grid;
-    private VisualElement _dragGhost; // 드래그 시각화를 위한 고스트 추가
     private List<VisualElement> _uiSlots = new();
     private List<int> _mappedIndices = new();
 
     [Inject]
-    public void Construct(ITotalInventory total, CharacterItemService itemService, InventoryUIService uiService) 
+    public void Construct(ITotalInventory total, CharacterItemService itemService, InventoryTransferService transferService, InventoryUIService uiService) 
     { 
         _totalInventory = total; 
         _itemService = itemService; 
-        _uiService = uiService;
+        _transferService = transferService;
     }
 
     private void Start()
     {
         var root = GetComponent<UIDocument>().rootVisualElement;
         _grid = root.Q<VisualElement>("accessory-grid");
-
-        // 드래그 고스트 설정 (기존 InventoryView와 동일한 방식 적용)
-        _dragGhost = new VisualElement();
-        _dragGhost.style.position = Position.Absolute;
-        _dragGhost.pickingMode = PickingMode.Ignore;
-        _dragGhost.style.visibility = Visibility.Hidden;
-        _dragGhost.style.width = 50; _dragGhost.style.height = 50;
-        root.Add(_dragGhost);
-
-        root.RegisterCallback<PointerMoveEvent>(OnPointerMove);
         
         _totalInventory.OnChanged += RefreshUI;
         RefreshUI();
@@ -57,7 +46,7 @@ public class AccessoryBagView : MonoBehaviour
                     
                     if (e.button == 0) { // 좌클릭 드래그 시작
                         if (slotData.IsEmpty) return;
-                        _uiService.StartDrag(_totalInventory, actualInvIdx, slotData.item.icon, _dragGhost, e.position, new Vector2(25, 25));
+                        _transferService.StartDrag(_totalInventory, actualInvIdx);
                     } 
                     else if (e.button == 1) { // 우클릭 자동 장착
                         _itemService.AutoEquip(_totalInventory, actualInvIdx);
@@ -65,13 +54,12 @@ public class AccessoryBagView : MonoBehaviour
                 }
             });
 
-            // 드롭 로직 추가 (가방 안에서 아이템 위치 교환 등을 위해)
             slot.RegisterCallback<PointerUpEvent>(e => {
-                if (_uiService.CurrentSourceInventory != null && uiIdx < _mappedIndices.Count) {
+                if (_transferService.IsDragging && uiIdx < _mappedIndices.Count) {
                     int targetIdx = _mappedIndices[uiIdx];
-                    // 기존 전송 서비스는 이미 주입되어 있으므로 필요한 로직 수행 가능하지만 
-                    // 여기서는 기본적으로 '아이템 교체'가 발생하도록 구조 유지
-                    _uiService.ResetDrag();
+                    // 가방 내부 스왑 진행
+                    _transferService.ExecuteDragDrop(_transferService.CurrentSourceInventory, _transferService.CurrentDraggingIndex, _totalInventory, targetIdx);
+                    _transferService.ResetDrag();
                 }
             });
 
@@ -109,14 +97,9 @@ public class AccessoryBagView : MonoBehaviour
         }
     }
 
-    private void OnPointerMove(PointerMoveEvent evt) 
-    { 
-        if (_uiService.CurrentSourceInventory != null) _uiService.UpdateGhostPosition(evt.position, new Vector2(25, 25)); 
-    }
-
     public void ToggleWindow()
     {
-        _uiService.IsAccessoryBagActive = !_uiService.IsAccessoryBagActive; // 서비스 상태 갱신
-        _grid.style.display = _uiService.IsAccessoryBagActive ? DisplayStyle.Flex : DisplayStyle.None;
+        var root = GetComponent<UIDocument>().rootVisualElement;
+        root.style.display = (root.style.display == DisplayStyle.None) ? DisplayStyle.Flex : DisplayStyle.None;
     }
 }
