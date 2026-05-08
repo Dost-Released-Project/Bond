@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
+using Bond.Persistence;
 using UnityEditor;
 using UnityEngine;
 using Newtonsoft.Json;
@@ -33,6 +36,42 @@ namespace _90._HA.Temp.Test
                 BaseCharacter chara = JsonConvert.DeserializeObject<BaseCharacter>(json, settings);
                 Debug.Log(chara);
             }
+
+            if (GUILayout.Button("Save"))
+            {
+                var saveLoadSystem = new SaveLoadSystem();
+                var roster = new Roster();
+
+                saveLoadSystem.Register(roster);
+                for (int i = 0; i < 4; i++)
+                {
+                    roster.characters.Add(new StageCoach().GetRandomCharacter());
+                }
+                saveLoadSystem.Save(roster);
+            }
+            
+            if (GUILayout.Button("Load"))
+            {
+                var saveLoadSystem = new SaveLoadSystem();
+                var roster = new Roster();
+                saveLoadSystem.LoadAndRegister(roster);
+            }
+            if (GUILayout.Button("Register Test"))
+            {
+                test.Register();
+            }
+        }
+    }
+
+    public class Roster : ISaveable
+    {
+        public List<BaseCharacter> characters = new List<BaseCharacter>();
+        
+        public string Key => "roster";
+        public object Data => characters;
+        public void Restore(object data)
+        {
+            characters = (List<BaseCharacter>)data;
         }
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Bond.Embark;
 using Bond.Expedition;
+using Bond.Persistence;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -15,6 +16,7 @@ namespace _90._HA.Temp.Test
         [Inject] public PartyManager _partyManager;
         [Inject] public StageCoach _stageCoach;
         [Inject] public ExpeditionPayload payload;
+        [Inject] public SaveLoadSystem saveLoadSystem;
         
         public List<BaseItem> items;
         public BaseCharacter _character;
@@ -63,6 +65,12 @@ namespace _90._HA.Temp.Test
             {
                 SceneManager.LoadSceneAsync("S2");
             }
+        }
+
+        public void Register()
+        {
+            saveLoadSystem.Register(_partyManager);
+            saveLoadSystem.DebugList();
         }
     }
 }

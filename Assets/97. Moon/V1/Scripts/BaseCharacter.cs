@@ -2,6 +2,7 @@ using System;
 using System.Runtime.Serialization;
 using BattleSystem;
 using BattleSystem.Interface;
+using Bond.Persistence;
 using PipeLine;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
