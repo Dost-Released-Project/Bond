@@ -1,0 +1,13 @@
+﻿시트 페이지 2자리	스킬 타입			사용 가능 클래스(Useable)		동일 타입 번호	지속 시간				CoolTime	턴 기준
+01	01	공격형	OFFENSIVE	클래스 시트 참고		00	0	즉발			사용 가능 칸	1이랑 AND연산 하면됨
+	02	방어형	DEFENSIVE	00			1	1턴				
+	03	공격 마법	SPELL	01			2	2턴				
+	04	보조 마법	SUPPORT	02			-	-				
+				03								
+				04								
+				05								
+ID	Type	 Value	CoolTime	Useable	Target	지속 시간	사용 가능 칸	적 진영	아군 진영	아이콘 ID		
+01010000	OFFENSIVE	10	0	00	Enemy	0	0011	1100	0000	0100		
+01020000	DEFENSIVE	10	0	00	Party	1	0011	0000	1111	0101		
+01030000	OFFENSIVE	10	0	00	Enemy	0	1111	1110	0000	0102		
+01040000	SUPPORT_SPELL	10	0	00	Party	1	1111	0000	1111	0103		

@@ -35,6 +35,10 @@ public class MapLifetimeScope : LifetimeScope
         builder.Register<IMapNavigator, MapNavigator>(Lifetime.Singleton);
         builder.Register<IStageLoader, StageLoader>(Lifetime.Singleton);
         builder.Register<IEventEffectApplier, EventEffectApplier>(Lifetime.Singleton);
+        // IEventContext → EventContextService (Singleton)
+        // StageLoader 가 씬 로드 직전에 기록하고, EventSceneController 가 씬 진입 시 읽는 단방향 채널.
+        // MapLifetimeScope Singleton: 맵 씬 생명주기 동안 유지. EventSceneLifetimeScope 가 부모를 통해 상속 접근.
+        builder.Register<IEventContext, EventContextService>(Lifetime.Singleton);
 
         // 씬에 배치된 MonoBehaviour 를 DI 대상으로 등록
         if (_mapUIController != null)

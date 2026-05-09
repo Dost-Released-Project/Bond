@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using BattleSystem.Interface;
+using Cysharp.Threading.Tasks;
 using PipeLine;
 using Reactions;
 using UnityEngine;
@@ -59,27 +60,52 @@ namespace BattleSystem
             }
         }
 
-        private void ApplyAct(BattleContext battleContext)
+        private async UniTask ApplyAct(BattleContext battleContext)
         {
-            // BattleContext 적용 로직이 들어가야함
-            var enemySide = (battleContext.caster.CurrentSlot.side == E_BattleSide.Player) ? 
+            // 1. 시전자 강조 (Hover)
+            var casterSlot = battleContext.caster.CurrentSlot;
+            casterSlot.SetForceHover(true);
+            
+            // 2. 1000ms 대기
+            await UniTask.Delay(1000);
+
+            // 3. 타겟팅 처리 및 대상자 확정
+            var enemySide = (casterSlot.side == E_BattleSide.Player) ? 
                 E_BattleSide.Enemy : 
                 E_BattleSide.Player;
 
-            Debug.Log(battleContext.runtimeSkill);
             switch (battleContext.runtimeSkill.Data.Target)
             {
                 case SkillTarget.Enemy:
                     ProcessTargeting(battleContext, enemySide, battleContext.runtimeSkill.Data.EnemyTargetMask);
                     break;
                 case SkillTarget.Party:
-                    ProcessTargeting(battleContext, battleContext.caster.CurrentSlot.side, battleContext.runtimeSkill.Data.AllyTargetMask);
+                    ProcessTargeting(battleContext, casterSlot.side, battleContext.runtimeSkill.Data.AllyTargetMask);
                     break;
                 case SkillTarget.Self:
-                    ProcessTargeting(battleContext, battleContext.caster.CurrentSlot.side, (int)battleContext.caster.CurrentSlot.rank);
+                    ProcessTargeting(battleContext, casterSlot.side, (int)casterSlot.rank);
                     break;
             }
+
+            // 4. 대상자 강조 (Click)
+            Debug.Log($"Target Count: {battleContext.targets.Count}");
+            foreach (var target in battleContext.targets)
+            {
+                target.CurrentSlot.SetForceClick(true);
+            }
+
+            // 5. 1000ms 대기
+            await UniTask.Delay(1000);
+
+            // 6. 기술 실행
             SkillApplyLogic(battleContext);
+
+            // 7. 연출 초기화 (시각적 피드백 유지 후 해제)
+            casterSlot.SetForceHover(false);
+            foreach (var target in battleContext.targets)
+            {
+                target.CurrentSlot.SetForceClick(false);
+            }
         }
 
         private void ProcessTargeting(BattleContext context, E_BattleSide side, int targetMask)
