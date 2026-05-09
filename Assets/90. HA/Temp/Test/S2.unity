@@ -207,7 +207,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::S2Scope
   parentReference:
-    TypeName: RootVContainer.RootScope
+    TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
 --- !u!114 &361397494
