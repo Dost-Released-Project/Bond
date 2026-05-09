@@ -56,6 +56,10 @@ public class DefaultEquipParser : TSVParserBase<DefaultEquipDTO, DefaultEquipSO>
 
         EditorUtility.SetDirty(db);
         AssetDatabase.SaveAssets();
+
+        // 어드레서블 자동 등록 추가
+        AddressableHelper.RegisterToAddressable(dbPath);
+
         Debug.Log($"[DefaultEquipParser] 통합 DB 업데이트 완료: {assets.Count}개 등록");
     }
 }

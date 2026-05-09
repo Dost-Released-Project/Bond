@@ -90,6 +90,9 @@ public class SkillDataParser : TSVParserBase<SkillDTO, SkillData>
         
         EditorUtility.SetDirty(db);
         AssetDatabase.SaveAssets();
+
+        // 어드레서블 자동 등록 추가
+        AddressableHelper.RegisterToAddressable(dbPath);
         
         Debug.Log($"[SkillDataParser] 통합 DB 업데이트 완료: {skillAssets.Count}개의 스킬을 Skill/SkillDataSO/ 에서 수집하여 등록");
     }
