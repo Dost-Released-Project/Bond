@@ -56,10 +56,6 @@ namespace _90._HA.Temp.Test
                 var roster = new Roster();
                 saveLoadSystem.LoadAndRegister(roster);
             }
-            if (GUILayout.Button("Register Test"))
-            {
-                test.Register();
-            }
         }
     }
 
