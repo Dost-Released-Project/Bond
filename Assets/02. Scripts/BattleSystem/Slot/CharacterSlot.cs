@@ -45,6 +45,11 @@ namespace BattleSystem
         private Color m_currentColor;
         private bool m_isHovered;
         private bool m_isPressed;
+        private bool m_forceHover;
+        private bool m_forceClick;
+
+        public void SetForceHover(bool force) => m_forceHover = force;
+        public void SetForceClick(bool force) => m_forceClick = force;
 
         public CharacterSlot(E_BattleSide side, FormationMask rank)
         {
@@ -72,8 +77,11 @@ namespace BattleSystem
 
         private void VisualUpdate()
         {
-            if (m_isPressed) m_targetColor = colorData.pressedColor;
-            else if (m_isHovered) m_targetColor = colorData.hoverColor;
+            bool finalHover = m_isHovered || m_forceHover;
+            bool finalClick = m_isPressed || m_forceClick;
+
+            if (finalClick) m_targetColor = colorData.pressedColor;
+            else if (finalHover) m_targetColor = colorData.hoverColor;
             else m_targetColor = colorData.normalColor;
 
             m_currentColor = Color.Lerp(m_currentColor, m_targetColor, Time.unscaledDeltaTime * colorData.lerpSpeed);

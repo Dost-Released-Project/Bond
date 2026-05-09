@@ -30,6 +30,9 @@ public abstract class TSVParserBase<TDTO, TSO> : ITSVParser
     // 에셋 파일명 결정
     protected abstract string GetAssetName(TDTO dto);
 
+    // 임포트 완료 후 호출되는 훅
+    protected virtual void OnPostImport(string outputDir) { }
+
     public void ParseAndImport(string tsvPath, string outputDir)
     {
         var config = new CsvConfiguration(CultureInfo.InvariantCulture)
@@ -73,6 +76,13 @@ public abstract class TSVParserBase<TDTO, TSO> : ITSVParser
                 string name = GetAssetName(dto);
                 string assetPath = $"{outputDir}{name}.asset";
 
+                // 하위 폴더 경로가 포함된 경우 디렉토리 자동 생성
+                string directory = Path.GetDirectoryName(assetPath);
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
                 var so = AssetDatabase.LoadAssetAtPath<TSO>(assetPath);
                 bool isNew = so == null;
                 if (isNew) so = ScriptableObject.CreateInstance<TSO>();
@@ -91,7 +101,10 @@ public abstract class TSVParserBase<TDTO, TSO> : ITSVParser
         {
             AssetDatabase.StopAssetEditing();
             AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
         }
+
+        OnPostImport(outputDir);
 
         Debug.Log($"[{TargetFileName}] 임포트 완료: {records.Count}개");
     }
