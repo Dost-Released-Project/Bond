@@ -21,6 +21,7 @@ namespace Bond.Expedition
         public ExpeditionInventory Supplies { get; private set; } = new ExpeditionInventory(2);
         public string DungeonId { get; private set; }
 
+        public IReadOnlyList<BaseCharacter> EnemyParty { get; private set; }
         // 탐사 결과 (귀환 후 마을 씬이 읽음)
         public ExpeditionOutcome Outcome { get; private set; }
 
@@ -69,6 +70,11 @@ namespace Bond.Expedition
                 str += $"{slot.item.itemName}\n";
             }
             return str;
+        }
+        
+        public void SetEnemy(IReadOnlyList<BaseCharacter> enemyParty)
+        {
+            EnemyParty = enemyParty;
         }
     }
 }
