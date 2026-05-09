@@ -8,7 +8,6 @@
 	06									
 ID	ClassType	STR	AGI	INT	ArmorID	WeaponID	IconID			
 (string)	(enum)	(int)	(int)	(int)	(string)	(string)	(string)			
-03000000	전사	3	2	1	AR_001	WP_001	Icon_Warrior			
-03010000	도적	2	3	1	AR_002	WP_002	Icon_Rogue			
-03020000	마법사	1	1	4	AR_003	WP_003	Icon_Mage			
-03030000	성직자	1	2	3	AR_004	WP_004	Icon_Priest			
+03000000	Warrior	3	2	1	AR_001	WP_001	Icon_Warrior			
+03010000	Assasin	2	3	1	AR_002	WP_002	Icon_Rogue			
+03020000	Cleric	1	2	3	AR_003	WP_003	Icon_Priest			

@@ -17,16 +17,20 @@ public struct BuildingLevelData
 }
 
 [CreateAssetMenu(fileName = "NewBuildingData", menuName = "Settle/Building Data")]
-public class BuildingData : ScriptableObject
+public class BuildingData : BaseSO
 {
-    public string id;
-    public string buildingName;
     public BuildingType buildingType;
     public Sprite buildingSprite;
-    public List<BuildingLevelData> levels;
-    
-    [TextArea]
-    public string description;
+    public List<BuildingLevelData> levels = new();
+
+    // DTO를 받지 않고, 낱개 파라미터를 받도록 수정 (Consumable 방식)
+    public void SetBuildingData(string id, string name, string desc, BuildingType type, List<BuildingLevelData> levelList, Sprite sprite)
+    {
+        base.Initialize(id, name, desc);
+        this.buildingType = type;
+        this.levels = levelList;
+        this.buildingSprite = sprite;
+    }
 
     public BuildingLevelData GetLevelData(int level)
     {

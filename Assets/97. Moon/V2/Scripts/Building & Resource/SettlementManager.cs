@@ -57,7 +57,7 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
 
     public void BuildInSlot(int slotIndex, BuildingData data)
     {
-        Debug.Log($"<color=white>[시스템]</color> 슬롯 {slotIndex}에 {data.buildingName} 건설 시도 중...");
+        Debug.Log($"<color=white>[시스템]</color> 슬롯 {slotIndex}에 {data.DisplayName} 건설 시도 중...");
 
         if (slotIndex < 0 || slotIndex >= constructionSlots.Length)
         {
@@ -77,7 +77,7 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         // 서비스에서 자원 소모 및 성공 여부 확인
         if (_buildingService.TryBuild(data))
         {
-            Debug.Log($"<color=green>[건설 성공]</color> {data.buildingName} 건설을 시작합니다.");
+            Debug.Log($"<color=green>[건설 성공]</color> {data.DisplayName} 건설을 시작합니다.");
 
             // [복구] 기존 슬롯 시각적 요소 및 기능 제거
             // 슬롯 컴포넌트나 메쉬를 꺼서 더 이상 건설 창이 뜨지 않게 합니다.
@@ -91,11 +91,11 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
             // 최초 건설 시 1레벨 효과 적용
             ApplyBuildingEffect(data, 1); 
         
-            Debug.Log($"<color=cyan>[시스템]</color> {data.buildingName} 배치가 완료되었습니다.");
+            Debug.Log($"<color=cyan>[시스템]</color> {data.DisplayName} 배치가 완료되었습니다.");
         }
         else
         {
-            Debug.LogWarning($"[자원 부족] {data.buildingName}을 건설하기 위한 자원이 모자랍니다.");
+            Debug.LogWarning($"[자원 부족] {data.DisplayName}을 건설하기 위한 자원이 모자랍니다.");
         }
     }
 
@@ -149,7 +149,7 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     private void CreateBuildingVisual(Transform parent, BuildingData data)
     {
         GameObject buildingGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        buildingGo.name = $"Building_{data.buildingName}";
+        buildingGo.name = $"Building_{data.DisplayName}";
         buildingGo.transform.SetParent(parent);
         buildingGo.transform.localPosition = new Vector3(0, 0.5f, 0); 
         

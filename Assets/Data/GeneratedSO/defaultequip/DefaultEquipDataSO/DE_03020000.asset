@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: DE_03020000
   m_EditorClassIdentifier: Assembly-CSharp::DefaultEquipSO
   _id: 03020000
-  _displayName: "\uB9C8\uBC95\uC0AC"
+  _displayName: Cleric
   _description: 
-  ClassType: "\uB9C8\uBC95\uC0AC"
+  ClassType: Cleric
   STR: 1
-  AGI: 1
-  INT: 4
+  AGI: 2
+  INT: 3
   ArmorId: AR_003
   WeaponId: WP_003
-  IconId: Icon_Mage
+  IconId: Icon_Priest

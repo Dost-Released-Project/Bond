@@ -11,3 +11,6 @@ public class ClassDataBaseSO : DataBaseSO { }
 
 [CreateAssetMenu(fileName = "DefaultEquipDataBase", menuName = "Bond/DBSO/DefaultEquipDataBase")]
 public class DefaultEquipDataBaseSO : DataBaseSO { }
+
+[CreateAssetMenu(fileName = "BuildingDataBase", menuName = "Bond/DBSO/BuildingDataBase")]
+public class BuildingDataBaseSO : DataBaseSO { }
