@@ -17,4 +17,12 @@ MonoBehaviour:
   _description: Give me
   buildingType: 6
   buildingSprite: {fileID: 0}
-  levels: []
+  levels:
+  - level: 1
+    frontierCost: 1000
+    woodCost: 100
+    oreCost: 100
+    effectValue: 0
+    slotExpansion: 0
+    frontierCapAdd: 0
+    materialCapAdd: 0

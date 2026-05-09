@@ -17,4 +17,28 @@ MonoBehaviour:
   _description: Item
   buildingType: 3
   buildingSprite: {fileID: 0}
-  levels: []
+  levels:
+  - level: 1
+    frontierCost: 100
+    woodCost: 0
+    oreCost: 0
+    effectValue: 0
+    slotExpansion: 4
+    frontierCapAdd: 1000
+    materialCapAdd: 100
+  - level: 2
+    frontierCost: 1000
+    woodCost: 50
+    oreCost: 50
+    effectValue: 0
+    slotExpansion: 8
+    frontierCapAdd: 3000
+    materialCapAdd: 100
+  - level: 3
+    frontierCost: 5000
+    woodCost: 200
+    oreCost: 200
+    effectValue: 0
+    slotExpansion: 16
+    frontierCapAdd: 5000
+    materialCapAdd: 200
