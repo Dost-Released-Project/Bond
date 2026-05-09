@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: DE_03000000
   m_EditorClassIdentifier: Assembly-CSharp::DefaultEquipSO
   _id: 03000000
-  _displayName: "\uC804\uC0AC"
+  _displayName: Warrior
   _description: 
-  ClassType: "\uC804\uC0AC"
+  ClassType: Warrior
   STR: 3
   AGI: 2
   INT: 1

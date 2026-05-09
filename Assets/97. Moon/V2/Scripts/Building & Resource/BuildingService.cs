@@ -13,11 +13,11 @@ public class BuildingService
     
         if (canAfford)
         {
-            Debug.Log($"<color=green>[Service]</color> {data.buildingName} 건설 자원 소모 완료.");
+            Debug.Log($"<color=green>[Service]</color> {data.DisplayName} 건설 자원 소모 완료.");
         }
         else
         {
-            Debug.LogWarning($"<color=red>[Service]</color> 자원 부족: {data.buildingName} (필요 개척데이터: {level1.frontierCost})");
+            Debug.LogWarning($"<color=red>[Service]</color> 자원 부족: {data.DisplayName} (필요 개척데이터: {level1.frontierCost})");
         }
     
         return canAfford;
@@ -30,11 +30,11 @@ public class BuildingService
 
         if (canAfford)
         {
-            Debug.Log($"<color=cyan>[Service]</color> {data.buildingName} Lv.{targetLevel} 업그레이드 자원 소모 완료.");
+            Debug.Log($"<color=cyan>[Service]</color> {data.DisplayName} Lv.{targetLevel} 업그레이드 자원 소모 완료.");
         }
         else
         {
-            Debug.LogWarning($"<color=red>[Service]</color> 업그레이드 실패: {data.buildingName} Lv.{targetLevel} 자원 부족.");
+            Debug.LogWarning($"<color=red>[Service]</color> 업그레이드 실패: {data.DisplayName} Lv.{targetLevel} 자원 부족.");
         }
 
         return canAfford;
