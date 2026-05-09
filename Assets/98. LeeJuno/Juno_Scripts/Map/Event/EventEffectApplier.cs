@@ -1,28 +1,27 @@
 using System;
 using System.Collections.Generic;
-using Bond.Embark;
+using Bond.Expedition;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
 
 /// <summary>
 /// IEventEffectApplier 구현체.
-/// 파티·아이템 시스템을 주입받아 이벤트 선택지 효과를 실제로 적용한다.
-/// 미구현 시스템(캐릭터 HP, 상태이상, 아이템 DB)은 TODO 주석으로 스텁 처리한다.
+/// RootScope Singleton인 ExpeditionPayload를 통해 파티(Party)와 원정 인벤토리(Supplies)에 접근한다.
+/// 미구현 시스템(상태이상, 아이템 DB)은 TODO 주석으로 스텁 처리한다.
 /// </summary>
 public class EventEffectApplier : IEventEffectApplier
 {
-    private readonly IPartyProvider _partyProvider;
-    private readonly IInventory _inventory;
+    private readonly ExpeditionPayload _expeditionPayload;
 
     /// <summary>
     /// VContainer 생성자 주입.
+    /// ExpeditionPayload 는 RootScope Singleton 이므로 MapLifetimeScope 에서 접근 가능하다.
     /// </summary>
     [Inject]
-    public EventEffectApplier(IPartyProvider partyProvider, IInventory inventory)
+    public EventEffectApplier(ExpeditionPayload expeditionPayload)
     {
-        _partyProvider = partyProvider;
-        _inventory = inventory;
+        _expeditionPayload = expeditionPayload;
     }
 
     /// <summary>
@@ -91,15 +90,19 @@ public class EventEffectApplier : IEventEffectApplier
 
     /// <summary>
     /// 파티 전원에게 HP 변화를 적용한다.
+    /// ExpeditionPayload.Party 를 통해 현재 원정 파티 구성원에 접근한다.
     /// </summary>
     private void ApplyHpToAll(int amount)
     {
-        IReadOnlyList<BaseCharacter> party = _partyProvider.GetCurrentParty();
+        IReadOnlyList<BaseCharacter> party = _expeditionPayload.Party;
+        if (party == null || party.Count == 0)
+        {
+            Debug.LogWarning("[EventEffectApplier] ApplyHpToAll: 파티 데이터가 없습니다.");
+            return;
+        }
+
         foreach (BaseCharacter character in party)
         {
-            // TODO: BaseCharacter 에 HP 관련 메서드가 추가되면 아래 주석 해제
-            // HP 회복/피해: RecoverHp / ReduceHP 메서드가 BaseCharacter 에 있으나
-            // Stat.current_Hp / Stat.max_Hp 접근은 Stat 클래스 확인 필요
             if (amount > 0)
                 character.RecoverHp(amount);
             else
@@ -111,12 +114,16 @@ public class EventEffectApplier : IEventEffectApplier
 
     /// <summary>
     /// 파티 중 랜덤 1명에게 HP 변화를 적용한다.
+    /// ExpeditionPayload.Party 를 통해 현재 원정 파티 구성원에 접근한다.
     /// </summary>
     private void ApplyHpToRandom(int amount)
     {
-        IReadOnlyList<BaseCharacter> party = _partyProvider.GetCurrentParty();
-        if (party.Count == 0)
+        IReadOnlyList<BaseCharacter> party = _expeditionPayload.Party;
+        if (party == null || party.Count == 0)
+        {
+            Debug.LogWarning("[EventEffectApplier] ApplyHpToRandom: 파티 데이터가 없습니다.");
             return;
+        }
 
         int index = UnityEngine.Random.Range(0, party.Count);
         BaseCharacter target = party[index];
@@ -171,14 +178,14 @@ public class EventEffectApplier : IEventEffectApplier
     }
 
     /// <summary>
-    /// 아이템 ID 로 아이템을 인벤토리에 추가한다.
+    /// 아이템 ID 로 아이템을 원정 인벤토리에 추가한다.
     /// ItemDatabase(SO 레지스트리) 미구현으로 현재는 로그 출력 스텁.
     /// </summary>
     private void AddItemById(string itemId, int quantity)
     {
         // TODO: ItemDatabase(SO 레지스트리) 구현 후 itemId → BaseItem 변환 추가
-        // IItemDatabase.Get(itemId) 로 BaseItem 을 획득한 뒤 _inventory.AddItemAuto(item, quantity) 호출
+        // IItemDatabase.Get(itemId) 로 BaseItem 을 획득한 뒤 아래 주석 해제
+        // _expeditionPayload.Supplies.AddItemAuto(item, quantity);
         Debug.Log($"[EventEffectApplier] 아이템 획득 (ItemDB 미구현): id={itemId}, qty={quantity}");
-        // _inventory.AddItemAuto(item, quantity);
     }
 }
