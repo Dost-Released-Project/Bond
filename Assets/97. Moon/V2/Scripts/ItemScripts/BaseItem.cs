@@ -3,10 +3,16 @@ using UnityEngine;
 
 public enum ItemCategory { Consume, Accessories }
 
-public abstract class BaseItem : ScriptableObject
+/// <summary>
+/// [D] Pure Data: 모든 아이템의 기반이 되는 SO.
+/// BaseSO를 상속받아 DataBaseSO 시스템과 통합됩니다.
+/// </summary>
+public abstract class BaseItem : BaseSO
 {
-    public string id;
-    public string itemName;
+    // 기존 코드와의 호환성을 위한 프로퍼티
+    public string id => Id;
+    public string itemName => DisplayName;
+
     public ItemCategory category;
     public Sprite icon;
 
@@ -18,6 +24,17 @@ public abstract class BaseItem : ScriptableObject
     public int expeditionSlotMax = 2; 
 
     public virtual void Use(BaseCharacter target) { }
+
+    /// <summary>
+    /// 파서에서 데이터를 주입하기 위한 메서드.
+    /// </summary>
+    public virtual void SetBaseData(string id, string name, string desc, ItemCategory cat, int globalMax, int slotMax)
+    {
+        base.Initialize(id, name, desc);
+        this.category = cat;
+        this.totalGlobalMax = globalMax;
+        this.expeditionSlotMax = slotMax;
+    }
 }
 
 [Serializable]
@@ -28,8 +45,6 @@ public class InventorySlot
 
     public bool IsEmpty => item == null || quantity <= 0;
     
-    // IsFull 로직은 인벤토리 타입에 따라 달라지므로 데이터 클래스에서는 제거하거나 
-    // 아래처럼 범용적으로 체크할 수 있게 변경합니다.
     public bool IsFull(int limit) => item != null && quantity >= limit;
 
     public void Clear() { item = null; quantity = 0; }

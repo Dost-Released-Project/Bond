@@ -52,7 +52,15 @@ public abstract class TSVParserBase<TDTO, TSO> : ITSVParser
         }
 
         // 헤더 이전 줄 제거
-        string trimmed = string.Join("\n", lines.Skip(HEADER_ROW_INDEX));
+        var filteredLines = lines.Skip(HEADER_ROW_INDEX).ToList();
+        
+        // 헤더 바로 아래의 '타입 가이드 행' 제거 (존재할 경우)
+        if (filteredLines.Count > 1)
+        {
+            filteredLines.RemoveAt(1);
+        }
+
+        string trimmed = string.Join("\n", filteredLines);
 
         List<TDTO> records;
         try
