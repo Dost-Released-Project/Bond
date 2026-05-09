@@ -20,25 +20,33 @@ public class EventSceneController : MonoBehaviour
     private List<EventChoice> _choices;
     private EventBattleConfig _battleConfig;
     private IEventEffectApplier _effectApplier;
+    private IEventContext _eventContext;
 
     /// <summary>
     /// VContainer 로부터 주입받는다.
     /// MonoBehaviour 는 생성자 주입을 사용할 수 없으므로 [Inject] 메서드 주입을 사용한다.
     /// </summary>
     /// <param name="effectApplier">이벤트 효과 적용 서비스.</param>
+    /// <param name="eventContext">이벤트 컨텍스트 — StageLoader 가 씬 로드 직전에 기록한 이벤트 데이터.</param>
     [Inject]
-    public void Construct(IEventEffectApplier effectApplier)
+    public void Construct(IEventEffectApplier effectApplier, IEventContext eventContext)
     {
         _effectApplier = effectApplier;
+        _eventContext = eventContext;
+        // TODO: 검증 완료 후 제거
+        Debug.Log("[EventSceneController] Construct — IEventContext 주입 완료");
     }
 
     private void Start()
     {
+        // TODO: 검증 완료 후 제거
+        Debug.Log($"[EventSceneController] Start — EventId='{_eventContext.EventId}', Choices={_eventContext.Choices.Count}, BattleConfig={(_eventContext.BattleConfig != null ? "있음" : "null")}");
+
         // 씬 로드 직후 컨텍스트를 읽고 즉시 Clear() 호출
         // 방어적 복사 — Clear() 이후에도 로컬 참조가 유효하도록
-        _choices = new List<EventChoice>(EventContext.Choices);
-        _battleConfig = EventContext.BattleConfig;
-        EventContext.Clear();
+        _choices = new List<EventChoice>(_eventContext.Choices);
+        _battleConfig = _eventContext.BattleConfig;
+        _eventContext.Clear();
 
         BuildChoiceButtons();
     }

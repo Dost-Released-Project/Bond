@@ -29,6 +29,7 @@ using Object = UnityEngine.Object;
 public class StageLoader : IStageLoader
 {
     private readonly MapConfigCache _mapConfigCache;
+    private readonly IEventContext _eventContext;
     private readonly Dictionary<StageType, StageConfig> _stageConfigMap;
 
     private SceneInstance _currentScene;         // 현재 로드된 씬 인스턴스
@@ -41,9 +42,10 @@ public class StageLoader : IStageLoader
     private EventSystem _mapEventSystem;
 
     [Inject]
-    public StageLoader(MapConfigCache mapConfigCache)
+    public StageLoader(MapConfigCache mapConfigCache, IEventContext eventContext)
     {
         _mapConfigCache = mapConfigCache;
+        _eventContext = eventContext;
         _hasLoadedScene = false;
         _stageConfigMap = new Dictionary<StageType, StageConfig>();
     }
@@ -138,7 +140,7 @@ public class StageLoader : IStageLoader
             }
             else if (stageType == StageType.Event)
             {
-                EventContext.Clear();
+                _eventContext.Clear();
                 SetEventContext(node);
             }
 
@@ -402,7 +404,7 @@ public class StageLoader : IStageLoader
     {
         if (string.IsNullOrEmpty(node.AssignedEventId))
         {
-            EventContext.Set(string.Empty, new List<EventChoice>(), null);
+            _eventContext.Set(string.Empty, new List<EventChoice>(), null);
             return;
         }
 
@@ -410,11 +412,11 @@ public class StageLoader : IStageLoader
 
         if (ev == null)
         {
-            EventContext.Set(string.Empty, new List<EventChoice>(), null);
+            _eventContext.Set(string.Empty, new List<EventChoice>(), null);
             return;
         }
 
-        EventContext.Set(ev.Id, ev.Choices, _mapConfigCache.EventBattleConfig);
+        _eventContext.Set(ev.Id, ev.Choices, _mapConfigCache.EventBattleConfig);
     }
 
     /// <summary>
