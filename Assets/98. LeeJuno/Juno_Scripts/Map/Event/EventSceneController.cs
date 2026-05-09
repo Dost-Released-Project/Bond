@@ -154,7 +154,7 @@ public class EventSceneController : MonoBehaviour
         MonsterGroupData selectedGroup = pool[randomIndex];
 
         // 선택된 그룹을 EventBattleContext 에 기록한다
-        // StageLoader.TransitionToEventBattleAsync() 에서 NormalStageContext 로 이전된다
+        // StageLoader.TransitionToEventBattleAsync() 에서 IStageMonsterContext 로 이전된다
         EventBattleContext.Set(selectedGroup.Id, selectedGroup.MonsterIds);
 
         StageResult result = new StageResult

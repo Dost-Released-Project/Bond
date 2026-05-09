@@ -4,7 +4,7 @@ using System.Collections.Generic;
 /// 이벤트 전투 씬 로드 직전 기록되고,
 /// 전투 씬 진입점에서 읽어가는 단방향 컨텍스트 채널.
 ///
-/// NormalStageContext 와 동일한 패턴을 따른다.
+/// IStageMonsterContext 와 동일한 패턴을 따른다.
 /// 이벤트 전투는 일반 전투 씬과 별도 주소를 사용할 수도,
 /// 동일 씬 주소를 사용할 수도 있다 — EventBattleConfig 에서 결정.
 ///
@@ -32,7 +32,7 @@ public static class EventBattleContext
     }
 
     /// <summary>
-    /// StageLoader.TransitionToEventBattleAsync() 에서 NormalStageContext 로 이전 후 호출한다.
+    /// StageLoader.TransitionToEventBattleAsync() 에서 IStageMonsterContext 로 이전 후 호출한다.
     /// 호출하지 않으면 다음 이벤트 전투 진입 시 이전 데이터가 남아 있을 수 있다.
     /// </summary>
     public static void Clear()
