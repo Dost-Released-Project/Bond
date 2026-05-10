@@ -5,9 +5,8 @@
 	03	성직자							0904	Smithy
 	04								0905	Supply
 	05								0906	Carriage
-	06									
-ID	Level	FrontierCost	WoodCost	OreCost	EffectValue	SlotExpansion	FrontierCapAdd	MaterialCapAdd		
 (string)	(int)	(int)	(int)	(int)	(int)	(int)	(int)	(int)		
+ID	Level	FrontierCost	WoodCost	OreCost	EffectValue	SlotExpansion	FrontierCapAdd	MaterialCapAdd		
 09000000	1	100	0	0	0	4	1000	100		
 09000000	2	1000	50	50	0	8	3000	100		
 09000000	3	5000	200	200	0	16	5000	200		

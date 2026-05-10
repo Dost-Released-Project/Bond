@@ -51,14 +51,7 @@ public class BuildingParser : TSVParserBase<BuildingDTO, BuildingData>
 
         // 1. 엑셀 1~8행(인덱스 0~7) 무시하고 9행(인덱스 8)부터 가져옴
         var filteredLines = lines.Skip(8).ToList(); 
-
-        // 2. 타입 가이드 행(엑셀 10행 / 현재 리스트의 1번 인덱스) 제거
-        if (filteredLines.Count > 1)
-        {
-            filteredLines.RemoveAt(1); 
-        }
-
-        // 3. 다시 합치기
+        
         string trimmed = string.Join("\n", filteredLines);
 
         using var reader = new StringReader(trimmed);

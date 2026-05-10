@@ -5,9 +5,8 @@
 	03	성직자							-	-
 	04									
 	05									
-	06									
-ID	ItemName	Category	ConsumableType	HealValue	TotalMax	ExpSlotMax	IconPath			
 (string)	(string)	(enum)	(enum/null)	(int)	(int)	(int)	(string)			
+ID	ItemName	Category	ConsumableType	HealValue	TotalMax	ExpSlotMax	IconPath			
 07000000	Old Bandage	Consume	Bandage	10	10	2	Sprite/Item/Bandage			
 07010000	Old Sedative	Consume	Sedative	10	10	2	Sprite/Item/Sedative			
 07020000	Stimulant 	Consume	Stimulant 	0	10	2	Sprite/Item/Stimulant			

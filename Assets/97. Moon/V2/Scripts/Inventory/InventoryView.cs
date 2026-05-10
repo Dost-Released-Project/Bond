@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using UnityEngine.AddressableAssets;
 using VContainer;
 
 public class InventoryView : MonoBehaviour
@@ -13,50 +16,60 @@ public class InventoryView : MonoBehaviour
     private ITotalInventory _totalInventory;
     private IExpeditionInventory _expeditionInventory;
     private InventoryTransferService _transferService;
-    private CharacterItemService _itemService; // 변경된 서비스
     private InventoryUIService _uiService;     // 추가된 서비스
     private ExpeditionResultService _expeditionResultService;
-
-    public ITotalInventory TotalInventory => _totalInventory;
+    
     private string _currentSearch = "";
     private ItemCategory? _currentFilter = null;
 
     [Inject]
     public void Construct(ITotalInventory total, IExpeditionInventory expedition, 
-        InventoryTransferService service, CharacterItemService itemService, InventoryUIService uiService, ExpeditionResultService expeditionResultService)
+        InventoryTransferService service, InventoryUIService uiService, ExpeditionResultService expeditionResultService)
     {
         _totalInventory = total; _expeditionInventory = expedition;
-        _transferService = service; _itemService = itemService; _uiService = uiService;
+        _transferService = service; _uiService = uiService;
         _expeditionResultService = expeditionResultService;
     }
 
-    private void Start()
+    private async void Start()
     {
         _expeditionResultService.ProcessExpeditionReturn();
         SetupUI();
-        
-        // 생성된 ID를 기반으로 아이템 로드하여 초기 세팅 (예시 ID 사용) 테스트 용도
-        BaseItem item_oldBandage = Resources.Load<BaseItem>("Data/Items/Consumables/07000000");
-        BaseItem item_oldSedative = Resources.Load<BaseItem>("Data/Items/Consumables/07010000");
-        BaseItem item_stimulant = Resources.Load<BaseItem>("Data/Items/Consumables/07020000");
-        BaseItem item_bandage = Resources.Load<BaseItem>("Data/Items/Consumables/07030000");
-        BaseItem item_sedative = Resources.Load<BaseItem>("Data/Items/Consumables/07040000");
-        BaseItem item_ring1 = Resources.Load<BaseItem>("Data/Items/Accessories/08000000");
-        BaseItem item_ring2 = Resources.Load<BaseItem>("Data/Items/Accessories/08010000");
-        BaseItem item_ring3 = Resources.Load<BaseItem>("Data/Items/Accessories/08020000");
-        BaseItem item_ring4 = Resources.Load<BaseItem>("Data/Items/Accessories/08030000");
+    
+        // 1. 각 DB 로드
+        var conHandle = Addressables.LoadAssetAsync<ConsumableDataBaseSO>("ConsumableDataBase");
+        var accHandle = Addressables.LoadAssetAsync<AccessoryDataBaseSO>("AccessoryDataBase");
 
-        if (item_oldBandage != null) _totalInventory.AddItemAuto(item_oldBandage, 5);
-        if (item_bandage != null) _totalInventory.AddItemAuto(item_bandage, 5);
-        if (item_stimulant != null) _totalInventory.AddItemAuto(item_stimulant, 5);
-        if (item_oldSedative != null) _totalInventory.AddItemAuto(item_oldSedative, 5);
-        if (item_sedative != null) _totalInventory.AddItemAuto(item_sedative, 5);
-        if (item_ring1 != null) _totalInventory.AddItemAuto(item_ring1, 1);
-        if (item_ring2 != null) _totalInventory.AddItemAuto(item_ring2, 1);
-        if (item_ring3 != null) _totalInventory.AddItemAuto(item_ring3, 1);
-        if (item_ring4 != null) _totalInventory.AddItemAuto(item_ring4, 1);
-        
+        await System.Threading.Tasks.Task.WhenAll(conHandle.Task, accHandle.Task);
+
+        var conDB = conHandle.Result;
+        var accDB = accHandle.Result;
+
+        // 2. DB의 GetSO 함수를 사용하여 아이템 추가
+        // 소모품 추가
+        AddInventoryItem(conDB, "07000000", 5);
+        AddInventoryItem(conDB, "07010000", 5);
+        AddInventoryItem(conDB, "07020000", 5);
+        AddInventoryItem(conDB, "07030000", 5);
+        AddInventoryItem(conDB, "07040000", 5);
+    
+        // 악세서리 추가
+        AddInventoryItem(accDB, "08000000", 1);
+        AddInventoryItem(accDB, "08010000", 1);
+        AddInventoryItem(accDB, "08020000", 1);
+        AddInventoryItem(accDB, "08030000", 1);
+
         ToggleWindow(false);
+    }
+
+    // 아이템 추가를 돕는 보조 함수
+    private void AddInventoryItem(DataBaseSO db, string id, int count)
+    {
+        var item = db.GetSO<BaseItem>(id); // 작성하신 GetSO 활용!
+        if (item != null)
+        {
+            _totalInventory.AddItemAuto(item, count);
+        }
     }
 
     private void SetupUI()
