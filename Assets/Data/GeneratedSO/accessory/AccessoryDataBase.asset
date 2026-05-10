@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: AccessoryDataBase
   m_EditorClassIdentifier: Assembly-CSharp::AccessoryDataBaseSO
   _soList:
-  - {fileID: 11400000, guid: 61f62dbac8e3b264d863f23f33dcb377, type: 2}
   - {fileID: 11400000, guid: bb457c00298b33640a844832e03f6134, type: 2}
   - {fileID: 11400000, guid: 2e4001282a8f7a545b4541311e5faad5, type: 2}
   - {fileID: 11400000, guid: adee6140c3d85474e94af746e82e9fe3, type: 2}

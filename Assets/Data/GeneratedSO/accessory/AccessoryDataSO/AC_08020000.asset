@@ -16,7 +16,7 @@ MonoBehaviour:
   _displayName: The Ring of Intelligence
   _description: 
   category: 1
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 28cb32f8fe7ea784bbfe72942183cead, type: 3}
   totalGlobalMax: 1
   expeditionSlotMax: 1
   equipmentData:
@@ -26,4 +26,4 @@ MonoBehaviour:
     bonusSTR: 0
     bonusAGI: 0
     bonusINT: 5
-    originItem: {fileID: 11400000}
+    originItem: {fileID: 0}

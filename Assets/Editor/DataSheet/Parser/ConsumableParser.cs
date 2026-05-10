@@ -3,6 +3,7 @@ using System.IO;
 using CsvHelper.Configuration;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class ConsumableDTO
 {
@@ -29,6 +30,12 @@ public class ConsumableParser : TSVParserBase<ConsumableDTO, ConsumableItem>
         so.SetBaseData(dto.ID, dto.ItemName, "", dto.Category, dto.TotalMax, dto.ExpSlotMax);
         so.consumableType = dto.ConsumableType;
         so.healValue = dto.HealValue;
+    
+
+        if (!string.IsNullOrEmpty(dto.IconPath))
+        {
+            so.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/{dto.IconPath}.png");
+        }
     }
 
     protected override void OnPostImport(string outputDir)

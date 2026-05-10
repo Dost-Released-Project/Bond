@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: DefaultEquipDataBase
   m_EditorClassIdentifier: Assembly-CSharp::DefaultEquipDataBaseSO
   _soList:
+  - {fileID: 11400000, guid: a021c2d1e435f7944a070b7fc06d86b7, type: 2}
   - {fileID: 11400000, guid: 93d6daee45fc5f0408dbd43aaff7a593, type: 2}
   - {fileID: 11400000, guid: 6adca2e2aedc9934688a4ccbca4cdd4b, type: 2}
+  - {fileID: 11400000, guid: f1dae9629bebc3148ba5f2966f065a81, type: 2}

@@ -9,8 +9,8 @@
 ID	BuildingName	BuildingType	Description	SpritePath						
 09000000	Storage	Storage	Item	Sprite/Build/Storage						
 09010000	Tavern	Tavern	Heal	Sprite/Build/Tavern						
-09020000	Inn	Inn	Stress	Sprite/Build/Tavern						
-09030000	Guild	Guild	Data	Sprite/Build/Tavern						
-09040000	Smithy	Smithy	Upgrade	Sprite/Build/Tavern						
-09050000	Supply	Supply	Give me	Sprite/Build/Tavern						
-09060000	Carriage	Carriage	Item	Sprite/Build/Tavern						
+09020000	Inn	Inn	Stress	Sprite/Build/Inn						
+09030000	Guild	Guild	Data	Sprite/Build/Guild						
+09040000	Smithy	Smithy	Upgrade	Sprite/Build/Smithy						
+09050000	Supply	Supply	Give me	Sprite/Build/Supply						
+09060000	Carriage	Carriage	Item	Sprite/Build/Carriage						

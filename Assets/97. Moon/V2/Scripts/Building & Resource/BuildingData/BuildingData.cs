@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 [System.Serializable]
 public struct BuildingLevelData
@@ -36,5 +38,19 @@ public class BuildingData : BaseSO
     {
         int index = Mathf.Clamp(level - 1, 0, levels.Count - 1);
         return levels[index];
+    }
+    
+    // 주소를 받아 아이콘을 비동기로 로드하는 함수
+    public async Task LoadIconAsync(string path)
+    {
+        if (string.IsNullOrEmpty(path)) return;
+
+        var handle = Addressables.LoadAssetAsync<Sprite>(path);
+        buildingSprite = await handle.Task;
+
+        if (handle.Status != UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded)
+        {
+            Debug.LogError($"{Id}의 아이콘 로드 실패. 경로: {path}");
+        }
     }
 }
