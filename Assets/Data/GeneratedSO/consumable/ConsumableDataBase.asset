@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ConsumableDataBase
   m_EditorClassIdentifier: Assembly-CSharp::ConsumableDataBaseSO
   _soList:
+  - {fileID: 11400000, guid: e622aa1faa2b8c04883a1d5e07dcc22d, type: 2}
   - {fileID: 11400000, guid: a07971b7932dc5f408fe48c831b4d42d, type: 2}
   - {fileID: 11400000, guid: cc0dd5f363f0db64b83855360d8d7d4a, type: 2}
   - {fileID: 11400000, guid: 526f596c3cc9ad3428014c59db463311, type: 2}

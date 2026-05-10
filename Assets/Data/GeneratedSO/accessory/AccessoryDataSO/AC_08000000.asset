@@ -16,7 +16,7 @@ MonoBehaviour:
   _displayName: The Ring of Power
   _description: 
   category: 1
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 4911458b7166c48418c84ba8b81785ca, type: 3}
   totalGlobalMax: 1
   expeditionSlotMax: 1
   equipmentData:
@@ -26,4 +26,4 @@ MonoBehaviour:
     bonusSTR: 5
     bonusAGI: 0
     bonusINT: 0
-    originItem: {fileID: 11400000}
+    originItem: {fileID: 0}
