@@ -1,13 +1,12 @@
-﻿시트 페이지 2자리	캐릭터 클래스				아군 / 적군 여부		동일 타입 번호		09000000	Storage
-10	00	전사			00	아군	00		09010000	Tavern
-	01	도적			01	중립			09020000	Inn
-	02	마법사			02	적			09030000	Guild
-	03	성직자							09040000	Smithy
-	04								09050000	Supply
-	05								09060000	Carriage
-	06									
-BuildingID	Level	FrontierCost	WoodCost	OreCost	EffectValue	SlotExpansion	FrontierCapAdd	MaterialCapAdd		
+﻿시트 페이지 2자리	캐릭터 클래스				아군 / 적군 여부		동일 타입 번호		0900	Storage
+10	00	전사			00	아군	00		0901	Tavern
+	01	도적			01	중립			0902	Inn
+	02	마법사			02	적			0903	Guild
+	03	성직자							0904	Smithy
+	04								0905	Supply
+	05								0906	Carriage
 (string)	(int)	(int)	(int)	(int)	(int)	(int)	(int)	(int)		
+ID	Level	FrontierCost	WoodCost	OreCost	EffectValue	SlotExpansion	FrontierCapAdd	MaterialCapAdd		
 09000000	1	100	0	0	0	4	1000	100		
 09000000	2	1000	50	50	0	8	3000	100		
 09000000	3	5000	200	200	0	16	5000	200		

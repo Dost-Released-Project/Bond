@@ -17,11 +17,11 @@ MonoBehaviour:
   _description: 
   _type: 4
   _target: 1
-  _value: 0
+  _value: 10
   _coolTime: 0
-  _duration: 0
+  _duration: 1
   _useableClasses: 0
-  _useableSlots: 0
+  _useableSlots: 1111
   _enemyTargetMask: 0
-  _allyTargetMask: 0
-  _iconAddress: 
+  _allyTargetMask: 1111
+  _iconAddress: 0103

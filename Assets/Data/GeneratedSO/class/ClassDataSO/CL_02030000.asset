@@ -15,6 +15,9 @@ MonoBehaviour:
   _id: 02030000
   _displayName: "\uC131\uC9C1\uC790"
   _description: 
+  STR: 1
+  AGI: 2
+  INT: 3
   Atk: 0
   Def: 0
   Cri: 0

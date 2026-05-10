@@ -26,4 +26,4 @@ MonoBehaviour:
     bonusSTR: 0
     bonusAGI: 0
     bonusINT: 5
-    originItem: {fileID: 0}
+    originItem: {fileID: 11400000}

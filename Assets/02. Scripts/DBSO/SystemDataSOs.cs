@@ -5,18 +5,24 @@ using UnityEngine;
 /// </summary>
 public class ClassSO : BaseSO
 {
+    public int STR;
+    public int AGI;
+    public int INT;
     public int Atk;
     public int Def;
     public int Cri;
     public int Speed;
-    
+
     public string DefaultArmorId;
     public string DefaultWeaponId;
     public string IconId;
 
-    public void SetData(string id, string name, int atk, int def, int cri, int speed, string armor, string weapon, string icon)
+    public void SetData(string id, string name, int str, int agi, int @int, int atk, int def, int cri, int speed, string armor, string weapon, string icon)
     {
         base.Initialize(id, name, "");
+        this.STR = str;
+        this.AGI = agi;
+        this.INT = @int;
         this.Atk = atk;
         this.Def = def;
         this.Cri = cri;
@@ -26,7 +32,6 @@ public class ClassSO : BaseSO
         this.IconId = icon;
     }
 }
-
 /// <summary>
 /// [D] Pure Data: 클래스별 초기 스탯 및 장비를 담는 SO.
 /// </summary>

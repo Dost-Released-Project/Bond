@@ -59,16 +59,20 @@ public class BuildingParser : TSVParserBase<BuildingDTO, BuildingData>
         var config = new CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture)
         {
             Delimiter = "\t",
+            Mode = CsvMode.NoEscape,
             HasHeaderRecord = true,
             HeaderValidated = null,
             MissingFieldFound = null,
+            PrepareHeaderForMatch = args => args.Header.Trim(),
         };
 
-        // 8행 헤더 스킵 로직 적용
+        // 8행 헤더 스킵 로직 적용 (9번째 줄이 헤더)
         string[] lines = File.ReadAllLines(levelPath);
         var filteredLines = lines.Skip(8).ToList();
-        if (filteredLines.Count > 1) filteredLines.RemoveAt(1); // 타입 가이드 행 제거
         
+        // 사용자가 가이드 행을 제외했으므로, 헤더 바로 다음 줄부터 데이터가 시작됨
+        // filteredLines.RemoveAt(1); // 이 줄 제거
+
         string trimmed = string.Join("\n", filteredLines);
 
         using var reader = new StringReader(trimmed);
@@ -161,7 +165,7 @@ public sealed class BuildingLevelMap : ClassMap<BuildingLevelDTO>
 {
     public BuildingLevelMap()
     {
-        Map(m => m.ID).Name("ID");
+        Map(m => m.ID).Name("BuildingID");
         Map(m => m.Level).Name("Level");
         Map(m => m.FrontierCost).Name("FrontierCost");
         Map(m => m.WoodCost).Name("WoodCost");
