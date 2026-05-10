@@ -43,6 +43,7 @@ public abstract class TSVParserBase<TDTO, TSO> : ITSVParser
             HasHeaderRecord = true,
             HeaderValidated = null,
             MissingFieldFound = null,
+            PrepareHeaderForMatch = args => args.Header.Trim(),
         };
 
         string[] lines = File.ReadAllLines(tsvPath);
@@ -52,14 +53,11 @@ public abstract class TSVParserBase<TDTO, TSO> : ITSVParser
             return;
         }
 
-        // 헤더 이전 줄 제거
+        // 헤더 이전 줄 제거 (8줄 스킵, 9번째 줄이 헤더)
         var filteredLines = lines.Skip(HEADER_ROW_INDEX).ToList();
         
-        // 헤더 바로 아래의 '타입 가이드 행' 제거 (존재할 경우)
-        if (filteredLines.Count > 1)
-        {
-            filteredLines.RemoveAt(1);
-        }
+        // 사용자가 가이드 행을 제외했으므로, 헤더 바로 다음 줄부터 데이터가 시작됨
+        // 기존의 filteredLines.RemoveAt(1) 로직을 제거함
 
         string trimmed = string.Join("\n", filteredLines);
 

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ClassDataBase
   m_EditorClassIdentifier: Assembly-CSharp::ClassDataBaseSO
   _soList:
+  - {fileID: 11400000, guid: 7d1e93aef3c816642a94d515292cf2fd, type: 2}
   - {fileID: 11400000, guid: b8de67576ddb60c4eb3dcccb2e641b32, type: 2}
   - {fileID: 11400000, guid: be9027a2dfbfccb49969b49ccefe3230, type: 2}
   - {fileID: 11400000, guid: 2d37152c4d21f1940ac73dc3eb5701d0, type: 2}

@@ -103,17 +103,18 @@ public sealed class SkillDataMap : ClassMap<SkillDTO>
     public SkillDataMap()
     {
         Map(m => m.Id).Name("ID");
-        Map(m => m.DisplayName).Name("Name");
-        Map(m => m.Description).Name("Description");
+        Map(m => m.DisplayName).Name("Name").Optional(); // 일부 시트 대응
+        Map(m => m.DisplayName).Name("DisplayName").Optional(); 
+        Map(m => m.Description).Name("Description").Optional();
         Map(m => m.Type).Name("Type");
         Map(m => m.Target).Name("Target");
         Map(m => m.Value).Name("Value");
         Map(m => m.CoolTime).Name("CoolTime");
-        Map(m => m.Duration).Name("Duration");
-        Map(m => m.UseableClasses).Name("UseableClasses");
-        Map(m => m.UseableSlots).Name("UseableSlots");
-        Map(m => m.EnemyTargetMask).Name("EnemyTargetMask");
-        Map(m => m.AllyTargetMask).Name("AllyTargetMask");
-        Map(m => m.IconAddress).Name("IconAddress");
+        Map(m => m.Duration).Name("지속 시간");
+        Map(m => m.UseableClasses).Name("Useable");
+        Map(m => m.UseableSlots).Name("사용 가능 칸");
+        Map(m => m.EnemyTargetMask).Name("적 진영");
+        Map(m => m.AllyTargetMask).Name("아군 진영");
+        Map(m => m.IconAddress).Name("아이콘 ID");
     }
 }

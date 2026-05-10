@@ -15,6 +15,9 @@ MonoBehaviour:
   _id: 02010000
   _displayName: "\uB3C4\uC801"
   _description: 
+  STR: 2
+  AGI: 3
+  INT: 1
   Atk: 0
   Def: 0
   Cri: 0

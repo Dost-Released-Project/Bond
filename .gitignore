@@ -101,3 +101,7 @@ InitTestScene*.unity*
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 ProjectSettings/EditorBuildSettings.asset
+Assets/Guide/GEMINI.md
+Assets/Guide/GEMINI.md.meta
+Assets/Guide/통합_AI_작업_가이드라인.md
+Assets/Guide/통합_AI_작업_가이드라인.md.meta

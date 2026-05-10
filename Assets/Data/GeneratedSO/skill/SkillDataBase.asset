@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: SkillDataBase
   m_EditorClassIdentifier: Assembly-CSharp::SkillDataBaseSO
   _soList:
+  - {fileID: 11400000, guid: 2168ec6edc6110f4f9667b7e376bd352, type: 2}
   - {fileID: 11400000, guid: e140d0a3f66776349b579e49437fe8c3, type: 2}
   - {fileID: 11400000, guid: efc57f736ae37d241a8cab48bd3e9d67, type: 2}
   - {fileID: 11400000, guid: 963dbd7ea6fa9bc46ac9daf74cf1f1d8, type: 2}

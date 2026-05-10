@@ -8,6 +8,9 @@ public class ClassDTO
 {
     public string ID { get; set; }
     public string Name { get; set; }
+    public int STR { get; set; }
+    public int AGI { get; set; }
+    public int INT { get; set; }
     public int ATK { get; set; }
     public int DEF { get; set; }
     public int CRI { get; set; }
@@ -27,7 +30,7 @@ public class ClassParser : TSVParserBase<ClassDTO, ClassSO>
 
     protected override void Populate(ClassSO so, ClassDTO dto)
     {
-        so.SetData(dto.ID, dto.Name, dto.ATK, dto.DEF, dto.CRI, dto.Speed, dto.ArmorID, dto.WeaponID, dto.IconID);
+        so.SetData(dto.ID, dto.Name, dto.STR, dto.AGI, dto.INT, dto.ATK, dto.DEF, dto.CRI, dto.Speed, dto.ArmorID, dto.WeaponID, dto.IconID);
     }
 
     protected override void OnPostImport(string outputDir)
@@ -70,11 +73,13 @@ public class ClassParser : TSVParserBase<ClassDTO, ClassSO>
         {
             Map(m => m.ID).Name("ID");
             Map(m => m.Name).Name("클래스");
+            Map(m => m.STR).Name("힘").Default(0);
+            Map(m => m.AGI).Name("민첩").Default(0);
+            Map(m => m.INT).Name("지능").Default(0);
             Map(m => m.ATK).Name("ATK").Default(0);
             Map(m => m.DEF).Name("DEF").Default(0);
             Map(m => m.CRI).Name("CRI").Default(0);
-            // 시트에 Speed 헤더가 없을 경우를 대비해 선택적 매핑 혹은 기본값 처리
-            Map(m => m.Speed).Optional().Default(0); 
+            Map(m => m.Speed).Name("Speed").Optional().Default(0); 
             Map(m => m.ArmorID).Name("방어구 ID");
             Map(m => m.WeaponID).Name("무기 ID");
             Map(m => m.IconID).Name("Icon ID");

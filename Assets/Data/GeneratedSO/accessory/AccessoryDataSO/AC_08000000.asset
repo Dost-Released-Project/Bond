@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a1e6c871ed930948bd8c3a1827cf81f, type: 3}
-  m_Name: AC_08020000
+  m_Name: AC_08000000
   m_EditorClassIdentifier: Assembly-CSharp::AccessoryItem
-  _id: 08020000
-  _displayName: The Ring of Intelligence
+  _id: 08000000
+  _displayName: The Ring of Power
   _description: 
   category: 1
-  icon: {fileID: 21300000, guid: 28cb32f8fe7ea784bbfe72942183cead, type: 3}
+  icon: {fileID: 0}
   totalGlobalMax: 1
   expeditionSlotMax: 1
   equipmentData:
-    itemName: The Ring of Intelligence
+    itemName: The Ring of Power
     type: 1
     upgradeLevel: 0
-    bonusSTR: 0
+    bonusSTR: 5
     bonusAGI: 0
-    bonusINT: 5
+    bonusINT: 0
     originItem: {fileID: 11400000}
