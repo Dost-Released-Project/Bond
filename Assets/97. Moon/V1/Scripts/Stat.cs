@@ -8,7 +8,8 @@ public enum ClassType
 {
     Warrior,
     Assassin,
-    Cleric
+    Cleric,
+    Wizard,
 }
 
 public class Stat

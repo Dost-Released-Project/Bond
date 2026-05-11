@@ -14,24 +14,18 @@ public class ExpeditionInventoryView : MonoBehaviour
     [Inject] private CharacterItemService _itemService;
     [Inject] private ExpeditionPayload _payload;
     
-    private VisualElement _slotContainer, _localGhost;
+    private VisualElement _slotContainer;
     private List<VisualElement> _slots = new();
+    private VisualElement _root;
 
     private void Start()
     {
         _expeditionInventory = _payload.Supplies;
-        var doc = GetComponent<UIDocument>().rootVisualElement;
-        _slotContainer = doc.Q<VisualElement>("expedition-container");
-        
-        _localGhost = new VisualElement();
-        _localGhost.style.position = Position.Absolute;
-        _localGhost.style.width = _localGhost.style.height = 50;
-        _localGhost.style.visibility = Visibility.Hidden;
-        _localGhost.pickingMode = PickingMode.Ignore;
-        doc.Add(_localGhost);
+        _root = GetComponent<UIDocument>().rootVisualElement;
+        _slotContainer = _root.Q<VisualElement>("expedition-container");
 
         // [개선] 마우스 커서가 하얀 영역(_slotContainer)을 완전히 벗어났을 때만 버리기 판정
-        doc.RegisterCallback<PointerUpEvent>(evt => {
+        _root.RegisterCallback<PointerUpEvent>(evt => {
             if (_transferService.IsDragging) 
             {
                 // 실제 마우스 커서 좌표가 하얀색 인벤토리 컨테이너 바운드 외부에 있을 때만 삭제
@@ -77,21 +71,11 @@ public class ExpeditionInventoryView : MonoBehaviour
 
     public void ToggleWindow()
     {
-        _slotContainer.style.display = (_slotContainer.style.display == DisplayStyle.None) ? DisplayStyle.Flex : DisplayStyle.None;
+        _root.style.display = (_root.style.display == DisplayStyle.None) ? DisplayStyle.Flex : DisplayStyle.None;
     }
 
     private void Update()
     {
-        if (Keyboard.current.f1Key.wasPressedThisFrame)
-        {
-            _payload.Supplies.AddItemAuto(Resources.Load<BaseItem>($"Data/Items/Consumables/070{Random.Range(0,5)}0000"), 2);
-        }
-
-        if (Keyboard.current.f2Key.wasPressedThisFrame)
-        {
-            _payload.Supplies.ClearSlot(0);
-        }
-
         if (Keyboard.current.eKey.wasPressedThisFrame)
         {
             ToggleWindow();

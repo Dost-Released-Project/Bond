@@ -1,19 +1,25 @@
+using System;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
 public class AdminTestTool : MonoBehaviour
 {
+    public string id;
     public BaseCharacter hero;
     public static bool isTargetingWeapon = true;
+    private ClassDataBaseSO _ClassDB;
     
-    public static BaseCharacter testHero;
+    public static BaseCharacter testHero = null;
 
-    private void Awake()
+    private async void Awake()
     {
         hero = BaseCharacter.Sample;
-        hero.Profession = new SampleProfession();
         testHero = hero;
+        var handle = Addressables.LoadAssetAsync<ClassDataBaseSO>("ClassDataBase");
+        _ClassDB = await handle.Task;
+        testHero.Profession = new SampleProfession(_ClassDB.GetSO<ClassSO>(id));
     }
 
     void Update()

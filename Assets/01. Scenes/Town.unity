@@ -1935,6 +1935,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2171420726810719254, guid: 24bf06a1abb9c5f44a8d4d763951a481, type: 3}
+      propertyPath: id
+      value: 02010000
+      objectReference: {fileID: 0}
+    - target: {fileID: 2171420726810719254, guid: 24bf06a1abb9c5f44a8d4d763951a481, type: 3}
       propertyPath: hero.Data.Name
       value: Test
       objectReference: {fileID: 0}
