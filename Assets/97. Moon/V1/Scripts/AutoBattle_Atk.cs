@@ -7,7 +7,7 @@ public class AutoBattle_Atk : AutoBattle
     public override SkillBase BattleAction(SkillBase[] skills)
     {
         if (isPlayable) return null;
-        var favorites = new List<SkillType> { SkillType.OFFENSIVE, SkillType.OFFENSIVE_SPELL };
+        var favorites = new List<SkillType> { SkillType.OFFENSIVE, SkillType.SPELL };
         
         return DecideSkill(skills, favorites);
     }

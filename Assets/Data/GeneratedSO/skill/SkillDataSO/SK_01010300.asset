@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8802ff4708a60da41b66b02771e5d201, type: 3}
-  m_Name: SK_01040000
+  m_Name: SK_01010300
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
-  _id: 01040000
+  _id: 01010300
   _displayName: 
   _description: 
-  _type: 2
-  _target: 2
-  _value: 8
+  _type: 1
+  _target: 0
+  _value: 30
   _coolTime: 0
-  _duration: 2
-  _useableClasses: 0
-  _useableSlots: 3
-  _enemyTargetMask: 0
+  _duration: 0
+  _useableClasses: 3
+  _useableSlots: 8
+  _enemyTargetMask: 15
   _allyTargetMask: 0
-  _iconAddress: 010C
+  _iconAddress: 0103

@@ -15,13 +15,13 @@ MonoBehaviour:
   _id: 01030000
   _displayName: 
   _description: 
-  _type: 1
+  _type: 3
   _target: 0
-  _value: 10
+  _value: 12
   _coolTime: 0
-  _duration: 0
+  _duration: 2
   _useableClasses: 0
-  _useableSlots: 1111
-  _enemyTargetMask: 1110
+  _useableSlots: 15
+  _enemyTargetMask: 15
   _allyTargetMask: 0
-  _iconAddress: 0102
+  _iconAddress: 0108
