@@ -12,6 +12,7 @@ public class AdminTestTool : MonoBehaviour
     private void Awake()
     {
         hero = BaseCharacter.Sample;
+        hero.Profession = new SampleProfession();
         testHero = hero;
     }
 

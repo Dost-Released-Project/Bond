@@ -24,7 +24,12 @@ public partial class BaseCharacter : ITurnUseUnit
     // 읽는 쪽에서 편하라고 일단 만들어두긴 했는데 너무 길어지면 지우는게 나을지도
     public string Name => Data.Name;
     public int Level => Data.Level;
-    public Profession Profession => Data.Profession;
+    public Profession Profession
+    {
+        get => Data.Profession;
+        set => Data.Profession = value;
+    }
+
     public SkillBase[] Skills => Data.Skills;
     public Trait[] Traits => Data.Traits;
     public Reaction[] RoleReactions => Data.RoleReactions;

@@ -1820,6 +1820,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ExpeditionInventoryView
       objectReference: {fileID: 0}
+    - target: {fileID: 993773826071575261, guid: 53451fb9a8aa949498be1c4798553b6a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6828197359741878719, guid: 53451fb9a8aa949498be1c4798553b6a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

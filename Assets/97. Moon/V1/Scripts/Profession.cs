@@ -34,11 +34,16 @@ public abstract class Profession
 
         // 4. 현재 체력 동기화 (필요 시)
         stat.current_Hp = stat.max_Hp;
+        
+        Debug.Log($"STR: {finalSTR} AGI: {finalAGI} INT: {finalINT}" +
+                  $"\nHP: {stat.max_Hp} DEF: {stat.def} ATK: {stat.atk}" +
+                  $"\nSPD: {stat.speed} CRT: {stat.crt} ACC: {stat.acc}" +
+                  $"\nInsanity_Ctrl: {stat.Insanity_Ctrl} Reaction_Ctrl: {stat.Reaction_Ctrl} Sp_Atk: {stat.Sp_Atk}");
     }
 
     // 하위 클래스(Warrior, Assassin 등)에서 가중치만 다르게 구현하거나, 
     // 지금은 내부에서 분기 처리 (우선은 내부 분기로 작성)
-    private void ApplyClassBonus(Stat stat, int str, int agi, int @int)
+    protected void ApplyClassBonus(Stat stat, int str, int agi, int @int)
     {
         stat.max_Hp = str * 15;
         stat.def = str * 3;
