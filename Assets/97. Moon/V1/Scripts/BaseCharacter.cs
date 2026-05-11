@@ -11,7 +11,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [Serializable]
-public partial class BaseCharacter : ITurnUseUnit
+public partial class BaseCharacter : ITurnUseUnit, ISerializable
 {
     /// <summary>
     /// 테스트 용 객체
@@ -44,6 +44,11 @@ public partial class BaseCharacter : ITurnUseUnit
     public BaseCharacter(BaseCharacterData data)
     {
         Data = data;
+    }
+
+    public BaseCharacter(SerializationInfo info, StreamingContext context)
+    {
+        Data = (BaseCharacterData)info.GetValue("Data", typeof(BaseCharacterData));
     }
 
     public void SetRole(RoleType role)
@@ -165,4 +170,14 @@ public partial class BaseCharacter : ITurnUseUnit
         return speedComparison;
     }
     #endregion
+
+    public void GetObjectData(SerializationInfo info, StreamingContext context)
+    {
+        info.AddValue("Data", Data);
+    }
+
+    public override string ToString()
+    {
+        return $"Name: {Name}, Level: {Level}, Profession: {Profession.Name}";
+    }
 }
