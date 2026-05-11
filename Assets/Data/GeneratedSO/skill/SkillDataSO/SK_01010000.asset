@@ -21,7 +21,7 @@ MonoBehaviour:
   _coolTime: 0
   _duration: 0
   _useableClasses: 0
-  _useableSlots: 11
-  _enemyTargetMask: 1100
+  _useableSlots: 3
+  _enemyTargetMask: 12
   _allyTargetMask: 0
   _iconAddress: 0100
