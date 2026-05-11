@@ -52,7 +52,7 @@ public class BuildingService
     {
         if (target == null) return;
         target.RecoverInsanity(data.effectValue);
-        Debug.Log($"[BuildingService] 여관 이용: {data.effectValue} 광기 회복");
+        Debug.Log($"[BuildingService] 여관 이용: {data.effectValue} 스트레스 회복");
     }
 
     public void UpgradeEquipment(BaseCharacter target, Equipment equipment, int smithyLevel)
