@@ -1,8 +1,11 @@
+using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Bond.Persistence;
 using UnityEngine.AddressableAssets;
 using VContainer;
 
@@ -33,18 +36,14 @@ public class InventoryView : MonoBehaviour
 
     private async void Start()
     {
-        _expeditionResultService.ProcessExpeditionReturn();
-        SetupUI();
-    
-        // 1. 각 DB 로드
+        // 1. 아이템 DB 로드
         var conHandle = Addressables.LoadAssetAsync<ConsumableDataBaseSO>("ConsumableDataBase");
         var accHandle = Addressables.LoadAssetAsync<AccessoryDataBaseSO>("AccessoryDataBase");
-
         await System.Threading.Tasks.Task.WhenAll(conHandle.Task, accHandle.Task);
-
-        var conDB = conHandle.Result;
+        
         var accDB = accHandle.Result;
-
+        var conDB = conHandle.Result;
+        
         // 2. DB의 GetSO 함수를 사용하여 아이템 추가
         // 소모품 추가
         AddInventoryItem(conDB, "07000000", 5);
@@ -57,19 +56,78 @@ public class InventoryView : MonoBehaviour
         AddInventoryItem(accDB, "08000000", 1);
         AddInventoryItem(accDB, "08010000", 1);
         AddInventoryItem(accDB, "08020000", 1);
-        AddInventoryItem(accDB, "08030000", 1);
+        AddInventoryItem(accDB, "08030000", 1);        
+
+        // 2. "total_inv" 파일만 로드
+        LoadTotalInventory(conHandle.Result, accHandle.Result);
+        
+        _expeditionResultService.ProcessExpeditionReturn();
+        SetupUI();
 
         ToggleWindow(false);
     }
 
-    // 아이템 추가를 돕는 보조 함수
     private void AddInventoryItem(DataBaseSO db, string id, int count)
     {
         var item = db.GetSO<BaseItem>(id); // 작성하신 GetSO 활용!
         if (item != null)
-        {
             _totalInventory.AddItemAuto(item, count);
+    }
+
+    private void LoadTotalInventory(params DataBaseSO[] dbs)
+    {
+        // 로드 시도
+        var save = new InventorySaveData("total_inv");
+        // SaveLoadSystem의 GetPath와 Key를 조합하여 경로 생성 (시스템 수정 없이 대응)
+        string saveKey = save.Key;
+        string path = Path.Combine(Application.dataPath, "Data", "Save", $"{saveKey}.json");
+
+        if (File.Exists(path))
+        {
+            try 
+            {
+                SaveLoadSystem.Load(save);
+                
+                _totalInventory.ClearAll(); // 복구 전 초기화
+                foreach (var s in save.slots)
+                {
+                    BaseItem item = dbs.Select(db => db.GetSO<BaseItem>(s.id)).FirstOrDefault(i => i != null);
+                    if (item != null) _totalInventory.AddItemAuto(item, s.count);
+                }
+                
+                Debug.Log("TotalInventory: 데이터 로드 성공");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"TotalInventory: 로드 중 오류 발생 - {e.Message}");
+            }
         }
+        else
+        {
+            Debug.Log("TotalInventory: 기존 세이브 없음. 기본값으로 시작.");
+        }
+    }
+    
+    private void SaveTotalInventory()
+    {
+        // 1. 저장할 데이터 객체 생성 (파일명: total_inv)
+        var save = new InventorySaveData("total_inv");
+
+        // 2. 현재 인벤토리의 모든 슬롯을 순회하며 데이터 추출
+        foreach (var slot in _totalInventory.GetAll())
+        {
+            if (!slot.IsEmpty)
+            {
+                save.slots.Add(new InventorySaveData.SlotData 
+                { 
+                    id = slot.item.id, 
+                    count = slot.quantity 
+                });
+            }
+        }
+
+        // 3. 세이브 시스템 실행
+        SaveLoadSystem.Save(save);
     }
 
     private void SetupUI()
@@ -134,10 +192,12 @@ public class InventoryView : MonoBehaviour
         SyncSlotCount(_expeditionGrid, _expeditionInventory.Capacity, _expeditionSlotElements, _expeditionInventory);
 
         var totalVisible = _totalInventory.GetFilteredIndices(_currentSearch, _currentFilter);
-        var expeditionVisible = _expeditionInventory.GetFilteredIndices(_currentSearch, _currentFilter);
+        var expeditionVisible = _expeditionInventory.GetFilteredIndices("", null);
 
         UpdateGrid(_totalSlotElements, _totalInventory, totalVisible);
         UpdateGrid(_expeditionSlotElements, _expeditionInventory, expeditionVisible);
+        
+        SaveTotalInventory();
     }
 
     private void UpdateGrid(List<VisualElement> elements, IInventory inv, IEnumerable<int> visibleIndices)

@@ -1,8 +1,11 @@
+using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Bond.Persistence;
 using UnityEngine.AddressableAssets;
 
 public class ConstructionUI : MonoBehaviour
@@ -21,6 +24,8 @@ public class ConstructionUI : MonoBehaviour
     {
         var handle = Addressables.LoadAssetAsync<BuildingDataBaseSO>("BuildingDataBase");
         _buildingDB = await handle.Task;
+        // DB 로드 완료 후 건물 복구 시작
+        LoadSettlement();
     }
 
     private void OnEnable()
@@ -70,4 +75,37 @@ public class ConstructionUI : MonoBehaviour
     }
 
     private void Show(bool isShow) => _root.style.display = isShow ? DisplayStyle.Flex : DisplayStyle.None;
+    
+    private void LoadSettlement()
+    {
+        
+        var save = new SettlementSaveData();
+        string saveKey = save.Key;
+        string path = Path.Combine(Application.dataPath, "Data", "Save", $"{saveKey}.json");
+        if (File.Exists(path))
+        {
+            try
+            {
+                SaveLoadSystem.Load(save);
+                foreach (var b in save.buildings)
+                {
+                    var data = _buildingDB.FindSO<BuildingData>(d => d.buildingType == b.type);
+                    if (data != null)
+                    {
+                        // SettlementManager의 로드 전용 메서드 호출
+                        _settlementManager.LoadBuilding(b.slotIndex, data, b.level);
+                    }
+                }
+                Debug.Log("Settlement: 데이터 로드 성공");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Settlement: 로드 중 오류 발생 - {e.Message}");
+            }
+        }
+        else
+        {
+            Debug.Log("Settlement: 기존 세이브 없음. 기본값으로 시작.");
+        }
+    }
 }

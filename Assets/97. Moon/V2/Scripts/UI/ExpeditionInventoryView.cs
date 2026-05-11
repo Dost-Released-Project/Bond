@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Bond.Expedition;
+using Bond.Persistence;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using VContainer;
@@ -18,9 +22,18 @@ public class ExpeditionInventoryView : MonoBehaviour
     private List<VisualElement> _slots = new();
     private VisualElement _root;
 
-    private void Start()
+    private async void Start()
     {
         _expeditionInventory = _payload.Supplies;
+        
+        // 1. 탐사 중에도 아이템 정보를 알아야 하므로 DB 로드 필요
+        var conHandle = Addressables.LoadAssetAsync<ConsumableDataBaseSO>("ConsumableDataBase");
+        var accHandle = Addressables.LoadAssetAsync<AccessoryDataBaseSO>("AccessoryDataBase");
+        await System.Threading.Tasks.Task.WhenAll(conHandle.Task, accHandle.Task);
+
+        // 2. "exp_inv" 파일만 로드
+        LoadExpeditionInventory(conHandle.Result, accHandle.Result);
+        
         _root = GetComponent<UIDocument>().rootVisualElement;
         _slotContainer = _root.Q<VisualElement>("expedition-container");
 
@@ -98,6 +111,8 @@ public class ExpeditionInventoryView : MonoBehaviour
                 _slots[i].Add(icon);
             }
         }
+
+        SaveExpeditionInventory();
     }
 
     private void SyncSlots()
@@ -142,5 +157,60 @@ public class ExpeditionInventoryView : MonoBehaviour
             
             _payload.SetSuplies(_expeditionInventory);
         }
+    }
+    
+    private void LoadExpeditionInventory(params DataBaseSO[] dbs)
+    {
+        var save = new InventorySaveData("exp_inv");
+        // SaveLoadSystem의 GetPath와 Key를 조합하여 경로 생성 (시스템 수정 없이 대응)
+        string saveKey = save.Key;
+        string path = Path.Combine(Application.dataPath, "Data", "Save", $"{saveKey}.json");
+
+        if (File.Exists(path))
+        {
+            try 
+            {
+                SaveLoadSystem.Load(save);
+                
+                _expeditionInventory.ClearAll();
+                foreach (var s in save.slots)
+                {
+                    BaseItem item = dbs.Select(db => db.GetSO<BaseItem>(s.id)).FirstOrDefault(i => i != null);
+                    if (item != null) _expeditionInventory.AddItemAuto(item, s.count);
+                }
+                
+                Debug.Log("ExpeditionInventory: 데이터 로드 성공");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"ExpeditionInventory: 로드 중 오류 발생 - {e.Message}");
+            }
+        }
+        else
+        {
+            Debug.Log("ExpeditionInventory: 기존 세이브 없음. 기본값으로 시작.");
+        }
+    }
+    
+    private void SaveExpeditionInventory()
+    {
+        // 1. 저장할 데이터 객체 생성 (파일명: exp_inv)
+        var save = new InventorySaveData("exp_inv");
+
+        // 2. 탐사 인벤토리 슬롯 순회
+        foreach (var slot in _expeditionInventory.GetAll())
+        {
+            if (!slot.IsEmpty)
+            {
+                save.slots.Add(new InventorySaveData.SlotData 
+                { 
+                    id = slot.item.id, 
+                    count = slot.quantity 
+                });
+            }
+        }
+
+        // 3. 세이브 시스템 실행
+        SaveLoadSystem.Save(save);
     }
 }

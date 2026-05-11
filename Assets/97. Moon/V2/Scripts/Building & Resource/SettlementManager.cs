@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using Bond.Persistence;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VContainer;
@@ -89,8 +91,10 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
             CreateBuildingVisual(slotTransform, data);
 
             // 최초 건설 시 1레벨 효과 적용
-            ApplyBuildingEffect(data, 1); 
-        
+            ApplyBuildingEffect(data, 1);
+            
+            // 데이터 세이브
+            SaveSettlement();
             Debug.Log($"<color=cyan>[시스템]</color> {data.DisplayName} 배치가 완료되었습니다.");
         }
         else
@@ -108,6 +112,9 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         {
             building.Upgrade();
             ApplyBuildingEffect(building.Data, nextLevel);
+            
+            //데이터 세이브
+            SaveSettlement();
         }
     }
 
@@ -173,5 +180,41 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
             BuildingType.Supply => Color.black,
             _ => Color.white
         };
+    }
+    
+    // 세이브 데이터 불러오기 전용 메소드
+    public void LoadBuilding(int slotIndex, BuildingData data, int level)
+    {
+        if (slotIndex < 0 || slotIndex >= constructionSlots.Length) return;
+        Transform slotTransform = constructionSlots[slotIndex];
+
+        // 1. 슬롯 비활성화 (겹침 방지)
+        if (slotTransform.TryGetComponent<MeshRenderer>(out var mr)) mr.enabled = false;
+        if (slotTransform.TryGetComponent<BoxCollider>(out var bc)) bc.enabled = false;
+        if (slotTransform.TryGetComponent<ConstructionSlot>(out var cs)) cs.enabled = false;
+
+        // 2. 비주얼 생성 및 초기화
+        CreateBuildingVisual(slotTransform, data);
+        var bObj = slotTransform.GetComponentInChildren<BuildingObject>();
+    
+        // 3. 레벨 강제 설정 (Upgrade 메서드 반복 호출 혹은 직접 대입)
+        for (int i = 1; i < level; i++) bObj.Upgrade(); 
+    }
+    
+    // 데이터 세이브
+    private void SaveSettlement()
+    {
+        var settSave = new SettlementSaveData();
+        foreach (var slot in constructionSlots)
+        {
+            var bObj = slot.GetComponentInChildren<BuildingObject>();
+            if (bObj != null)
+                settSave.buildings.Add(new SettlementSaveData.BuildingSaveInfo { 
+                    slotIndex = Array.IndexOf(constructionSlots, slot), 
+                    type = bObj.Data.buildingType, 
+                    level = bObj.CurrentLevel 
+                });
+        }
+        SaveLoadSystem.Save(settSave);
     }
 }
