@@ -22,7 +22,7 @@ public static class TSVImportCoordinator
             .ToDictionary(p => p.TargetFileName.ToLower());
     }
 
-    private static IEnumerable<GoogleSheetEntry> GetAllEntries()
+    public static IEnumerable<GoogleSheetEntry> GetAllEntries()
     {
         var configs = Directory.GetFiles(CONFIG_PATH, "*.asset");
 
@@ -70,7 +70,7 @@ public static class TSVImportCoordinator
     }
 
     [MenuItem("Tools/DataSheet/Download from Google Sheets")]
-    public static void DownloadOnly()
+    public static void DownloadAll()
     {
         var entries = GetAllEntries();
         if (entries == null)
@@ -83,7 +83,7 @@ public static class TSVImportCoordinator
     [MenuItem("Tools/DataSheet/Download and Import All")]
     public static void DownloadAndImport()
     {
-        DownloadOnly();
+        DownloadAll();
         ImportAll();
     }
 
@@ -123,7 +123,7 @@ public static class TSVImportCoordinator
     }
 
     // 다운로드도 동일하게
-    public static void DownloadAndImport(IEnumerable<string> targets = null)
+    public static void Download(IEnumerable<string> targets = null)
     {
         var entries = GetAllEntries();
         if (entries == null)
@@ -142,6 +142,5 @@ public static class TSVImportCoordinator
         }
 
         AssetDatabase.Refresh();
-        Import(targets);
     }
 }

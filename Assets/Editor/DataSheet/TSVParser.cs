@@ -66,7 +66,9 @@ public abstract class TSVParserBase<TDTO, TSO> : ITSVParser
         {
             using var reader = new StringReader(trimmed);
             using var csv    = new CsvReader(reader, config);
-            csv.Context.RegisterClassMap(GetClassMap());
+            var map = GetClassMap();
+            if (map != null)
+                csv.Context.RegisterClassMap(map);
             records = csv.GetRecords<TDTO>().ToList();
         }
         catch (System.Exception e)
