@@ -38,9 +38,9 @@ namespace Bond.Persistence
     public static class SaveLoadSystem
     {
 #if UNITY_EDITOR
-        public static string SaveRootDirectory = Path.Combine(Application.dataPath, "Data", "Save");
+        private static readonly string SAVE_ROOT = Path.Combine(Application.dataPath, "Data", "Save");
 #else
-        public static string SaveRootDirectory = Path.Combine(Application.persistentDataPath, "Save");
+        private static readonly string SAVE_ROOT = Path.Combine(Application.persistentDataPath, "Save");
 #endif
         
         private static JsonSerializerSettings settings = new JsonSerializerSettings()
@@ -50,7 +50,7 @@ namespace Bond.Persistence
 
         private static string GetPath(string saveKey)
         {
-            return Path.Combine(SaveRootDirectory, $"{saveKey}.json");
+            return Path.Combine(SAVE_ROOT, $"{saveKey}.json");
         }
 
         public static void Save(ISaveable saveable)
@@ -69,7 +69,7 @@ namespace Bond.Persistence
 
         public static IEnumerable<ISaveable> ReadAll()
         {
-            foreach (var filePath in Directory.EnumerateFiles(SaveRootDirectory, "*.json"))
+            foreach (var filePath in Directory.EnumerateFiles(SAVE_ROOT, "*.json"))
             {
                 string json = File.ReadAllText(filePath);
                 var obj = JsonConvert.DeserializeObject(json, settings);
