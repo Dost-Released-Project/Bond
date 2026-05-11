@@ -1930,6 +1930,46 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2171420726810719254, guid: 24bf06a1abb9c5f44a8d4d763951a481, type: 3}
+      propertyPath: hero.Data.Name
+      value: Test
+      objectReference: {fileID: 0}
+    - target: {fileID: 2171420726810719254, guid: 24bf06a1abb9c5f44a8d4d763951a481, type: 3}
+      propertyPath: hero.Data.RoleType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2171420726810719254, guid: 24bf06a1abb9c5f44a8d4d763951a481, type: 3}
+      propertyPath: hero.Data.Armor.bonusAGI
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2171420726810719254, guid: 24bf06a1abb9c5f44a8d4d763951a481, type: 3}
+      propertyPath: hero.Data.Armor.bonusINT
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2171420726810719254, guid: 24bf06a1abb9c5f44a8d4d763951a481, type: 3}
+      propertyPath: hero.Data.Armor.bonusSTR
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2171420726810719254, guid: 24bf06a1abb9c5f44a8d4d763951a481, type: 3}
+      propertyPath: hero.Data.Armor.itemName
+      value: "\uBC29\uC5B4\uAD6C"
+      objectReference: {fileID: 0}
+    - target: {fileID: 2171420726810719254, guid: 24bf06a1abb9c5f44a8d4d763951a481, type: 3}
+      propertyPath: hero.Data.Weapon.bonusAGI
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2171420726810719254, guid: 24bf06a1abb9c5f44a8d4d763951a481, type: 3}
+      propertyPath: hero.Data.Weapon.bonusINT
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2171420726810719254, guid: 24bf06a1abb9c5f44a8d4d763951a481, type: 3}
+      propertyPath: hero.Data.Weapon.bonusSTR
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2171420726810719254, guid: 24bf06a1abb9c5f44a8d4d763951a481, type: 3}
+      propertyPath: hero.Data.Weapon.itemName
+      value: "\uBB34\uAE30"
+      objectReference: {fileID: 0}
     - target: {fileID: 4145817721157878301, guid: 24bf06a1abb9c5f44a8d4d763951a481, type: 3}
       propertyPath: m_Name
       value: Admin

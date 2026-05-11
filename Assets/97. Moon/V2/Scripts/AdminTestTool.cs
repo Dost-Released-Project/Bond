@@ -35,7 +35,7 @@ public class AdminTestTool : MonoBehaviour
         if (Keyboard.current.f3Key.wasPressedThisFrame)
         {
             FindObjectOfType<SettlementManager>().SelectCharacter(testHero);
-            testHero.Stat.StatCalculate();
+            testHero.Profession.CalculateStat(testHero.Stat, testHero.Data);
         }
         
         // 4. 강화 대상 전환 (무기 <-> 방어구)

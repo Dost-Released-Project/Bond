@@ -55,7 +55,7 @@ public class BuildingService
         Debug.Log($"[BuildingService] 여관 이용: {data.effectValue} 광기 회복");
     }
 
-    public void UpgradeEquipment(Stat targetStat, Equipment equipment, int smithyLevel)
+    public void UpgradeEquipment(BaseCharacter target, Equipment equipment, int smithyLevel)
     {
         if (equipment == null || equipment.upgradeLevel >= smithyLevel || equipment.upgradeLevel >= 5) return;
 
@@ -65,7 +65,7 @@ public class BuildingService
         if (_resourceManager.ConsumeResources(costFrontier, 0, costOre))
         {
             equipment.Upgrade();
-            targetStat.StatCalculate();
+            target.Profession.CalculateStat(target.Stat, target.Data);
         }
     }
 }

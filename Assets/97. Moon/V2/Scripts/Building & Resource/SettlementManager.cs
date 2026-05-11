@@ -130,8 +130,8 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     private void ProcessSmithy(BuildingObject smithy)
     {
         if (_selectedCharacter == null) return;
-        Equipment target = AdminTestTool.isTargetingWeapon ? _selectedCharacter.Stat.baseWeapon : _selectedCharacter.Stat.baseArmor;
-        _buildingService.UpgradeEquipment(_selectedCharacter.Stat, target, smithy.CurrentLevel);
+        Equipment target = AdminTestTool.isTargetingWeapon ? _selectedCharacter.Data.Weapon : _selectedCharacter.Data.Armor;
+        _buildingService.UpgradeEquipment(_selectedCharacter, target, smithy.CurrentLevel);
     }
     
     private void CollectGuildData(BuildingObject guild)

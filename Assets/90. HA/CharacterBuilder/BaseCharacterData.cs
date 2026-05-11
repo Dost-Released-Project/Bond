@@ -33,6 +33,9 @@ public class BaseCharacterData
     public SkillBase[] Skills = new SkillBase[4];
     public Trait[] Traits = new Trait[4];
     public Equipment[] Equips = new Equipment[2];
+    // [이관] 장비(무기, 방어구)
+    public Equipment Weapon;
+    public Equipment Armor;
 
     public Dictionary<BaseCharacter, int>
         Relation = new Dictionary<BaseCharacter, int>(); // 딕셔너리 선택 이유: 동료는 언제든 교체될 수 있기에 딕셔너리로 관리 및 저장.
