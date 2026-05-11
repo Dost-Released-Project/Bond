@@ -34,16 +34,6 @@ namespace Bond.Persistence
         object ISaveable.Data => Data;
         void ISaveable.Restore(object data) => Restore((T)data);
     }
-
-    public class SaveData : ISaveable<string>
-    {
-        public string Key { get; set; }
-        public string Data { get; set; }
-        public void Restore(string data)
-        {
-            Data = data;
-        }
-    }
     
     public static class SaveLoadSystem
     {
@@ -52,59 +42,16 @@ namespace Bond.Persistence
 #else
         public static string SaveRootDirectory = Path.Combine(Application.persistentDataPath, "Save");
 #endif
-        // public static string SaveRootDirectory;
-        // private List<ISaveable> saveables = new List<ISaveable>();
         
         private static JsonSerializerSettings settings = new JsonSerializerSettings()
         {
             TypeNameHandling = TypeNameHandling.Auto,
         };
 
-//         public SaveLoadSystem()
-//         {
-// #if UNITY_EDITOR
-//             SaveRootDirectory = Path.Combine(Application.dataPath, "Data", "Save");
-// #else
-//             SaveRootDirectory = Path.Combine(Application.persistentDataPath, "Save");
-// #endif
-//             if (Directory.Exists(SaveRootDirectory) == false)
-//             {
-//                 Directory.CreateDirectory(SaveRootDirectory);
-//             }
-//         }
-//
-//         public void Register(ISaveable saveable)
-//         {
-//             if (saveables.Any(x => x.Key == saveable.Key))
-//                 saveable = saveables.First(x => x.Key == saveable.Key);
-//             saveables.Add(saveable);
-//         }
-//         
-//         public void LoadAndRegister(ISaveable saveable)
-//         {
-//             saveable.Restore(Load(saveable.Key));
-//             Register(saveable);
-//         }
-//         
-//         public void Unregister(ISaveable saveable)
-//         {
-//             saveables.Remove(saveable);
-//         }
-
         private static string GetPath(string saveKey)
         {
             return Path.Combine(SaveRootDirectory, $"{saveKey}.json");
         }
-        
-        // public void SaveAll()
-        // {
-        //     foreach (ISaveable saveable in saveables)
-        //     {
-        //         Save(saveable.Key, saveable.Data);
-        //     }
-        //     
-        //     AssetDatabase.Refresh();
-        // }
 
         public static void Save(ISaveable saveable)
         {
@@ -117,9 +64,7 @@ namespace Bond.Persistence
             string path = GetPath(key);
             File.WriteAllText(path, json);
 
-#if UNITY_EDITOR
             AssetDatabase.Refresh();
-#endif
         }
 
         public static IEnumerable<ISaveable> ReadAll()
