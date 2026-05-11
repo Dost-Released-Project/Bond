@@ -20,19 +20,21 @@ public class TSVImportWindow : EditorWindow
         var existing = new HashSet<string>(_selection.Keys);
 
         // TSV 파일 목록 갱신 (새 파일은 기본 true)
-        var files = Directory.GetFiles(
-            TSVImportCoordinator.DATA_ROOT, "*.tsv");
+        // var files = Directory.GetFiles(
+        //     TSVImportCoordinator.DATA_ROOT, "*.tsv");
 
-        foreach (var file in files)
+        var sheets = TSVImportCoordinator.GetAllEntries().ToArray();
+
+        foreach (var file in sheets)
         {
-            string key = Path.GetFileNameWithoutExtension(file).ToLower();
+            string key = file.SheetName.ToLower();
             if (_selection.ContainsKey(key) == false)
-                _selection[key] = true;
+                _selection[key] = false;
         }
 
-        // 삭제된 파일 제거
+        // 삭제된 항목 제거
         foreach (var key in existing)
-            if (files.Any(f => Path.GetFileNameWithoutExtension(f).ToLower() == key) == false)
+            if (sheets.Any(f => f.SheetName.ToLower() == key) == false)
                 _selection.Remove(key);
     }
 
@@ -68,7 +70,10 @@ public class TSVImportWindow : EditorWindow
         bool anySelected = _selection.Values.Any(v => v);
         GUI.enabled = anySelected;
 
-        if (GUILayout.Button("선택한 TSV 임포트", GUILayout.Height(30)))
+        if (GUILayout.Button("선택한 시트 다운로드", GUILayout.Height(30)))
+            RunDownload();
+
+        if (GUILayout.Button("선택한 시트 임포트", GUILayout.Height(30)))
             RunImport();
 
         if (GUILayout.Button("선택한 시트 다운로드 + 임포트", GUILayout.Height(30)))
@@ -80,15 +85,19 @@ public class TSVImportWindow : EditorWindow
     private IEnumerable<string> Selected()
         => _selection.Where(kv => kv.Value).Select(kv => kv.Key);
 
+    private void RunDownload()
+    {
+        TSVImportCoordinator.Download(Selected());
+    }
+    
     private void RunImport()
     {
         TSVImportCoordinator.Import(Selected());
-        Debug.Log($"임포트 완료: {string.Join(", ", Selected())}");
     }
 
     private void RunDownloadAndImport()
     {
-        TSVImportCoordinator.DownloadAndImport(Selected());
-        Debug.Log($"다운로드+임포트 완료: {string.Join(", ", Selected())}");
+        TSVImportCoordinator.Download(Selected());
+        TSVImportCoordinator.Import(Selected());
     }
 }
