@@ -29,11 +29,11 @@ namespace Reactions
         {
             if (string.IsNullOrEmpty(TriggerKey)) return true;
             if (TriggerKey.StartsWith("TRG_OFF"))
-                return skillType == SkillType.OFFENSIVE || skillType == SkillType.OFFENSIVE_SPELL;
+                return skillType == SkillType.OFFENSIVE || skillType == SkillType.SPELL;
             if (TriggerKey.StartsWith("TRG_DEF"))
                 return skillType == SkillType.DEFENSIVE;
             if (TriggerKey.StartsWith("TRG_SIT"))
-                return skillType == SkillType.SUPPORT_SPELL;
+                return skillType == SkillType.SUPPORT;
             return true; // TRG_STA_* 등: 제한 없음
         }
     }

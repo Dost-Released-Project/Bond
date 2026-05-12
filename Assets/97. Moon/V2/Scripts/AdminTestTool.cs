@@ -1,18 +1,25 @@
+using System;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
 public class AdminTestTool : MonoBehaviour
 {
+    public string id;
     public BaseCharacter hero;
     public static bool isTargetingWeapon = true;
+    private ClassDataBaseSO _ClassDB;
     
-    public static BaseCharacter testHero;
+    public static BaseCharacter testHero = null;
 
-    private void Awake()
+    private async void Awake()
     {
         hero = BaseCharacter.Sample;
         testHero = hero;
+        var handle = Addressables.LoadAssetAsync<ClassDataBaseSO>("ClassDataBase");
+        _ClassDB = await handle.Task;
+        testHero.Profession = new SampleProfession(_ClassDB.GetSO<ClassSO>(id));
     }
 
     void Update()
@@ -35,7 +42,7 @@ public class AdminTestTool : MonoBehaviour
         if (Keyboard.current.f3Key.wasPressedThisFrame)
         {
             FindObjectOfType<SettlementManager>().SelectCharacter(testHero);
-            testHero.Stat.StatCalculate();
+            testHero.Profession.CalculateStat(testHero.Stat, testHero.Data);
         }
         
         // 4. 강화 대상 전환 (무기 <-> 방어구)

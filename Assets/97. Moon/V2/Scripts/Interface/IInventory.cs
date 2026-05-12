@@ -10,6 +10,10 @@ public interface IInventory
     void RemoveFromSlot(int index, int quantity);         // 특정 슬롯에서 제거
     void ClearSlot(int index);
     
+    void ClearAll();
+
+    List<InventorySlot> GetAll();
+    
     InventorySlot GetSlot(int index);
     int Capacity { get; }
 

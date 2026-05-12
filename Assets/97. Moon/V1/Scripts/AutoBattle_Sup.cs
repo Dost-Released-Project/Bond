@@ -7,7 +7,7 @@ public class AutoBattle_Sup : AutoBattle
     public override SkillBase BattleAction(SkillBase[] skills)
     {
         if (isPlayable) return null;
-        var favorites = new List<SkillType> { SkillType.SUPPORT_SPELL };
+        var favorites = new List<SkillType> { SkillType.SUPPORT };
         return DecideSkill(skills, favorites);
     }
     public AutoBattle_Sup(string str) { Debug.Log($"{str}: 서포터 세팅"); }

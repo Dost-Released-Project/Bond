@@ -13,15 +13,22 @@ MonoBehaviour:
   m_Name: CL_02000000
   m_EditorClassIdentifier: Assembly-CSharp::ClassSO
   _id: 02000000
-  _displayName: "\uC804\uC0AC"
+  _displayName: 
   _description: 
   STR: 3
   AGI: 2
   INT: 1
-  Atk: 0
-  Def: 0
-  Cri: 0
-  Speed: 0
+  HP: 15
+  Def: 10
+  Atk: 10
+  Speed: 5
+  Cri: 5
+  Acc: 5
+  InsanityCtrl: 5
+  ReactionCtrl: 5
+  SpAtk: 5
   DefaultArmorId: 
   DefaultWeaponId: 
   IconId: 
+  ClassType: 00
+  LV: 0

@@ -11,13 +11,20 @@ public class ClassDTO
     public int STR { get; set; }
     public int AGI { get; set; }
     public int INT { get; set; }
-    public int ATK { get; set; }
+    public int HP { get; set; }
     public int DEF { get; set; }
-    public int CRI { get; set; }
+    public int ATK { get; set; }
     public int Speed { get; set; }
+    public int CRI { get; set; }
+    public int ACC { get; set; }
+    public int InsanityCtrl { get; set; }
+    public int ReactionCtrl { get; set; }
+    public int SP_ATK { get; set; }
     public string ArmorID { get; set; }
     public string WeaponID { get; set; }
     public string IconID { get; set; }
+    public string Class { get; set; }
+    public int LV { get; set; }
 }
 
 public class ClassParser : TSVParserBase<ClassDTO, ClassSO>
@@ -30,7 +37,8 @@ public class ClassParser : TSVParserBase<ClassDTO, ClassSO>
 
     protected override void Populate(ClassSO so, ClassDTO dto)
     {
-        so.SetData(dto.ID, dto.Name, dto.STR, dto.AGI, dto.INT, dto.ATK, dto.DEF, dto.CRI, dto.Speed, dto.ArmorID, dto.WeaponID, dto.IconID);
+        so.SetData(dto.ID, dto.Name, dto.STR, dto.AGI, dto.INT, dto.HP, dto.DEF, dto.ATK, dto.Speed, dto.CRI, dto.ACC, 
+            dto.InsanityCtrl, dto.ReactionCtrl, dto.SP_ATK, dto.ArmorID, dto.WeaponID, dto.IconID, dto.Class, dto.LV);
     }
 
     protected override void OnPostImport(string outputDir)
@@ -72,17 +80,24 @@ public class ClassParser : TSVParserBase<ClassDTO, ClassSO>
         public ClassMapInstance()
         {
             Map(m => m.ID).Name("ID");
-            Map(m => m.Name).Name("클래스");
+            Map(m => m.Name).Name("이름");
             Map(m => m.STR).Name("힘").Default(0);
             Map(m => m.AGI).Name("민첩").Default(0);
             Map(m => m.INT).Name("지능").Default(0);
-            Map(m => m.ATK).Name("ATK").Default(0);
+            Map(m => m.HP).Name("HP").Default(0);
             Map(m => m.DEF).Name("DEF").Default(0);
-            Map(m => m.CRI).Name("CRI").Default(0);
-            Map(m => m.Speed).Name("Speed").Optional().Default(0); 
+            Map(m => m.ATK).Name("ATK").Default(0);
+            Map(m => m.Speed).Name("SPEED").Default(0); 
+            Map(m => m.CRI).Name("CRT").Default(0);
+            Map(m => m.ACC).Name("ACC").Default(0);
+            Map(m => m.InsanityCtrl).Name("INSANITY_CTRL").Default(0);
+            Map(m => m.ReactionCtrl).Name("REACTION_CTRL").Default(0);
+            Map(m => m.SP_ATK).Name("SP_ATK").Default(0);
             Map(m => m.ArmorID).Name("방어구 ID");
             Map(m => m.WeaponID).Name("무기 ID");
             Map(m => m.IconID).Name("Icon ID");
+            Map(m => m.Class).Name("Class");
+            Map(m => m.LV).Name("LV").Default(0);
         }
     }
 }

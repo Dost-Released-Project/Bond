@@ -41,51 +41,42 @@ public class BuildingParser : TSVParserBase<BuildingDTO, BuildingData>
     // 레벨 테이블(BuildingLevel.tsv)을 수동으로 로드하는 메서드
     private void EnsureLevelCacheLoaded()
     {
-        if (_levelCache != null) return; // 이미 로드됨
-
+        if (_levelCache != null) return;
         _levelCache = new Dictionary<string, List<BuildingLevelData>>();
-        
-        // BuildingLevel.tsv 경로 지정
+
         string levelPath = Path.Combine(Application.dataPath, "Data/TSV/BuildingLevel.tsv");
+        if (!File.Exists(levelPath)) return;
 
-        if (!File.Exists(levelPath))
-        {
-            // 디버깅을 위해 시도한 전체 경로를 출력하도록 개선
-            Debug.LogError($"[BuildingParser] 레벨 테이블을 찾을 수 없습니다. 시도한 경로: {levelPath}");
-            return;
-        }
-
-        // CsvHelper를 이용한 직접 파싱 (TSVParserBase의 로직 참조)
-        var config = new CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture)
-        {
-            Delimiter = "\t",
-            Mode = CsvMode.NoEscape,
-            HasHeaderRecord = true,
-            HeaderValidated = null,
-            MissingFieldFound = null,
-            PrepareHeaderForMatch = args => args.Header.Trim(),
-        };
-
-        // 8행 헤더 스킵 로직 적용 (9번째 줄이 헤더)
         string[] lines = File.ReadAllLines(levelPath);
-        var filteredLines = lines.Skip(8).ToList();
-        
-        // 사용자가 가이드 행을 제외했으므로, 헤더 바로 다음 줄부터 데이터가 시작됨
-        // filteredLines.RemoveAt(1); // 이 줄 제거
 
+        // 1. 엑셀 1~8행(인덱스 0~7) 무시하고 9행(인덱스 8)부터 가져옴
+        var filteredLines = lines.Skip(8).ToList(); 
+        
         string trimmed = string.Join("\n", filteredLines);
 
         using var reader = new StringReader(trimmed);
-        using var csv = new CsvReader(reader, config);
+        using var csv = new CsvReader(reader, new CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture)
+        {
+            Delimiter = "\t",
+            HasHeaderRecord = true, // 이제 첫 줄이 "BuildingID	Level..." 헤더임
+            HeaderValidated = null,
+            MissingFieldFound = null,
+        });
+
+        // [중요] 맵핑 클래스의 이름이 TSV 헤더와 정확히 일치해야 합니다.
+        // 이미지에 BuildingID라고 되어있으므로 Map도 확인해야 합니다.
         csv.Context.RegisterClassMap<BuildingLevelMap>();
         var records = csv.GetRecords<BuildingLevelDTO>().ToList();
 
         foreach (var rec in records)
         {
-            if (!_levelCache.ContainsKey(rec.ID))
-                _levelCache[rec.ID] = new List<BuildingLevelData>();
+            if (string.IsNullOrEmpty(rec.ID)) continue;
+        
+            string cleanID = rec.ID.Trim();
+            if (!_levelCache.ContainsKey(cleanID))
+                _levelCache[cleanID] = new List<BuildingLevelData>();
 
-            _levelCache[rec.ID].Add(new BuildingLevelData
+            _levelCache[cleanID].Add(new BuildingLevelData
             {
                 level = rec.Level,
                 frontierCost = rec.FrontierCost,
@@ -97,22 +88,32 @@ public class BuildingParser : TSVParserBase<BuildingDTO, BuildingData>
                 materialCapAdd = rec.MaterialCapAdd
             });
         }
+        Debug.Log($"[BuildingParser] 레벨 캐시 로드 완료. 총 {_levelCache.Count}개 건물의 데이터 저장됨.");
     }
-
     protected override void Populate(BuildingData so, BuildingDTO dto)
     {
-        // 1. 레벨 데이터 캐시 확인
+        if (dto == null || string.IsNullOrEmpty(dto.ID)) return;
+
         EnsureLevelCacheLoaded();
 
-        // 2. 스프라이트 로드
-        Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/{dto.SpritePath}.png");
+        string cleanDTOID = dto.ID.Trim(); // [보완] 공백 제거
+        Sprite sprite = null;
+        if (!string.IsNullOrEmpty(dto.SpritePath))
+        {
+            sprite = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/{dto.SpritePath}.png");
+        }
 
-        // 3. 해당 건물 ID에 맞는 레벨 리스트 추출
-        List<BuildingLevelData> myLevels = _levelCache.ContainsKey(dto.ID) 
-            ? _levelCache[dto.ID] 
-            : new List<BuildingLevelData>();
+        List<BuildingLevelData> myLevels = new List<BuildingLevelData>();
+        if (_levelCache != null && _levelCache.TryGetValue(cleanDTOID, out var foundLevels))
+        {
+            myLevels = foundLevels;
+        }
+        else
+        {
+            // [중요 로그] 여기서 로그가 찍힌다면 ID가 서로 안 맞는 겁니다.
+            Debug.LogWarning($"[BuildingParser] ID {cleanDTOID} 에 해당하는 레벨 데이터를 찾을 수 없습니다!");
+        }
 
-        // 4. SO 데이터 주입 (DTO가 아닌 낱개 파라미터 전달)
         so.SetBuildingData(dto.ID, dto.BuildingName, dto.Description, dto.BuildingType, myLevels, sprite);
     }
 
@@ -165,7 +166,7 @@ public sealed class BuildingLevelMap : ClassMap<BuildingLevelDTO>
 {
     public BuildingLevelMap()
     {
-        Map(m => m.ID).Name("BuildingID");
+        Map(m => m.ID).Name("ID");
         Map(m => m.Level).Name("Level");
         Map(m => m.FrontierCost).Name("FrontierCost");
         Map(m => m.WoodCost).Name("WoodCost");
