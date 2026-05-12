@@ -19,6 +19,11 @@ public class SampleSkill : SkillBase
 
         _skillData.SetData(rawData);
     }
+
+    public SampleSkill(SkillData skillData)
+    {
+        _skillData = skillData;
+    }
     
     public override void UseSkill()
     {

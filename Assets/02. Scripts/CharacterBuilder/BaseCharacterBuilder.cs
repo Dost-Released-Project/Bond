@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Bond.Embark;
+using UnityEngine;
 
 public partial class BaseCharacter
 {
@@ -26,10 +26,13 @@ public partial class BaseCharacter
                 Description = "ccc"
             }
         };
-
+        
         private readonly BaseCharacter chara = Sample;
 
-        public Builder()
+        private DataBaseSO professionDb = null;
+        private DataBaseSO skillDb = null;
+        
+        public Builder(DataBaseSO proDb, DataBaseSO skillDb)
         {
             chara.Data.Id = "Missing Id";
             chara.Data.ImageAddress = "Missing ImageAddress";
@@ -38,6 +41,9 @@ public partial class BaseCharacter
             chara.Data.Level = 0;
             chara.Data.Insanity = 0; // 스트레스(광기) 지수 0~100, Stress는 STR과 혼동될 수 있어서 명칭 변경
             chara.Data.RoleType = RoleType.None;
+            
+            this.professionDb = proDb;
+            this.skillDb = skillDb;
         }
 
         public BaseCharacter Build() => chara;
@@ -60,7 +66,7 @@ public partial class BaseCharacter
             return this;
         }
 
-        public Builder SetClass(Profession pro)
+        public Builder SetProfession(Profession pro)
         {
             chara.Data.Profession = pro;
             return this;
@@ -78,6 +84,14 @@ public partial class BaseCharacter
             return this;
         }
 
+        public Builder SetRandomProfession()
+        {
+            var data = professionDb.GetRandom<ClassSO>();
+            Profession pro = new Profession(data);
+            SetProfession(pro);
+            return this;
+        }
+
         public Builder AddRandomTrait()
         {
             Trait randomTrait = traits.GetRandom();
@@ -90,6 +104,22 @@ public partial class BaseCharacter
 
             chara.Traits[i] = randomTrait;
 
+            return this;
+        }
+
+        public Builder FillSkill()
+        {
+            // TODO: 실제 직업으로 필터링 하도록 교체
+            //skillDb.Query<SkillData>((skill) => skill.UseableClasses == chara.Data.Profession.class)
+            var skills = skillDb.Query<SkillData>((s) => true).ToArray();
+            Debug.Assert(skills.Count() >= chara.Skills.Length);
+
+            var shuffled = skills.GetShuffled();
+            for (int i = 0; i < chara.Skills.Length; i++)
+            {
+                chara.Skills[i] = new SampleSkill(shuffled[i]);
+            }
+            
             return this;
         }
 

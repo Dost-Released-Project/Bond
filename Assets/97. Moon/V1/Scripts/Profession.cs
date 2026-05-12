@@ -12,7 +12,6 @@ public class Profession
 
     protected Profession()
     {
-        throw new System.NotImplementedException();
     }
 
     public string Name { get; set; }
