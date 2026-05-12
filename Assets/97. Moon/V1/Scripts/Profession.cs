@@ -1,8 +1,11 @@
+using System;
+using Newtonsoft.Json;
 using UnityEngine;
 
+[Serializable]
 public class Profession
 {
-    private readonly ClassSO _classData;
+    [JsonProperty] private readonly ClassSO _classData;
     private bool isFirst;
 
     public Profession(ClassSO classData)
@@ -14,11 +17,16 @@ public class Profession
     {
     }
 
-    public string Name { get; set; }
+    [JsonIgnore] public string Name => _classData.DisplayName;
 
     public void CalculateStat(Stat stat, BaseCharacterData characterData)
     {
         if (_classData == null) return;
+        
+        // 0. 기본 능력치
+        stat.AGI = _classData.AGI;
+        stat.STR = _classData.STR;
+        stat.INT = _classData.INT;
 
         // 1. 장비(무기, 방어구, 장신구) 보너스 합산
         int extraSTR = (characterData.Weapon?.bonusSTR ?? 0) + (characterData.Armor?.bonusSTR ?? 0);
