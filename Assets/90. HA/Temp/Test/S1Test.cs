@@ -46,7 +46,7 @@ namespace _90._HA.Temp.Test
             {
                 foreach (var item in items)
                 {
-                    _expeditionInventory.AddItemAuto(item, Random.Range(1, 5));
+                    _expeditionInventory.AddItemAuto(item, 1);
                 }
                 BaseCharacter[] enemyParty = new  BaseCharacter[4];
                 for (int i = 0; i < 4; i++)

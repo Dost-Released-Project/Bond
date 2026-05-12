@@ -12,6 +12,7 @@ public enum ClassType
     Wizard,
 }
 
+[Serializable]
 public class Stat
 {
     private ClassType classType;

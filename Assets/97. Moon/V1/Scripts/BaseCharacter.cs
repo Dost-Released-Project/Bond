@@ -61,6 +61,11 @@ public partial class BaseCharacter : ITurnUseUnit
             RoleType.Supporter => new AutoBattle_Sup(Name)
         };
     }
+
+    public void CalcStat()
+    {
+        Profession.CalculateStat(Stat, Data);
+    }
     
     public void ReduceHP(int amount) => Stat.current_Hp = Mathf.Max(Stat.current_Hp - amount, 0); // 체력 감소
     public void ReduceInsanity(int amount) => Data.Insanity = Mathf.Min(Data.Insanity + amount, 100); // 스트레스 증가

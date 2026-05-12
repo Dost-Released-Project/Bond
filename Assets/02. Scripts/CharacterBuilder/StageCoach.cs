@@ -25,6 +25,7 @@ public class StageCoach
         
         var chara = builder.Build();
         
+        chara.CalcStat();
         chara.SetRole(RandomUtil.GetRandom(RoleType.None));
         
         return chara;
