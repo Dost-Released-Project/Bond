@@ -68,11 +68,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a42efad4c6d2cd469052b3fad558cdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConstructionUI
-  buildingTemplates:
-  - {fileID: 11400000, guid: e15130ba899c3d14a96d04c9e51714ba, type: 2}
-  - {fileID: 11400000, guid: a1b7fe4b5b58808418317e5e0ef9bc25, type: 2}
-  - {fileID: 11400000, guid: f465c0f5441304a47ac1be6228acd0f8, type: 2}
-  - {fileID: 11400000, guid: 970ce36a5aed46c4db67f0182c694d6b, type: 2}
-  - {fileID: 11400000, guid: 6e98131e5e179794c8f8a9c8a37bee8f, type: 2}
-  - {fileID: 11400000, guid: c12abe32e10040842aab0ee1914a8b08, type: 2}
-  - {fileID: 11400000, guid: f50e01eea31821f479233e8d0da4a1a3, type: 2}

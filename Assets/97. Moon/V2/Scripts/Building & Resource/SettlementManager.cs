@@ -153,18 +153,47 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     public void SelectCharacter(BaseCharacter character) => _selectedCharacter = character;
     
     // CreateBuildingVisual 및 기타 헬퍼 메서드 (기능 유지)
+    // private void CreateBuildingVisual(Transform parent, BuildingData data)
+    // {
+    //     GameObject buildingGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
+    //     buildingGo.name = $"Building_{data.DisplayName}";
+    //     buildingGo.transform.SetParent(parent);
+    //     buildingGo.transform.localPosition = new Vector3(0, 0.5f, 0); 
+    //     
+    //     var bObj = buildingGo.AddComponent<BuildingObject>();
+    //     bObj.Initialize(data, this);
+    //
+    //     var renderer = buildingGo.GetComponent<Renderer>();
+    //     renderer.material.color = GetColorByBuildingType(data.buildingType);
+    // }
+    
+    // 스프라이트로 건물 생성
     private void CreateBuildingVisual(Transform parent, BuildingData data)
     {
-        GameObject buildingGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        buildingGo.name = $"Building_{data.DisplayName}";
+        // 1. 빈 오브젝트 생성
+        GameObject buildingGo = new GameObject($"Building_{data.DisplayName}");
         buildingGo.transform.SetParent(parent);
-        buildingGo.transform.localPosition = new Vector3(0, 0.5f, 0); 
-        
+        buildingGo.transform.localPosition = Vector3.zero; // 바닥에 붙임
+
+        // 2. 스프라이트 렌더러 추가 및 설정
+        var sr = buildingGo.AddComponent<SpriteRenderer>();
+        sr.sprite = data.buildingSprite; // BuildingData에 추가하신 스프라이트
+        sr.drawMode = SpriteDrawMode.Simple;
+    
+        // 건물이 땅 뚫고 들어가지 않게 위치 조정 (스프라이트 크기에 따라 pivot 조정 필요)
+        buildingGo.transform.localPosition = new Vector3(0, 0.1f, 0);
+        buildingGo.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+        // 쿼터뷰/탑다운일 경우 카메라를 바라보게 회전 (필요시)
+        buildingGo.transform.rotation = Quaternion.Euler(0, 0, 0); 
+
+        // 3. 클릭 감지를 위한 콜라이더 추가 (레이캐스트용)
+        var col = buildingGo.AddComponent<BoxCollider>();
+        // 스프라이트 크기에 맞춰 콜라이더 사이즈 자동 조정
+        col.size = new Vector3(sr.bounds.size.x, sr.bounds.size.y, 0.1f);
+
+        // 4. 기능 컴포넌트 부착
         var bObj = buildingGo.AddComponent<BuildingObject>();
         bObj.Initialize(data, this);
-
-        var renderer = buildingGo.GetComponent<Renderer>();
-        renderer.material.color = GetColorByBuildingType(data.buildingType);
     }
 
     private Color GetColorByBuildingType(BuildingType type)

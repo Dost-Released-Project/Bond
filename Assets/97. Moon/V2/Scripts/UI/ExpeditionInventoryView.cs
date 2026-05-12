@@ -172,7 +172,11 @@ public class ExpeditionInventoryView : MonoBehaviour
             {
                 SaveLoadSystem.Load(save);
                 
-                _expeditionInventory.ClearAll();
+                // 1. 기존 슬롯을 완전히 비우고 저장된 용량만큼 재생성
+                _expeditionInventory.ClearAll(); 
+                _expeditionInventory.ExpandStorage(save.capacity); 
+
+                // 2. 아이템 복구
                 foreach (var s in save.slots)
                 {
                     BaseItem item = dbs.Select(db => db.GetSO<BaseItem>(s.id)).FirstOrDefault(i => i != null);
@@ -194,23 +198,17 @@ public class ExpeditionInventoryView : MonoBehaviour
     
     private void SaveExpeditionInventory()
     {
-        // 1. 저장할 데이터 객체 생성 (파일명: exp_inv)
+        // 저장할 데이터 객체 생성 (파일명: exp_inv)
         var save = new InventorySaveData("exp_inv");
 
-        // 2. 탐사 인벤토리 슬롯 순회
+        save.capacity = _expeditionInventory.Capacity; // 현재 용량 저장
         foreach (var slot in _expeditionInventory.GetAll())
         {
             if (!slot.IsEmpty)
-            {
-                save.slots.Add(new InventorySaveData.SlotData 
-                { 
-                    id = slot.item.id, 
-                    count = slot.quantity 
-                });
-            }
+                save.slots.Add(new InventorySaveData.SlotData { id = slot.item.id, count = slot.quantity });
         }
 
-        // 3. 세이브 시스템 실행
+        // 세이브 시스템 실행
         SaveLoadSystem.Save(save);
     }
 }

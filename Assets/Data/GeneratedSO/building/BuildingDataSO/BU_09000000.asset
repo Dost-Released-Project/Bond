@@ -16,7 +16,7 @@ MonoBehaviour:
   _displayName: Storage
   _description: Item
   buildingType: 3
-  buildingSprite: {fileID: 0}
+  buildingSprite: {fileID: 21300000, guid: bc4dd746de9f6fb499fe7b56c253378e, type: 3}
   levels:
   - level: 1
     frontierCost: 100

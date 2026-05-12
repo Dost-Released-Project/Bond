@@ -88,7 +88,11 @@ public class InventoryView : MonoBehaviour
             {
                 SaveLoadSystem.Load(save);
                 
-                _totalInventory.ClearAll(); // 복구 전 초기화
+                // 1. 기존 슬롯을 완전히 비우고 저장된 용량만큼 재생성
+                _totalInventory.ClearAll(); 
+                _totalInventory.ExpandStorage(save.capacity); 
+
+                // 2. 아이템 복구
                 foreach (var s in save.slots)
                 {
                     BaseItem item = dbs.Select(db => db.GetSO<BaseItem>(s.id)).FirstOrDefault(i => i != null);
@@ -112,18 +116,11 @@ public class InventoryView : MonoBehaviour
     {
         // 1. 저장할 데이터 객체 생성 (파일명: total_inv)
         var save = new InventorySaveData("total_inv");
-
-        // 2. 현재 인벤토리의 모든 슬롯을 순회하며 데이터 추출
+        save.capacity = _totalInventory.Capacity;
         foreach (var slot in _totalInventory.GetAll())
         {
             if (!slot.IsEmpty)
-            {
-                save.slots.Add(new InventorySaveData.SlotData 
-                { 
-                    id = slot.item.id, 
-                    count = slot.quantity 
-                });
-            }
+                save.slots.Add(new InventorySaveData.SlotData { id = slot.item.id, count = slot.quantity });
         }
 
         // 3. 세이브 시스템 실행

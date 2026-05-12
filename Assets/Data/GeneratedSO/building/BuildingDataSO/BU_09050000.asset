@@ -16,7 +16,7 @@ MonoBehaviour:
   _displayName: Supply
   _description: Give me
   buildingType: 6
-  buildingSprite: {fileID: 0}
+  buildingSprite: {fileID: 21300000, guid: acf73c498fc78ee44b977033c2346461, type: 3}
   levels:
   - level: 1
     frontierCost: 1000
