@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Bond.Persistence;
 
 namespace Bond.Embark
 {
@@ -21,9 +22,9 @@ namespace Bond.Embark
         void Clear();
     }
     
-    public class PartyManager : IPartyProvider, IPartyController
+    public class PartyManager : IPartyProvider, IPartyController, ISaveable
     {
-        private readonly List<BaseCharacter> currentParty = new List<BaseCharacter>();
+        private List<BaseCharacter> currentParty = new List<BaseCharacter>();
         private const int MaxPartySize = 4;
         
         // 파티 편성
@@ -56,5 +57,13 @@ namespace Bond.Embark
             return currentParty.Select((character => character.Data)).ToList().AsReadOnly();
         }
         public int GetPartyCount() => currentParty.Count;
+        
+        
+        public string Key => this.GetHashCode().ToString();
+        public object Data => currentParty;
+        public void Restore(object data)
+        {
+            currentParty = (List<BaseCharacter>)data;
+        }
     }
 }

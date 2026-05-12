@@ -30,6 +30,9 @@ public abstract class TSVParserBase<TDTO, TSO> : ITSVParser
     // 에셋 파일명 결정
     protected abstract string GetAssetName(TDTO dto);
 
+    // 임포트 완료 후 호출되는 훅
+    protected virtual void OnPostImport(string outputDir) { }
+
     public void ParseAndImport(string tsvPath, string outputDir)
     {
         var config = new CsvConfiguration(CultureInfo.InvariantCulture)
@@ -39,6 +42,7 @@ public abstract class TSVParserBase<TDTO, TSO> : ITSVParser
             HasHeaderRecord = true,
             HeaderValidated = null,
             MissingFieldFound = null,
+            PrepareHeaderForMatch = args => args.Header.Trim(),
         };
 
         string[] lines = File.ReadAllLines(tsvPath);
@@ -48,8 +52,13 @@ public abstract class TSVParserBase<TDTO, TSO> : ITSVParser
             return;
         }
 
-        // 헤더 이전 줄 제거
-        string trimmed = string.Join("\n", lines.Skip(HEADER_ROW_INDEX));
+        // 헤더 이전 줄 제거 (8줄 스킵, 9번째 줄이 헤더)
+        var filteredLines = lines.Skip(HEADER_ROW_INDEX).ToList();
+        
+        // 사용자가 가이드 행을 제외했으므로, 헤더 바로 다음 줄부터 데이터가 시작됨
+        // 기존의 filteredLines.RemoveAt(1) 로직을 제거함
+
+        string trimmed = string.Join("\n", filteredLines);
 
         List<TDTO> records;
         try
@@ -73,6 +82,13 @@ public abstract class TSVParserBase<TDTO, TSO> : ITSVParser
                 string name = GetAssetName(dto);
                 string assetPath = $"{outputDir}{name}.asset";
 
+                // 하위 폴더 경로가 포함된 경우 디렉토리 자동 생성
+                string directory = Path.GetDirectoryName(assetPath);
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
                 var so = AssetDatabase.LoadAssetAtPath<TSO>(assetPath);
                 bool isNew = so == null;
                 if (isNew) so = ScriptableObject.CreateInstance<TSO>();
@@ -91,7 +107,10 @@ public abstract class TSVParserBase<TDTO, TSO> : ITSVParser
         {
             AssetDatabase.StopAssetEditing();
             AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
         }
+
+        OnPostImport(outputDir);
 
         Debug.Log($"[{TargetFileName}] 임포트 완료: {records.Count}개");
     }

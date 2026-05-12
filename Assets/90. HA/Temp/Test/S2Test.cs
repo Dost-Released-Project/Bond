@@ -1,6 +1,7 @@
 using Bond.Expedition;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using VContainer;
 
 namespace _90._HA.Temp.Test
@@ -15,6 +16,11 @@ namespace _90._HA.Temp.Test
             {
                 Debug.Log(payload);
                 
+            }
+            
+            if (Keyboard.current.numpad9Key.wasPressedThisFrame)
+            {
+                SceneManager.LoadSceneAsync("Town");
             }
         }
     }

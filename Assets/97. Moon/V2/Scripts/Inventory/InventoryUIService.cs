@@ -8,10 +8,6 @@ public class InventoryUIService
     public IInventory CurrentSourceInventory { get; private set; } = null;
     public VisualElement GlobalDragGhost { get; private set; }
 
-    // 윈도우 활성화 상태 관리 (기존 static bool IsWindowActive 대체)
-    public bool IsInventoryWindowActive { get; set; } = false;
-    public bool IsAccessoryBagActive { get; set; } = true;
-
     public void StartDrag(IInventory inv, int index, Sprite icon, VisualElement ghostElement, Vector2 initialPos, Vector2 offset)
     {
         CurrentDraggingIndex = index;

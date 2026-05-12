@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8802ff4708a60da41b66b02771e5d201, type: 3}
+  m_Name: SK_01030000
+  m_EditorClassIdentifier: Assembly-CSharp::SkillData
+  _id: 01030000
+  _displayName: 
+  _description: 
+  _type: 3
+  _target: 0
+  _value: 12
+  _coolTime: 0
+  _duration: 2
+  _useableClasses: 0
+  _useableSlots: 15
+  _enemyTargetMask: 15
+  _allyTargetMask: 0
+  _iconAddress: 0108

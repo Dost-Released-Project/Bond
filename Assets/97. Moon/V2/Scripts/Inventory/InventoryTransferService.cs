@@ -2,7 +2,41 @@ using UnityEngine;
 
 public class InventoryTransferService
 {
-    // 드래그 앤 드롭 스왑/이동
+    // [드래그 데이터 프로퍼티]
+    public IInventory CurrentSourceInventory { get; private set; }
+    public int CurrentDraggingIndex { get; private set; } = -1;
+    public bool IsDragging => CurrentSourceInventory != null && CurrentDraggingIndex != -1;
+    
+    // ================= 기존 내부 메서드 수정 없이 상단/하단에 추가할 코드 =================
+    public bool IsDraggingFromEquipment { get; private set; }
+    public int SourceEquipmentSlotIndex { get; private set; } = -1;
+
+    public void StartEquipmentDrag(int slotIndex)
+    {
+        IsDraggingFromEquipment = true;
+        SourceEquipmentSlotIndex = slotIndex;
+    }
+
+    public void ResetEquipmentDrag()
+    {
+        IsDraggingFromEquipment = false;
+        SourceEquipmentSlotIndex = -1;
+    }
+// =================================================================================
+
+    public void StartDrag(IInventory source, int index)
+    {
+        CurrentSourceInventory = source;
+        CurrentDraggingIndex = index;
+    }
+
+    public void ResetDrag()
+    {
+        CurrentSourceInventory = null;
+        CurrentDraggingIndex = -1;
+    }
+    
+    // 기능
     public void ExecuteDragDrop(IInventory source, int sourceIdx, IInventory target, int targetIdx)
     {
         // [중요] 제자리 드롭(혹은 단순 클릭) 시 로직을 실행하지 않고 즉시 종료 (복사 방지)

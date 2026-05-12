@@ -20,3 +20,7 @@ MonoBehaviour:
     Gid: 237579334
   - SheetName: accessory
     Gid: 1427512625
+  - SheetName: Building
+    Gid: 26592079
+  - SheetName: BuildingLevel
+    Gid: 1049904701

@@ -1,19 +1,23 @@
 using System;
+using System.Runtime.Serialization;
 using BattleSystem;
 using BattleSystem.Interface;
+using Bond.Persistence;
 using PipeLine;
 using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
 using Reactions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[Serializable]
 public partial class BaseCharacter : ITurnUseUnit
 {
     /// <summary>
     /// 테스트 용 객체
     /// </summary>
     public static BaseCharacter Sample => new BaseCharacter(BaseCharacterData.Sample);
-    
+
     public BaseCharacterData Data;
     public Stat Stat { get; } = new Stat();
     
@@ -34,7 +38,7 @@ public partial class BaseCharacter : ITurnUseUnit
     public BaseCharacter sup_Character { get; set; } // 지원 선택 대상. 대상이 행동할 때 역할군에 따른 지원. 탱커: 피격 시 엄호, 서포터: 피격 후 치유, 딜러: 공격 시 지원 공격.\
     
     // BattleManager가 구독할 이벤트. BattleContext는 공격자, 방어자, 스킬 정보 등을 담는 클래스. BattleManager는 이 이벤트를 구독하여 BattleContext를 받아 처리.
-    public Action<BattleContext> onBattleAction;
+    public Func<BattleContext, UniTask> onBattleAction;
     private IFormationManager m_formationManager;
 
     public BaseCharacter(BaseCharacterData data)
@@ -108,8 +112,13 @@ public partial class BaseCharacter : ITurnUseUnit
         }
         
         BattleContext battleContext = CreateBattleContext(skill);
-        onBattleAction?.Invoke(battleContext);
+        if (onBattleAction != null)
+        {
+            await onBattleAction.Invoke(battleContext);
+        }
     
+        await UniTask.Delay(1000); // 턴 종료 딜레이
+
         Debug.Log($"<color=lightblue>{Name} 행동 완료!</color>");
         
         _tcs = null;

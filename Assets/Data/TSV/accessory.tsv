@@ -1,0 +1,13 @@
+﻿시트 페이지 2자리	캐릭터 클래스				아군 / 적군 여부		동일 타입 번호			
+08	00	전사			00	아군	00			
+	01	도적			01	중립				
+	02	마법사			02	적				
+	03	성직자							-	-
+	04									
+	05									
+(string)	(string)	(enum)	(int)	(int)	(int)	(int)	(int)	(string)		
+ID	ItemName	Category	BonusSTR	BonusAGI	BonusINT	TotalMax	ExpSlotMax	IconPath		
+08000000	The Ring of Power	Accessories	5	0	0	1	1	Sprite/Item/Ring_STR		
+08010000	The Ring of Agility	Accessories	0	5	0	1	1	Sprite/Item/Ring_AGI		
+08020000	The Ring of Intelligence	Accessories	0	0	5	1	1	Sprite/Item/Ring_INT		
+08030000	The Ring of Master	Accessories	2	2	2	1	1	Sprite/Item/Ring_Master		

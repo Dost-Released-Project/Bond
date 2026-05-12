@@ -1,8 +1,8 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:VisualElement style="flex-grow: 1; background-color: rgb(82, 49, 49);">
-        <ui:Button text="Reinforce" name="btn-reinforce" style="position: absolute; width: 200px; height: 200px; top: 40%; left: 20%; font-size: 40px;"/>
-        <ui:Button text="Normal" name="btn-normal" style="position: absolute; width: 200px; height: 200px; font-size: 55px; top: 40%; left: 45%;"/>
-        <ui:Button text="Special" name="btn-special" style="position: absolute; left: 70%; top: 40%; width: 200px; height: 200px; font-size: 55px;"/>
-        <ui:Button text="X" name="btn-close-supply" style="position: absolute; top: auto; left: auto; align-self: flex-end; width: 200px; height: 200px; font-size: 200px;"/>
+    <ui:VisualElement style="flex-grow: 1; background-color: rgb(82, 49, 49); width: 960px; position: absolute; height: 540px; top: 270px; left: 480px;">
+        <ui:Button text="Reinforce" name="btn-reinforce" style="position: absolute; width: 200px; height: 100px; top: 220px; left: 100px; font-size: 40px;"/>
+        <ui:Button text="Normal" name="btn-normal" style="position: absolute; width: 200px; height: 100px; font-size: 55px; top: 220px; left: 350px;"/>
+        <ui:Button text="Special" name="btn-special" style="position: absolute; left: 600px; top: 220px; width: 200px; height: 100px; font-size: 55px;"/>
+        <ui:Button text="X" name="btn-close-supply" style="position: absolute; top: -4px; left: 856px; align-self: flex-end; width: 100px; height: 100px; font-size: 100px; align-items: stretch; justify-content: flex-start; align-content: flex-start;"/>
     </ui:VisualElement>
 </ui:UXML>

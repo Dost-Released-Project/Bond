@@ -1,0 +1,1297 @@
+{
+  "$type": "System.Collections.Generic.List`1[[BaseCharacter, Assembly-CSharp]], mscorlib",
+  "$values": [
+    {
+      "$type": "BaseCharacter, Assembly-CSharp",
+      "Data": {
+        "$type": "BaseCharacterData, Assembly-CSharp",
+        "Id": "Missing Id",
+        "ImageAddress": "Missing ImageAddress",
+        "Name": "64cea43d-7818-4e38-a463-192ffee7e55b",
+        "Profession": {
+          "$type": "SampleProfession, Assembly-CSharp",
+          "Name": "Missing"
+        },
+        "Level": 0,
+        "Insanity": 0,
+        "RoleType": 0,
+        "Skills": {
+          "$type": "SkillBase[], Assembly-CSharp",
+          "$values": [
+            {
+              "$type": "SampleSkill, Assembly-CSharp",
+              "SkillCooldown": 0.0,
+              "Data": {
+                "$type": "SkillData, Assembly-CSharp",
+                "Type": 0,
+                "Target": 0,
+                "Value": 0.0,
+                "CoolTime": 0,
+                "Duration": 0,
+                "UseableClasses": 0,
+                "UseableSlots": 0,
+                "EnemyTargetMask": 0,
+                "AllyTargetMask": 0,
+                "IconAddress": null,
+                "Id": null,
+                "DisplayName": null,
+                "Description": null,
+                "name": "T0",
+                "hideFlags": 0
+              }
+            },
+            {
+              "$type": "SampleSkill, Assembly-CSharp",
+              "SkillCooldown": 0.0,
+              "Data": {
+                "$type": "SkillData, Assembly-CSharp",
+                "Type": 0,
+                "Target": 0,
+                "Value": 0.0,
+                "CoolTime": 0,
+                "Duration": 0,
+                "UseableClasses": 0,
+                "UseableSlots": 0,
+                "EnemyTargetMask": 0,
+                "AllyTargetMask": 0,
+                "IconAddress": null,
+                "Id": null,
+                "DisplayName": null,
+                "Description": null,
+                "name": "B8",
+                "hideFlags": 0
+              }
+            },
+            {
+              "$type": "SampleSkill, Assembly-CSharp",
+              "SkillCooldown": 0.0,
+              "Data": {
+                "$type": "SkillData, Assembly-CSharp",
+                "Type": 0,
+                "Target": 0,
+                "Value": 0.0,
+                "CoolTime": 0,
+                "Duration": 0,
+                "UseableClasses": 0,
+                "UseableSlots": 0,
+                "EnemyTargetMask": 0,
+                "AllyTargetMask": 0,
+                "IconAddress": null,
+                "Id": null,
+                "DisplayName": null,
+                "Description": null,
+                "name": "US",
+                "hideFlags": 0
+              }
+            },
+            null
+          ]
+        },
+        "Traits": {
+          "$type": "Trait[], Assembly-CSharp",
+          "$values": [
+            {
+              "$type": "Trait, Assembly-CSharp",
+              "Name": "C",
+              "Description": "ccc",
+              "Trigger": null
+            },
+            {
+              "$type": "Trait, Assembly-CSharp",
+              "Name": "A",
+              "Description": "aaa",
+              "Trigger": null
+            },
+            null,
+            null
+          ]
+        },
+        "Equips": {
+          "$type": "Equipment[], Assembly-CSharp",
+          "$values": [
+            null,
+            null
+          ]
+        },
+        "Relation": {
+          "$type": "System.Collections.Generic.Dictionary`2[[BaseCharacter, Assembly-CSharp],[System.Int32, mscorlib]], mscorlib"
+        },
+        "RoleReactions": {
+          "$type": "Reactions.Reaction[], Assembly-CSharp",
+          "$values": [
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "e4e950b1-9f0e-426b-a19b-019acaab696d",
+              "Sex": false
+            },
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "0b62b846-7171-4092-9b98-1d7081870b20",
+              "Sex": false
+            }
+          ]
+        },
+        "TraitReactions": {
+          "$type": "Reactions.Reaction[], Assembly-CSharp",
+          "$values": [
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "ac5e1ab2-8797-4632-acf2-6f5eb2a4f459",
+              "Sex": false
+            },
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "3d8b2c0c-f5a1-4f73-89cb-fd4c4e6ae597",
+              "Sex": false
+            },
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "4a8ee408-b647-4517-9fbb-3cc6560f6ddd",
+              "Sex": false
+            },
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "6d8f1b43-e5c6-49f5-8666-3147e4d226c3",
+              "Sex": false
+            }
+          ]
+        }
+      },
+      "onBattleAction": null,
+      "Stat": {
+        "$type": "Stat, Assembly-CSharp",
+        "INT": 0,
+        "STR": 0,
+        "AGI": 0,
+        "max_Hp": 0,
+        "current_Hp": 0,
+        "def": 0,
+        "atk": 0,
+        "speed": 0,
+        "crt": 0.0,
+        "acc": 0.0,
+        "Insanity_Ctrl": 0.0,
+        "Reaction_Ctrl": 0.0,
+        "Sp_Atk": 0,
+        "baseWeapon": null,
+        "baseArmor": null
+      },
+      "Name": "64cea43d-7818-4e38-a463-192ffee7e55b",
+      "Level": 0,
+      "Profession": {
+        "$type": "SampleProfession, Assembly-CSharp",
+        "Name": "Missing"
+      },
+      "Skills": {
+        "$type": "SkillBase[], Assembly-CSharp",
+        "$values": [
+          {
+            "$type": "SampleSkill, Assembly-CSharp",
+            "SkillCooldown": 0.0,
+            "Data": {
+              "$type": "SkillData, Assembly-CSharp",
+              "Type": 0,
+              "Target": 0,
+              "Value": 0.0,
+              "CoolTime": 0,
+              "Duration": 0,
+              "UseableClasses": 0,
+              "UseableSlots": 0,
+              "EnemyTargetMask": 0,
+              "AllyTargetMask": 0,
+              "IconAddress": null,
+              "Id": null,
+              "DisplayName": null,
+              "Description": null,
+              "name": "T0",
+              "hideFlags": 0
+            }
+          },
+          {
+            "$type": "SampleSkill, Assembly-CSharp",
+            "SkillCooldown": 0.0,
+            "Data": {
+              "$type": "SkillData, Assembly-CSharp",
+              "Type": 0,
+              "Target": 0,
+              "Value": 0.0,
+              "CoolTime": 0,
+              "Duration": 0,
+              "UseableClasses": 0,
+              "UseableSlots": 0,
+              "EnemyTargetMask": 0,
+              "AllyTargetMask": 0,
+              "IconAddress": null,
+              "Id": null,
+              "DisplayName": null,
+              "Description": null,
+              "name": "B8",
+              "hideFlags": 0
+            }
+          },
+          {
+            "$type": "SampleSkill, Assembly-CSharp",
+            "SkillCooldown": 0.0,
+            "Data": {
+              "$type": "SkillData, Assembly-CSharp",
+              "Type": 0,
+              "Target": 0,
+              "Value": 0.0,
+              "CoolTime": 0,
+              "Duration": 0,
+              "UseableClasses": 0,
+              "UseableSlots": 0,
+              "EnemyTargetMask": 0,
+              "AllyTargetMask": 0,
+              "IconAddress": null,
+              "Id": null,
+              "DisplayName": null,
+              "Description": null,
+              "name": "US",
+              "hideFlags": 0
+            }
+          },
+          null
+        ]
+      },
+      "Traits": {
+        "$type": "Trait[], Assembly-CSharp",
+        "$values": [
+          {
+            "$type": "Trait, Assembly-CSharp",
+            "Name": "C",
+            "Description": "ccc",
+            "Trigger": null
+          },
+          {
+            "$type": "Trait, Assembly-CSharp",
+            "Name": "A",
+            "Description": "aaa",
+            "Trigger": null
+          },
+          null,
+          null
+        ]
+      },
+      "RoleReactions": {
+        "$type": "Reactions.Reaction[], Assembly-CSharp",
+        "$values": [
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "e4e950b1-9f0e-426b-a19b-019acaab696d",
+            "Sex": false
+          },
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "0b62b846-7171-4092-9b98-1d7081870b20",
+            "Sex": false
+          }
+        ]
+      },
+      "TraitReactions": {
+        "$type": "Reactions.Reaction[], Assembly-CSharp",
+        "$values": [
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "ac5e1ab2-8797-4632-acf2-6f5eb2a4f459",
+            "Sex": false
+          },
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "3d8b2c0c-f5a1-4f73-89cb-fd4c4e6ae597",
+            "Sex": false
+          },
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "4a8ee408-b647-4517-9fbb-3cc6560f6ddd",
+            "Sex": false
+          },
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "6d8f1b43-e5c6-49f5-8666-3147e4d226c3",
+            "Sex": false
+          }
+        ]
+      },
+      "RoleType": 0,
+      "Insanity": 0,
+      "isPlayable": false,
+      "battleType": null,
+      "sup_Character": null,
+      "CurrentSlot": null,
+      "Speed": 0,
+      "IsDead": false,
+      "ImageAddress": "Missing ImageAddress",
+      "RandomSpeed": 0
+    },
+    {
+      "$type": "BaseCharacter, Assembly-CSharp",
+      "Data": {
+        "$type": "BaseCharacterData, Assembly-CSharp",
+        "Id": "Missing Id",
+        "ImageAddress": "Missing ImageAddress",
+        "Name": "f6cc6933-dbae-4dda-b971-8f409cede990",
+        "Profession": {
+          "$type": "SampleProfession, Assembly-CSharp",
+          "Name": "Missing"
+        },
+        "Level": 0,
+        "Insanity": 0,
+        "RoleType": 0,
+        "Skills": {
+          "$type": "SkillBase[], Assembly-CSharp",
+          "$values": [
+            {
+              "$type": "SampleSkill, Assembly-CSharp",
+              "SkillCooldown": 0.0,
+              "Data": {
+                "$type": "SkillData, Assembly-CSharp",
+                "Type": 0,
+                "Target": 0,
+                "Value": 0.0,
+                "CoolTime": 0,
+                "Duration": 0,
+                "UseableClasses": 0,
+                "UseableSlots": 0,
+                "EnemyTargetMask": 0,
+                "AllyTargetMask": 0,
+                "IconAddress": null,
+                "Id": null,
+                "DisplayName": null,
+                "Description": null,
+                "name": "G0",
+                "hideFlags": 0
+              }
+            },
+            {
+              "$type": "SampleSkill, Assembly-CSharp",
+              "SkillCooldown": 0.0,
+              "Data": {
+                "$type": "SkillData, Assembly-CSharp",
+                "Type": 0,
+                "Target": 0,
+                "Value": 0.0,
+                "CoolTime": 0,
+                "Duration": 0,
+                "UseableClasses": 0,
+                "UseableSlots": 0,
+                "EnemyTargetMask": 0,
+                "AllyTargetMask": 0,
+                "IconAddress": null,
+                "Id": null,
+                "DisplayName": null,
+                "Description": null,
+                "name": "TS",
+                "hideFlags": 0
+              }
+            },
+            {
+              "$type": "SampleSkill, Assembly-CSharp",
+              "SkillCooldown": 0.0,
+              "Data": {
+                "$type": "SkillData, Assembly-CSharp",
+                "Type": 0,
+                "Target": 0,
+                "Value": 0.0,
+                "CoolTime": 0,
+                "Duration": 0,
+                "UseableClasses": 0,
+                "UseableSlots": 0,
+                "EnemyTargetMask": 0,
+                "AllyTargetMask": 0,
+                "IconAddress": null,
+                "Id": null,
+                "DisplayName": null,
+                "Description": null,
+                "name": "F4",
+                "hideFlags": 0
+              }
+            },
+            null
+          ]
+        },
+        "Traits": {
+          "$type": "Trait[], Assembly-CSharp",
+          "$values": [
+            {
+              "$type": "Trait, Assembly-CSharp",
+              "Name": "B",
+              "Description": "bbb",
+              "Trigger": null
+            },
+            {
+              "$type": "Trait, Assembly-CSharp",
+              "Name": "C",
+              "Description": "ccc",
+              "Trigger": null
+            },
+            null,
+            null
+          ]
+        },
+        "Equips": {
+          "$type": "Equipment[], Assembly-CSharp",
+          "$values": [
+            null,
+            null
+          ]
+        },
+        "Relation": {
+          "$type": "System.Collections.Generic.Dictionary`2[[BaseCharacter, Assembly-CSharp],[System.Int32, mscorlib]], mscorlib"
+        },
+        "RoleReactions": {
+          "$type": "Reactions.Reaction[], Assembly-CSharp",
+          "$values": [
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "540110f4-1100-4731-a5ee-fd1690240fed",
+              "Sex": false
+            },
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "4f36fd7c-36fe-47dc-a802-c78df30907d5",
+              "Sex": false
+            }
+          ]
+        },
+        "TraitReactions": {
+          "$type": "Reactions.Reaction[], Assembly-CSharp",
+          "$values": [
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "0b2d62ca-146c-46bf-a01c-58f303862bc3",
+              "Sex": false
+            },
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "e860c86a-9ac6-4924-8a89-a278b067dfed",
+              "Sex": false
+            },
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "637bd0a7-f94d-41f8-9601-23d0e865bb25",
+              "Sex": false
+            },
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "45b79c03-fb99-4ad8-b752-88a7cc648ead",
+              "Sex": false
+            }
+          ]
+        }
+      },
+      "onBattleAction": null,
+      "Stat": {
+        "$type": "Stat, Assembly-CSharp",
+        "INT": 0,
+        "STR": 0,
+        "AGI": 0,
+        "max_Hp": 0,
+        "current_Hp": 0,
+        "def": 0,
+        "atk": 0,
+        "speed": 0,
+        "crt": 0.0,
+        "acc": 0.0,
+        "Insanity_Ctrl": 0.0,
+        "Reaction_Ctrl": 0.0,
+        "Sp_Atk": 0,
+        "baseWeapon": null,
+        "baseArmor": null
+      },
+      "Name": "f6cc6933-dbae-4dda-b971-8f409cede990",
+      "Level": 0,
+      "Profession": {
+        "$type": "SampleProfession, Assembly-CSharp",
+        "Name": "Missing"
+      },
+      "Skills": {
+        "$type": "SkillBase[], Assembly-CSharp",
+        "$values": [
+          {
+            "$type": "SampleSkill, Assembly-CSharp",
+            "SkillCooldown": 0.0,
+            "Data": {
+              "$type": "SkillData, Assembly-CSharp",
+              "Type": 0,
+              "Target": 0,
+              "Value": 0.0,
+              "CoolTime": 0,
+              "Duration": 0,
+              "UseableClasses": 0,
+              "UseableSlots": 0,
+              "EnemyTargetMask": 0,
+              "AllyTargetMask": 0,
+              "IconAddress": null,
+              "Id": null,
+              "DisplayName": null,
+              "Description": null,
+              "name": "G0",
+              "hideFlags": 0
+            }
+          },
+          {
+            "$type": "SampleSkill, Assembly-CSharp",
+            "SkillCooldown": 0.0,
+            "Data": {
+              "$type": "SkillData, Assembly-CSharp",
+              "Type": 0,
+              "Target": 0,
+              "Value": 0.0,
+              "CoolTime": 0,
+              "Duration": 0,
+              "UseableClasses": 0,
+              "UseableSlots": 0,
+              "EnemyTargetMask": 0,
+              "AllyTargetMask": 0,
+              "IconAddress": null,
+              "Id": null,
+              "DisplayName": null,
+              "Description": null,
+              "name": "TS",
+              "hideFlags": 0
+            }
+          },
+          {
+            "$type": "SampleSkill, Assembly-CSharp",
+            "SkillCooldown": 0.0,
+            "Data": {
+              "$type": "SkillData, Assembly-CSharp",
+              "Type": 0,
+              "Target": 0,
+              "Value": 0.0,
+              "CoolTime": 0,
+              "Duration": 0,
+              "UseableClasses": 0,
+              "UseableSlots": 0,
+              "EnemyTargetMask": 0,
+              "AllyTargetMask": 0,
+              "IconAddress": null,
+              "Id": null,
+              "DisplayName": null,
+              "Description": null,
+              "name": "F4",
+              "hideFlags": 0
+            }
+          },
+          null
+        ]
+      },
+      "Traits": {
+        "$type": "Trait[], Assembly-CSharp",
+        "$values": [
+          {
+            "$type": "Trait, Assembly-CSharp",
+            "Name": "B",
+            "Description": "bbb",
+            "Trigger": null
+          },
+          {
+            "$type": "Trait, Assembly-CSharp",
+            "Name": "C",
+            "Description": "ccc",
+            "Trigger": null
+          },
+          null,
+          null
+        ]
+      },
+      "RoleReactions": {
+        "$type": "Reactions.Reaction[], Assembly-CSharp",
+        "$values": [
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "540110f4-1100-4731-a5ee-fd1690240fed",
+            "Sex": false
+          },
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "4f36fd7c-36fe-47dc-a802-c78df30907d5",
+            "Sex": false
+          }
+        ]
+      },
+      "TraitReactions": {
+        "$type": "Reactions.Reaction[], Assembly-CSharp",
+        "$values": [
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "0b2d62ca-146c-46bf-a01c-58f303862bc3",
+            "Sex": false
+          },
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "e860c86a-9ac6-4924-8a89-a278b067dfed",
+            "Sex": false
+          },
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "637bd0a7-f94d-41f8-9601-23d0e865bb25",
+            "Sex": false
+          },
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "45b79c03-fb99-4ad8-b752-88a7cc648ead",
+            "Sex": false
+          }
+        ]
+      },
+      "RoleType": 0,
+      "Insanity": 0,
+      "isPlayable": false,
+      "battleType": null,
+      "sup_Character": null,
+      "CurrentSlot": null,
+      "Speed": 0,
+      "IsDead": false,
+      "ImageAddress": "Missing ImageAddress",
+      "RandomSpeed": 0
+    },
+    {
+      "$type": "BaseCharacter, Assembly-CSharp",
+      "Data": {
+        "$type": "BaseCharacterData, Assembly-CSharp",
+        "Id": "Missing Id",
+        "ImageAddress": "Missing ImageAddress",
+        "Name": "5e05c3e2-8eac-412f-97ec-8a79d57861e7",
+        "Profession": {
+          "$type": "SampleProfession, Assembly-CSharp",
+          "Name": "Missing"
+        },
+        "Level": 0,
+        "Insanity": 0,
+        "RoleType": 0,
+        "Skills": {
+          "$type": "SkillBase[], Assembly-CSharp",
+          "$values": [
+            {
+              "$type": "SampleSkill, Assembly-CSharp",
+              "SkillCooldown": 0.0,
+              "Data": {
+                "$type": "SkillData, Assembly-CSharp",
+                "Type": 0,
+                "Target": 0,
+                "Value": 0.0,
+                "CoolTime": 0,
+                "Duration": 0,
+                "UseableClasses": 0,
+                "UseableSlots": 0,
+                "EnemyTargetMask": 0,
+                "AllyTargetMask": 0,
+                "IconAddress": null,
+                "Id": null,
+                "DisplayName": null,
+                "Description": null,
+                "name": "NR",
+                "hideFlags": 0
+              }
+            },
+            {
+              "$type": "SampleSkill, Assembly-CSharp",
+              "SkillCooldown": 0.0,
+              "Data": {
+                "$type": "SkillData, Assembly-CSharp",
+                "Type": 0,
+                "Target": 0,
+                "Value": 0.0,
+                "CoolTime": 0,
+                "Duration": 0,
+                "UseableClasses": 0,
+                "UseableSlots": 0,
+                "EnemyTargetMask": 0,
+                "AllyTargetMask": 0,
+                "IconAddress": null,
+                "Id": null,
+                "DisplayName": null,
+                "Description": null,
+                "name": "UR",
+                "hideFlags": 0
+              }
+            },
+            {
+              "$type": "SampleSkill, Assembly-CSharp",
+              "SkillCooldown": 0.0,
+              "Data": {
+                "$type": "SkillData, Assembly-CSharp",
+                "Type": 0,
+                "Target": 0,
+                "Value": 0.0,
+                "CoolTime": 0,
+                "Duration": 0,
+                "UseableClasses": 0,
+                "UseableSlots": 0,
+                "EnemyTargetMask": 0,
+                "AllyTargetMask": 0,
+                "IconAddress": null,
+                "Id": null,
+                "DisplayName": null,
+                "Description": null,
+                "name": "PN",
+                "hideFlags": 0
+              }
+            },
+            null
+          ]
+        },
+        "Traits": {
+          "$type": "Trait[], Assembly-CSharp",
+          "$values": [
+            {
+              "$type": "Trait, Assembly-CSharp",
+              "Name": "A",
+              "Description": "aaa",
+              "Trigger": null
+            },
+            {
+              "$type": "Trait, Assembly-CSharp",
+              "Name": "A",
+              "Description": "aaa",
+              "Trigger": null
+            },
+            null,
+            null
+          ]
+        },
+        "Equips": {
+          "$type": "Equipment[], Assembly-CSharp",
+          "$values": [
+            null,
+            null
+          ]
+        },
+        "Relation": {
+          "$type": "System.Collections.Generic.Dictionary`2[[BaseCharacter, Assembly-CSharp],[System.Int32, mscorlib]], mscorlib"
+        },
+        "RoleReactions": {
+          "$type": "Reactions.Reaction[], Assembly-CSharp",
+          "$values": [
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "27a011d2-0432-4b97-8c35-d1117a341ab1",
+              "Sex": false
+            },
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "4730620c-54b6-4028-a973-f9ebaac2b0c2",
+              "Sex": false
+            }
+          ]
+        },
+        "TraitReactions": {
+          "$type": "Reactions.Reaction[], Assembly-CSharp",
+          "$values": [
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "b4a8a95b-dddb-4b8a-9c8e-4f8e4b557ae8",
+              "Sex": false
+            },
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "9ea416b1-4146-4043-8cdf-88e87b44833c",
+              "Sex": false
+            },
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "096588aa-dd28-4911-9762-3b570fc5f8dc",
+              "Sex": false
+            },
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "3a5c774a-eaea-45b7-b853-246e4b0a34a9",
+              "Sex": false
+            }
+          ]
+        }
+      },
+      "onBattleAction": null,
+      "Stat": {
+        "$type": "Stat, Assembly-CSharp",
+        "INT": 0,
+        "STR": 0,
+        "AGI": 0,
+        "max_Hp": 0,
+        "current_Hp": 0,
+        "def": 0,
+        "atk": 0,
+        "speed": 0,
+        "crt": 0.0,
+        "acc": 0.0,
+        "Insanity_Ctrl": 0.0,
+        "Reaction_Ctrl": 0.0,
+        "Sp_Atk": 0,
+        "baseWeapon": null,
+        "baseArmor": null
+      },
+      "Name": "5e05c3e2-8eac-412f-97ec-8a79d57861e7",
+      "Level": 0,
+      "Profession": {
+        "$type": "SampleProfession, Assembly-CSharp",
+        "Name": "Missing"
+      },
+      "Skills": {
+        "$type": "SkillBase[], Assembly-CSharp",
+        "$values": [
+          {
+            "$type": "SampleSkill, Assembly-CSharp",
+            "SkillCooldown": 0.0,
+            "Data": {
+              "$type": "SkillData, Assembly-CSharp",
+              "Type": 0,
+              "Target": 0,
+              "Value": 0.0,
+              "CoolTime": 0,
+              "Duration": 0,
+              "UseableClasses": 0,
+              "UseableSlots": 0,
+              "EnemyTargetMask": 0,
+              "AllyTargetMask": 0,
+              "IconAddress": null,
+              "Id": null,
+              "DisplayName": null,
+              "Description": null,
+              "name": "NR",
+              "hideFlags": 0
+            }
+          },
+          {
+            "$type": "SampleSkill, Assembly-CSharp",
+            "SkillCooldown": 0.0,
+            "Data": {
+              "$type": "SkillData, Assembly-CSharp",
+              "Type": 0,
+              "Target": 0,
+              "Value": 0.0,
+              "CoolTime": 0,
+              "Duration": 0,
+              "UseableClasses": 0,
+              "UseableSlots": 0,
+              "EnemyTargetMask": 0,
+              "AllyTargetMask": 0,
+              "IconAddress": null,
+              "Id": null,
+              "DisplayName": null,
+              "Description": null,
+              "name": "UR",
+              "hideFlags": 0
+            }
+          },
+          {
+            "$type": "SampleSkill, Assembly-CSharp",
+            "SkillCooldown": 0.0,
+            "Data": {
+              "$type": "SkillData, Assembly-CSharp",
+              "Type": 0,
+              "Target": 0,
+              "Value": 0.0,
+              "CoolTime": 0,
+              "Duration": 0,
+              "UseableClasses": 0,
+              "UseableSlots": 0,
+              "EnemyTargetMask": 0,
+              "AllyTargetMask": 0,
+              "IconAddress": null,
+              "Id": null,
+              "DisplayName": null,
+              "Description": null,
+              "name": "PN",
+              "hideFlags": 0
+            }
+          },
+          null
+        ]
+      },
+      "Traits": {
+        "$type": "Trait[], Assembly-CSharp",
+        "$values": [
+          {
+            "$type": "Trait, Assembly-CSharp",
+            "Name": "A",
+            "Description": "aaa",
+            "Trigger": null
+          },
+          {
+            "$type": "Trait, Assembly-CSharp",
+            "Name": "A",
+            "Description": "aaa",
+            "Trigger": null
+          },
+          null,
+          null
+        ]
+      },
+      "RoleReactions": {
+        "$type": "Reactions.Reaction[], Assembly-CSharp",
+        "$values": [
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "27a011d2-0432-4b97-8c35-d1117a341ab1",
+            "Sex": false
+          },
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "4730620c-54b6-4028-a973-f9ebaac2b0c2",
+            "Sex": false
+          }
+        ]
+      },
+      "TraitReactions": {
+        "$type": "Reactions.Reaction[], Assembly-CSharp",
+        "$values": [
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "b4a8a95b-dddb-4b8a-9c8e-4f8e4b557ae8",
+            "Sex": false
+          },
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "9ea416b1-4146-4043-8cdf-88e87b44833c",
+            "Sex": false
+          },
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "096588aa-dd28-4911-9762-3b570fc5f8dc",
+            "Sex": false
+          },
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "3a5c774a-eaea-45b7-b853-246e4b0a34a9",
+            "Sex": false
+          }
+        ]
+      },
+      "RoleType": 0,
+      "Insanity": 0,
+      "isPlayable": false,
+      "battleType": null,
+      "sup_Character": null,
+      "CurrentSlot": null,
+      "Speed": 0,
+      "IsDead": false,
+      "ImageAddress": "Missing ImageAddress",
+      "RandomSpeed": 0
+    },
+    {
+      "$type": "BaseCharacter, Assembly-CSharp",
+      "Data": {
+        "$type": "BaseCharacterData, Assembly-CSharp",
+        "Id": "Missing Id",
+        "ImageAddress": "Missing ImageAddress",
+        "Name": "401fe019-1fbb-404e-805e-a622b89964d4",
+        "Profession": {
+          "$type": "SampleProfession, Assembly-CSharp",
+          "Name": "Missing"
+        },
+        "Level": 0,
+        "Insanity": 0,
+        "RoleType": 0,
+        "Skills": {
+          "$type": "SkillBase[], Assembly-CSharp",
+          "$values": [
+            {
+              "$type": "SampleSkill, Assembly-CSharp",
+              "SkillCooldown": 0.0,
+              "Data": {
+                "$type": "SkillData, Assembly-CSharp",
+                "Type": 0,
+                "Target": 0,
+                "Value": 0.0,
+                "CoolTime": 0,
+                "Duration": 0,
+                "UseableClasses": 0,
+                "UseableSlots": 0,
+                "EnemyTargetMask": 0,
+                "AllyTargetMask": 0,
+                "IconAddress": null,
+                "Id": null,
+                "DisplayName": null,
+                "Description": null,
+                "name": "2B",
+                "hideFlags": 0
+              }
+            },
+            {
+              "$type": "SampleSkill, Assembly-CSharp",
+              "SkillCooldown": 0.0,
+              "Data": {
+                "$type": "SkillData, Assembly-CSharp",
+                "Type": 0,
+                "Target": 0,
+                "Value": 0.0,
+                "CoolTime": 0,
+                "Duration": 0,
+                "UseableClasses": 0,
+                "UseableSlots": 0,
+                "EnemyTargetMask": 0,
+                "AllyTargetMask": 0,
+                "IconAddress": null,
+                "Id": null,
+                "DisplayName": null,
+                "Description": null,
+                "name": "QO",
+                "hideFlags": 0
+              }
+            },
+            {
+              "$type": "SampleSkill, Assembly-CSharp",
+              "SkillCooldown": 0.0,
+              "Data": {
+                "$type": "SkillData, Assembly-CSharp",
+                "Type": 0,
+                "Target": 0,
+                "Value": 0.0,
+                "CoolTime": 0,
+                "Duration": 0,
+                "UseableClasses": 0,
+                "UseableSlots": 0,
+                "EnemyTargetMask": 0,
+                "AllyTargetMask": 0,
+                "IconAddress": null,
+                "Id": null,
+                "DisplayName": null,
+                "Description": null,
+                "name": "D4",
+                "hideFlags": 0
+              }
+            },
+            null
+          ]
+        },
+        "Traits": {
+          "$type": "Trait[], Assembly-CSharp",
+          "$values": [
+            {
+              "$type": "Trait, Assembly-CSharp",
+              "Name": "C",
+              "Description": "ccc",
+              "Trigger": null
+            },
+            {
+              "$type": "Trait, Assembly-CSharp",
+              "Name": "C",
+              "Description": "ccc",
+              "Trigger": null
+            },
+            null,
+            null
+          ]
+        },
+        "Equips": {
+          "$type": "Equipment[], Assembly-CSharp",
+          "$values": [
+            null,
+            null
+          ]
+        },
+        "Relation": {
+          "$type": "System.Collections.Generic.Dictionary`2[[BaseCharacter, Assembly-CSharp],[System.Int32, mscorlib]], mscorlib"
+        },
+        "RoleReactions": {
+          "$type": "Reactions.Reaction[], Assembly-CSharp",
+          "$values": [
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "8cce78b3-8aa0-457e-b8cd-0008e854bd14",
+              "Sex": false
+            },
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "75e42fb4-ff09-4154-abc8-48b178558c62",
+              "Sex": false
+            }
+          ]
+        },
+        "TraitReactions": {
+          "$type": "Reactions.Reaction[], Assembly-CSharp",
+          "$values": [
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "36793f0d-b32e-44b2-9a54-97f71958d239",
+              "Sex": false
+            },
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "dbec5915-85a2-424c-9d48-f675a5a063a3",
+              "Sex": false
+            },
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "fab7debe-e2a1-415b-be47-67eef8c60662",
+              "Sex": false
+            },
+            {
+              "$type": "Reactions.Reaction, Assembly-CSharp",
+              "Id": "9b3ad95f-c19d-4fba-a79b-13041e8ee154",
+              "Sex": false
+            }
+          ]
+        }
+      },
+      "onBattleAction": null,
+      "Stat": {
+        "$type": "Stat, Assembly-CSharp",
+        "INT": 0,
+        "STR": 0,
+        "AGI": 0,
+        "max_Hp": 0,
+        "current_Hp": 0,
+        "def": 0,
+        "atk": 0,
+        "speed": 0,
+        "crt": 0.0,
+        "acc": 0.0,
+        "Insanity_Ctrl": 0.0,
+        "Reaction_Ctrl": 0.0,
+        "Sp_Atk": 0,
+        "baseWeapon": null,
+        "baseArmor": null
+      },
+      "Name": "401fe019-1fbb-404e-805e-a622b89964d4",
+      "Level": 0,
+      "Profession": {
+        "$type": "SampleProfession, Assembly-CSharp",
+        "Name": "Missing"
+      },
+      "Skills": {
+        "$type": "SkillBase[], Assembly-CSharp",
+        "$values": [
+          {
+            "$type": "SampleSkill, Assembly-CSharp",
+            "SkillCooldown": 0.0,
+            "Data": {
+              "$type": "SkillData, Assembly-CSharp",
+              "Type": 0,
+              "Target": 0,
+              "Value": 0.0,
+              "CoolTime": 0,
+              "Duration": 0,
+              "UseableClasses": 0,
+              "UseableSlots": 0,
+              "EnemyTargetMask": 0,
+              "AllyTargetMask": 0,
+              "IconAddress": null,
+              "Id": null,
+              "DisplayName": null,
+              "Description": null,
+              "name": "2B",
+              "hideFlags": 0
+            }
+          },
+          {
+            "$type": "SampleSkill, Assembly-CSharp",
+            "SkillCooldown": 0.0,
+            "Data": {
+              "$type": "SkillData, Assembly-CSharp",
+              "Type": 0,
+              "Target": 0,
+              "Value": 0.0,
+              "CoolTime": 0,
+              "Duration": 0,
+              "UseableClasses": 0,
+              "UseableSlots": 0,
+              "EnemyTargetMask": 0,
+              "AllyTargetMask": 0,
+              "IconAddress": null,
+              "Id": null,
+              "DisplayName": null,
+              "Description": null,
+              "name": "QO",
+              "hideFlags": 0
+            }
+          },
+          {
+            "$type": "SampleSkill, Assembly-CSharp",
+            "SkillCooldown": 0.0,
+            "Data": {
+              "$type": "SkillData, Assembly-CSharp",
+              "Type": 0,
+              "Target": 0,
+              "Value": 0.0,
+              "CoolTime": 0,
+              "Duration": 0,
+              "UseableClasses": 0,
+              "UseableSlots": 0,
+              "EnemyTargetMask": 0,
+              "AllyTargetMask": 0,
+              "IconAddress": null,
+              "Id": null,
+              "DisplayName": null,
+              "Description": null,
+              "name": "D4",
+              "hideFlags": 0
+            }
+          },
+          null
+        ]
+      },
+      "Traits": {
+        "$type": "Trait[], Assembly-CSharp",
+        "$values": [
+          {
+            "$type": "Trait, Assembly-CSharp",
+            "Name": "C",
+            "Description": "ccc",
+            "Trigger": null
+          },
+          {
+            "$type": "Trait, Assembly-CSharp",
+            "Name": "C",
+            "Description": "ccc",
+            "Trigger": null
+          },
+          null,
+          null
+        ]
+      },
+      "RoleReactions": {
+        "$type": "Reactions.Reaction[], Assembly-CSharp",
+        "$values": [
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "8cce78b3-8aa0-457e-b8cd-0008e854bd14",
+            "Sex": false
+          },
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "75e42fb4-ff09-4154-abc8-48b178558c62",
+            "Sex": false
+          }
+        ]
+      },
+      "TraitReactions": {
+        "$type": "Reactions.Reaction[], Assembly-CSharp",
+        "$values": [
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "36793f0d-b32e-44b2-9a54-97f71958d239",
+            "Sex": false
+          },
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "dbec5915-85a2-424c-9d48-f675a5a063a3",
+            "Sex": false
+          },
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "fab7debe-e2a1-415b-be47-67eef8c60662",
+            "Sex": false
+          },
+          {
+            "$type": "Reactions.Reaction, Assembly-CSharp",
+            "Id": "9b3ad95f-c19d-4fba-a79b-13041e8ee154",
+            "Sex": false
+          }
+        ]
+      },
+      "RoleType": 0,
+      "Insanity": 0,
+      "isPlayable": false,
+      "battleType": null,
+      "sup_Character": null,
+      "CurrentSlot": null,
+      "Speed": 0,
+      "IsDead": false,
+      "ImageAddress": "Missing ImageAddress",
+      "RandomSpeed": 0
+    }
+  ]
+}

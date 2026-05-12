@@ -8,8 +8,6 @@ public class InteractionManager : MonoBehaviour
 {
     private SettlementManager _settlementManager;
     private ConstructionUI _constructionUI;
-    private InventoryView _inventoryView;
-    private ExpeditionInventoryView _expeditionView;
     private AccessoryBagView _accessoryBagView;
     private EquipmentSlotUI _equipSlots; // 여러 슬롯을 리스트로 받음
 
@@ -26,8 +24,6 @@ public class InteractionManager : MonoBehaviour
     {
         _settlementManager = sm;
         _constructionUI = ui;
-        _inventoryView = iv;
-        _expeditionView = ev;
         _accessoryBagView = av;
         _equipSlots = slots;
     }
@@ -41,7 +37,7 @@ public class InteractionManager : MonoBehaviour
 
         // UI 3종 토글 (각 뷰의 ToggleWindow 호출)
         //if (kb.iKey.wasPressedThisFrame) _inventoryView.ToggleWindow(!InventoryView.IsWindowActive);
-        if (kb.eKey.wasPressedThisFrame) _expeditionView.ToggleWindow();
+        //if (kb.eKey.wasPressedThisFrame) _expeditionView.ToggleWindow();
         if (kb.bKey.wasPressedThisFrame) _accessoryBagView.ToggleWindow();
         if (kb.uKey.wasPressedThisFrame) _equipSlots.ToggleWindow();
 

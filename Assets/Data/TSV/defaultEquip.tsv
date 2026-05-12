@@ -1,0 +1,12 @@
+﻿시트 페이지 2자리	캐릭터 클래스				아군 / 적군 여부		동일 타입 번호			
+03	00	전사			00	아군	00			
+	01	도적			01	중립				
+	02	마법사			02	적				
+	03	성직자							-	-
+	04									
+	05									
+(string)	(enum)	(int)	(int)	(int)	(string)	(string)	(string)			
+ID	ClassType	STR	AGI	INT	ArmorID	WeaponID	IconID	LV		
+03000000	Warrior	3	2	1	AR_001	WP_001	Icon_Warrior			
+03010000	Assasin	2	3	1	AR_002	WP_002	Icon_Rogue			
+03020000	Cleric	1	2	3	AR_003	WP_003	Icon_Priest			

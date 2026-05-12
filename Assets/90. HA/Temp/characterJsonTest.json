@@ -1,0 +1,269 @@
+﻿{
+  "Data": {
+    "Id": "Missing Id",
+    "ImageAddress": "Missing ImageAddress",
+    "Name": "a6cf79b4-a7fd-40be-942b-20c5901ccd2b",
+    "Profession": {
+      "$type": "SampleProfession, Assembly-CSharp",
+      "Name": "Missing"
+    },
+    "Level": 0,
+    "Insanity": 0,
+    "RoleType": 0,
+    "Skills": [
+      {
+        "$type": "SampleSkill, Assembly-CSharp",
+        "SkillCooldown": 0.0,
+        "Data": {
+          "Type": 0,
+          "Target": 0,
+          "Value": 0.0,
+          "CoolTime": 0,
+          "Duration": 0,
+          "UseableClasses": 0,
+          "UseableSlots": 0,
+          "EnemyTargetMask": 0,
+          "AllyTargetMask": 0,
+          "IconAddress": null,
+          "Id": null,
+          "DisplayName": null,
+          "Description": null,
+          "name": "K2",
+          "hideFlags": 0
+        }
+      },
+      {
+        "$type": "SampleSkill, Assembly-CSharp",
+        "SkillCooldown": 0.0,
+        "Data": {
+          "Type": 0,
+          "Target": 0,
+          "Value": 0.0,
+          "CoolTime": 0,
+          "Duration": 0,
+          "UseableClasses": 0,
+          "UseableSlots": 0,
+          "EnemyTargetMask": 0,
+          "AllyTargetMask": 0,
+          "IconAddress": null,
+          "Id": null,
+          "DisplayName": null,
+          "Description": null,
+          "name": "XE",
+          "hideFlags": 0
+        }
+      },
+      {
+        "$type": "SampleSkill, Assembly-CSharp",
+        "SkillCooldown": 0.0,
+        "Data": {
+          "Type": 0,
+          "Target": 0,
+          "Value": 0.0,
+          "CoolTime": 0,
+          "Duration": 0,
+          "UseableClasses": 0,
+          "UseableSlots": 0,
+          "EnemyTargetMask": 0,
+          "AllyTargetMask": 0,
+          "IconAddress": null,
+          "Id": null,
+          "DisplayName": null,
+          "Description": null,
+          "name": "M3",
+          "hideFlags": 0
+        }
+      },
+      null
+    ],
+    "Traits": [
+      {
+        "Name": "C",
+        "Description": "ccc",
+        "Trigger": null
+      },
+      {
+        "Name": "C",
+        "Description": "ccc",
+        "Trigger": null
+      },
+      null,
+      null
+    ],
+    "Equips": [
+      null,
+      null
+    ],
+    "Relation": {},
+    "RoleReactions": [
+      {
+        "Id": "e40c6490-3617-4f06-b20c-d7fc0cf17af6",
+        "Sex": false
+      },
+      {
+        "Id": "268ca25b-d149-4ee4-afa7-e533cdc04b50",
+        "Sex": false
+      }
+    ],
+    "TraitReactions": [
+      {
+        "Id": "9a6c406f-2dc3-4531-82d4-3f1aeca90e6f",
+        "Sex": false
+      },
+      {
+        "Id": "7b14e20f-388b-44e5-87a5-9484f565d426",
+        "Sex": false
+      },
+      {
+        "Id": "878ed140-1bfa-473e-a85d-fcd2ca498cba",
+        "Sex": false
+      },
+      {
+        "Id": "5b06b11d-df1f-487e-a1e5-3e15a61a3d86",
+        "Sex": false
+      }
+    ]
+  },
+  "onBattleAction": null,
+  "Stat": {
+    "INT": 0,
+    "STR": 0,
+    "AGI": 0,
+    "max_Hp": 0,
+    "current_Hp": 0,
+    "def": 0,
+    "atk": 0,
+    "speed": 0,
+    "crt": 0.0,
+    "acc": 0.0,
+    "Insanity_Ctrl": 0.0,
+    "Reaction_Ctrl": 0.0,
+    "Sp_Atk": 0,
+    "baseWeapon": null,
+    "baseArmor": null
+  },
+  "Name": "a6cf79b4-a7fd-40be-942b-20c5901ccd2b",
+  "Level": 0,
+  "Profession": {
+    "$type": "SampleProfession, Assembly-CSharp",
+    "Name": "Missing"
+  },
+  "Skills": [
+    {
+      "$type": "SampleSkill, Assembly-CSharp",
+      "SkillCooldown": 0.0,
+      "Data": {
+        "Type": 0,
+        "Target": 0,
+        "Value": 0.0,
+        "CoolTime": 0,
+        "Duration": 0,
+        "UseableClasses": 0,
+        "UseableSlots": 0,
+        "EnemyTargetMask": 0,
+        "AllyTargetMask": 0,
+        "IconAddress": null,
+        "Id": null,
+        "DisplayName": null,
+        "Description": null,
+        "name": "K2",
+        "hideFlags": 0
+      }
+    },
+    {
+      "$type": "SampleSkill, Assembly-CSharp",
+      "SkillCooldown": 0.0,
+      "Data": {
+        "Type": 0,
+        "Target": 0,
+        "Value": 0.0,
+        "CoolTime": 0,
+        "Duration": 0,
+        "UseableClasses": 0,
+        "UseableSlots": 0,
+        "EnemyTargetMask": 0,
+        "AllyTargetMask": 0,
+        "IconAddress": null,
+        "Id": null,
+        "DisplayName": null,
+        "Description": null,
+        "name": "XE",
+        "hideFlags": 0
+      }
+    },
+    {
+      "$type": "SampleSkill, Assembly-CSharp",
+      "SkillCooldown": 0.0,
+      "Data": {
+        "Type": 0,
+        "Target": 0,
+        "Value": 0.0,
+        "CoolTime": 0,
+        "Duration": 0,
+        "UseableClasses": 0,
+        "UseableSlots": 0,
+        "EnemyTargetMask": 0,
+        "AllyTargetMask": 0,
+        "IconAddress": null,
+        "Id": null,
+        "DisplayName": null,
+        "Description": null,
+        "name": "M3",
+        "hideFlags": 0
+      }
+    },
+    null
+  ],
+  "Traits": [
+    {
+      "Name": "C",
+      "Description": "ccc",
+      "Trigger": null
+    },
+    {
+      "Name": "C",
+      "Description": "ccc",
+      "Trigger": null
+    },
+    null,
+    null
+  ],
+  "RoleReactions": [
+    {
+      "Id": "e40c6490-3617-4f06-b20c-d7fc0cf17af6",
+      "Sex": false
+    },
+    {
+      "Id": "268ca25b-d149-4ee4-afa7-e533cdc04b50",
+      "Sex": false
+    }
+  ],
+  "TraitReactions": [
+    {
+      "Id": "9a6c406f-2dc3-4531-82d4-3f1aeca90e6f",
+      "Sex": false
+    },
+    {
+      "Id": "7b14e20f-388b-44e5-87a5-9484f565d426",
+      "Sex": false
+    },
+    {
+      "Id": "878ed140-1bfa-473e-a85d-fcd2ca498cba",
+      "Sex": false
+    },
+    {
+      "Id": "5b06b11d-df1f-487e-a1e5-3e15a61a3d86",
+      "Sex": false
+    }
+  ],
+  "RoleType": 0,
+  "Insanity": 0,
+  "isPlayable": false,
+  "battleType": null,
+  "sup_Character": null,
+  "CurrentSlot": null,
+  "Speed": 0,
+  "IsDead": false,
+  "ImageAddress": "Missing ImageAddress",
+  "RandomSpeed": 0
+}

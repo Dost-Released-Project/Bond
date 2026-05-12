@@ -8,14 +8,14 @@ public class EquipmentSlotUI : MonoBehaviour
     private VisualElement _root;
     private List<VisualElement> _accSlots = new();
     
-    private CharacterItemService _itemService; // 이름 및 타입 변경
-    private InventoryUIService _uiService;     // 드래그 상태 확인용 추가
+    private CharacterItemService _itemService;
+    private InventoryTransferService _transferService; 
 
     [Inject]
-    public void Construct(CharacterItemService itemService, InventoryUIService uiService)
+    public void Construct(CharacterItemService itemService, InventoryTransferService transferService)
     {
         _itemService = itemService;
-        _uiService = uiService;
+        _transferService = transferService;
     }
 
     private void Start()
@@ -47,18 +47,29 @@ public class EquipmentSlotUI : MonoBehaviour
 
     private void RegisterEvents(VisualElement slotVisual, int index)
     {
-        // [장착] 드래그 드롭 성공 시
-        slotVisual.RegisterCallback<PointerUpEvent>(evt => {
-            if (_uiService.CurrentSourceInventory != null) {
-                // UIService를 통해 소스 인벤토리와 인덱스 참조
-                _itemService.EquipFromDrag(_uiService.CurrentSourceInventory, _uiService.CurrentDraggingIndex, index);
-                _uiService.ResetDrag();
+        // [드래그 시작] 좌클릭 시 해당 장비 슬롯을 드래그 상태로 기록
+        slotVisual.RegisterCallback<PointerDownEvent>(evt => {
+            if (evt.button == 0) // 좌클릭
+            {
+                var hero = AdminTestTool.testHero;
+                if (hero?.Data?.Equips != null && index < hero.Data.Equips.Length)
+                {
+                    var eq = hero.Data.Equips[index];
+                    if (eq?.originItem != null)
+                    {
+                        _transferService.StartEquipmentDrag(index);
+                    }
+                }
             }
         });
 
-        // [해제] 우클릭 시 인벤토리로 반환
-        slotVisual.RegisterCallback<PointerDownEvent>(evt => {
-            if (evt.button == 1) _itemService.UnequipToInventory(AdminTestTool.testHero, index);
+        // [드래그 장착] 인벤토리에서 아이템을 들고 와서 장비 슬롯에 놓았을 때
+        slotVisual.RegisterCallback<PointerUpEvent>(evt => {
+            if (_transferService.IsDragging) 
+            {
+                _itemService.EquipFromDrag(_transferService.CurrentSourceInventory, _transferService.CurrentDraggingIndex, index);
+                _transferService.ResetDrag();
+            }
         });
     }
 
