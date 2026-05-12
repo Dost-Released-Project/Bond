@@ -108,7 +108,9 @@ public class ExpeditionPayloadWindow : EditorWindow
                 var wrapper = ScriptableObject.CreateInstance<CharacterDataWrapper>();
                 wrapper.hideFlags = HideFlags.DontSave;
                 wrapper.character = new CharacterSnapshot { data = list[i].Data, stat = list[i].Stat };
-                cached.Add((wrapper, new SerializedObject(wrapper)));
+                var so = new SerializedObject(wrapper);
+                CollapseRecursive(so.FindProperty("character"));
+                cached.Add((wrapper, so));
             }
             _cache[header] = cached;
         }
@@ -121,5 +123,18 @@ public class ExpeditionPayloadWindow : EditorWindow
         }
 
         EditorGUI.indentLevel--;
+    }
+
+    private static void CollapseRecursive(SerializedProperty prop)
+    {
+        prop.isExpanded = false;
+        var iter = prop.Copy();
+        var end = prop.GetEndProperty();
+        if (iter.NextVisible(true) == false) return;
+        while (SerializedProperty.EqualContents(iter, end) == false)
+        {
+            if (iter.hasChildren) iter.isExpanded = false;
+            if (iter.NextVisible(false) == false) break;
+        }
     }
 }
