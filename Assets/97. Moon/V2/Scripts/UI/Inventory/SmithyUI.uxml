@@ -1,11 +1,11 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:VisualElement style="flex-grow: 1; position: absolute; width: 960px; height: 540px; top: 270px; left: 480px; background-color: rgb(106, 69, 0);">
-        <ui:Label text="기본 무기 (+5)" name="item-name" style="position: absolute; -unity-text-align: middle-center; top: 80px; left: auto; width: 200px; height: 30px; font-size: 30px; right: 80px;"/>
-        <ui:Label text="STR : &#10;AGI : &#10;INT : " name="stat-info" style="position: absolute; -unity-text-align: middle-left; top: 150px; left: auto; font-size: 30px; width: 150px; height: 150px; right: 105px;"/>
-        <ui:Label text="소모: 개척데이터 {costLog} / 광석 {costOre}" name="upgrade-cost" style="position: absolute; height: 30px; top: auto; width: 200px; left: 380px; bottom: 20px; -unity-text-align: middle-center; font-size: 20px;"/>
-        <ui:Button text="Upgrade" name="btn-upgrade" style="position: absolute; top: auto; left: 430px; width: 100px; height: 50px; font-size: 20px; bottom: 70px;"/>
-        <ui:Button text="Weapon" name="slot-weapon" style="position: absolute; top: 170px; left: 60px; width: 100px; height: 100px; font-size: 25px;"/>
-        <ui:Button text="Armor" name="slot-armor" style="position: absolute; top: 170px; left: 210px; width: 100px; height: 100px; font-size: 30px;"/>
-        <ui:Button text="X" name="btn-close" style="position: absolute; top: 0; left: auto; width: 50px; height: 50px; right: 0;"/>
+    <ui:VisualElement style="flex-grow: 1; position: absolute; width: 960px; height: 540px; top: 262px; left: 482px; background-color: rgb(106, 69, 0);">
+        <ui:Label text="기본 방어구 (+5)" name="item-name" style="position: absolute; -unity-text-align: middle-center; top: 80px; left: auto; width: 200px; height: 30px; font-size: 50px; right: 100px;"/>
+        <ui:Label text="STR : 20&#10;AGI : 20&#10;INT : 20" name="stat-info" style="position: absolute; -unity-text-align: middle-right; top: 180px; left: auto; font-size: 50px; width: 200px; height: 150px; right: 100px;"/>
+        <ui:Label text="소모: 개척데이터 {costLog} / 광석 {costOre}" name="upgrade-cost" style="position: absolute; height: 100px; top: auto; width: 200px; left: 380px; bottom: 20px; -unity-text-align: upper-center; font-size: 40px;"/>
+        <ui:Button text="강화" name="btn-upgrade" style="position: absolute; top: auto; left: 430px; width: 100px; height: 50px; font-size: 40px; bottom: 130px;"/>
+        <ui:Button text="" name="slot-weapon" style="position: absolute; top: 120px; left: 60px; width: 100px; height: 100px; font-size: 25px; background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/sword.png?fileID=2800000&amp;guid=442c345d0aa33ee47ae2581689acc6b1&amp;type=3#sword&quot;);"/>
+        <ui:Button text="" name="slot-armor" style="position: absolute; top: 120px; left: 210px; width: 100px; height: 100px; font-size: 30px; background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/armor.png?fileID=2800000&amp;guid=acc3177f9abd83a4baf1eb2ec471a721&amp;type=3#armor&quot;);"/>
+        <ui:Button text="X" name="btn-close" style="position: absolute; top: 0; left: auto; width: 50px; height: 50px; right: 0; background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/close-x.png?fileID=2800000&amp;guid=fca488c12ed21e747bd5ba7a7485df0f&amp;type=3#close-x&quot;); -unity-background-image-tint-color: rgb(0, 0, 0);"/>
     </ui:VisualElement>
 </ui:UXML>
