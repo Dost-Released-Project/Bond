@@ -37,6 +37,18 @@ public class Stat
 
     private BaseCharacter character;
 
+    public Stat(ClassSO getSo)
+    {
+        STR = getSo.STR;
+        AGI = getSo.AGI;
+        INT = getSo.INT;
+    }
+
+    public Stat()
+    {
+        
+    }
+
     public void Init(BaseCharacter character)
     {
         this.character = character;

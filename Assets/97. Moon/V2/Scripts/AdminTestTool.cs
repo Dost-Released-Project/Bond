@@ -7,21 +7,60 @@ using UnityEngine.Serialization;
 public class AdminTestTool : MonoBehaviour
 {
     public string id;
-    public BaseCharacter hero;
     public static bool isTargetingWeapon = true;
-    private ClassDataBaseSO _ClassDB;
+    public BaseCharacter hero;
     
     public static BaseCharacter testHero = null;
-
+    
     private async void Awake()
     {
         hero = BaseCharacter.Sample;
         testHero = hero;
-        var handle = Addressables.LoadAssetAsync<ClassDataBaseSO>("ClassDataBase");
-        _ClassDB = await handle.Task;
-        testHero.Profession = new SampleProfession(_ClassDB.GetSO<ClassSO>(id));
-    }
+    
+        // 1. 데이터베이스들 로드 (어드레서블)
+        var classHandle = Addressables.LoadAssetAsync<ClassDataBaseSO>("ClassDataBase");
+        var defaultEquipHandle = Addressables.LoadAssetAsync<DefaultEquipDataBaseSO>("DefaultEquipDataBase");
 
+        var classDB = await classHandle.Task;
+        var equipDB = await defaultEquipHandle.Task;
+
+        // 2. ID를 기반으로 데이터 가져오기
+        var classSO = classDB.GetSO<ClassSO>(id);
+        var defaultSO = equipDB.GetSO<DefaultEquipSO>(classSO.DefaultWeaponId);
+
+        if (classSO != null && defaultSO != null)
+        {
+            // 3. Profession 설정 (보정치용)
+            testHero.Profession = new SampleProfession(classSO);
+            
+            testHero.Stat.AGI = classSO.AGI;
+            testHero.Stat.STR = classSO.STR;
+            testHero.Stat.INT = classSO.INT;
+
+            // 4. Equipment 객체 생성 및 순수 데이터 주입
+            // 요청하신 대로 STR, AGI, INT만 우선 할당합니다.
+            testHero.Data.Weapon = new Equipment 
+            {
+                itemName = "기본 무기", // 임시
+                bonusSTR = defaultSO.STR,
+                bonusAGI = defaultSO.AGI,
+                bonusINT = defaultSO.INT
+            };
+            
+            testHero.Data.Armor = new Equipment 
+            {
+                itemName = "기본 방어구", // 임시
+                bonusSTR = defaultSO.STR,
+                bonusAGI = defaultSO.AGI,
+                bonusINT = defaultSO.INT
+            };
+
+            // 5. 스탯 최종 계산
+            testHero.Profession.CalculateStat(testHero.Stat, testHero.Data);
+            Debug.Log("임시 캐릭터 생성 완료");
+        }
+    }
+    
     void Update()
     {
         // 1. 캐릭터 데미지 입히기 (식당 테스트용)
