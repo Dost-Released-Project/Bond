@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3426200167367812687}
   - component: {fileID: 2359534666872677211}
   m_Layer: 0
-  m_Name: TestLiftimeScope
+  m_Name: TownScope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -43,6 +43,9 @@ public class CharacterItemService
         if (target?.Data?.Equips == null || slotIdx < 0 || slotIdx >= target.Data.Equips.Length) return false;
         var eq = target.Data.Equips[slotIdx];
         if (eq?.originItem == null || targetInv == null) return false;
+        
+        // [추가] 해제 효과 발동
+        if (eq.originItem is AccessoryItem oldAcc) oldAcc.OnUnequip(target);
 
         var targetSlot = targetInv.GetSlot(targetSlotIdx);
 
@@ -64,6 +67,9 @@ public class CharacterItemService
             var newEquip = accItem.equipmentData.Clone(accItem);
             newEquip.originItem = accItem;
             target.Data.Equips[slotIdx] = newEquip;
+            
+            // [추가] 교체된 새 장비 효과 발동
+            accItem.OnEquip(target);
 
             targetInv.AddItemAt(targetSlotIdx, oldEquip.originItem, 1);
             UpdateHeroStats(target);
@@ -108,6 +114,9 @@ public class CharacterItemService
         var newEquip = accItem.equipmentData.Clone(accItem);
         newEquip.originItem = accItem;
         hero.Data.Equips[charSlotIndex] = newEquip;
+        
+        // [추가] 장착 효과 발동
+        accItem.OnEquip(hero);
 
         sourceInv.RemoveFromSlot(invIndex, 1);
         UpdateHeroStats(hero);
@@ -125,6 +134,10 @@ public class CharacterItemService
             {
                 hero.Data.Equips[i] = accItem.equipmentData.Clone(accItem);
                 hero.Data.Equips[i].originItem = accItem;
+                
+                // [추가] 장착 효과 발동
+                accItem.OnEquip(hero);
+                
                 sourceInv.RemoveFromSlot(invIndex, 1);
                 UpdateHeroStats(hero);
                 return true;
@@ -135,7 +148,7 @@ public class CharacterItemService
 
     private void UpdateHeroStats(BaseCharacter hero)
     {
-        hero.Profession.CalculateStat(hero.Stat, hero.Data);
+        hero.Profession.CalculateStat(hero.Stat, hero.Data, hero.StatController);
         OnEquipmentChanged?.Invoke();
     }
 }

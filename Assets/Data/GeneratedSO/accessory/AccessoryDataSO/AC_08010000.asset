@@ -27,3 +27,4 @@ MonoBehaviour:
     bonusAGI: 5
     bonusINT: 0
     originItem: {fileID: 11400000}
+  specialEffects: []

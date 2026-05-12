@@ -41,6 +41,7 @@ public class TownScope : LifetimeScope
         builder.RegisterComponentInHierarchy<ExpeditionInventoryView>();
         builder.RegisterComponentInHierarchy<EquipmentSlotUI>();
         builder.RegisterComponentInHierarchy<AccessoryBagView>();
+        builder.RegisterComponentInHierarchy<SmithyUIController>();
         
         // 테스트용 스크립트
         builder.RegisterComponentInHierarchy<S1Test>();

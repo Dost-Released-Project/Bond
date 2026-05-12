@@ -16,6 +16,7 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     private ITotalInventory _totalInv;
     private IExpeditionInventory _expeditionInv;
     
+    [Inject] private SmithyUIController _smithyUI; // UI 컨트롤러 주입
     private BaseCharacter _selectedCharacter;
 
     [Inject]
@@ -52,7 +53,10 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
             case BuildingType.Supply: _supplyView.Open(); break;
             case BuildingType.Tavern: _buildingService.ExecuteTavern(_selectedCharacter, levelData); break;
             case BuildingType.Inn: _buildingService.ExecuteInn(_selectedCharacter, levelData); break;
-            case BuildingType.Smithy: ProcessSmithy(building); break;
+            case BuildingType.Smithy: // 이제 직접 강화하지 않고 UI를 엽니다.
+                // 선택된 캐릭터와 현재 대장간 건물 레벨을 전달합니다.
+                if (_selectedCharacter != null)
+                    _smithyUI.Open(_selectedCharacter, building.CurrentLevel);; break;
             case BuildingType.Guild: CollectGuildData(building); break;
         }
     }
@@ -132,13 +136,6 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
                 _inventoryView.RefreshUI();
                 break;
         }
-    }
-
-    private void ProcessSmithy(BuildingObject smithy)
-    {
-        if (_selectedCharacter == null) return;
-        Equipment target = AdminTestTool.isTargetingWeapon ? _selectedCharacter.Data.Weapon : _selectedCharacter.Data.Armor;
-        _buildingService.UpgradeEquipment(_selectedCharacter, target, smithy.CurrentLevel);
     }
     
     private void CollectGuildData(BuildingObject guild)

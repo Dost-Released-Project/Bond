@@ -43,8 +43,11 @@ public class InventoryView : MonoBehaviour
         
         var accDB = accHandle.Result;
         var conDB = conHandle.Result;
+
+        // 2. "total_inv" 파일만 로드
+        LoadTotalInventory(conHandle.Result, accHandle.Result);
         
-        // 2. DB의 GetSO 함수를 사용하여 아이템 추가
+        // (임시) DB의 GetSO 함수를 사용하여 아이템 추가
         // 소모품 추가
         AddInventoryItem(conDB, "07000000", 5);
         AddInventoryItem(conDB, "07010000", 5);
@@ -56,10 +59,7 @@ public class InventoryView : MonoBehaviour
         AddInventoryItem(accDB, "08000000", 1);
         AddInventoryItem(accDB, "08010000", 1);
         AddInventoryItem(accDB, "08020000", 1);
-        AddInventoryItem(accDB, "08030000", 1);        
-
-        // 2. "total_inv" 파일만 로드
-        LoadTotalInventory(conHandle.Result, accHandle.Result);
+        AddInventoryItem(accDB, "08030000", 1);   
         
         _expeditionResultService.ProcessExpeditionReturn();
         SetupUI();

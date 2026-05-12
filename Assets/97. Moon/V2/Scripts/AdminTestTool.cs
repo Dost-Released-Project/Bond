@@ -7,7 +7,6 @@ using UnityEngine.Serialization;
 public class AdminTestTool : MonoBehaviour
 {
     public string id;
-    public static bool isTargetingWeapon = true;
     public BaseCharacter hero;
     
     public static BaseCharacter testHero = null;
@@ -32,10 +31,10 @@ public class AdminTestTool : MonoBehaviour
         {
             // 3. Profession 설정 (보정치용)
             testHero.Profession = new SampleProfession(classSO);
-            
             testHero.Stat.AGI = classSO.AGI;
             testHero.Stat.STR = classSO.STR;
             testHero.Stat.INT = classSO.INT;
+            // testHero.Stat = new Stat(classSO); 우선 준비만.
 
             // 4. Equipment 객체 생성 및 순수 데이터 주입
             // 요청하신 대로 STR, AGI, INT만 우선 할당합니다.
@@ -56,7 +55,7 @@ public class AdminTestTool : MonoBehaviour
             };
 
             // 5. 스탯 최종 계산
-            testHero.Profession.CalculateStat(testHero.Stat, testHero.Data);
+            testHero.Profession.CalculateStat(testHero.Stat, testHero.Data, testHero.StatController);
             Debug.Log("임시 캐릭터 생성 완료");
         }
     }
@@ -81,15 +80,7 @@ public class AdminTestTool : MonoBehaviour
         if (Keyboard.current.f3Key.wasPressedThisFrame)
         {
             FindObjectOfType<SettlementManager>().SelectCharacter(testHero);
-            testHero.Profession.CalculateStat(testHero.Stat, testHero.Data);
-        }
-        
-        // 4. 강화 대상 전환 (무기 <-> 방어구)
-        if (Keyboard.current.f4Key.wasPressedThisFrame)
-        {
-            isTargetingWeapon = !isTargetingWeapon;
-            string targetName = isTargetingWeapon ? "무기(Weapon)" : "방어구(Armor)";
-            Debug.Log($"<color=cyan>[대장간 타겟 변경]</color> 현재 강화 대상: {targetName}");
+            testHero.Profession.CalculateStat(testHero.Stat, testHero.Data, testHero.StatController);
         }
     }
 }
