@@ -10,15 +10,15 @@ using Reactions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[Serializable]
-public partial class BaseCharacter : ITurnUseUnit, ISerializable
+[Serializable][JsonObject(MemberSerialization.OptIn)]
+public partial class BaseCharacter : ITurnUseUnit
 {
     /// <summary>
     /// 테스트 용 객체
     /// </summary>
     public static BaseCharacter Sample => new BaseCharacter(BaseCharacterData.Sample);
 
-    public BaseCharacterData Data;
+    [JsonProperty] public BaseCharacterData Data;
     public Stat Stat { get; } = new Stat();
     
     // 읽는 쪽에서 편하라고 일단 만들어두긴 했는데 너무 길어지면 지우는게 나을지도
@@ -44,11 +44,6 @@ public partial class BaseCharacter : ITurnUseUnit, ISerializable
     public BaseCharacter(BaseCharacterData data)
     {
         Data = data;
-    }
-
-    public BaseCharacter(SerializationInfo info, StreamingContext context)
-    {
-        Data = (BaseCharacterData)info.GetValue("Data", typeof(BaseCharacterData));
     }
 
     public void SetRole(RoleType role)
@@ -170,11 +165,6 @@ public partial class BaseCharacter : ITurnUseUnit, ISerializable
         return speedComparison;
     }
     #endregion
-
-    public void GetObjectData(SerializationInfo info, StreamingContext context)
-    {
-        info.AddValue("Data", Data);
-    }
 
     public override string ToString()
     {
