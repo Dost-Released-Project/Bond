@@ -2,6 +2,7 @@ using System;
 using _90._HA.Temp.Test;
 using Bond.Embark;
 using Bond.Expedition;
+using Bond.UI.Town;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -28,6 +29,8 @@ public class TownScope : LifetimeScope
         builder.Register<EmbarkManager>(Lifetime.Scoped);
         builder.Register<PartyManager>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
         builder.Register<StageCoach>(Lifetime.Scoped);
+        builder.Register<Roster>(Lifetime.Scoped);
+        builder.Register<CharacterSelector>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
 
 
         // 씬에 배치된 컴포넌트
@@ -42,6 +45,9 @@ public class TownScope : LifetimeScope
         builder.RegisterComponentInHierarchy<EquipmentSlotUI>();
         builder.RegisterComponentInHierarchy<AccessoryBagView>();
         
+        // 타운 UI
+        builder.RegisterComponentInHierarchy<TownUIController>();
+
         // 테스트용 스크립트
         builder.RegisterComponentInHierarchy<S1Test>();
     }
