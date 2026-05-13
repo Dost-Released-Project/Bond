@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: MonsterDataBase
   m_EditorClassIdentifier: Assembly-CSharp::MonsterDataBaseSO
   _soList:
-  - {fileID: 11400000, guid: 26e1a1b9c2ec352468b2ddd762e30485, type: 2}
   - {fileID: 11400000, guid: 5a9914d6adc46a04182f6d0d21259741, type: 2}
   - {fileID: 11400000, guid: ab4d0199116484d4e9f8f5c4a01e2b03, type: 2}
   - {fileID: 11400000, guid: 4ea1576186f32c34a8860a9856a690e2, type: 2}

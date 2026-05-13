@@ -26,3 +26,5 @@ MonoBehaviour:
     Gid: 1049904701
   - SheetName: MonsterStat
     Gid: 770208132
+  - SheetName: MonsterGroup
+    Gid: 751043864

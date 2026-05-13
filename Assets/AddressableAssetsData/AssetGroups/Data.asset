@@ -45,6 +45,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dcef6e8629283d04787950c3a2da344d
+    m_Address: MonsterGroupDataBase
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e646d35a16cac3b46b3c33efd328429e
     m_Address: DefaultEquipDataBase
     m_ReadOnly: 0
