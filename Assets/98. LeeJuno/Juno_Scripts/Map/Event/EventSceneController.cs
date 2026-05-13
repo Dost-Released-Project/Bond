@@ -33,8 +33,6 @@ public class EventSceneController : MonoBehaviour
     {
         _effectApplier = effectApplier;
         _eventContext = eventContext;
-        // TODO: 검증 완료 후 제거
-        Debug.Log("[EventSceneController] Construct — IEventContext 주입 완료");
     }
 
     private void Start()

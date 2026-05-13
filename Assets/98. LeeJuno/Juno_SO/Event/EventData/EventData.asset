@@ -18,10 +18,25 @@ MonoBehaviour:
   _choices:
   - _label: choise1
     _outcomeDescription: One
-    _rewardIds:
-    - 12451562
-    _hpChange: -10
+    _effect:
+      _effectType: 1
+      _targetType: 0
+      _hpChangeAmount: 0
+      _statusEffectId: 
+      _itemRewardType: 0
+      _guaranteedItemId: 
+      _itemProbability: 0
+      _probabilityItemId: 
+      _itemPool: []
   - _label: choise2
     _outcomeDescription: Two
-    _rewardIds: []
-    _hpChange: 0
+    _effect:
+      _effectType: 0
+      _targetType: 0
+      _hpChangeAmount: 0
+      _statusEffectId: 
+      _itemRewardType: 0
+      _guaranteedItemId: 
+      _itemProbability: 0
+      _probabilityItemId: 
+      _itemPool: []

@@ -34,9 +34,7 @@ public class StageMonsterContextService : IStageMonsterContext
         _monsterGroupId = groupId;
         // 외부 리스트 변경이 내부 상태에 영향을 미치지 않도록 방어적 복사
         _monsterIds = new List<string>(monsterIds);
-        // TODO: 검증 완료 후 제거
-        string firstId = _monsterIds.Count > 0 ? _monsterIds[0] : "없음";
-        Debug.Log($"[StageMonsterContextService] Set → GroupId='{_monsterGroupId}', MonsterIds={_monsterIds.Count}, FirstId='{firstId}'");
+        Debug.Log($"[StageMonsterContextService] Set → GroupId='{_monsterGroupId}', MonsterIds={_monsterIds.Count}");
     }
 
     /// <summary>
@@ -47,7 +45,5 @@ public class StageMonsterContextService : IStageMonsterContext
     {
         _monsterGroupId = string.Empty;
         _monsterIds.Clear();
-        // TODO: 검증 완료 후 제거
-        Debug.Log("[StageMonsterContextService] Clear 호출됨");
     }
 }
