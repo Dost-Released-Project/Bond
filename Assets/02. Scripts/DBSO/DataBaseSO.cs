@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "DataBaseSO", menuName = "Scriptable Objects/DataBaseSO")]
@@ -30,6 +31,25 @@ public class DataBaseSO : ScriptableObject
 
     /// <summary>타입 불필요한 경우용 오버로드.</summary>
     public BaseSO GetSO(string id) => GetSO<BaseSO>(id);
+    
+    // 특정 조건(Predicate)으로 찾기
+    public T FindSO<T>(System.Func<T, bool> predicate) where T : BaseSO
+    {
+        // 리스트를 직접 노출하지 않고 내부에서 검색해서 결과만 반환
+        return _soList.OfType<T>().FirstOrDefault(predicate);
+    }
+    
+    // 특정 조건(Predicate)으로 찾기
+    public IEnumerable<T> Query<T>(System.Func<T, bool> predicate) where T : BaseSO
+    {
+        // 리스트를 직접 노출하지 않고 내부에서 검색해서 결과만 반환
+        return _soList.OfType<T>().Where(predicate);
+    }
+
+    public T GetRandom<T>() where T : BaseSO
+    {
+        return _soList.OfType<T>().GetRandom();
+    }
 
 #if UNITY_EDITOR
     private void OnValidate() => BuildCache();

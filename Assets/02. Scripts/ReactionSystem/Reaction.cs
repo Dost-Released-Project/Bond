@@ -10,7 +10,7 @@ namespace Reactions
     }
     
     [Serializable]
-    public class Reaction : ISerializable
+    public class Reaction
     {
         public string Id;
         [NonSerialized] public BaseCharacter Agent;    // 조건이 만족 됐을때 행동할 주체
@@ -32,12 +32,6 @@ namespace Reactions
         public override string ToString()
         {
             return $"ID: {Id} | {Agent}'s reaction-{Behaviour}-";
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("Id", Id);
-            info.AddValue("Sex", false);
         }
     }
 }

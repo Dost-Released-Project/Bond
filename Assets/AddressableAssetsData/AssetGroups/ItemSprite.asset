@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: ItemSprite
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: ItemSprite
+  m_GUID: c746198d227ecd046a03c3dd6b67a0fe
+  m_SerializeEntries:
+  - m_GUID: 13931e361c178314db7c0161c27dc532
+    m_Address: Sprite/Item/Ring_AGI
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28cb32f8fe7ea784bbfe72942183cead
+    m_Address: Sprite/Item/Ring_INT
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 37a77d80b6d90c8459fc191dd8b51561
+    m_Address: Sprite/Item/OldSedative
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4911458b7166c48418c84ba8b81785ca
+    m_Address: Sprite/Item/Ring_STR
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 496e9a87ba4b8fa41bd1d0459d221936
+    m_Address: Sprite/Item/Ring_Master
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 843d71197893c7d46b79d38219e785b1
+    m_Address: Sprite/Item/Stimulant
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9fdac2340725d6c40a4ae1b68fce892a
+    m_Address: Sprite/Item/Sedative
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4a9c034ab04f5a41adae2bb661f91d1
+    m_Address: Sprite/Item/Bandage
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e65655f7a51345a49ae41cef8d2d244f
+    m_Address: Sprite/Item/OldBandage
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 2844d279e9fd27e4a9c0e38b898d6b70, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 6a35e574c353fc0469c1995ccf517fd7, type: 2}
+    - {fileID: 11400000, guid: d2a1bafeca00b704fa980ba798a64fdc, type: 2}

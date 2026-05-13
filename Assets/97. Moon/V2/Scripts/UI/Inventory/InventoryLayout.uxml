@@ -10,6 +10,6 @@
         <ui:Button text="Equip" name="btn-filter-accessory" style="width: 100px; height: 100px; -unity-text-align: middle-center; white-space: pre; top: 300px; right: 0; left: 500px; bottom: 0; font-size: 37px; position: absolute;"/>
         <ui:Button text="All" name="btn-filter-all" style="width: 100px; height: 100px; -unity-text-align: middle-center; white-space: pre; top: 400px; right: 0; left: 500px; bottom: 0; font-size: 40px; position: absolute;"/>
         <ui:TextField label="Search" placeholder-text="filler text" name="inventory-search" style="width: 400px; height: 50px; align-items: center; justify-content: space-around; font-size: 30px; top: 560px; position: absolute; bottom: auto; background-color: rgb(128, 255, 0); left: 20px;"/>
-        <ui:Button text="X" name="btn-close" style="width: 100px; height: 100px; -unity-text-align: middle-center; white-space: pre; top: 520px; right: auto; left: 500px; bottom: auto; font-size: 100px; position: absolute;"/>
+        <ui:Button text="" name="btn-close" style="width: 100px; height: 100px; -unity-text-align: middle-center; white-space: pre; top: 520px; right: auto; left: 500px; bottom: auto; font-size: 100px; position: absolute; background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/close-cross.png?fileID=2800000&amp;guid=ab1fe109822fdf648a969e68e8e69e2f&amp;type=3#close-cross&quot;); background-size: 100% 100%; -unity-background-image-tint-color: rgb(0, 0, 0);"/>
     </ui:VisualElement>
 </ui:UXML>

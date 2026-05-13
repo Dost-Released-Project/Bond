@@ -57,6 +57,11 @@ public abstract class InventoryBase : IInventory
         OnChanged?.Invoke();
     }
 
+    public virtual void ClearAll()
+    {
+        _slots.Clear();
+    }
+
     public virtual void ExpandStorage(int additionalSlots)
     { 
         for (int i = 0; i < additionalSlots; i++) _slots.Add(new InventorySlot());

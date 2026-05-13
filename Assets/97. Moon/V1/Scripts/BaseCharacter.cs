@@ -10,7 +10,7 @@ using Reactions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[Serializable]
+[Serializable][JsonObject(MemberSerialization.OptIn)]
 public partial class BaseCharacter : ITurnUseUnit
 {
     /// <summary>
@@ -18,13 +18,20 @@ public partial class BaseCharacter : ITurnUseUnit
     /// </summary>
     public static BaseCharacter Sample => new BaseCharacter(BaseCharacterData.Sample);
 
-    public BaseCharacterData Data;
+    [JsonProperty] public BaseCharacterData Data;
     public Stat Stat { get; } = new Stat();
+    // [추가] 스탯 모디파이어 컨트롤러 (로직 레이어)
+    public StatController StatController { get; } = new StatController();
     
     // 읽는 쪽에서 편하라고 일단 만들어두긴 했는데 너무 길어지면 지우는게 나을지도
     public string Name => Data.Name;
     public int Level => Data.Level;
-    public Profession Profession => Data.Profession;
+    public Profession Profession
+    {
+        get => Data.Profession;
+        set => Data.Profession = value;
+    }
+
     public SkillBase[] Skills => Data.Skills;
     public Trait[] Traits => Data.Traits;
     public Reaction[] RoleReactions => Data.RoleReactions;
@@ -55,6 +62,12 @@ public partial class BaseCharacter : ITurnUseUnit
             RoleType.Tanker => new AutoBattle_Def(Name),
             RoleType.Supporter => new AutoBattle_Sup(Name)
         };
+    }
+
+    public void CalcStat()
+    {
+        // Profession에게 "데이터와 모디파이어를 전달한 뒤 스탯 계산 요청
+        Profession.CalculateStat(Stat, Data, StatController);
     }
     
     public void ReduceHP(int amount) => Stat.current_Hp = Mathf.Max(Stat.current_Hp - amount, 0); // 체력 감소
@@ -165,4 +178,9 @@ public partial class BaseCharacter : ITurnUseUnit
         return speedComparison;
     }
     #endregion
+
+    public override string ToString()
+    {
+        return $"Name: {Name}, Level: {Level}, Profession: {Profession.Name}";
+    }
 }

@@ -19,14 +19,4 @@ public class ExpeditionInventory : InventoryBase, IExpeditionInventory
         if (emptyIdx != -1) return AddItemAt(emptyIdx, item, quantity);
         return quantity;
     }
-
-    public bool EquipItem(BaseCharacter character, string itemID)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void UnequipItem(BaseCharacter character, Equipment slot)
-    {
-        throw new NotImplementedException();
-    }
 }

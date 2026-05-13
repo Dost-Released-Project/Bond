@@ -68,9 +68,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f06c76612db01804298abcc4fb09d88c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryView
-  testItems:
-  - {fileID: 11400000, guid: 7738f111145b21a47ab7852ae932650c, type: 2}
-  - {fileID: 11400000, guid: 6cdaa788f5c783a4392f7ccbaa5eccc7, type: 2}
-  - {fileID: 11400000, guid: 4d2250cdf86e98a4cb973f398d07d7a1, type: 2}
-  - {fileID: 11400000, guid: 26bbdf729b09e3b4b997c78851eef56d, type: 2}
-  - {fileID: 11400000, guid: fa2be6205450b3a458ac97aa9f678df8, type: 2}

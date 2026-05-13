@@ -16,5 +16,29 @@ MonoBehaviour:
   _displayName: Guild
   _description: Data
   buildingType: 4
-  buildingSprite: {fileID: 0}
-  levels: []
+  buildingSprite: {fileID: 21300000, guid: 27ebe094e962e8c4bb1dc5e9a30eb5a8, type: 3}
+  levels:
+  - level: 1
+    frontierCost: 100
+    woodCost: 0
+    oreCost: 0
+    effectValue: 1000
+    slotExpansion: 0
+    frontierCapAdd: 0
+    materialCapAdd: 0
+  - level: 2
+    frontierCost: 1000
+    woodCost: 50
+    oreCost: 50
+    effectValue: 2000
+    slotExpansion: 0
+    frontierCapAdd: 0
+    materialCapAdd: 0
+  - level: 3
+    frontierCost: 5000
+    woodCost: 200
+    oreCost: 200
+    effectValue: 5000
+    slotExpansion: 0
+    frontierCapAdd: 0
+    materialCapAdd: 0

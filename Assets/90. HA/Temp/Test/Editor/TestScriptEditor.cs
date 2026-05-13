@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Bond.Persistence;
 using UnityEditor;
 using UnityEngine;
@@ -39,35 +40,27 @@ namespace _90._HA.Temp.Test
 
             if (GUILayout.Button("Save"))
             {
-                var saveLoadSystem = new SaveLoadSystem();
                 var roster = new Roster();
 
-                saveLoadSystem.Register(roster);
                 for (int i = 0; i < 4; i++)
                 {
-                    roster.characters.Add(new StageCoach().GetRandomCharacter());
+                    roster.Hire(new StageCoach().GetRandomCharacter());
                 }
-                saveLoadSystem.Save(roster);
+                SaveLoadSystem.Save(roster);
             }
             
             if (GUILayout.Button("Load"))
             {
-                var saveLoadSystem = new SaveLoadSystem();
                 var roster = new Roster();
-                saveLoadSystem.LoadAndRegister(roster);
-            }
-        }
-    }
+                SaveLoadSystem.Load(roster);
 
-    public class Roster : ISaveable
-    {
-        public List<BaseCharacter> characters = new List<BaseCharacter>();
-        
-        public string Key => "roster";
-        public object Data => characters;
-        public void Restore(object data)
-        {
-            characters = (List<BaseCharacter>)data;
+                StringBuilder sb = new StringBuilder();
+                foreach (var cha in roster.Characters)
+                {
+                    sb.AppendLine(cha.ToString());
+                }
+                Debug.Log(sb.ToString());
+            }
         }
     }
 }

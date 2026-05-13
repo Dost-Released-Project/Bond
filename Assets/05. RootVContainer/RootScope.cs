@@ -1,4 +1,5 @@
 using Bond.Expedition;
+using Bond.WT.Journal;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -8,6 +9,9 @@ namespace RootVContainer
     public class RootScope : LifetimeScope
     {
         [SerializeField] private MapConfigLoaderSettings _mapConfigLoaderSettings;
+
+        [Header("Journal System")]
+        [SerializeField] private JournalUIView _journalUIView;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -32,10 +36,22 @@ namespace RootVContainer
             // RootScope 등록: TurnLifetimeScope, MapLifetimeScope 등 모든 하위 스코프에서 주입 가능.
             builder.Register<ISpriteLoader, SpriteLoader>(Lifetime.Singleton);
 
-            // IStageMonsterContext → StageMonsterContextService (Singleton)
-            // 맵 씬 StageLoader 가 씬 로드 직전에 기록하고, 전투 씬 BattleStageEntry 가 읽는 단방향 채널.
-            // RootScope Singleton: 씬 전환 후에도 동일 인스턴스로 데이터를 보존한다.
-            builder.Register<IStageMonsterContext, StageMonsterContextService>(Lifetime.Singleton);
+            // =================================================================================
+            // [ Journal System ] - 일지 시스템 관련 컴포넌트 등록
+            // =================================================================================
+            
+            // View Instance (IJournalVisualizer 인터페이스로 등록)
+            if (_journalUIView != null)
+                builder.RegisterComponent(_journalUIView).AsImplementedInterfaces();
+            else
+                Debug.LogWarning("[RootScope] _journalUIView 가 연결되지 않았습니다. 일지 시스템이 정상 작동하지 않을 수 있습니다.", this);
+
+            // Data & Logic
+            builder.Register<JournalModel>(Lifetime.Singleton);
+            builder.RegisterEntryPoint<JournalSystem>(Lifetime.Singleton);
+            builder.RegisterEntryPoint<JournalBinder>(Lifetime.Singleton);
+
+            // =================================================================================
         }
     }
 }

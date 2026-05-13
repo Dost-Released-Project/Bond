@@ -1,6 +1,12 @@
+using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Bond.Persistence;
+using UnityEngine.AddressableAssets;
 using VContainer;
 
 public class InventoryView : MonoBehaviour
@@ -13,50 +19,115 @@ public class InventoryView : MonoBehaviour
     private ITotalInventory _totalInventory;
     private IExpeditionInventory _expeditionInventory;
     private InventoryTransferService _transferService;
-    private CharacterItemService _itemService; // 변경된 서비스
     private InventoryUIService _uiService;     // 추가된 서비스
     private ExpeditionResultService _expeditionResultService;
-
-    public ITotalInventory TotalInventory => _totalInventory;
+    
     private string _currentSearch = "";
     private ItemCategory? _currentFilter = null;
 
     [Inject]
     public void Construct(ITotalInventory total, IExpeditionInventory expedition, 
-        InventoryTransferService service, CharacterItemService itemService, InventoryUIService uiService, ExpeditionResultService expeditionResultService)
+        InventoryTransferService service, InventoryUIService uiService, ExpeditionResultService expeditionResultService)
     {
         _totalInventory = total; _expeditionInventory = expedition;
-        _transferService = service; _itemService = itemService; _uiService = uiService;
+        _transferService = service; _uiService = uiService;
         _expeditionResultService = expeditionResultService;
     }
 
-    private void Start()
+    private async void Start()
     {
+        // 1. 아이템 DB 로드
+        var conHandle = Addressables.LoadAssetAsync<ConsumableDataBaseSO>("ConsumableDataBase");
+        var accHandle = Addressables.LoadAssetAsync<AccessoryDataBaseSO>("AccessoryDataBase");
+        await System.Threading.Tasks.Task.WhenAll(conHandle.Task, accHandle.Task);
+        
+        var accDB = accHandle.Result;
+        var conDB = conHandle.Result;
+
+        // 2. "total_inv" 파일만 로드
+        LoadTotalInventory(conHandle.Result, accHandle.Result);
+        
+        // (임시) DB의 GetSO 함수를 사용하여 아이템 추가
+        // 토탈 인벤토리의 아이템이 너무 넘친다면 2. 파일 로드 부분을 아래로 내리면 해결됨.
+        // 소모품 추가
+        AddInventoryItem(conDB, "07000000", 5);
+        AddInventoryItem(conDB, "07010000", 5);
+        AddInventoryItem(conDB, "07020000", 5);
+        AddInventoryItem(conDB, "07030000", 5);
+        AddInventoryItem(conDB, "07040000", 5);
+    
+        // 악세서리 추가
+        AddInventoryItem(accDB, "08000000", 1);
+        AddInventoryItem(accDB, "08010000", 1);
+        AddInventoryItem(accDB, "08020000", 1);
+        AddInventoryItem(accDB, "08030000", 1);   
+        
+        // 3. 탐사 후 타운으로 넘어올 때, 탐사 인벤토리 아이템 모두 토탈 인벤토리로 이동. 파일 로드 이후 적용해야지 적용됨
         _expeditionResultService.ProcessExpeditionReturn();
         SetupUI();
-        
-        // 생성된 ID를 기반으로 아이템 로드하여 초기 세팅 (예시 ID 사용) 테스트 용도
-        BaseItem item_oldBandage = Resources.Load<BaseItem>("Data/Items/Consumables/07000000");
-        BaseItem item_oldSedative = Resources.Load<BaseItem>("Data/Items/Consumables/07010000");
-        BaseItem item_stimulant = Resources.Load<BaseItem>("Data/Items/Consumables/07020000");
-        BaseItem item_bandage = Resources.Load<BaseItem>("Data/Items/Consumables/07030000");
-        BaseItem item_sedative = Resources.Load<BaseItem>("Data/Items/Consumables/07040000");
-        BaseItem item_ring1 = Resources.Load<BaseItem>("Data/Items/Accessories/08000000");
-        BaseItem item_ring2 = Resources.Load<BaseItem>("Data/Items/Accessories/08010000");
-        BaseItem item_ring3 = Resources.Load<BaseItem>("Data/Items/Accessories/08020000");
-        BaseItem item_ring4 = Resources.Load<BaseItem>("Data/Items/Accessories/08030000");
 
-        if (item_oldBandage != null) _totalInventory.AddItemAuto(item_oldBandage, 5);
-        if (item_bandage != null) _totalInventory.AddItemAuto(item_bandage, 5);
-        if (item_stimulant != null) _totalInventory.AddItemAuto(item_stimulant, 5);
-        if (item_oldSedative != null) _totalInventory.AddItemAuto(item_oldSedative, 5);
-        if (item_sedative != null) _totalInventory.AddItemAuto(item_sedative, 5);
-        if (item_ring1 != null) _totalInventory.AddItemAuto(item_ring1, 1);
-        if (item_ring2 != null) _totalInventory.AddItemAuto(item_ring2, 1);
-        if (item_ring3 != null) _totalInventory.AddItemAuto(item_ring3, 1);
-        if (item_ring4 != null) _totalInventory.AddItemAuto(item_ring4, 1);
-        
         ToggleWindow(false);
+    }
+
+    // (임시) 초기 아이템 지급 메소드
+    private void AddInventoryItem(DataBaseSO db, string id, int count)
+    {
+        var item = db.GetSO<BaseItem>(id); // 작성하신 GetSO 활용!
+        if (item != null)
+            _totalInventory.AddItemAuto(item, count);
+    }
+
+    private void LoadTotalInventory(params DataBaseSO[] dbs)
+    {
+        // 로드 시도
+        var save = new InventorySaveData("total_inv");
+        // SaveLoadSystem의 GetPath와 Key를 조합하여 경로 생성 (시스템 수정 없이 대응)
+        string saveKey = save.Key;
+        string path = Path.Combine(Application.dataPath, "Data", "Save", $"{saveKey}.json");
+
+        if (File.Exists(path))
+        {
+            try 
+            {
+                SaveLoadSystem.Load(save);
+                
+                // 1. 기존 슬롯을 완전히 비우고 저장된 용량만큼 재생성
+                _totalInventory.ClearAll(); 
+                _totalInventory.ExpandStorage(save.capacity); 
+
+                // 2. 아이템 복구
+                foreach (var s in save.slots)
+                {
+                    BaseItem item = dbs.Select(db => db.GetSO<BaseItem>(s.id)).FirstOrDefault(i => i != null);
+                    if (item != null) _totalInventory.AddItemAuto(item, s.count);
+                }
+                
+                Debug.Log("TotalInventory: 데이터 로드 성공");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"TotalInventory: 로드 중 오류 발생 - {e.Message}");
+            }
+        }
+        else
+        {
+            Debug.Log("TotalInventory: 기존 세이브 없음. 기본값으로 시작.");
+        }
+    }
+    
+    private void SaveTotalInventory()
+    {
+        // 1. 저장할 데이터 객체 생성 (파일명: total_inv)
+        var save = new InventorySaveData("total_inv");
+        save.capacity = _totalInventory.Capacity;
+        foreach (var slot in _totalInventory.GetAll())
+        {
+            if (!slot.IsEmpty)
+                save.slots.Add(new InventorySaveData.SlotData { id = slot.item.id, count = slot.quantity });
+        }
+
+        // 3. 세이브 시스템 실행
+        SaveLoadSystem.Save(save);
     }
 
     private void SetupUI()
@@ -121,10 +192,12 @@ public class InventoryView : MonoBehaviour
         SyncSlotCount(_expeditionGrid, _expeditionInventory.Capacity, _expeditionSlotElements, _expeditionInventory);
 
         var totalVisible = _totalInventory.GetFilteredIndices(_currentSearch, _currentFilter);
-        var expeditionVisible = _expeditionInventory.GetFilteredIndices(_currentSearch, _currentFilter);
+        var expeditionVisible = _expeditionInventory.GetFilteredIndices("", null);
 
         UpdateGrid(_totalSlotElements, _totalInventory, totalVisible);
         UpdateGrid(_expeditionSlotElements, _expeditionInventory, expeditionVisible);
+        
+        SaveTotalInventory();
     }
 
     private void UpdateGrid(List<VisualElement> elements, IInventory inv, IEnumerable<int> visibleIndices)
