@@ -1,0 +1,286 @@
+/* ── TownUI.uss ── */
+/* 모든 색상·폰트는 EoB 테마 변수만 사용. 하드코딩 금지. */
+
+/* ════════════════════════════════════════
+   토글 버튼
+   ════════════════════════════════════════ */
+.roster-toggle-btn {
+    position: absolute;
+    top: 8px;
+    right: 0;
+    font-size: var(--font-size-button);
+    letter-spacing: 3px;
+    color: var(--btn-primary-text);
+    background-color: var(--btn-primary-bg);
+    border-width: 1px;
+    border-color: var(--btn-primary-border);
+    border-radius: 4px;
+    padding: 6px 12px;
+    -unity-text-align: middle-center;
+}
+
+.roster-toggle-btn--active {
+    border-color: var(--border-active);
+}
+
+/* ════════════════════════════════════════
+   Roster 패널
+   ════════════════════════════════════════ */
+.roster-panel {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 220px;
+    max-height: 80%;
+    flex-direction: column;
+    background-color: var(--bg-deep);
+    border-left-width: 1px;
+    border-left-color: var(--border-default);
+}
+
+.roster-panel--hidden {
+    display: none;
+}
+
+.roster-panel--visible {
+    display: flex;
+}
+
+/* 헤더 */
+.roster-panel__header {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--border-default);
+}
+
+.roster-panel__title {
+    font-size: var(--font-size-header);
+    color: var(--text-label);
+    letter-spacing: 4px;
+    -unity-font-style: bold;
+    flex-grow: 1;
+}
+
+.roster-panel__count {
+    font-size: var(--font-size-system);
+    color: var(--text-disabled);
+    letter-spacing: 1px;
+    margin-right: 8px;
+}
+
+.roster-panel__close-btn {
+    font-size: var(--font-size-system);
+    color: var(--text-secondary);
+    background-color: transparent;
+    border-width: 0;
+    padding: 2px 4px;
+}
+
+.roster-panel__close-btn:hover {
+    color: var(--text-accent);
+}
+
+/* 스크롤 */
+.roster-panel__scroll {
+    flex-grow: 1;
+    background-color: var(--bg-deep);
+}
+
+.roster-panel__list {
+    padding-bottom: 8px;
+}
+
+.roster-panel__scroll .unity-scroller {
+    background-color: var(--bg-deep);
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.roster-panel__scroll .unity-scroller__low-button,
+.roster-panel__scroll .unity-scroller__high-button {
+    display: none;
+}
+
+.roster-panel__scroll .unity-scroller .unity-base-slider {
+    flex-grow: 1;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.roster-panel__scroll .unity-scroller .unity-base-slider__tracker {
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-color: var(--bg-deep);
+    border-bottom-color: var(--bg-deep);
+    border-left-color: var(--bg-deep);
+    border-right-color: var(--bg-deep);
+    background-color: var(--bg-deep);
+}
+
+.roster-panel__scroll .unity-scroller .unity-base-slider__dragger {
+    background-color: var(--bg-surface);
+}
+
+/* ════════════════════════════════════════
+   캐릭터 카드
+   ════════════════════════════════════════ */
+.roster-card {
+    flex-direction: column;
+    background-color: var(--bg-surface);
+    border-width: 1px;
+    border-color: var(--border-default);
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.roster-card:hover {
+    border-color: var(--border-highlight);
+    background-color: var(--bg-raised);
+}
+
+.roster-card--selected {
+    border-color: var(--border-active);
+}
+
+.roster-card--danger {
+    border-color: var(--border-danger);
+}
+
+.roster-card__avatar {
+    width: 36px;
+    height: 36px;
+    background-color: var(--bg-raised);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-right: 8px;
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.roster-card__name {
+    font-size: var(--font-size-name);
+    color: var(--text-primary);
+    -unity-text-align: middle-left;
+    margin-bottom: 2px;
+    overflow: hidden;
+    white-space: nowrap;
+    -unity-text-overflow-position: end;
+}
+
+.roster-card__class {
+    font-size: var(--font-size-class);
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    -unity-text-align: middle-left;
+    -unity-font-style: bold;
+}
+
+.roster-card__bars {
+    flex-direction: column;
+    margin-top: 8px;
+}
+
+.roster-card__bar-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 3px;
+}
+
+.roster-card__bar-label {
+    font-size: var(--font-size-system);
+    color: var(--text-muted);
+    width: 16px;
+    margin-right: 4px;
+    -unity-text-align: middle-left;
+}
+
+.roster-card__bar-track {
+    flex-grow: 1;
+    height: 3px;
+    background-color: var(--bg-divider);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.roster-card__bar-fill {
+    height: 3px;
+    border-radius: 2px;
+}
+
+.roster-card__bar-fill--hp-safe   { background-color: var(--hp-safe); }
+.roster-card__bar-fill--hp-low    { background-color: var(--hp-low);  }
+.roster-card__bar-fill--stress-safe { background-color: var(--stress-safe); }
+.roster-card__bar-fill--stress-warn { background-color: var(--stress-warn); }
+.roster-card__bar-fill--stress-crit { background-color: var(--stress-crit); }
+
+.roster-card__danger-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    background-color: var(--stress-crit);
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+/* ════════════════════════════════════════
+   캐릭터 상세 뷰
+   ════════════════════════════════════════ */
+.character-detail {
+    position: absolute;
+    right: 220px;
+    top: 0;
+    width: 340px;
+    min-height: 200px;
+    flex-direction: column;
+    background-color: var(--bg-deep);
+    border-width: 1px;
+    border-color: var(--border-default);
+}
+
+.character-detail--hidden {
+    display: none;
+}
+
+.character-detail--visible {
+    display: flex;
+}
+
+.character-detail__header {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--border-default);
+}
+
+.character-detail__title {
+    font-size: var(--font-size-name);
+    color: var(--text-primary);
+    letter-spacing: 2px;
+    flex-grow: 1;
+}
+
+.character-detail__close-btn {
+    font-size: var(--font-size-system);
+    color: var(--text-secondary);
+    background-color: transparent;
+    border-width: 0;
+    padding: 2px 4px;
+}
+
+.character-detail__close-btn:hover {
+    color: var(--text-accent);
+}
+
+.character-detail__body {
+    flex-grow: 1;
+    padding: 12px;
+}

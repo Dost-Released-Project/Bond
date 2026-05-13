@@ -1,6 +1,8 @@
 
+using System;
 using UnityEngine;
 
+[Serializable]
 public class SampleSkill : SkillBase
 {
     public SampleSkill()
@@ -18,6 +20,11 @@ public class SampleSkill : SkillBase
         rawData.EnemyTargetMask = 1 << UnityEngine.Random.Range(0, 4); // 상대 진영 중 랜덤 1칸
 
         _skillData.SetData(rawData);
+    }
+
+    public SampleSkill(SkillData skillData)
+    {
+        _skillData = skillData;
     }
     
     public override void UseSkill()

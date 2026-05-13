@@ -6,21 +6,25 @@ using System.Linq;
 public static class RandomUtil
 {
     private static Random random = new Random();
+    
     public static char GetRandomAlphabet()
     {
         return (char)random.Next('A', 'Z' + 1);
     }
+    
     public static char GetRandomDigit()
     {
         return (char)random.Next('0', '9' + 1);
     }
+    
     public static char GetRandomAlphabetOrDigit()
     {
         return random.Next(0,36) < 26
             ? (char)random.Next('A', 'Z' + 1)
             : (char)random.Next('0', '9' + 1);
     }
-    public static T[] GetSortedRandomSubset<T>(T[] array, int count)
+    
+    public static T[] GetSortedRandomSubset<T>(this T[] array, int count)
     {
         if (count > array.Length)
             throw new ArgumentException("뽑으려는 개수가 배열보다 많음");
@@ -46,7 +50,8 @@ public static class RandomUtil
 
         return result;
     }
-    public static T[] GetRandomSubset<T>(T[] array, int count)
+    
+    public static T[] GetRandomSubset<T>(this T[] array, int count)
     {
         if (array == null)
             throw new ArgumentNullException(nameof(array));
@@ -71,7 +76,8 @@ public static class RandomUtil
         Array.Copy(buffer, 0, result, 0, count);
         return result;
     }
-    public static T[] GetShuffled<T>(T[] array)
+    
+    public static T[] GetShuffled<T>(this T[] array)
     {
         if (array == null) 
             throw new ArgumentNullException(nameof(array));
@@ -89,14 +95,24 @@ public static class RandomUtil
 
         return result;
     }
-    public static List<T> GetShuffled<T>(List<T> list)
+    
+    public static List<T> GetShuffled<T>(this List<T> list)
     {
         return GetShuffled<T>(list.ToArray()).ToList();
     }
 
+    public static IEnumerable<T> GetShuffled<T>(this IEnumerable<T> collection)
+    {
+        return GetShuffled(collection.ToArray());
+    }
+
     public static T GetRandom<T>(this IEnumerable<T> collection)
     {
-        return GetShuffled(collection.ToArray())[0];
+        if (collection is IList<T> list)
+            return list[random.Next(list.Count)];
+
+        var array = collection.ToArray();
+        return array[random.Next(array.Length)];
     }
     
     public static T GetRandom<T>() where T : Enum

@@ -1,14 +1,16 @@
+using System;
 using UnityEngine;
 
+[Serializable]
 public abstract class SkillBase
 {
     public float SkillCooldown { get; private set; }
 
-    protected float damage;
-    protected int currentLevel;
+    [SerializeField] protected float damage;
+    [SerializeField] protected int currentLevel;
 
     // Init 이후 참조할 데이터
-    protected SkillData _skillData;
+    [SerializeField] protected SkillData _skillData;
 
     /// <summary>
     /// 스킬 ID로 SkillData를 바인딩한다.

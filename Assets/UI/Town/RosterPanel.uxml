@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="roster-panel" class="roster-panel roster-panel--hidden">
+
+        <ui:VisualElement class="roster-panel__header">
+            <ui:Label name="roster-panel__title" class="roster-panel__title" text="대원 명부" />
+            <ui:Label name="roster-panel__count" class="roster-panel__count" text="0명" />
+            <ui:Button name="roster-panel__close-btn" class="roster-panel__close-btn" text="✕" />
+        </ui:VisualElement>
+
+<ui:ScrollView name="roster-panel__scroll" class="roster-panel__scroll">
+            <ui:VisualElement name="roster-panel__list" class="roster-panel__list" />
+        </ui:ScrollView>
+
+    </ui:VisualElement>
+</ui:UXML>
