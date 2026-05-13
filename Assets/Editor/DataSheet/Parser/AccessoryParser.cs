@@ -49,13 +49,28 @@ public class AccessoryParser : TSVParserBase<AccessoryDTO, AccessoryItem>
         if (!string.IsNullOrEmpty(dto.ModifierIDs))
         {
             string[] ids = dto.ModifierIDs.Split(',');
-            // StatModifierDataBaseSO에서 ID로 찾아 리스트에 추가
-            // 주의: 런타임에 DB가 로드되어 있어야 합니다.
-            var db = AssetDatabase.LoadAssetAtPath<StatModifierDataBaseSO>("Assets/Data/StatModifierDataBase.asset");
-            foreach(var id in ids)
+
+            // 실제 에셋 경로를 직접 입력합니다.
+            string dbPath = "Assets/Data/GeneratedSO/statmodifier/StatModifierDataBase.asset"; 
+            var db = AssetDatabase.LoadAssetAtPath<StatModifierDataBaseSO>(dbPath);
+
+            if (db != null)
             {
-                var modSO = db.GetSO<StatModifierDataSO>(id.Trim());
-                if(modSO != null) so.specialEffects.Add(modSO.modifier);
+                so.specialEffects.Clear(); // 중복 방지를 위해 초기화 후 추가
+                foreach (var id in ids)
+                {
+                    var modSO = db.GetSO<StatModifierDataSO>(id.Trim());
+                    if (modSO != null) 
+                    {
+                        // SO에 들어있는 클래스 데이터를 리스트에 추가
+                        so.specialEffects.Add(modSO.modifier);
+                    }
+                    Debug.Log("[AccessoryParser] 모디파이어 추가:");
+                }
+            }
+            else
+            {
+                Debug.LogError($"[AccessoryParser] DB를 찾을 수 없습니다: {dbPath}");
             }
         }
     }
@@ -110,5 +125,6 @@ public sealed class AccessoryMap : ClassMap<AccessoryDTO>
         Map(m => m.TotalMax).Name("TotalMax");
         Map(m => m.ExpSlotMax).Name("ExpSlotMax");
         Map(m => m.IconPath).Name("IconPath");
+        Map(m => m.ModifierIDs).Name("ModifierIDs");
     }
 }

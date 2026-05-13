@@ -40,6 +40,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a3107a749b1731a4485a2edb080fc9bd
+    m_Address: StatModifierDataBase
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e646d35a16cac3b46b3c33efd328429e
     m_Address: DefaultEquipDataBase
     m_ReadOnly: 0

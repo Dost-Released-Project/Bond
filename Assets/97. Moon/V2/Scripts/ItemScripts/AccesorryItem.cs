@@ -5,8 +5,8 @@ using UnityEngine;
 public class AccessoryItem : BaseItem
 {
     public Equipment equipmentData; // 실제 적용될 스탯 정보
-    public List<StatModifier> specialEffects; // 효과 리스트
-
+    public List<StatModifier> specialEffects = new List<StatModifier>(); // 초기화 필수!
+    
     // 인스펙터에서 값이 수정될 때 실행됩니다.
     private void OnValidate()
     {
