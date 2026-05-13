@@ -48,6 +48,7 @@ public class InventoryView : MonoBehaviour
         LoadTotalInventory(conHandle.Result, accHandle.Result);
         
         // (임시) DB의 GetSO 함수를 사용하여 아이템 추가
+        // 토탈 인벤토리의 아이템이 너무 넘친다면 2. 파일 로드 부분을 아래로 내리면 해결됨.
         // 소모품 추가
         AddInventoryItem(conDB, "07000000", 5);
         AddInventoryItem(conDB, "07010000", 5);
@@ -61,12 +62,14 @@ public class InventoryView : MonoBehaviour
         AddInventoryItem(accDB, "08020000", 1);
         AddInventoryItem(accDB, "08030000", 1);   
         
+        // 3. 탐사 후 타운으로 넘어올 때, 탐사 인벤토리 아이템 모두 토탈 인벤토리로 이동. 파일 로드 이후 적용해야지 적용됨
         _expeditionResultService.ProcessExpeditionReturn();
         SetupUI();
 
         ToggleWindow(false);
     }
 
+    // (임시) 초기 아이템 지급 메소드
     private void AddInventoryItem(DataBaseSO db, string id, int count)
     {
         var item = db.GetSO<BaseItem>(id); // 작성하신 GetSO 활용!
