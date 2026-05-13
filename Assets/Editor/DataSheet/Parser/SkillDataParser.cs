@@ -63,14 +63,15 @@ public class SkillDataParser : TSVParserBase<SkillDTO, SkillData>
     protected override void OnPostImport(string outputDir)
     {
         // 1. SkillDataSO 하위 폴더에서 모든 SkillData 에셋 수집
-        string subDir = Path.Combine(outputDir, "SkillDataSO");
-        if (!Directory.Exists(subDir)) return;
+        string subDir = Path.Combine(outputDir, "SkillDataSO").Replace("\\", "/");
+        if (subDir.EndsWith("/")) subDir = subDir.Substring(0, subDir.Length - 1);
 
-        var assetPaths = Directory.GetFiles(subDir, "*.asset", SearchOption.TopDirectoryOnly);
+        string[] guids = AssetDatabase.FindAssets("t:SkillData", new[] { subDir });
         var skillAssets = new List<BaseSO>();
 
-        foreach (var path in assetPaths)
+        foreach (var guid in guids)
         {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
             var skill = AssetDatabase.LoadAssetAtPath<SkillData>(path);
             if (skill != null) skillAssets.Add(skill);
         }
@@ -89,7 +90,7 @@ public class SkillDataParser : TSVParserBase<SkillDTO, SkillData>
         db.SetSOList(skillAssets);
         
         EditorUtility.SetDirty(db);
-        AssetDatabase.SaveAssets();
+        AssetDatabase.SaveAssetIfDirty(db);
 
         // 어드레서블 자동 등록 추가
         AddressableHelper.RegisterToAddressable(dbPath);

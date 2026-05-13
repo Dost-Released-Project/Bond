@@ -77,7 +77,7 @@ public abstract class TSVParserBase<TDTO, TSO> : ITSVParser
             return;
         }
 
-        AssetDatabase.StartAssetEditing();
+        // AssetDatabase.StartAssetEditing(); // 제거: 데이터 유실 방지를 위해 즉시 처리 시도
         try
         {
             foreach (var dto in records)
@@ -99,21 +99,28 @@ public abstract class TSVParserBase<TDTO, TSO> : ITSVParser
                 Populate(so, dto);
 
                 if (isNew) AssetDatabase.CreateAsset(so, assetPath);
-                else EditorUtility.SetDirty(so);
+                EditorUtility.SetDirty(so);
+                AssetDatabase.SaveAssetIfDirty(so); // Unity 6+ 에서 즉시 저장을 보장
             }
         }
         catch (System.Exception e)
         {
             Debug.LogError($"[TableReader] {tsvPath}.tsv 로딩 실패: {e.Message}");
         }
-        finally
-        {
-            AssetDatabase.StopAssetEditing();
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-        }
+        // finally
+        // {
+        //     AssetDatabase.StopAssetEditing();
+        // }
+
+        // 개별 SO들 먼저 확실히 저장
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
 
         OnPostImport(outputDir);
+
+        // 통합 DB(DBSO) 변경사항 저장
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
 
         Debug.Log($"[{TargetFileName}] 임포트 완료: {records.Count}개");
     }

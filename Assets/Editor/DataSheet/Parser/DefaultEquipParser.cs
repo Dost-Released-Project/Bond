@@ -31,14 +31,15 @@ public class DefaultEquipParser : TSVParserBase<DefaultEquipDTO, DefaultEquipSO>
 
     protected override void OnPostImport(string outputDir)
     {
-        string subDir = Path.Combine(outputDir, "DefaultEquipDataSO");
-        if (!Directory.Exists(subDir)) return;
+        string subDir = Path.Combine(outputDir, "DefaultEquipDataSO").Replace("\\", "/");
+        if (subDir.EndsWith("/")) subDir = subDir.Substring(0, subDir.Length - 1);
 
-        var assetPaths = Directory.GetFiles(subDir, "*.asset");
+        string[] guids = AssetDatabase.FindAssets("t:DefaultEquipSO", new[] { subDir });
         var assets = new List<BaseSO>();
 
-        foreach (var path in assetPaths)
+        foreach (var guid in guids)
         {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
             var asset = AssetDatabase.LoadAssetAtPath<DefaultEquipSO>(path);
             if (asset != null) assets.Add(asset);
         }
@@ -55,7 +56,7 @@ public class DefaultEquipParser : TSVParserBase<DefaultEquipDTO, DefaultEquipSO>
         field?.SetValue(db, assets);
 
         EditorUtility.SetDirty(db);
-        AssetDatabase.SaveAssets();
+        AssetDatabase.SaveAssetIfDirty(db);
 
         // 어드레서블 자동 등록 추가
         AddressableHelper.RegisterToAddressable(dbPath);
