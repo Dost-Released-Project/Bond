@@ -49,3 +49,4 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   _mapConfigLoaderSettings: {fileID: 11400000, guid: 367ba5135ef24a04584f11aa12b154ef, type: 2}
+  _journalUIView: {fileID: 0}

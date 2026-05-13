@@ -1,16 +1,11 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements">
-    <Style src="project://database/Assets/UI/Themes/EoB_Theme_DarkAmber.uss" />
-    <Style src="TownUI.uss" />
-
-    <ui:Template name="RosterPanel"     src="RosterPanel.uxml" />
-    <ui:Template name="CharacterDetail" src="CharacterDetail.uxml" />
-
-    <ui:VisualElement name="town-ui-root" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;">
-
-        <ui:Button name="roster-toggle-btn" class="roster-toggle-btn" text="대원 명부 ▶" />
-
-        <ui:Instance template="RosterPanel"     style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
-        <ui:Instance template="CharacterDetail" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
-
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Template name="CharacterDetail" src="project://database/Assets/UI/Town/CharacterDetail.uxml?fileID=9197481963319205126&amp;guid=639e704e59d50984fa2dc95a81dcd378&amp;type=3#CharacterDetail"/>
+    <ui:Template name="RosterPanel" src="project://database/Assets/UI/Town/RosterPanel.uxml?fileID=9197481963319205126&amp;guid=53052d5339680d449a9d04fc639ecd48&amp;type=3#RosterPanel"/>
+    <Style src="project://database/Assets/UI/Themes/EoB_Theme_DarkAmber.uss?fileID=7433441132597879392&amp;guid=fa8c2ca04fc0ab24991530664bb55c09&amp;type=3#EoB_Theme_DarkAmber"/>
+    <Style src="project://database/Assets/UI/Town/TownUI.uss?fileID=7433441132597879392&amp;guid=fcae026f47801b04ea7c065c2e940b8d&amp;type=3#TownUI"/>
+    <ui:VisualElement name="town-ui-root" style="position: absolute; left: auto; top: 0; right: 0; bottom: auto; width: 350px; height: 450px;">
+        <ui:Button name="roster-toggle-btn" text="대원 명부 ▶" class="roster-toggle-btn"/>
+        <ui:Instance template="RosterPanel" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;"/>
+        <ui:Instance template="CharacterDetail" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;"/>
     </ui:VisualElement>
 </ui:UXML>
