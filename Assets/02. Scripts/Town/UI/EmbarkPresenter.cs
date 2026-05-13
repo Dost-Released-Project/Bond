@@ -63,12 +63,8 @@ namespace Bond.UI.Town
 
             _embarkRosterPresenter.OnCardClicked = character =>
             {
-                if (_partySnapshot.Contains(character))
-                    _controller.RemovePartyMember(character);
-                else
-                    _controller.AddPartyMember(character);
+                _controller.TogglePartyMember(character);
             };
-            _embarkRosterPresenter.OnCardRightClicked = _controller.RemovePartyMember;
 
             _controller.OnOverlayOpened += Show;
             _controller.OnOverlayClosed += Hide;
@@ -156,17 +152,17 @@ namespace Bond.UI.Town
         public void RefreshInventory(List<InventorySlot> townSlots, List<InventorySlot> raidSlots)
         {
             _townInventoryList.Clear();
-            foreach (var slot in townSlots)
+            for (int i = 0; i < townSlots.Count; i++)
             {
-                if (slot.IsEmpty) continue;
-                _townInventoryList.Add(BuildInventoryRow(slot, isTown: true));
+                if (townSlots[i].IsEmpty) continue;
+                _townInventoryList.Add(BuildInventoryRow(i, townSlots[i], isTown: true));
             }
 
             _raidSuppliesList.Clear();
-            foreach (var slot in raidSlots)
+            for (int i = 0; i < raidSlots.Count; i++)
             {
-                if (slot.IsEmpty) continue;
-                _raidSuppliesList.Add(BuildInventoryRow(slot, isTown: false));
+                if (raidSlots[i].IsEmpty) continue;
+                _raidSuppliesList.Add(BuildInventoryRow(i, raidSlots[i], isTown: false));
             }
         }
 
@@ -195,12 +191,12 @@ namespace Bond.UI.Town
                 _controller.RemovePartyMember(_partySnapshot[slotIdx]);
         }
 
-        private VisualElement BuildInventoryRow(InventorySlot slot, bool isTown)
+        private VisualElement BuildInventoryRow(int index, InventorySlot slot, bool isTown)
         {
             var row = new Button(() =>
             {
-                if (isTown) _controller.MoveToSupplies(slot);
-                else _controller.ReturnToTown(slot);
+                if (isTown) _controller.TownToSupp(index, slot);
+                else _controller.SuppToTown(index, slot);
             });
             row.AddToClassList("embark__inventory-row");
 

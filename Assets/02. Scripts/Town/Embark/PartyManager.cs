@@ -4,25 +4,21 @@ using Bond.Persistence;
 
 namespace Bond.Embark
 {
-    public interface IPartyProvider
+    public interface IPartyController
     {
         /// <summary>
         /// 현재 파티 구성원 목록을 읽기전용으로 반환합니다.
         /// </summary>
         /// <returns></returns>
-        IReadOnlyList<BaseCharacter> GetCurrentParty();
+        List<BaseCharacter> GetCurrentParty();
         bool IsInParty(BaseCharacter character);
         bool IsFull();
-    }
-
-    public interface IPartyController
-    {
         bool TryAddMember(BaseCharacter character);
         bool RemoveMember(BaseCharacter character);
         void Clear();
     }
     
-    public class PartyManager : IPartyProvider, IPartyController, ISaveable
+    public class PartyController : IPartyController, ISaveable
     {
         private List<BaseCharacter> currentParty = new List<BaseCharacter>();
         private const int MaxPartySize = 4;
@@ -51,10 +47,10 @@ namespace Bond.Embark
         public void Clear() => currentParty.Clear();
 
         // 조회
-        public IReadOnlyList<BaseCharacter> GetCurrentParty() => currentParty.AsReadOnly();
-        public IReadOnlyList<BaseCharacterData> GetCurrentPartyDataOnly()
+        public List<BaseCharacter> GetCurrentParty() => currentParty;
+        public List<BaseCharacterData> GetCurrentPartyDataOnly()
         {
-            return currentParty.Select((character => character.Data)).ToList().AsReadOnly();
+            return currentParty.Select((character => character.Data)).ToList();
         }
         public int GetPartyCount() => currentParty.Count;
         
