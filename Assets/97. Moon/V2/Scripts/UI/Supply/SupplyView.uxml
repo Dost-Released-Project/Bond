@@ -3,6 +3,6 @@
         <ui:Button text="Reinforce" name="btn-reinforce" style="position: absolute; width: 200px; height: 100px; top: 220px; left: 100px; font-size: 40px;"/>
         <ui:Button text="Normal" name="btn-normal" style="position: absolute; width: 200px; height: 100px; font-size: 55px; top: 220px; left: 350px;"/>
         <ui:Button text="Special" name="btn-special" style="position: absolute; left: 600px; top: 220px; width: 200px; height: 100px; font-size: 55px;"/>
-        <ui:Button text="X" name="btn-close-supply" style="position: absolute; top: -4px; left: 856px; align-self: flex-end; width: 100px; height: 100px; font-size: 100px; align-items: stretch; justify-content: flex-start; align-content: flex-start;"/>
+        <ui:Button text="" name="btn-close-supply" style="position: absolute; top: -4px; left: 856px; align-self: flex-end; width: 100px; height: 100px; font-size: 100px; align-items: stretch; justify-content: flex-start; align-content: flex-start; background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/close-y.png?fileID=2800000&amp;guid=b9910831563be484988e1eff0c5ccf6f&amp;type=3#close-y&quot;); -unity-background-image-tint-color: rgb(0, 0, 0);"/>
     </ui:VisualElement>
 </ui:UXML>

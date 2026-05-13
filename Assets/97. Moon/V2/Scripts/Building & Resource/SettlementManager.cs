@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using Bond.Persistence;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VContainer;
@@ -14,6 +16,7 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     private ITotalInventory _totalInv;
     private IExpeditionInventory _expeditionInv;
     
+    [Inject] private SmithyUIController _smithyUI; // UI 컨트롤러 주입
     private BaseCharacter _selectedCharacter;
 
     [Inject]
@@ -50,7 +53,10 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
             case BuildingType.Supply: _supplyView.Open(); break;
             case BuildingType.Tavern: _buildingService.ExecuteTavern(_selectedCharacter, levelData); break;
             case BuildingType.Inn: _buildingService.ExecuteInn(_selectedCharacter, levelData); break;
-            case BuildingType.Smithy: ProcessSmithy(building); break;
+            case BuildingType.Smithy: // 이제 직접 강화하지 않고 UI를 엽니다.
+                // 선택된 캐릭터와 현재 대장간 건물 레벨을 전달합니다.
+                if (_selectedCharacter != null)
+                    _smithyUI.Open(_selectedCharacter, building.CurrentLevel);; break;
             case BuildingType.Guild: CollectGuildData(building); break;
         }
     }
@@ -89,8 +95,10 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
             CreateBuildingVisual(slotTransform, data);
 
             // 최초 건설 시 1레벨 효과 적용
-            ApplyBuildingEffect(data, 1); 
-        
+            ApplyBuildingEffect(data, 1);
+            
+            // 데이터 세이브
+            SaveSettlement();
             Debug.Log($"<color=cyan>[시스템]</color> {data.DisplayName} 배치가 완료되었습니다.");
         }
         else
@@ -108,6 +116,9 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         {
             building.Upgrade();
             ApplyBuildingEffect(building.Data, nextLevel);
+            
+            //데이터 세이브
+            SaveSettlement();
         }
     }
 
@@ -126,13 +137,6 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
                 break;
         }
     }
-
-    private void ProcessSmithy(BuildingObject smithy)
-    {
-        if (_selectedCharacter == null) return;
-        Equipment target = AdminTestTool.isTargetingWeapon ? _selectedCharacter.Stat.baseWeapon : _selectedCharacter.Stat.baseArmor;
-        _buildingService.UpgradeEquipment(_selectedCharacter.Stat, target, smithy.CurrentLevel);
-    }
     
     private void CollectGuildData(BuildingObject guild)
     {
@@ -146,18 +150,47 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     public void SelectCharacter(BaseCharacter character) => _selectedCharacter = character;
     
     // CreateBuildingVisual 및 기타 헬퍼 메서드 (기능 유지)
+    // private void CreateBuildingVisual(Transform parent, BuildingData data)
+    // {
+    //     GameObject buildingGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
+    //     buildingGo.name = $"Building_{data.DisplayName}";
+    //     buildingGo.transform.SetParent(parent);
+    //     buildingGo.transform.localPosition = new Vector3(0, 0.5f, 0); 
+    //     
+    //     var bObj = buildingGo.AddComponent<BuildingObject>();
+    //     bObj.Initialize(data, this);
+    //
+    //     var renderer = buildingGo.GetComponent<Renderer>();
+    //     renderer.material.color = GetColorByBuildingType(data.buildingType);
+    // }
+    
+    // 스프라이트로 건물 생성
     private void CreateBuildingVisual(Transform parent, BuildingData data)
     {
-        GameObject buildingGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        buildingGo.name = $"Building_{data.DisplayName}";
+        // 1. 빈 오브젝트 생성
+        GameObject buildingGo = new GameObject($"Building_{data.DisplayName}");
         buildingGo.transform.SetParent(parent);
-        buildingGo.transform.localPosition = new Vector3(0, 0.5f, 0); 
-        
+        buildingGo.transform.localPosition = Vector3.zero; // 바닥에 붙임
+
+        // 2. 스프라이트 렌더러 추가 및 설정
+        var sr = buildingGo.AddComponent<SpriteRenderer>();
+        sr.sprite = data.buildingSprite; // BuildingData에 추가하신 스프라이트
+        sr.drawMode = SpriteDrawMode.Simple;
+    
+        // 건물이 땅 뚫고 들어가지 않게 위치 조정 (스프라이트 크기에 따라 pivot 조정 필요)
+        buildingGo.transform.localPosition = new Vector3(0, 0.1f, 0);
+        buildingGo.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+        // 쿼터뷰/탑다운일 경우 카메라를 바라보게 회전 (필요시)
+        buildingGo.transform.rotation = Quaternion.Euler(0, 0, 0); 
+
+        // 3. 클릭 감지를 위한 콜라이더 추가 (레이캐스트용)
+        var col = buildingGo.AddComponent<BoxCollider>();
+        // 스프라이트 크기에 맞춰 콜라이더 사이즈 자동 조정
+        col.size = new Vector3(sr.bounds.size.x, sr.bounds.size.y, 0.1f);
+
+        // 4. 기능 컴포넌트 부착
         var bObj = buildingGo.AddComponent<BuildingObject>();
         bObj.Initialize(data, this);
-
-        var renderer = buildingGo.GetComponent<Renderer>();
-        renderer.material.color = GetColorByBuildingType(data.buildingType);
     }
 
     private Color GetColorByBuildingType(BuildingType type)
@@ -173,5 +206,41 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
             BuildingType.Supply => Color.black,
             _ => Color.white
         };
+    }
+    
+    // 세이브 데이터 불러오기 전용 메소드
+    public void LoadBuilding(int slotIndex, BuildingData data, int level)
+    {
+        if (slotIndex < 0 || slotIndex >= constructionSlots.Length) return;
+        Transform slotTransform = constructionSlots[slotIndex];
+
+        // 1. 슬롯 비활성화 (겹침 방지)
+        if (slotTransform.TryGetComponent<MeshRenderer>(out var mr)) mr.enabled = false;
+        if (slotTransform.TryGetComponent<BoxCollider>(out var bc)) bc.enabled = false;
+        if (slotTransform.TryGetComponent<ConstructionSlot>(out var cs)) cs.enabled = false;
+
+        // 2. 비주얼 생성 및 초기화
+        CreateBuildingVisual(slotTransform, data);
+        var bObj = slotTransform.GetComponentInChildren<BuildingObject>();
+    
+        // 3. 레벨 강제 설정 (Upgrade 메서드 반복 호출 혹은 직접 대입)
+        for (int i = 1; i < level; i++) bObj.Upgrade(); 
+    }
+    
+    // 데이터 세이브
+    private void SaveSettlement()
+    {
+        var settSave = new SettlementSaveData();
+        foreach (var slot in constructionSlots)
+        {
+            var bObj = slot.GetComponentInChildren<BuildingObject>();
+            if (bObj != null)
+                settSave.buildings.Add(new SettlementSaveData.BuildingSaveInfo { 
+                    slotIndex = Array.IndexOf(constructionSlots, slot), 
+                    type = bObj.Data.buildingType, 
+                    level = bObj.CurrentLevel 
+                });
+        }
+        SaveLoadSystem.Save(settSave);
     }
 }

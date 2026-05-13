@@ -11,7 +11,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [Serializable]
-public partial class BaseCharacter : ITurnUseUnit
+public partial class BaseCharacter : ITurnUseUnit, ISerializable
 {
     /// <summary>
     /// 테스트 용 객체
@@ -24,7 +24,12 @@ public partial class BaseCharacter : ITurnUseUnit
     // 읽는 쪽에서 편하라고 일단 만들어두긴 했는데 너무 길어지면 지우는게 나을지도
     public string Name => Data.Name;
     public int Level => Data.Level;
-    public Profession Profession => Data.Profession;
+    public Profession Profession
+    {
+        get => Data.Profession;
+        set => Data.Profession = value;
+    }
+
     public SkillBase[] Skills => Data.Skills;
     public Trait[] Traits => Data.Traits;
     public Reaction[] RoleReactions => Data.RoleReactions;
@@ -40,10 +45,18 @@ public partial class BaseCharacter : ITurnUseUnit
     // BattleManager가 구독할 이벤트. BattleContext는 공격자, 방어자, 스킬 정보 등을 담는 클래스. BattleManager는 이 이벤트를 구독하여 BattleContext를 받아 처리.
     public Func<BattleContext, UniTask> onBattleAction;
     private IFormationManager m_formationManager;
+    
+    // [추가] 스탯 모디파이어 컨트롤러 (로직 레이어)
+    public StatController StatController { get; } = new StatController();
 
     public BaseCharacter(BaseCharacterData data)
     {
         Data = data;
+    }
+
+    public BaseCharacter(SerializationInfo info, StreamingContext context)
+    {
+        Data = (BaseCharacterData)info.GetValue("Data", typeof(BaseCharacterData));
     }
 
     public void SetRole(RoleType role)
@@ -55,6 +68,13 @@ public partial class BaseCharacter : ITurnUseUnit
             RoleType.Tanker => new AutoBattle_Def(Name),
             RoleType.Supporter => new AutoBattle_Sup(Name)
         };
+    }
+
+    // 스탯 갱신 메소드 통합
+    public void RefreshStats()
+    {
+        // Profession에게 "내 데이터와 모디파이어를 줄 테니 스탯을 계산해줘"라고 요청
+        Profession.CalculateStat(Stat, Data, StatController);
     }
     
     public void ReduceHP(int amount) => Stat.current_Hp = Mathf.Max(Stat.current_Hp - amount, 0); // 체력 감소
@@ -165,4 +185,14 @@ public partial class BaseCharacter : ITurnUseUnit
         return speedComparison;
     }
     #endregion
+
+    public void GetObjectData(SerializationInfo info, StreamingContext context)
+    {
+        info.AddValue("Data", Data);
+    }
+
+    public override string ToString()
+    {
+        return $"Name: {Name}, Level: {Level}, Profession: {Profession.Name}";
+    }
 }

@@ -16,9 +16,7 @@ public class InteractionManager : MonoBehaviour
     [Inject]
     public void Construct(
         SettlementManager sm, 
-        ConstructionUI ui, 
-        InventoryView iv, 
-        ExpeditionInventoryView ev, 
+        ConstructionUI ui,
         AccessoryBagView av,
         EquipmentSlotUI slots) // VContainer가 모든 인스턴스를 찾아 넣어줌
     {
@@ -36,8 +34,6 @@ public class InteractionManager : MonoBehaviour
         if (kb == null) return;
 
         // UI 3종 토글 (각 뷰의 ToggleWindow 호출)
-        //if (kb.iKey.wasPressedThisFrame) _inventoryView.ToggleWindow(!InventoryView.IsWindowActive);
-        //if (kb.eKey.wasPressedThisFrame) _expeditionView.ToggleWindow();
         if (kb.bKey.wasPressedThisFrame) _accessoryBagView.ToggleWindow();
         if (kb.uKey.wasPressedThisFrame) _equipSlots.ToggleWindow();
 

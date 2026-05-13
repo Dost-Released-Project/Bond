@@ -16,5 +16,29 @@ MonoBehaviour:
   _displayName: Carriage
   _description: Item
   buildingType: 5
-  buildingSprite: {fileID: 0}
-  levels: []
+  buildingSprite: {fileID: 21300000, guid: cf481bc28b2f89f45892e7b79412679a, type: 3}
+  levels:
+  - level: 1
+    frontierCost: 100
+    woodCost: 0
+    oreCost: 0
+    effectValue: 0
+    slotExpansion: 2
+    frontierCapAdd: 0
+    materialCapAdd: 0
+  - level: 2
+    frontierCost: 1000
+    woodCost: 50
+    oreCost: 50
+    effectValue: 0
+    slotExpansion: 2
+    frontierCapAdd: 0
+    materialCapAdd: 0
+  - level: 3
+    frontierCost: 5000
+    woodCost: 200
+    oreCost: 200
+    effectValue: 0
+    slotExpansion: 4
+    frontierCapAdd: 0
+    materialCapAdd: 0

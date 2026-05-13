@@ -17,7 +17,7 @@ public class Equipment
     public int bonusINT;
 
     // [추가] 인벤토리로 되돌릴 때 필요한 원본 아이템 참조
-    public BaseItem originItem; 
+    public BaseItem originItem;
 
     public void Upgrade()
     {

@@ -16,7 +16,7 @@ MonoBehaviour:
   _displayName: Bandage
   _description: 
   category: 0
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: d4a9c034ab04f5a41adae2bb661f91d1, type: 3}
   totalGlobalMax: 10
   expeditionSlotMax: 2
   consumableType: 0

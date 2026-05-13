@@ -3,6 +3,7 @@ using System.IO;
 using CsvHelper.Configuration;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class AccessoryDTO
 {
@@ -36,6 +37,11 @@ public class AccessoryParser : TSVParserBase<AccessoryDTO, AccessoryItem>
         so.equipmentData.bonusSTR = dto.BonusSTR;
         so.equipmentData.bonusAGI = dto.BonusAGI;
         so.equipmentData.bonusINT = dto.BonusINT;
+        
+        if (!string.IsNullOrEmpty(dto.IconPath))
+        {
+            so.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/{dto.IconPath}.png");
+        }
     }
 
     protected override void OnPostImport(string outputDir)
