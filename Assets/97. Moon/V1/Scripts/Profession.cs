@@ -16,8 +16,8 @@ public class Profession
     }
 
     public string Name { get; set; }
-    
-    public void CalculateStat(Stat stat, BaseCharacterData characterData, StatController controller)
+
+    public void CalculateStat(Stat stat, BaseCharacterData characterData, StatController controller);
     [JsonIgnore] public string Name => _classData.DisplayName;
 
     public void CalculateStat(Stat stat, BaseCharacterData characterData)
