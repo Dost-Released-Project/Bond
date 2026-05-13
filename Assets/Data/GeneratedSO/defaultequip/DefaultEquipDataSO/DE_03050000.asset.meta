@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: eaf39bd0a8559994397205f36d211bab
+=======
+guid: baabf8efcff11a54588940ef8d415267
+>>>>>>> origin/Feature/KWT
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000

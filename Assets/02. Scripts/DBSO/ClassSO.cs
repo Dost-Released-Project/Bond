@@ -48,6 +48,7 @@ public class ClassSO : BaseSO
         this.LV = lv;
     }
 }
+<<<<<<< HEAD:Assets/02. Scripts/DBSO/SystemDataSOs.cs
 
 /// <summary>
 /// [D] Pure Data: 클래스별 초기 스탯 및 장비를 담는 SO.
@@ -74,3 +75,5 @@ public class StatModifierDataSO : BaseSO
 {
     public StatModifier modifier; // 클래스 데이터 보유
 }
+=======
+>>>>>>> origin/Feature/KWT:Assets/02. Scripts/DBSO/ClassSO.cs

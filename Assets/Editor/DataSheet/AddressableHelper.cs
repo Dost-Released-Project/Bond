@@ -50,6 +50,7 @@ public static class AddressableHelper
         {
             entry.address = address;
             settings.SetDirty(AddressableAssetSettings.ModificationEvent.EntryMoved, entry, true);
+            AssetDatabase.SaveAssets();
             Debug.Log($"[AddressableHelper] '{address}' 등록 완료 (Group: {groupName})");
         }
     }
