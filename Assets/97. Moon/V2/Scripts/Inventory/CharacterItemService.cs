@@ -148,7 +148,7 @@ public class CharacterItemService
 
     private void UpdateHeroStats(BaseCharacter hero)
     {
-        hero.RefreshStats();
+        hero.CalcStat();
         OnEquipmentChanged?.Invoke();
     }
 }

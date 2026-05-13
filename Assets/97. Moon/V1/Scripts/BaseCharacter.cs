@@ -20,6 +20,8 @@ public partial class BaseCharacter : ITurnUseUnit
 
     [JsonProperty] public BaseCharacterData Data;
     public Stat Stat { get; } = new Stat();
+    // [추가] 스탯 모디파이어 컨트롤러 (로직 레이어)
+    public StatController StatController { get; } = new StatController();
     
     // 읽는 쪽에서 편하라고 일단 만들어두긴 했는데 너무 길어지면 지우는게 나을지도
     public string Name => Data.Name;
@@ -64,7 +66,8 @@ public partial class BaseCharacter : ITurnUseUnit
 
     public void CalcStat()
     {
-        Profession.CalculateStat(Stat, Data);
+        // Profession에게 "데이터와 모디파이어를 전달한 뒤 스탯 계산 요청
+        Profession.CalculateStat(Stat, Data, StatController);
     }
     
     public void ReduceHP(int amount) => Stat.current_Hp = Mathf.Max(Stat.current_Hp - amount, 0); // 체력 감소

@@ -65,7 +65,7 @@ public class BuildingService
         if (_resourceManager.ConsumeResources(costFrontier, 0, costOre))
         {
             equipment.Upgrade();
-            target.RefreshStats();
+            target.CalcStat();
         }
     }
 }

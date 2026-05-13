@@ -55,7 +55,7 @@ public class AdminTestTool : MonoBehaviour
             };
 
             // 5. 스탯 최종 계산
-            testHero.RefreshStats();
+            testHero.CalcStat();
             Debug.Log("임시 캐릭터 생성 완료");
         }
     }
@@ -80,7 +80,7 @@ public class AdminTestTool : MonoBehaviour
         if (Keyboard.current.f3Key.wasPressedThisFrame)
         {
             FindObjectOfType<SettlementManager>().SelectCharacter(testHero);
-            testHero.RefreshStats();
+            testHero.CalcStat();
         }
     }
 }
