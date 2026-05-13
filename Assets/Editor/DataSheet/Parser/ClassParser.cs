@@ -43,14 +43,15 @@ public class ClassParser : TSVParserBase<ClassDTO, ClassSO>
 
     protected override void OnPostImport(string outputDir)
     {
-        string subDir = Path.Combine(outputDir, "ClassDataSO");
-        if (!Directory.Exists(subDir)) return;
+        string subDir = Path.Combine(outputDir, "ClassDataSO").Replace("\\", "/");
+        if (subDir.EndsWith("/")) subDir = subDir.Substring(0, subDir.Length - 1);
 
-        var assetPaths = Directory.GetFiles(subDir, "*.asset");
+        string[] guids = AssetDatabase.FindAssets("t:ClassSO", new[] { subDir });
         var assets = new List<BaseSO>();
 
-        foreach (var path in assetPaths)
+        foreach (var guid in guids)
         {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
             var asset = AssetDatabase.LoadAssetAtPath<ClassSO>(path);
             if (asset != null) assets.Add(asset);
         }
@@ -67,7 +68,7 @@ public class ClassParser : TSVParserBase<ClassDTO, ClassSO>
         field?.SetValue(db, assets);
 
         EditorUtility.SetDirty(db);
-        AssetDatabase.SaveAssets();
+        AssetDatabase.SaveAssetIfDirty(db);
 
         // 어드레서블 자동 등록 추가
         AddressableHelper.RegisterToAddressable(dbPath);

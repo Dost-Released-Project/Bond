@@ -119,6 +119,7 @@ public static class TSVImportCoordinator
             parser.ParseAndImport(file, outDir);
         }
 
+        AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
     }
 

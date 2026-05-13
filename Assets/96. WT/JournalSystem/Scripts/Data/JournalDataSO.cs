@@ -12,13 +12,13 @@ namespace Bond.WT.Journal
     }
 
     /// <summary>
-    /// [PureData] 일지에 표시될 개별 사건 정의
+    /// [PureData] 일지에 표시될 개별 사건 또는 텍스트 템플릿 정의
     /// </summary>
-    [CreateAssetMenu(fileName = "JournalEntry_", menuName = "WT/Journal/Entry")]
-    public class JournalEntrySO : BaseSO
+    [CreateAssetMenu(fileName = "JournalData_", menuName = "WT/Journal/Data")]
+    public class JournalDataSO : BaseSO
     {
-        [Header("일지 내용")]
-        [Tooltip("일지에서 순차적으로 출력될 텍스트 리스트")]
+        [Header("일지 템플릿")]
+        [Tooltip("텍스트 내에 {0}, {1} 등을 포함하여 런타임에 데이터를 조립할 수 있습니다.")]
         [SerializeField] private List<string> _paragraphs = new List<string>();
 
         [Header("선택지")]
@@ -30,5 +30,13 @@ namespace Bond.WT.Journal
         public IReadOnlyList<string> Paragraphs => _paragraphs;
         public IReadOnlyList<JournalOption> Options => _options;
         public Sprite EntryIcon => _entryIcon;
+
+        public void SetData(string id, List<string> paragraphs, List<JournalOption> options, Sprite icon)
+        {
+            base.Initialize(id, id, ""); // Name과 Desc는 ID로 대체 또는 빈값
+            this._paragraphs = paragraphs;
+            this._options = options;
+            this._entryIcon = icon;
+        }
     }
 }

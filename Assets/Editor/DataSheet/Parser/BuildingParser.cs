@@ -120,14 +120,15 @@ public class BuildingParser : TSVParserBase<BuildingDTO, BuildingData>
     protected override void OnPostImport(string outputDir)
     {
         // DB 업데이트 로직 (BuildingDataBaseSO가 있어야 함)
-        string subDir = Path.Combine(outputDir, "BuildingDataSO");
-        if (!Directory.Exists(subDir)) return;
+        string subDir = Path.Combine(outputDir, "BuildingDataSO").Replace("\\", "/");
+        if (subDir.EndsWith("/")) subDir = subDir.Substring(0, subDir.Length - 1);
 
-        var assetPaths = Directory.GetFiles(subDir, "*.asset");
+        string[] guids = AssetDatabase.FindAssets("t:BuildingData", new[] { subDir });
         var assets = new List<BaseSO>();
 
-        foreach (var path in assetPaths)
+        foreach (var guid in guids)
         {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
             var asset = AssetDatabase.LoadAssetAtPath<BuildingData>(path);
             if (asset != null) assets.Add(asset);
         }
@@ -145,7 +146,7 @@ public class BuildingParser : TSVParserBase<BuildingDTO, BuildingData>
         field?.SetValue(db, assets);
 
         EditorUtility.SetDirty(db);
-        AssetDatabase.SaveAssets();
+        AssetDatabase.SaveAssetIfDirty(db);
         Debug.Log($"[BuildingParser] 건물 DB 통합 완료: {assets.Count}개 등록");
     }
 }

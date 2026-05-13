@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: afc9b1f37acece248aecd23fc3c8a171, type: 3}
-  m_Name: DE_03010000
+  m_Name: DE_03070000
   m_EditorClassIdentifier: Assembly-CSharp::DefaultEquipSO
-  _id: 03010000
-  _displayName: Assasin
+  _id: 03070000
+  _displayName: Cleric
   _description: 
-  ClassType: Assasin
-  STR: 0
-  AGI: 2
+  ClassType: Cleric
+  STR: 1
+  AGI: 1
   INT: 0
   ArmorId: 
   WeaponId: 
-  IconId: Icon_Rogue
+  IconId: Icon_Priest
