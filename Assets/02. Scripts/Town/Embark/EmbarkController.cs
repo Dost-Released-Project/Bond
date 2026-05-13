@@ -85,15 +85,18 @@ namespace Bond.Embark
 
         public void SuppToTown(int index, InventorySlot slot)
         {
-            _expeditionInventory.RemoveFromSlot(index, slot.quantity);
-            _totalInventory.AddItemAuto(slot.item, slot.quantity);
+            var item = slot.item;
+            int qty = 1;//slot.quantity;
+            
+            _expeditionInventory.RemoveFromSlot(index, qty);
+            _totalInventory.AddItemAuto(item, qty);
             NotifyChanged();
         }
 
         public void ConfirmEmbark()
         {
-            // TODO: 씬 전환 로직은 추후 연결. 현재는 Payload 저장 후 OnEmbark 이벤트만 발행.
             SavePayload();
+            SceneLoader.Load("Map");
         }
 
         public void SavePayload()
