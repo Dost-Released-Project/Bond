@@ -24,3 +24,5 @@ MonoBehaviour:
     Gid: 26592079
   - SheetName: BuildingLevel
     Gid: 1049904701
+  - SheetName: MonsterStat
+    Gid: 770208132

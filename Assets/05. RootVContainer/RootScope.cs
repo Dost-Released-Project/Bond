@@ -36,6 +36,7 @@ namespace RootVContainer
             // RootScope 등록: TurnLifetimeScope, MapLifetimeScope 등 모든 하위 스코프에서 주입 가능.
             builder.Register<ISpriteLoader, SpriteLoader>(Lifetime.Singleton);
 
+            builder.Register<IStageMonsterContext,StageMonsterContextService>(Lifetime.Singleton);
             // =================================================================================
             // [ Journal System ] - 일지 시스템 관련 컴포넌트 등록
             // =================================================================================
