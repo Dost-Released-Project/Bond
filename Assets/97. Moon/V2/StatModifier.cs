@@ -25,6 +25,8 @@ public enum ModifierMode { Flat, Percent } // 고정치 합산 vs 비율 곱산
 [Serializable]
 public class StatModifier
 {
+    public string id;
+    public string name;
     public StatType type;
     public ModifierMode mode;
     public float value;

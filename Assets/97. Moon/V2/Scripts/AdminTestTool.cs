@@ -25,33 +25,24 @@ public class AdminTestTool : MonoBehaviour
 
         // 2. ID를 기반으로 데이터 가져오기
         var classSO = classDB.GetSO<ClassSO>(id);
-        var defaultSO = equipDB.GetSO<DefaultEquipSO>(classSO.DefaultWeaponId);
+        var weaponSO = equipDB.GetSO<DefaultEquipSO>(classSO.DefaultWeaponId);
+        var armorSO = equipDB.GetSO<DefaultEquipSO>(classSO.DefaultArmorId);
 
-        if (classSO != null && defaultSO != null)
+        if (classSO != null && weaponSO != null && armorSO != null)
         {
             // 3. Profession 설정 (보정치용)
             testHero.Profession = new SampleProfession(classSO);
-            testHero.Stat.AGI = classSO.AGI;
-            testHero.Stat.STR = classSO.STR;
-            testHero.Stat.INT = classSO.INT;
-            // testHero.Stat = new Stat(classSO); 우선 준비만.
 
             // 4. Equipment 객체 생성 및 순수 데이터 주입
             // 요청하신 대로 STR, AGI, INT만 우선 할당합니다.
-            testHero.Data.Weapon = new Equipment 
+            testHero.Data.Weapon = new Equipment(weaponSO) 
             {
                 itemName = "기본 무기", // 임시
-                bonusSTR = defaultSO.STR,
-                bonusAGI = defaultSO.AGI,
-                bonusINT = defaultSO.INT
             };
             
-            testHero.Data.Armor = new Equipment 
+            testHero.Data.Armor = new Equipment(armorSO) 
             {
                 itemName = "기본 방어구", // 임시
-                bonusSTR = defaultSO.STR,
-                bonusAGI = defaultSO.AGI,
-                bonusINT = defaultSO.INT
             };
 
             // 5. 스탯 최종 계산

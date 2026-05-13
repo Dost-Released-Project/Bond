@@ -13,12 +13,16 @@ MonoBehaviour:
   m_Name: DE_03000000
   m_EditorClassIdentifier: Assembly-CSharp::DefaultEquipSO
   _id: 03000000
-  _displayName: Warrior
+  _displayName: DE_03000000
   _description: 
-  ClassType: Warrior
-  STR: 3
-  AGI: 2
-  INT: 1
-  ArmorId: AR_001
-  WeaponId: WP_001
-  IconId: Icon_Warrior
+  ID: 03000000
+  ClassType: 0
+  STR: 2
+  AGI: 0
+  INT: 0
+  UpSTR: 2
+  UpAGI: 0
+  UpINT: 0
+  ArmorID: 
+  WeaponID: 
+  IconID: Icon_Warrior

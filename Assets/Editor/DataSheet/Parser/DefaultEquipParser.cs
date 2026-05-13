@@ -7,10 +7,13 @@ using UnityEngine;
 public class DefaultEquipDTO
 {
     public string ID { get; set; }
-    public string ClassType { get; set; }
+    public ClassType ClassType { get; set; }
     public int STR { get; set; }
     public int AGI { get; set; }
     public int INT { get; set; }
+    public int UpSTR { get; set; } // 추가
+    public int UpAGI { get; set; } // 추가
+    public int UpINT { get; set; } // 추가
     public string ArmorID { get; set; }
     public string WeaponID { get; set; }
     public string IconID { get; set; }
@@ -26,7 +29,9 @@ public class DefaultEquipParser : TSVParserBase<DefaultEquipDTO, DefaultEquipSO>
 
     protected override void Populate(DefaultEquipSO so, DefaultEquipDTO dto)
     {
-        so.SetData(dto.ID, dto.ClassType, dto.STR, dto.AGI, dto.INT, dto.ArmorID, dto.WeaponID, dto.IconID);
+        so.SetData(dto.ID, dto.ClassType, dto.STR, dto.AGI, dto.INT, 
+            dto.UpSTR, dto.UpAGI, dto.UpINT, // 성장 계수 주입
+            dto.ArmorID, dto.WeaponID, dto.IconID);
     }
 
     protected override void OnPostImport(string outputDir)
@@ -73,6 +78,9 @@ public sealed class DefaultEquipMap : ClassMap<DefaultEquipDTO>
         Map(m => m.STR).Name("STR");
         Map(m => m.AGI).Name("AGI");
         Map(m => m.INT).Name("INT");
+        Map(m => m.UpSTR).Name("UpSTR"); // 추가
+        Map(m => m.UpAGI).Name("UpAGI"); // 추가
+        Map(m => m.UpINT).Name("UpINT"); // 추가
         Map(m => m.ArmorID).Name("ArmorID");
         Map(m => m.WeaponID).Name("WeaponID");
         Map(m => m.IconID).Name("IconID");

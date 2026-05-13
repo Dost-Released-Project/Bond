@@ -13,7 +13,6 @@ using Random = UnityEngine.Random;
 
 public class ExpeditionInventoryView : MonoBehaviour
 {
-    private ExpeditionInventory _expeditionInventory;
     [Inject] private InventoryTransferService _transferService;
     [Inject] private CharacterItemService _itemService;
     [Inject] private ExpeditionPayload _payload;
@@ -24,8 +23,6 @@ public class ExpeditionInventoryView : MonoBehaviour
 
     private async void Start()
     {
-        _expeditionInventory = _payload.Supplies;
-        
         // 1. 탐사 중에도 아이템 정보를 알아야 하므로 DB 로드 필요
         var conHandle = Addressables.LoadAssetAsync<ConsumableDataBaseSO>("ConsumableDataBase");
         var accHandle = Addressables.LoadAssetAsync<AccessoryDataBaseSO>("AccessoryDataBase");
@@ -78,7 +75,7 @@ public class ExpeditionInventoryView : MonoBehaviour
             }
         }, TrickleDown.NoTrickleDown); // 슬롯에서 이벤트를 먹지 않았을 때(버블링 최종 단계) 실행
 
-        _expeditionInventory.OnChanged += RefreshUI;
+        _payload.Supplies.OnChanged += RefreshUI;
         RefreshUI();
     }
 
@@ -100,7 +97,7 @@ public class ExpeditionInventoryView : MonoBehaviour
         SyncSlots();
         for (int i = 0; i < _slots.Count; i++)
         {
-            var data = _expeditionInventory.GetSlot(i);
+            var data = _payload.Supplies.GetSlot(i);
             _slots[i].Clear();
             if (!data.IsEmpty)
             {
@@ -117,35 +114,35 @@ public class ExpeditionInventoryView : MonoBehaviour
 
     private void SyncSlots()
     {
-        while (_slots.Count < _expeditionInventory.Capacity)
+        while (_slots.Count < _payload.Supplies.Capacity)
         {
             int index = _slots.Count;
             var slot = new VisualElement();
             slot.AddToClassList("inventory-slot-base");
 
             slot.RegisterCallback<PointerDownEvent>(evt => {
-                var data = _expeditionInventory.GetSlot(index);
+                var data = _payload.Supplies.GetSlot(index);
                 if (data.IsEmpty) return;
                 
                 if (evt.button == 0) { // 좌클릭 드래그 시작
-                    _transferService.StartDrag(_expeditionInventory, index);
+                    _transferService.StartDrag(_payload.Supplies, index);
                 }
                 else if (evt.button == 1) { // 우클릭 자동 사용/장착
-                    if (data.item.category == ItemCategory.Accessories) _itemService.AutoEquip(_expeditionInventory, index);
-                    else if (data.item.category == ItemCategory.Consume) _itemService.UseItem(AdminTestTool.testHero, _expeditionInventory, index);
+                    if (data.item.category == ItemCategory.Accessories) _itemService.AutoEquip(_payload.Supplies, index);
+                    else if (data.item.category == ItemCategory.Consume) _itemService.UseItem(AdminTestTool.testHero, _payload.Supplies, index);
                 }
             });
 
             slot.RegisterCallback<PointerUpEvent>(evt => {
                 if (_transferService.IsDragging) {
-                    _transferService.ExecuteDragDrop(_transferService.CurrentSourceInventory, _transferService.CurrentDraggingIndex, _expeditionInventory, index);
+                    _transferService.ExecuteDragDrop(_transferService.CurrentSourceInventory, _transferService.CurrentDraggingIndex, _payload.Supplies, index);
                     _transferService.ResetDrag();
                     evt.StopPropagation(); // 정상 슬롯에 안착했으므로 최상위 '영역 밖 버리기'로 이벤트가 흐르지 않게 차단
                 }
                 else if (_transferService.IsDraggingFromEquipment) {
                     var hero = AdminTestTool.testHero;
                     if (hero != null) {
-                        _itemService.UnequipToInventorySlot(hero, _transferService.SourceEquipmentSlotIndex, _expeditionInventory, index);
+                        _itemService.UnequipToInventorySlot(hero, _transferService.SourceEquipmentSlotIndex, _payload.Supplies, index);
                     }
                     _transferService.ResetEquipmentDrag();
                     evt.StopPropagation(); // 차단
@@ -155,7 +152,7 @@ public class ExpeditionInventoryView : MonoBehaviour
             _slotContainer.Add(slot);
             _slots.Add(slot);
             
-            _payload.SetSuplies(_expeditionInventory);
+            _payload.SetSuplies(_payload.Supplies);
         }
     }
     
@@ -173,14 +170,14 @@ public class ExpeditionInventoryView : MonoBehaviour
                 SaveLoadSystem.Load(save);
                 
                 // 1. 기존 슬롯을 완전히 비우고 저장된 용량만큼 재생성
-                _expeditionInventory.ClearAll(); 
-                _expeditionInventory.ExpandStorage(save.capacity); 
+                _payload.Supplies.ClearAll(); 
+                _payload.Supplies.ExpandStorage(save.capacity); 
 
                 // 2. 아이템 복구
                 foreach (var s in save.slots)
                 {
                     BaseItem item = dbs.Select(db => db.GetSO<BaseItem>(s.id)).FirstOrDefault(i => i != null);
-                    if (item != null) _expeditionInventory.AddItemAuto(item, s.count);
+                    if (item != null) _payload.Supplies.AddItemAuto(item, s.count);
                 }
                 
                 Debug.Log("ExpeditionInventory: 데이터 로드 성공");
@@ -201,8 +198,8 @@ public class ExpeditionInventoryView : MonoBehaviour
         // 저장할 데이터 객체 생성 (파일명: exp_inv)
         var save = new InventorySaveData("exp_inv");
 
-        save.capacity = _expeditionInventory.Capacity; // 현재 용량 저장
-        foreach (var slot in _expeditionInventory.GetAll())
+        save.capacity = _payload.Supplies.Capacity; // 현재 용량 저장
+        foreach (var slot in _payload.Supplies.GetAll())
         {
             if (!slot.IsEmpty)
                 save.slots.Add(new InventorySaveData.SlotData { id = slot.item.id, count = slot.quantity });

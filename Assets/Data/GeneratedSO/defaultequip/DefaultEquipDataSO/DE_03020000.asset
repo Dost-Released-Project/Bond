@@ -13,12 +13,16 @@ MonoBehaviour:
   m_Name: DE_03020000
   m_EditorClassIdentifier: Assembly-CSharp::DefaultEquipSO
   _id: 03020000
-  _displayName: Wizard
+  _displayName: DE_03020000
   _description: 
-  ClassType: Wizard
-  STR: 1
-  AGI: 1
-  INT: 4
-  ArmorId: AR_003
-  WeaponId: WP_003
-  IconId: Icon_Wizard
+  ID: 03020000
+  ClassType: 3
+  STR: 0
+  AGI: 0
+  INT: 2
+  UpSTR: 0
+  UpAGI: 0
+  UpINT: 2
+  ArmorID: 
+  WeaponID: 
+  IconID: Icon_Wizard

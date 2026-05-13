@@ -23,8 +23,11 @@ MonoBehaviour:
     itemName: The Ring of Intelligence
     type: 1
     upgradeLevel: 0
-    bonusSTR: 0
-    bonusAGI: 0
-    bonusINT: 5
     originItem: {fileID: 11400000}
+    baseSTR: 0
+    baseAGI: 0
+    baseINT: 5
+    upSTR: 0
+    upAGI: 0
+    upINT: 0
   specialEffects: []

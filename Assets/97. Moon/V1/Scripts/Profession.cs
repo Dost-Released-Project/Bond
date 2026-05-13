@@ -24,9 +24,13 @@ public class Profession
         if (_classData == null) return;
 
         // 0. 기본 능력치
-        float rawSTR = stat.STR;
-        float rawAGI = stat.AGI;
-        float rawINT = stat.INT;
+        stat.AGI = _classData.AGI;
+        stat.STR = _classData.STR;
+        stat.INT = _classData.INT;
+        
+        int extraSTR = (characterData.Weapon?.bonusSTR ?? 0) + (characterData.Armor?.bonusSTR ?? 0);
+        int extraAGI = (characterData.Weapon?.bonusAGI ?? 0) + (characterData.Armor?.bonusAGI ?? 0);
+        int extraINT = (characterData.Weapon?.bonusINT ?? 0) + (characterData.Armor?.bonusINT ?? 0);
         
         // 1. 악세서리 스탯
         if (characterData.Equips != null)
@@ -34,25 +38,30 @@ public class Profession
             foreach (var accItem in characterData.Equips)
             {
                 if (accItem == null) continue;
-                rawSTR += accItem.bonusSTR;
-                rawAGI += accItem.bonusAGI;
-                rawINT += accItem.bonusINT;
+                extraSTR+= accItem.baseSTR;
+                extraAGI += accItem.baseAGI; 
+                extraINT += accItem.baseINT;
             }
         }
 
         // 2. 모디파이어 적용 (장비 스탯도 여기서 합산 후 적용)
         // 여기서는 기존 장비 코드를 유지하면서 '특수 효과'를 controller에서 가져오는 방식
-        float finalSTR = controller.ApplyModifiers(StatType.STR, rawSTR + GetEquipmentBonusSTR(characterData));
-        float finalAGI = controller.ApplyModifiers(StatType.AGI, rawAGI + GetEquipmentBonusAGI(characterData));
-        float finalINT = controller.ApplyModifiers(StatType.INT, rawINT + GetEquipmentBonusINT(characterData));
+        float finalSTR = controller.ApplyModifiers(StatType.STR, extraSTR + stat.STR);
+        float finalAGI = controller.ApplyModifiers(StatType.AGI, extraAGI + stat.AGI);
+        float finalINT = controller.ApplyModifiers(StatType.INT, extraINT + stat.INT);
 
         // 3. ClassSO의 보정치 적용 및 모디파이어 합산 후 최종 산출
+        // STR 영향군
         stat.max_Hp = Mathf.RoundToInt(controller.ApplyModifiers(StatType.MaxHP, finalSTR * _classData.HP));
         stat.atk = Mathf.RoundToInt(controller.ApplyModifiers(StatType.Atk, finalSTR * _classData.Atk));
         stat.def = Mathf.RoundToInt(controller.ApplyModifiers(StatType.Def, finalAGI * _classData.Def));
+        
+        // AGI 영향군
         stat.speed = Mathf.RoundToInt(controller.ApplyModifiers(StatType.Speed, finalAGI * _classData.Speed));
         stat.crt = Mathf.RoundToInt(controller.ApplyModifiers(StatType.Cri, finalAGI * _classData.Cri));
         stat.acc = Mathf.RoundToInt(controller.ApplyModifiers(StatType.Acc, finalAGI * _classData.Acc));
+        
+        // INT 영향군
         stat.Insanity_Ctrl =
             Mathf.RoundToInt(controller.ApplyModifiers(StatType.InsanityCtrl, finalINT * _classData.InsanityCtrl));
         stat.Reaction_Ctrl =
@@ -68,11 +77,6 @@ public class Profession
                   $"\nSPD: {stat.speed} CRT: {stat.crt} ACC: {stat.acc}" + 
                   $"\nInsanity_Ctrl: {stat.Insanity_Ctrl} Reaction_Ctrl: {stat.Reaction_Ctrl} Sp_Atk: {stat.Sp_Atk}");
     }
-
-    // 헬퍼 메소드 예시 (장비 순수 스탯 합산)
-    private int GetEquipmentBonusSTR(BaseCharacterData data) => (data.Weapon?.bonusSTR ?? 0) + (data.Armor?.bonusSTR ?? 0);
-    private int GetEquipmentBonusAGI(BaseCharacterData data) => (data.Weapon?.bonusAGI ?? 0) + (data.Armor?.bonusAGI ?? 0);
-    private int GetEquipmentBonusINT(BaseCharacterData data) => (data.Weapon?.bonusINT ?? 0) + (data.Armor?.bonusINT ?? 0);
 
 
     // public void CalculateStat(Stat stat, BaseCharacterData characterData)

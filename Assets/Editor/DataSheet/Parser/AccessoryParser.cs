@@ -16,6 +16,7 @@ public class AccessoryDTO
     public int TotalMax { get; set; }
     public int ExpSlotMax { get; set; }
     public string IconPath { get; set; }
+    public string ModifierIDs { get; set; } // "Data00, Data01" 형태(콤마로 구분)
 }
 
 public class AccessoryParser : TSVParserBase<AccessoryDTO, AccessoryItem>
@@ -34,13 +35,28 @@ public class AccessoryParser : TSVParserBase<AccessoryDTO, AccessoryItem>
         if (so.equipmentData == null) so.equipmentData = new Equipment();
         so.equipmentData.itemName = dto.ItemName;
         so.equipmentData.type = EquipmentType.Accessory;
-        so.equipmentData.bonusSTR = dto.BonusSTR;
-        so.equipmentData.bonusAGI = dto.BonusAGI;
-        so.equipmentData.bonusINT = dto.BonusINT;
+        so.equipmentData.baseSTR = dto.BonusSTR;
+        so.equipmentData.baseAGI = dto.BonusAGI;
+        so.equipmentData.baseINT = dto.BonusINT;
         
         if (!string.IsNullOrEmpty(dto.IconPath))
         {
             so.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/{dto.IconPath}.png");
+        }
+        
+        // [중요] 스탯 모디파이어 연결 로직
+        so.specialEffects.Clear();
+        if (!string.IsNullOrEmpty(dto.ModifierIDs))
+        {
+            string[] ids = dto.ModifierIDs.Split(',');
+            // StatModifierDataBaseSO에서 ID로 찾아 리스트에 추가
+            // 주의: 런타임에 DB가 로드되어 있어야 합니다.
+            var db = AssetDatabase.LoadAssetAtPath<StatModifierDataBaseSO>("Assets/Data/StatModifierDataBase.asset");
+            foreach(var id in ids)
+            {
+                var modSO = db.GetSO<StatModifierDataSO>(id.Trim());
+                if(modSO != null) so.specialEffects.Add(modSO.modifier);
+            }
         }
     }
 

@@ -23,8 +23,11 @@ MonoBehaviour:
     itemName: The Ring of Master
     type: 1
     upgradeLevel: 0
-    bonusSTR: 2
-    bonusAGI: 2
-    bonusINT: 2
     originItem: {fileID: 11400000}
+    baseSTR: 2
+    baseAGI: 2
+    baseINT: 2
+    upSTR: 0
+    upAGI: 0
+    upINT: 0
   specialEffects: []

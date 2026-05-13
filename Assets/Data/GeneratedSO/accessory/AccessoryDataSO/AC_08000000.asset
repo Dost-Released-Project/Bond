@@ -23,11 +23,16 @@ MonoBehaviour:
     itemName: The Ring of Power
     type: 1
     upgradeLevel: 0
-    bonusSTR: 5
-    bonusAGI: 0
-    bonusINT: 0
     originItem: {fileID: 11400000}
+    baseSTR: 5
+    baseAGI: 0
+    baseINT: 0
+    upSTR: 0
+    upAGI: 0
+    upINT: 0
   specialEffects:
-  - type: 7
+  - id: 
+    name: 
+    type: 7
     mode: 1
     value: 0.2

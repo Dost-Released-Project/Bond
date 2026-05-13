@@ -23,8 +23,11 @@ MonoBehaviour:
     itemName: The Ring of Agility
     type: 1
     upgradeLevel: 0
-    bonusSTR: 0
-    bonusAGI: 5
-    bonusINT: 0
     originItem: {fileID: 11400000}
+    baseSTR: 0
+    baseAGI: 5
+    baseINT: 0
+    upSTR: 0
+    upAGI: 0
+    upINT: 0
   specialEffects: []

@@ -27,7 +27,7 @@ MonoBehaviour:
   InsanityCtrl: 10
   ReactionCtrl: 10
   SpAtk: 10
-  DefaultArmorId: 03020000
+  DefaultArmorId: 03060000
   DefaultWeaponId: 03020000
   IconId: 
   ClassType: 02

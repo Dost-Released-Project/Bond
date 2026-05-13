@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: DE_03010000
+  m_Name: DE_03060000
   m_EditorClassIdentifier: Assembly-CSharp::DefaultEquipSO
-  _id: 03010000
-  _displayName: DE_03010000
+  _id: 03060000
+  _displayName: DE_03060000
   _description: 
-  ID: 03010000
-  ClassType: 1
-  STR: 0
-  AGI: 2
+  ID: 03060000
+  ClassType: 3
+  STR: 1
+  AGI: 1
   INT: 0
-  UpSTR: 0
-  UpAGI: 2
+  UpSTR: 1
+  UpAGI: 1
   UpINT: 0
   ArmorID: 
   WeaponID: 
-  IconID: Icon_Rogue
+  IconID: Icon_Wizard
