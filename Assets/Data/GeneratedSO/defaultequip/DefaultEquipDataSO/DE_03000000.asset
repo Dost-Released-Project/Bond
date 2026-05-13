@@ -15,8 +15,7 @@ MonoBehaviour:
   _id: 03000000
   _displayName: DE_03000000
   _description: 
-<<<<<<< HEAD
-  ID: 03000000
+  ID: 
   ClassType: 0
   STR: 2
   AGI: 0
@@ -27,12 +26,3 @@ MonoBehaviour:
   ArmorID: 
   WeaponID: 
   IconID: Icon_Warrior
-=======
-  ClassType: Warrior
-  STR: 2
-  AGI: 0
-  INT: 0
-  ArmorId: 
-  WeaponId: 
-  IconId: Icon_Warrior
->>>>>>> origin/Feature/KWT

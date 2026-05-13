@@ -15,8 +15,7 @@ MonoBehaviour:
   _id: 03030000
   _displayName: DE_03030000
   _description: 
-<<<<<<< HEAD
-  ID: 03030000
+  ID: 
   ClassType: 2
   STR: 0
   AGI: 0
@@ -27,12 +26,3 @@ MonoBehaviour:
   ArmorID: 
   WeaponID: 
   IconID: Icon_Priest
-=======
-  ClassType: Cleric
-  STR: 0
-  AGI: 0
-  INT: 2
-  ArmorId: 
-  WeaponId: 
-  IconId: Icon_Priest
->>>>>>> origin/Feature/KWT

@@ -15,8 +15,7 @@ MonoBehaviour:
   _id: 03020000
   _displayName: DE_03020000
   _description: 
-<<<<<<< HEAD
-  ID: 03020000
+  ID: 
   ClassType: 3
   STR: 0
   AGI: 0
@@ -27,12 +26,3 @@ MonoBehaviour:
   ArmorID: 
   WeaponID: 
   IconID: Icon_Wizard
-=======
-  ClassType: Wizard
-  STR: 0
-  AGI: 0
-  INT: 2
-  ArmorId: 
-  WeaponId: 
-  IconId: Icon_Wizard
->>>>>>> origin/Feature/KWT

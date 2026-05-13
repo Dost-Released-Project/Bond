@@ -30,9 +30,4 @@ MonoBehaviour:
     upSTR: 0
     upAGI: 0
     upINT: 0
-  specialEffects:
-  - id: 
-    name: 
-    type: 7
-    mode: 1
-    value: 0.2
+  specialEffects: []

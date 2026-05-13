@@ -15,8 +15,7 @@ MonoBehaviour:
   _id: 03010000
   _displayName: DE_03010000
   _description: 
-<<<<<<< HEAD
-  ID: 03010000
+  ID: 
   ClassType: 1
   STR: 0
   AGI: 2
@@ -27,12 +26,3 @@ MonoBehaviour:
   ArmorID: 
   WeaponID: 
   IconID: Icon_Rogue
-=======
-  ClassType: Assasin
-  STR: 0
-  AGI: 2
-  INT: 0
-  ArmorId: 
-  WeaponId: 
-  IconId: Icon_Rogue
->>>>>>> origin/Feature/KWT

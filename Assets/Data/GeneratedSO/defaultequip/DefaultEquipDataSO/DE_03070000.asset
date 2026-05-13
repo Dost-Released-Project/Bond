@@ -9,14 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-<<<<<<< HEAD
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: afc9b1f37acece248aecd23fc3c8a171, type: 3}
   m_Name: DE_03070000
   m_EditorClassIdentifier: Assembly-CSharp::DefaultEquipSO
   _id: 03070000
   _displayName: DE_03070000
   _description: 
-  ID: 03070000
+  ID: 
   ClassType: 2
   STR: 1
   AGI: 1
@@ -27,18 +26,3 @@ MonoBehaviour:
   ArmorID: 
   WeaponID: 
   IconID: Icon_Priest
-=======
-  m_Script: {fileID: 11500000, guid: afc9b1f37acece248aecd23fc3c8a171, type: 3}
-  m_Name: DE_03070000
-  m_EditorClassIdentifier: Assembly-CSharp::DefaultEquipSO
-  _id: 03070000
-  _displayName: Cleric
-  _description: 
-  ClassType: Cleric
-  STR: 1
-  AGI: 1
-  INT: 0
-  ArmorId: 
-  WeaponId: 
-  IconId: Icon_Priest
->>>>>>> origin/Feature/KWT

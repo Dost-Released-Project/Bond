@@ -20,3 +20,5 @@ MonoBehaviour:
     Gid: 1569803349
   - SheetName: defaultEquip
     Gid: 2018517279
+  - SheetName: StatModifiers
+    Gid: 1741562393
