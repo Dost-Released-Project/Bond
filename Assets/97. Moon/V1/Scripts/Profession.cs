@@ -18,8 +18,16 @@ public class Profession
     public string Name { get; set; }
     
     public void CalculateStat(Stat stat, BaseCharacterData characterData, StatController controller)
+    [JsonIgnore] public string Name => _classData.DisplayName;
+
+    public void CalculateStat(Stat stat, BaseCharacterData characterData)
     {
         if (_classData == null) return;
+        
+        // 0. 기본 능력치
+        stat.AGI = _classData.AGI;
+        stat.STR = _classData.STR;
+        stat.INT = _classData.INT;
 
         // 1. 순수 베이스 스탯 결정 (Growth)
         float rawSTR = stat.STR;

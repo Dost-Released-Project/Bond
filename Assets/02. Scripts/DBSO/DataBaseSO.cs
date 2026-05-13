@@ -38,6 +38,18 @@ public class DataBaseSO : ScriptableObject
         // 리스트를 직접 노출하지 않고 내부에서 검색해서 결과만 반환
         return _soList.OfType<T>().FirstOrDefault(predicate);
     }
+    
+    // 특정 조건(Predicate)으로 찾기
+    public IEnumerable<T> Query<T>(System.Func<T, bool> predicate) where T : BaseSO
+    {
+        // 리스트를 직접 노출하지 않고 내부에서 검색해서 결과만 반환
+        return _soList.OfType<T>().Where(predicate);
+    }
+
+    public T GetRandom<T>() where T : BaseSO
+    {
+        return _soList.OfType<T>().GetRandom();
+    }
 
 #if UNITY_EDITOR
     private void OnValidate() => BuildCache();

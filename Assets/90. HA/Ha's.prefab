@@ -44,14 +44,14 @@ GameObject:
   m_Component:
   - component: {fileID: 396726000934444934}
   - component: {fileID: 4482891267890178459}
-  - component: {fileID: 6621883425403598065}
+  - component: {fileID: 3886472118163957928}
   m_Layer: 0
-  m_Name: PartySelection
+  m_Name: TownUi
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &396726000934444934
 Transform:
   m_ObjectHideFlags: 0
@@ -81,7 +81,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
   m_PanelSettings: {fileID: 11400000, guid: f68fc30708cabea4aa3d97427c7c4e4c, type: 2}
   m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: 3b2000df17a2f1947b9c767202641354, type: 3}
+  sourceAsset: {fileID: 9197481963319205126, guid: cfbfb81191b1891479b802b7b1e92dac, type: 3}
   m_SortingOrder: 0
   m_Position: 0
   m_WorldSpaceSizeMode: 1
@@ -90,7 +90,7 @@ MonoBehaviour:
   m_PivotReferenceSize: 0
   m_Pivot: 0
   m_WorldSpaceCollider: {fileID: 0}
---- !u!114 &6621883425403598065
+--- !u!114 &3886472118163957928
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -99,11 +99,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4876109518623903123}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17f1822592ef9824eb60b4fcde563043, type: 3}
+  m_Script: {fileID: 11500000, guid: ddf663f6d7ac3724c9e441984399ea17, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Bond.UI.PartySelection.PartySelectionController
-  uiDocument: {fileID: 4482891267890178459}
-  roleReactionEditorScreen: {fileID: 5610794781526219478}
+  m_EditorClassIdentifier: Assembly-CSharp::Bond.UI.Town.TownUIController
+  townUIDocument: {fileID: 4482891267890178459}
 --- !u!1 &5610794781526219478
 GameObject:
   m_ObjectHideFlags: 0
@@ -174,6 +173,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bond.UI.RoleReactionEditor.RoleReactionEditorController
   slotTemplate: {fileID: 9197481963319205126, guid: 9001fd5d018c0cf4a96fd4daaed61dfa, type: 3}
   charIconTemplate: {fileID: 9197481963319205126, guid: 65b21462728dabf439ba9f5fb8bb3c0f, type: 3}
+  partyMembers: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &6071759986490397064
 GameObject:
   m_ObjectHideFlags: 0

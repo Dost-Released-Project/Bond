@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="character-detail" class="character-detail character-detail--hidden">
+
+        <ui:VisualElement class="character-detail__header">
+            <ui:Label name="character-detail__title" class="character-detail__title" text="" />
+            <ui:Button name="character-detail__close-btn" class="character-detail__close-btn" text="✕" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="character-detail__body" class="character-detail__body" />
+
+    </ui:VisualElement>
+</ui:UXML>

@@ -15,12 +15,14 @@ namespace _90._HA.Temp.Test
         [Inject] public PartyManager _partyManager;
         [Inject] public StageCoach _stageCoach;
         [Inject] public ExpeditionPayload payload;
+        [Inject] public Roster roster;
 
         public List<BaseItem> items;
 
         public void Start()
         {
             payload.Clear();
+            FillRoster();
         }
 
         private void Update()
@@ -46,7 +48,7 @@ namespace _90._HA.Temp.Test
             {
                 foreach (var item in items)
                 {
-                    _expeditionInventory.AddItemAuto(item, Random.Range(1, 5));
+                    _expeditionInventory.AddItemAuto(item, 1);
                 }
                 BaseCharacter[] enemyParty = new  BaseCharacter[4];
                 for (int i = 0; i < 4; i++)
@@ -62,6 +64,14 @@ namespace _90._HA.Temp.Test
             if (Keyboard.current.numpad9Key.wasPressedThisFrame || Keyboard.current.digit9Key.wasPressedThisFrame)
             {
                 SceneLoader.Load("Map");
+            }
+        }
+
+        public void FillRoster()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                roster.Hire(new StageCoach().GetRandomCharacter());
             }
         }
     }

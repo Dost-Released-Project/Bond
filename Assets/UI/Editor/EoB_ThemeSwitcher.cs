@@ -45,7 +45,7 @@ namespace Bond.UI.Editor
         private string _status    = "";
         private bool   _statusOk;
 
-        [MenuItem("Tools/EoB/Theme Switcher")]
+        [MenuItem("Tools/Bond/Theme Switcher")]
         public static void ShowWindow() =>
             GetWindow<EoB_ThemeSwitcher>("EoB Theme Switcher").minSize = new Vector2(360, 360);
 

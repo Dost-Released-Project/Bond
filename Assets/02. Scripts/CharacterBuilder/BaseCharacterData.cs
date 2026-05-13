@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Reactions;
+using UnityEngine;
 
 public enum RoleType
 {
@@ -30,7 +31,7 @@ public class BaseCharacterData
     public int Insanity = 0; // 스트레스(광기) 지수 0~100, Stress는 STR과 혼동될 수 있어서 명칭 변경
     public RoleType RoleType = RoleType.None;
 
-    public SkillBase[] Skills = new SkillBase[4];
+    [SerializeReference] public SkillBase[] Skills = new SkillBase[4];
     public Trait[] Traits = new Trait[4];
     public Equipment[] Equips = new Equipment[2];
     // [이관] 장비(무기, 방어구)

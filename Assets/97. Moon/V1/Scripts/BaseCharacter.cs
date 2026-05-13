@@ -10,15 +10,15 @@ using Reactions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[Serializable]
-public partial class BaseCharacter : ITurnUseUnit, ISerializable
+[Serializable][JsonObject(MemberSerialization.OptIn)]
+public partial class BaseCharacter : ITurnUseUnit
 {
     /// <summary>
     /// 테스트 용 객체
     /// </summary>
     public static BaseCharacter Sample => new BaseCharacter(BaseCharacterData.Sample);
 
-    public BaseCharacterData Data;
+    [JsonProperty] public BaseCharacterData Data;
     public Stat Stat { get; } = new Stat();
     
     // 읽는 쪽에서 편하라고 일단 만들어두긴 했는데 너무 길어지면 지우는게 나을지도
@@ -75,6 +75,11 @@ public partial class BaseCharacter : ITurnUseUnit, ISerializable
     {
         // Profession에게 "내 데이터와 모디파이어를 줄 테니 스탯을 계산해줘"라고 요청
         Profession.CalculateStat(Stat, Data, StatController);
+    }
+
+    public void CalcStat()
+    {
+        Profession.CalculateStat(Stat, Data);
     }
     
     public void ReduceHP(int amount) => Stat.current_Hp = Mathf.Max(Stat.current_Hp - amount, 0); // 체력 감소
@@ -185,11 +190,6 @@ public partial class BaseCharacter : ITurnUseUnit, ISerializable
         return speedComparison;
     }
     #endregion
-
-    public void GetObjectData(SerializationInfo info, StreamingContext context)
-    {
-        info.AddValue("Data", Data);
-    }
 
     public override string ToString()
     {

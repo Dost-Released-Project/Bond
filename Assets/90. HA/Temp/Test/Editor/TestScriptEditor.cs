@@ -44,7 +44,7 @@ namespace _90._HA.Temp.Test
 
                 for (int i = 0; i < 4; i++)
                 {
-                    roster.characters.Add(new StageCoach().GetRandomCharacter());
+                    roster.Hire(new StageCoach().GetRandomCharacter());
                 }
                 SaveLoadSystem.Save(roster);
             }
@@ -55,24 +55,12 @@ namespace _90._HA.Temp.Test
                 SaveLoadSystem.Load(roster);
 
                 StringBuilder sb = new StringBuilder();
-                foreach (var cha in roster.characters)
+                foreach (var cha in roster.Characters)
                 {
                     sb.AppendLine(cha.ToString());
                 }
                 Debug.Log(sb.ToString());
             }
-        }
-    }
-
-    public class Roster : ISaveable<List<BaseCharacter>>
-    {
-        public List<BaseCharacter> characters = new List<BaseCharacter>();
-        
-        public string Key => "roster";
-        public List<BaseCharacter> Data => characters;
-        public void Restore(List<BaseCharacter> data)
-        {
-            characters = data;
         }
     }
 }
