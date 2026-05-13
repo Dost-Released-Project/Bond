@@ -1,3 +1,4 @@
+using Bond.Embark;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer;
@@ -10,15 +11,18 @@ namespace Bond.UI.Town
 
         private CharacterSelector _selector;
         private Roster _roster;
+        private EmbarkController _embarkController;
         private TownRosterPanelPresenter _rosterPresenter;
         private CharacterDetailPresenter _detailPresenter;
+        private EmbarkPresenter _embarkPresenter;
         private Button _toggleBtn;
 
         [Inject]
-        public void Construct(CharacterSelector selector, Roster roster)
+        public void Construct(CharacterSelector selector, Roster roster, EmbarkController embarkController)
         {
             _selector = selector;
             _roster   = roster;
+            _embarkController = embarkController;
         }
 
         private void Start()
@@ -27,12 +31,15 @@ namespace Bond.UI.Town
 
             _rosterPresenter = new TownRosterPanelPresenter(root, _roster, _selector);
             _detailPresenter = new CharacterDetailPresenter(root, _selector);
+            _embarkPresenter = new EmbarkPresenter(root, _embarkController, _rosterPresenter);
 
             foreach (var tc in root.Query<TemplateContainer>().ToList())
                 tc.pickingMode = PickingMode.Ignore;
 
             _toggleBtn = root.Q<Button>("roster-toggle-btn");
             _toggleBtn.clicked += ToggleRoster;
+
+            root.Q<Button>("embark-btn").clicked += _embarkController.Open;
         }
 
         private void ToggleRoster()

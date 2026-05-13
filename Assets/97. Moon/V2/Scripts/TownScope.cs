@@ -26,6 +26,8 @@ public class TownScope : LifetimeScope
         builder.Register<BuildingService>(Lifetime.Singleton);
 
         //
+        builder.Register<EmbarkData>(Lifetime.Scoped);
+        builder.Register<EmbarkController>(Lifetime.Scoped);
         builder.Register<EmbarkManager>(Lifetime.Scoped);
         builder.Register<PartyManager>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
         builder.Register<StageCoach>(Lifetime.Scoped);

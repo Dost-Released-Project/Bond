@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -17,6 +19,10 @@ namespace Bond.UI.Town
         private readonly List<CardViewModel> _cards = new();
 
         public bool IsVisible { get; private set; }
+
+        // Embark 연동용 콜백 — 기본값 null (일반 타운 모드에서는 미사용)
+        public Action<BaseCharacter> OnCardClicked;
+        public Action<BaseCharacter> OnCardRightClicked;
 
         private class CardViewModel
         {
@@ -72,6 +78,15 @@ namespace Bond.UI.Town
             UpdateSelectedVisual();
         }
 
+        public void UpdatePartyHighlight(IReadOnlyList<BaseCharacter> party)
+        {
+            foreach (var vm in _cards)
+            {
+                bool inParty = party != null && party.Contains(vm.Character);
+                vm.Root.EnableInClassList("roster-card--selected", inParty);
+            }
+        }
+
         private CardViewModel BuildCard(BaseCharacter character)
         {
             var stat     = character.Stat;
@@ -79,7 +94,17 @@ namespace Bond.UI.Town
                             ((float)stat.current_Hp / Mathf.Max(1, stat.max_Hp) <= 0.3f ||
                              character.Insanity >= 80);
 
-            var card = new Button(() => _selector.ToggleSelection(character));
+            var card = new Button(() =>
+            {
+                _selector.ToggleSelection(character);
+                OnCardClicked?.Invoke(character);
+            });
+            card.RegisterCallback<PointerDownEvent>(evt =>
+            {
+                if (evt.button != 1) return;
+                OnCardRightClicked?.Invoke(character);
+                evt.StopPropagation();
+            });
             card.AddToClassList("roster-card");
             if (isDanger) card.AddToClassList("roster-card--danger");
 

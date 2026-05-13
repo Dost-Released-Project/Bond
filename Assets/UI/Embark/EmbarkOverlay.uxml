@@ -1,0 +1,93 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+
+    <ui:VisualElement name="embark-overlay" class="embark-overlay embark-overlay--hidden">
+
+        <!-- 상단 바 -->
+        <ui:VisualElement class="embark__topbar">
+            <ui:Label class="embark__title" text="탐사 출발" />
+            <ui:VisualElement class="embark__tabs">
+                <ui:Button name="tab-btn--step1" class="embark__tab-btn embark__tab-btn--active" text="1단계 · 목적지 및 인원" />
+                <ui:Button name="tab-btn--step2" class="embark__tab-btn" text="2단계 · 보급품 편성" />
+            </ui:VisualElement>
+            <ui:Label name="embark__party-count" class="embark__party-count" text="인원 0 / 4" />
+        </ui:VisualElement>
+
+        <!-- 본문 -->
+        <ui:VisualElement class="embark__body">
+
+            <!-- STEP 1 패널 -->
+            <ui:VisualElement name="embark__step1" class="embark__step1">
+
+                <ui:VisualElement class="embark__step1-left">
+
+                    <!-- 지도 플레이스홀더 -->
+                    <ui:VisualElement name="map-placeholder" class="embark__map-placeholder">
+                        <ui:Label class="embark__map-placeholder__label" text="지도 — 추후 구현 예정" />
+                    </ui:VisualElement>
+
+                    <!-- 목적지 정보 바 -->
+                    <ui:VisualElement name="dest-info-bar" class="embark__dest-info-bar">
+                        <ui:Label name="dest-info__name" class="dest-info__name" text="목적지 미선택" />
+                        <ui:Label name="dest-info__meta" class="dest-info__meta" text="" />
+                    </ui:VisualElement>
+
+                    <!-- 파티 슬롯 4개 -->
+                    <ui:VisualElement class="embark__party-slots">
+                        <ui:VisualElement name="embark__party-slot-0" class="embark__party-slot embark__party-slot--empty" />
+                        <ui:VisualElement name="embark__party-slot-1" class="embark__party-slot embark__party-slot--empty" />
+                        <ui:VisualElement name="embark__party-slot-2" class="embark__party-slot embark__party-slot--empty" />
+                        <ui:VisualElement name="embark__party-slot-3" class="embark__party-slot embark__party-slot--empty" />
+                    </ui:VisualElement>
+
+                </ui:VisualElement>
+
+                <!-- Roster 사이드 패널 마운트 영역 -->
+                <ui:VisualElement name="embark__roster-mount" class="embark__roster-mount" />
+
+            </ui:VisualElement>
+
+            <!-- STEP 2 패널 -->
+            <ui:VisualElement name="embark__step2" class="embark__step2 embark__step2--hidden">
+
+                <!-- 마을 인벤토리 (좌) -->
+                <ui:VisualElement class="embark__inventory-panel">
+                    <ui:Label class="embark__inventory-panel__title" text="마을 인벤토리" />
+                    <ui:ScrollView class="embark__inventory-scroll">
+                        <ui:VisualElement name="embark__town-inventory__list" class="embark__inventory-list" />
+                    </ui:ScrollView>
+                </ui:VisualElement>
+
+                <ui:VisualElement class="embark__transfer-divider" />
+
+                <!-- 탐사 보급품 (우) -->
+                <ui:VisualElement class="embark__inventory-panel">
+                    <ui:Label class="embark__inventory-panel__title" text="탐사 보급품" />
+                    <ui:ScrollView class="embark__inventory-scroll">
+                        <ui:VisualElement name="embark__raid-supplies__list" class="embark__inventory-list" />
+                    </ui:ScrollView>
+                </ui:VisualElement>
+
+            </ui:VisualElement>
+
+        </ui:VisualElement>
+
+        <!-- 푸터 -->
+        <ui:VisualElement class="embark__footer">
+
+            <ui:VisualElement name="embark__footer--step1" class="embark__footer-row">
+                <ui:Button name="btn-cancel" class="embark__btn-secondary" text="← 취소" />
+                <ui:Label class="embark__footer-hint" text="대원을 선택하고 다음 단계로 이동하세요." />
+                <ui:Button name="btn-next" class="embark__btn-action" text="다음 단계 →" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="embark__footer--step2" class="embark__footer-row embark__footer-row--hidden">
+                <ui:Button name="btn-prev" class="embark__btn-secondary" text="← 이전 단계" />
+                <ui:Label class="embark__footer-hint" text="보급품을 편성한 뒤 출발하세요." />
+                <ui:Button name="btn-depart" class="embark__btn-action" text="탐사 출발 →" />
+            </ui:VisualElement>
+
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+
+</ui:UXML>
