@@ -32,6 +32,7 @@
     border-bottom-width: 1px;
     border-bottom-color: var(--border-default);
     background-color: var(--bg-deep);
+    flex-shrink: 0;
 }
 
 .embark__title {
@@ -77,6 +78,7 @@
     flex-grow: 1;
     flex-direction: column;
     overflow: hidden;
+    min-height: 0;
 }
 
 /* ════════════════════════════════════════
@@ -85,6 +87,8 @@
 .embark__step1 {
     flex-grow: 1;
     flex-direction: row;
+    min-height: 0;
+    overflow: hidden;
 }
 
 .embark__step1--hidden {
@@ -220,33 +224,34 @@
     -unity-text-align: middle-center;
 }
 
-/* Roster 마운트 */
-.embark__roster-mount {
+/* ════════════════════════════════════════
+   Embark 로스터 패널 오버라이드
+   (absolute → flex item, step1 우측에 배치)
+   ════════════════════════════════════════ */
+.embark__step1 .roster-panel {
     position: relative;
+    right: auto;
+    top: auto;
     width: 220px;
-    flex-shrink: 0;
-}
-
-/* 마운트 안 카드 테두리 두께를 2px로 고정 (선택 시 크기 변동 방지) */
-.embark__roster-mount .roster-card {
-    border-width: 2px;
-}
-/* 파티에 편성된 대원 카드 강조 (일반 타운 selected보다 뚜렷하게) */
-.embark__roster-mount .roster-card--selected {
-    border-color: var(--text-accent);
-    border-width: 2px;
-    background-color: var(--bg-raised);
-}
-
-/* 마운트 안에서 roster-panel의 포지션·크기 재정의 */
-.embark__roster-mount .roster-panel {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
     max-height: 100%;
-    width: 220px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+/* 닫기 버튼 숨김 — Embark 로스터는 항상 표시 */
+.embark__step1 .roster-panel__close-btn {
+    display: none;
+}
+
+/* 카드 테두리 두께 고정 (선택 시 레이아웃 변동 방지) */
+.embark__step1 .roster-card {
+    border-width: 2px;
+}
+
+/* 파티 편성 대원 강조 */
+.embark__step1 .roster-card--selected {
+    border-color: var(--text-accent);
+    background-color: var(--bg-raised);
 }
 
 /* ════════════════════════════════════════
@@ -256,6 +261,7 @@
     flex-grow: 1;
     flex-direction: row;
     padding: 12px;
+    min-height: 0;
 }
 
 .embark__step2--hidden {
@@ -264,6 +270,8 @@
 
 .embark__inventory-panel {
     flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
     flex-direction: column;
     background-color: var(--bg-surface);
     border-width: 1px;
@@ -351,6 +359,7 @@
     border-top-width: 1px;
     border-top-color: var(--border-default);
     background-color: var(--bg-deep);
+    flex-shrink: 0;
 }
 
 .embark__footer-row {

@@ -11,16 +11,13 @@ namespace Bond.UI.Town
     {
         private readonly VisualElement _overlay;
         private readonly EmbarkController _controller;
-        private readonly TownRosterPanelPresenter _rosterPresenter;
-        private readonly VisualElement _rosterPanel;
-        private VisualElement _rosterOriginalParent;
+        private readonly TownRosterPanelPresenter _embarkRosterPresenter;
 
         private readonly VisualElement _step1Panel;
         private readonly VisualElement _step2Panel;
         private readonly VisualElement _footer1;
         private readonly VisualElement _footer2;
         private readonly Label _partyCountLabel;
-        private readonly VisualElement _rosterMount;
         private readonly VisualElement[] _partySlots = new VisualElement[4];
         private readonly VisualElement _townInventoryList;
         private readonly VisualElement _raidSuppliesList;
@@ -29,14 +26,14 @@ namespace Bond.UI.Town
 
         private readonly List<BaseCharacter> _partySnapshot = new(4);
 
-        public EmbarkPresenter(VisualElement townRoot, EmbarkController controller, TownRosterPanelPresenter rosterPresenter)
+        public EmbarkPresenter(VisualElement townRoot, EmbarkController controller, Roster roster)
         {
             _controller = controller;
-            _rosterPresenter = rosterPresenter;
 
             _overlay = townRoot.Q("embark-overlay");
-            _rosterPanel = townRoot.Q("roster-panel");
-            _rosterMount = _overlay.Q("embark__roster-mount");
+
+            var embarkSelector = new CharacterSelector();
+            _embarkRosterPresenter = new TownRosterPanelPresenter(_overlay, roster, embarkSelector);
 
             _step1Panel = _overlay.Q("embark__step1");
             _step2Panel = _overlay.Q("embark__step2");
@@ -64,14 +61,14 @@ namespace Bond.UI.Town
             _overlay.Q<Button>("btn-prev").clicked += () => GoToStep(1);
             _overlay.Q<Button>("btn-depart").clicked += _controller.ConfirmEmbark;
 
-            _rosterPresenter.OnCardClicked = character =>
+            _embarkRosterPresenter.OnCardClicked = character =>
             {
                 if (_partySnapshot.Contains(character))
                     _controller.RemovePartyMember(character);
                 else
                     _controller.AddPartyMember(character);
             };
-            _rosterPresenter.OnCardRightClicked = _controller.RemovePartyMember;
+            _embarkRosterPresenter.OnCardRightClicked = _controller.RemovePartyMember;
 
             _controller.OnOverlayOpened += Show;
             _controller.OnOverlayClosed += Hide;
@@ -82,12 +79,7 @@ namespace Bond.UI.Town
         {
             _overlay.RemoveFromClassList("embark-overlay--hidden");
             _overlay.AddToClassList("embark-overlay--visible");
-
-            _rosterOriginalParent = _rosterPanel.parent;
-            _rosterPanel.RemoveFromHierarchy();
-            _rosterMount.Add(_rosterPanel);
-            _rosterPresenter.Show();
-
+            _embarkRosterPresenter.Show();
             GoToStep(1);
         }
 
@@ -95,14 +87,7 @@ namespace Bond.UI.Town
         {
             _overlay.RemoveFromClassList("embark-overlay--visible");
             _overlay.AddToClassList("embark-overlay--hidden");
-
-            if (_rosterOriginalParent != null && _rosterPanel.parent != _rosterOriginalParent)
-            {
-                _rosterPanel.RemoveFromHierarchy();
-                _rosterOriginalParent.Add(_rosterPanel);
-                _rosterOriginalParent = null;
-            }
-            _rosterPresenter.Hide();
+            _embarkRosterPresenter.Hide();
         }
 
         public void GoToStep(int step)
@@ -165,7 +150,7 @@ namespace Bond.UI.Town
                 }
             }
 
-            _rosterPresenter.UpdatePartyHighlight(party);
+            _embarkRosterPresenter.UpdatePartyHighlight(party);
         }
 
         public void RefreshInventory(List<InventorySlot> townSlots, List<InventorySlot> raidSlots)

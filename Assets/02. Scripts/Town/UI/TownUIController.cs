@@ -31,7 +31,7 @@ namespace Bond.UI.Town
 
             _rosterPresenter = new TownRosterPanelPresenter(root, _roster, _selector);
             _detailPresenter = new CharacterDetailPresenter(root, _selector);
-            _embarkPresenter = new EmbarkPresenter(root, _embarkController, _rosterPresenter);
+            _embarkPresenter = new EmbarkPresenter(root, _embarkController, _roster);
 
             foreach (var tc in root.Query<TemplateContainer>().ToList())
                 tc.pickingMode = PickingMode.Ignore;
