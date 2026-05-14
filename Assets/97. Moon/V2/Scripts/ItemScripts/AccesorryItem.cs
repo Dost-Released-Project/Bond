@@ -8,7 +8,7 @@ public class AccessoryItem : BaseItem
     public List<StatModifier> specialEffects = new List<StatModifier>(); // 초기화 필수!
     
     // 인스펙터에서 값이 수정될 때 실행됩니다.
-    private void OnValidate()
+    protected override void OnValidate()
     {
         category = ItemCategory.Accessories;
         if (equipmentData != null)

@@ -17,7 +17,6 @@ public class InventoryView : MonoBehaviour
     private ScrollView _totalScroll;
 
     private ITotalInventory _totalInventory;
-    private IExpeditionInventory _expeditionInventory;
     private InventoryTransferService _transferService;
     private InventoryUIService _uiService;     // 추가된 서비스
     private ExpeditionResultService _expeditionResultService;
@@ -26,10 +25,10 @@ public class InventoryView : MonoBehaviour
     private ItemCategory? _currentFilter = null;
 
     [Inject]
-    public void Construct(ITotalInventory total, IExpeditionInventory expedition, 
-        InventoryTransferService service, InventoryUIService uiService, ExpeditionResultService expeditionResultService)
+    public void Construct(ITotalInventory total, InventoryTransferService service, 
+        InventoryUIService uiService, ExpeditionResultService expeditionResultService)
     {
-        _totalInventory = total; _expeditionInventory = expedition;
+        _totalInventory = total;
         _transferService = service; _uiService = uiService;
         _expeditionResultService = expeditionResultService;
     }
@@ -135,7 +134,6 @@ public class InventoryView : MonoBehaviour
         _root = GetComponent<UIDocument>().rootVisualElement;
         _totalScroll = _root.Q<ScrollView>("total-inventory-grid");
         _totalGrid = _root.Q<VisualElement>("total-grid");
-        _expeditionGrid = _root.Q<VisualElement>("expedition-inventory-grid");
 
         // 드래그 고스트 설정 (UIService로 관리)
         _dragGhost = new VisualElement();
@@ -152,7 +150,7 @@ public class InventoryView : MonoBehaviour
         _searchField?.RegisterValueChangedCallback(evt => { _currentSearch = evt.newValue; RefreshUI(); });
 
         _root.Q<Button>("btn-sort")?.RegisterCallback<ClickEvent>(evt => { 
-            _totalInventory.SortById(); _expeditionInventory.SortById(); RefreshUI(); 
+            _totalInventory.SortById(); RefreshUI(); 
         });
         _root.Q<Button>("btn-filter-consumable")?.RegisterCallback<ClickEvent>(evt => SetFilter(ItemCategory.Consume));
         _root.Q<Button>("btn-filter-accessory")?.RegisterCallback<ClickEvent>(evt => SetFilter(ItemCategory.Accessories));
@@ -160,10 +158,8 @@ public class InventoryView : MonoBehaviour
         _root.Q<Button>("btn-close")?.RegisterCallback<ClickEvent>(evt => ToggleWindow(false));
 
         _totalInventory.OnChanged += RefreshUI;
-        _expeditionInventory.OnChanged += RefreshUI;
         
         SyncSlotCount(_totalGrid, _totalInventory.Capacity, _totalSlotElements, _totalInventory);
-        SyncSlotCount(_expeditionGrid, _expeditionInventory.Capacity, _expeditionSlotElements, _expeditionInventory);
     }
 
     public void ToggleWindow(bool show)
@@ -189,13 +185,10 @@ public class InventoryView : MonoBehaviour
     public void RefreshUI()
     {
         SyncSlotCount(_totalGrid, _totalInventory.Capacity, _totalSlotElements, _totalInventory);
-        SyncSlotCount(_expeditionGrid, _expeditionInventory.Capacity, _expeditionSlotElements, _expeditionInventory);
 
         var totalVisible = _totalInventory.GetFilteredIndices(_currentSearch, _currentFilter);
-        var expeditionVisible = _expeditionInventory.GetFilteredIndices("", null);
 
         UpdateGrid(_totalSlotElements, _totalInventory, totalVisible);
-        UpdateGrid(_expeditionSlotElements, _expeditionInventory, expeditionVisible);
         
         SaveTotalInventory();
     }
@@ -215,7 +208,8 @@ public class InventoryView : MonoBehaviour
                 {
                     var icon = new VisualElement();
                     icon.style.backgroundImage = new StyleBackground(data.item.icon);
-                    icon.style.width = Length.Percent(100); icon.style.height = Length.Percent(100);
+                    icon.style.width = Length.Percent(100); 
+                    icon.style.height = Length.Percent(100);
                     visual.Add(icon);
                     var label = new Label(data.quantity.ToString());
                     label.AddToClassList("slot-quantity-label");
@@ -234,11 +228,6 @@ public class InventoryView : MonoBehaviour
             if (slot.IsEmpty) return;
             // UIService를 통해 드래그 시작
             _uiService.StartDrag(inv, index, slot.item.icon, _dragGhost, evt.position, new Vector2(30, 30));
-        }
-        else if (evt.button == 1)
-        {
-            var target = (inv is ITotalInventory) ? (IInventory)_expeditionInventory : (IInventory)_totalInventory;
-            _transferService.MoveOneFromSlot(inv, index, target);
         }
     }
 

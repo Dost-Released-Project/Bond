@@ -1,9 +1,12 @@
 using System;
 using UnityEngine;
+using VContainer;
 
 public class CharacterItemService
 {
     public event Action OnEquipmentChanged;
+    
+    //[Inject] private CharacterSelector _characterSeletor;
 
     public void UseItem(BaseCharacter hero, IInventory sourceInv, int index)
     {
@@ -96,6 +99,7 @@ public class CharacterItemService
     public void EquipFromDrag(IInventory sourceInv, int invIndex, int charSlotIndex)
     {
         var hero = AdminTestTool.testHero;
+        //var hero = _characterSeletor.Selected;
         var slot = sourceInv.GetSlot(invIndex);
         if (hero == null || slot.IsEmpty || slot.item is not AccessoryItem accItem) return;
 
@@ -125,6 +129,7 @@ public class CharacterItemService
     public bool AutoEquip(IInventory sourceInv, int invIndex)
     {
         var hero = AdminTestTool.testHero;
+        //var hero = _characterSeletor.Selected;
         var slot = sourceInv.GetSlot(invIndex);
         if (hero == null || slot.item is not AccessoryItem accItem) return false;
 

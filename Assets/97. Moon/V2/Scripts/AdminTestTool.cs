@@ -51,6 +51,7 @@ public class AdminTestTool : MonoBehaviour
         }
     }
     
+    [Obsolete("Obsolete")]
     void Update()
     {
         // 1. 캐릭터 데미지 입히기 (식당 테스트용)

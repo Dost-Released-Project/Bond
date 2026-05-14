@@ -9,7 +9,8 @@ public class EquipmentSlotUI : MonoBehaviour
     private List<VisualElement> _accSlots = new();
     
     private CharacterItemService _itemService;
-    private InventoryTransferService _transferService; 
+    private InventoryTransferService _transferService;
+    //[Inject] private CharacterSelector _characterSeletor;
 
     [Inject]
     public void Construct(CharacterItemService itemService, InventoryTransferService transferService)
@@ -26,6 +27,7 @@ public class EquipmentSlotUI : MonoBehaviour
         _root = uiDoc.rootVisualElement;
 
         var hero = AdminTestTool.testHero;
+        // var hero = _characterSeletor.Selected;
         if (hero != null && hero.Data != null)
         {
             for (int i = 0; i < hero.Data.Equips.Length; i++)
@@ -52,6 +54,7 @@ public class EquipmentSlotUI : MonoBehaviour
             if (evt.button == 0) // 좌클릭
             {
                 var hero = AdminTestTool.testHero;
+                // var hero = _characterSeletor.Selected;
                 if (hero?.Data?.Equips != null && index < hero.Data.Equips.Length)
                 {
                     var eq = hero.Data.Equips[index];
@@ -82,6 +85,7 @@ public class EquipmentSlotUI : MonoBehaviour
     public void RefreshUI()
     {
         var hero = AdminTestTool.testHero;
+        // var hero = _characterSeletor.Selected;
         if (hero?.Data?.Equips == null) return;
 
         for (int i = 0; i < _accSlots.Count; i++)

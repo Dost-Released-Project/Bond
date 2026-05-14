@@ -16,6 +16,7 @@ public class ExpeditionInventoryView : MonoBehaviour
     [Inject] private InventoryTransferService _transferService;
     [Inject] private CharacterItemService _itemService;
     [Inject] private ExpeditionPayload _payload;
+    //[Inject] private CharacterSelector _characterSeletor;
     
     private VisualElement _slotContainer;
     private List<VisualElement> _slots = new();
@@ -66,6 +67,7 @@ public class ExpeditionInventoryView : MonoBehaviour
                 if (!_slotContainer.worldBound.Contains(evt.position))
                 {
                     var hero = AdminTestTool.testHero;
+                    //var hero = _characterSeletor.Selected;
                     if (hero != null)
                     {
                         _itemService.DiscardEquipment(hero, _transferService.SourceEquipmentSlotIndex);
@@ -130,6 +132,7 @@ public class ExpeditionInventoryView : MonoBehaviour
                 else if (evt.button == 1) { // 우클릭 자동 사용/장착
                     if (data.item.category == ItemCategory.Accessories) _itemService.AutoEquip(_payload.Supplies, index);
                     else if (data.item.category == ItemCategory.Consume) _itemService.UseItem(AdminTestTool.testHero, _payload.Supplies, index);
+                    //else if (data.item.category == ItemCategory.Consume) _itemService.UseItem(_characterSeletor.Selected, _payload.Supplies, index);
                 }
             });
 
@@ -139,8 +142,10 @@ public class ExpeditionInventoryView : MonoBehaviour
                     _transferService.ResetDrag();
                     evt.StopPropagation(); // 정상 슬롯에 안착했으므로 최상위 '영역 밖 버리기'로 이벤트가 흐르지 않게 차단
                 }
-                else if (_transferService.IsDraggingFromEquipment) {
+                else if (_transferService.IsDraggingFromEquipment)
+                {
                     var hero = AdminTestTool.testHero;
+                    //var hero = _characterSeletor.Selected;
                     if (hero != null) {
                         _itemService.UnequipToInventorySlot(hero, _transferService.SourceEquipmentSlotIndex, _payload.Supplies, index);
                     }
