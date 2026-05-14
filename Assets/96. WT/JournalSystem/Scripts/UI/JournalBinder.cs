@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using VContainer;
 using VContainer.Unity;
 
@@ -13,6 +16,9 @@ namespace Bond.WT.Journal
         private readonly JournalModel _model;
         private readonly IJournalVisualizer _view;
         private readonly JournalSystem _system;
+        private readonly ISpriteLoader _spriteLoader;
+
+        private AsyncOperationHandle<Sprite>? _currentIconHandle;
 
         // IObserver 구현을 위한 핸들러들
         Action<string> IObserver<string>.EventHandler { get; set; }
@@ -21,11 +27,12 @@ namespace Bond.WT.Journal
         Action<JournalReport> IObserver<JournalReport>.EventHandler { get; set; }
 
         [Inject]
-        public JournalBinder(JournalModel model, IJournalVisualizer view, JournalSystem system)
+        public JournalBinder(JournalModel model, IJournalVisualizer view, JournalSystem system, ISpriteLoader spriteLoader)
         {
             _model = model;
             _view = view;
             _system = system;
+            _spriteLoader = spriteLoader;
 
             // 핸들러 설정
             ((IObserver<string>)this).EventHandler = text => 
@@ -41,7 +48,10 @@ namespace Bond.WT.Journal
 
             ((IObserver<JournalReport>)this).EventHandler = report => 
             {
-                if (report != null) _view.SetIcon(report.Icon);
+                if (report != null)
+                {
+                    LoadAndSetIconAsync(report.IconId).Forget();
+                }
             };
 
             ((IObserver<bool>)this).EventHandler = isComplete => 
@@ -50,8 +60,41 @@ namespace Bond.WT.Journal
                 {
                     _view.ClearUI();
                     _view.SetVisible(false);
+                    ReleaseIconHandle();
                 }
             };
+        }
+
+        private async UniTaskVoid LoadAndSetIconAsync(string iconId)
+        {
+            ReleaseIconHandle();
+
+            if (string.IsNullOrEmpty(iconId))
+            {
+                _view.SetIcon(null);
+                return;
+            }
+
+            var handle = await _spriteLoader.LoadAsync(iconId);
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                _currentIconHandle = handle;
+                _view.SetIcon(handle.Result);
+            }
+            else
+            {
+                UnityEngine.AddressableAssets.Addressables.Release(handle);
+                _view.SetIcon(null);
+            }
+        }
+
+        private void ReleaseIconHandle()
+        {
+            if (_currentIconHandle.HasValue)
+            {
+                UnityEngine.AddressableAssets.Addressables.Release(_currentIconHandle.Value);
+                _currentIconHandle = null;
+            }
         }
 
         public void Start()
@@ -77,6 +120,7 @@ namespace Bond.WT.Journal
             _model.CurrentOptions.Unsubscribe(this);
             _model.IsJournalComplete.Unsubscribe(this);
             _model.CurrentReport.Unsubscribe(this);
+            ReleaseIconHandle();
         }
     }
 }

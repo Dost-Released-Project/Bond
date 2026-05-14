@@ -6,8 +6,8 @@
 	04									
 	05									
 (string)	(string)	(enum)	(int)	(int)	(int)	(int)	(int)	(string)		
-ID	ItemName	Category	BonusSTR	BonusAGI	BonusINT	TotalMax	ExpSlotMax	IconPath		
-08000000	The Ring of Power	Accessories	5	0	0	1	1	Sprite/Item/Ring_STR		
+ID	ItemName	Category	BonusSTR	BonusAGI	BonusINT	TotalMax	ExpSlotMax	IconPath	ModifierIDs	
+08000000	The Ring of Power	Accessories	5	0	0	1	1	Sprite/Item/Ring_STR	13000000,13010000,13020000	
 08010000	The Ring of Agility	Accessories	0	5	0	1	1	Sprite/Item/Ring_AGI		
 08020000	The Ring of Intelligence	Accessories	0	0	5	1	1	Sprite/Item/Ring_INT		
 08030000	The Ring of Master	Accessories	2	2	2	1	1	Sprite/Item/Ring_Master		

@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: DE_03050000
   m_EditorClassIdentifier: Assembly-CSharp::DefaultEquipSO
   _id: 03050000
-  _displayName: Assasin
+  _displayName: Assassin
   _description: 
-  ClassType: Assasin
+  ClassType: Assassin
   STR: 1
   AGI: 0
   INT: 1

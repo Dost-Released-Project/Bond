@@ -10,7 +10,7 @@ namespace Bond.WT.Journal
     {
         public string Title;
         public string Description;
-        public Sprite Icon;
+        public string IconId;
         public List<JournalOption> Options = new List<JournalOption>();
         
         // 추가적인 메타데이터 (누가 보냈는지 등)

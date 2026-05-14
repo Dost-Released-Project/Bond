@@ -66,5 +66,6 @@ namespace Bond.WT.Journal
 
             // 다음 사건으로 진행
             _model.TryNextReport();
-        }    }
+        }    
+    }
 }

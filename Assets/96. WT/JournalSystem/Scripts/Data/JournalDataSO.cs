@@ -25,18 +25,19 @@ namespace Bond.WT.Journal
         [SerializeField] private List<JournalOption> _options = new List<JournalOption>();
 
         [Header("시각 연출")]
-        [SerializeField] private Sprite _entryIcon;
+        [Tooltip("Addressables에서 로드할 Sprite의 Key (비워두면 아이콘 숨김)")]
+        [SerializeField] private string _entryIconId;
 
         public IReadOnlyList<string> Paragraphs => _paragraphs;
         public IReadOnlyList<JournalOption> Options => _options;
-        public Sprite EntryIcon => _entryIcon;
+        public string EntryIconId => _entryIconId;
 
-        public void SetData(string id, List<string> paragraphs, List<JournalOption> options, Sprite icon)
+        public void SetData(string id, List<string> paragraphs, List<JournalOption> options, string iconId)
         {
             base.Initialize(id, id, ""); // Name과 Desc는 ID로 대체 또는 빈값
             this._paragraphs = paragraphs;
             this._options = options;
-            this._entryIcon = icon;
+            this._entryIconId = iconId;
         }
     }
 }

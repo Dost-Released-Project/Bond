@@ -1,27 +1,28 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 namespace Bond.WT.Journal
 {
     /// <summary>
-    /// [World Visualizer] 일지 UI의 시각적 연출 제어 (UGUI 구현체)
+    /// [World Visualizer] 일지 UI의 시각적 연출 제어 (UI Toolkit 구현체)
     /// </summary>
+    [RequireComponent(typeof(UIDocument))]
     public class JournalUIView : MonoBehaviour, IJournalVisualizer
     {
-        [Header("UI Components")]
-        [SerializeField] private GameObject _rootPanel; // 전체 UI를 끄고 켤 루트
-        [SerializeField] private TextMeshProUGUI _contentText;
-        [SerializeField] private Image _entryIconImage;
-        [SerializeField] private Transform _optionButtonContainer;
-        [SerializeField] private Button _optionButtonPrefab;
-        [SerializeField] private Button _nextButton;
-
-        [Header("Settings")]
+        [Header("UI Toolkit Settings")]
+        [Tooltip("선택지 버튼 한 개를 구성하는 UXML 템플릿")]
+        [SerializeField] private VisualTreeAsset _optionButtonTemplate;
         [SerializeField] private float _typingSpeed = 0.05f;
+
+        // UI Elements
+        private VisualElement _rootPanel;
+        private Label _contentLabel;
+        private VisualElement _entryIconImage;
+        private VisualElement _optionButtonContainer;
+        private Button _nextButton;
 
         // IJournalVisualizer 인터페이스 구현
         public Action OnNextClicked { get; set; }
@@ -29,31 +30,48 @@ namespace Bond.WT.Journal
 
         private Coroutine _typingCoroutine;
 
-        private void Awake()
+        private void OnEnable()
         {
+            var uiDocument = GetComponent<UIDocument>();
+            var root = uiDocument.rootVisualElement;
+
+            if (root == null) return;
+
+            // UXML에 정의된 Name(#)으로 요소 쿼리
+            _rootPanel = root.Q<VisualElement>("RootPanel");
+            _contentLabel = root.Q<Label>("ContentLabel");
+            _entryIconImage = root.Q<VisualElement>("IconImage");
+            _optionButtonContainer = root.Q<VisualElement>("OptionContainer");
+            _nextButton = root.Q<Button>("NextButton");
+
             if (_nextButton != null)
-                _nextButton.onClick.AddListener(() => OnNextClicked?.Invoke());
+            {
+                _nextButton.clicked += () => OnNextClicked?.Invoke();
+            }
+
+            // 시작 시 UI 숨김
+            SetVisible(false);
         }
 
         public void SetVisible(bool isVisible)
         {
-            if (_rootPanel != null) _rootPanel.SetActive(isVisible);
+            if (_rootPanel != null)
+            {
+                _rootPanel.style.display = isVisible ? DisplayStyle.Flex : DisplayStyle.None;
+            }
         }
 
         public void ClearUI()
         {
-            if (_contentText != null) _contentText.text = string.Empty;
-            if (_entryIconImage != null) _entryIconImage.gameObject.SetActive(false);
+            if (_contentLabel != null) _contentLabel.text = string.Empty;
+            if (_entryIconImage != null) _entryIconImage.style.display = DisplayStyle.None;
             
             if (_optionButtonContainer != null)
             {
-                foreach (Transform child in _optionButtonContainer)
-                {
-                    Destroy(child.gameObject);
-                }
+                _optionButtonContainer.Clear();
             }
             
-            if (_nextButton != null) _nextButton.gameObject.SetActive(false);
+            if (_nextButton != null) _nextButton.style.display = DisplayStyle.None;
         }
 
         public void ShowText(string text, bool isTyping = true)
@@ -66,22 +84,22 @@ namespace Bond.WT.Journal
             }
             else
             {
-                if (_contentText != null) _contentText.text = text;
+                if (_contentLabel != null) _contentLabel.text = text;
             }
         }
 
         private IEnumerator Co_TypeText(string text)
         {
-            if (_contentText == null) yield break;
+            if (_contentLabel == null) yield break;
 
-            _contentText.text = string.Empty;
+            _contentLabel.text = string.Empty;
             foreach (char c in text)
             {
-                _contentText.text += c;
+                _contentLabel.text += c;
                 yield return new WaitForSeconds(_typingSpeed);
             }
             _typingCoroutine = null;
-            if (_nextButton != null) _nextButton.gameObject.SetActive(true);
+            if (_nextButton != null) _nextButton.style.display = DisplayStyle.Flex;
         }
 
         public void SetIcon(Sprite icon)
@@ -90,12 +108,12 @@ namespace Bond.WT.Journal
 
             if (icon != null)
             {
-                _entryIconImage.sprite = icon;
-                _entryIconImage.gameObject.SetActive(true);
+                _entryIconImage.style.backgroundImage = new StyleBackground(icon);
+                _entryIconImage.style.display = DisplayStyle.Flex;
             }
             else
             {
-                _entryIconImage.gameObject.SetActive(false);
+                _entryIconImage.style.display = DisplayStyle.None;
             }
         }
 
@@ -103,25 +121,32 @@ namespace Bond.WT.Journal
         {
             if (_optionButtonContainer == null) return;
 
-            foreach (Transform child in _optionButtonContainer)
-            {
-                Destroy(child.gameObject);
-            }
+            _optionButtonContainer.Clear();
 
             if (options == null || options.Count == 0) return;
 
             foreach (var option in options)
             {
-                if (_optionButtonPrefab == null) continue;
+                if (_optionButtonTemplate == null)
+                {
+                    Debug.LogWarning("[JournalUIView] Option Button Template 이 비어있습니다.");
+                    continue;
+                }
 
-                var btn = Instantiate(_optionButtonPrefab, _optionButtonContainer);
-                var tmp = btn.GetComponentInChildren<TextMeshProUGUI>();
-                if (tmp != null) tmp.text = option.text;
+                // 템플릿 인스턴스화
+                TemplateContainer buttonInstance = _optionButtonTemplate.Instantiate();
+                var btn = buttonInstance.Q<Button>(); // 템플릿 내부의 루트가 Button이거나, 자식 중 Button을 찾음
                 
-                btn.onClick.AddListener(() => OnOptionSelected?.Invoke(option));
+                if (btn != null)
+                {
+                    btn.text = option.text;
+                    btn.clicked += () => OnOptionSelected?.Invoke(option);
+                }
+
+                _optionButtonContainer.Add(buttonInstance);
             }
             
-            if (_nextButton != null) _nextButton.gameObject.SetActive(false);
+            if (_nextButton != null) _nextButton.style.display = DisplayStyle.None;
         }
     }
 }

@@ -12,12 +12,12 @@ public class JournalDTO
     public string ID { get; set; }
     public string Paragraphs { get; set; }
     public string Options { get; set; }
-    public string IconPath { get; set; }
+    public string IconID { get; set; }
 }
 
 public class JournalParser : TSVParserBase<JournalDTO, JournalDataSO>
 {
-    public override string TargetFileName => "Journal"; // Journal.tsv 로드
+    public override string TargetFileName => "JournalData"; // JournalData.tsv 로드
 
     protected override string GetAssetName(JournalDTO dto) => $"JournalData/JO_{dto.ID}";
 
@@ -53,14 +53,10 @@ public class JournalParser : TSVParserBase<JournalDTO, JournalDataSO>
             }
         }
 
-        // 아이콘 로드
-        Sprite icon = null;
-        if (!string.IsNullOrEmpty(dto.IconPath))
-        {
-            icon = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/{dto.IconPath}.png");
-        }
+        // Addressable을 위해 ID만 저장
+        string iconId = dto.IconID?.Trim();
 
-        so.SetData(dto.ID, paragraphs, options, icon);
+        so.SetData(dto.ID, paragraphs, options, iconId);
     }
 
     protected override void OnPostImport(string outputDir)
@@ -79,13 +75,12 @@ public class JournalParser : TSVParserBase<JournalDTO, JournalDataSO>
             if (asset != null) assets.Add(asset);
         }
 
-        // 공용 DataBaseSO 또는 전용 DataBaseSO 사용 가능
-        // 여기서는 BuildingParser 방식을 따라 전용 DB 생성 시뮬레이션
+        // JournalDataBaseSO 전용 DB 생성
         string dbPath = Path.Combine(outputDir, "JournalDataBase.asset");
-        var db = AssetDatabase.LoadAssetAtPath<DataBaseSO>(dbPath);
+        var db = AssetDatabase.LoadAssetAtPath<JournalDataBaseSO>(dbPath);
         if (db == null)
         {
-            db = ScriptableObject.CreateInstance<DataBaseSO>();
+            db = ScriptableObject.CreateInstance<JournalDataBaseSO>();
             AssetDatabase.CreateAsset(db, dbPath);
         }
 
@@ -94,6 +89,10 @@ public class JournalParser : TSVParserBase<JournalDTO, JournalDataSO>
 
         EditorUtility.SetDirty(db);
         AssetDatabase.SaveAssetIfDirty(db);
+
+        // 어드레서블 자동 등록 복구
+        AddressableHelper.RegisterToAddressable(dbPath);
+
         Debug.Log($"[JournalParser] 일지 DB 통합 완료: {assets.Count}개 등록");
     }
 }
@@ -105,6 +104,6 @@ public sealed class JournalMap : ClassMap<JournalDTO>
         Map(m => m.ID).Name("ID");
         Map(m => m.Paragraphs).Name("Paragraphs");
         Map(m => m.Options).Name("Options");
-        Map(m => m.IconPath).Name("IconPath");
+        Map(m => m.IconID).Name("IconID");
     }
 }
