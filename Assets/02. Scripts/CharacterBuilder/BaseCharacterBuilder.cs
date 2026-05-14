@@ -31,8 +31,13 @@ public partial class BaseCharacter
 
         private DataBaseSO professionDb = null;
         private DataBaseSO skillDb = null;
+        private DataBaseSO equipDb = null;
         
-        public Builder(DataBaseSO proDb, DataBaseSO skillDb)
+        public Builder(
+            DataBaseSO proDb,
+            DataBaseSO skillDb,
+            DataBaseSO equipDb
+            )
         {
             chara.Data.Id = "Missing Id";
             chara.Data.ImageAddress = "Missing ImageAddress";
@@ -44,9 +49,14 @@ public partial class BaseCharacter
             
             this.professionDb = proDb;
             this.skillDb = skillDb;
+            this.equipDb = equipDb;
         }
 
-        public BaseCharacter Build() => chara;
+        public BaseCharacter Build()
+        {
+            chara.CalcStat();
+            return chara;
+        }
 
         public Builder SetId(string id)
         {
@@ -66,9 +76,29 @@ public partial class BaseCharacter
             return this;
         }
 
-        public Builder SetProfession(Profession pro)
+        public Builder SetWeapon(Equipment weapon)
         {
+            chara.Data.Weapon = weapon;
+            return this;
+        }
+
+        public Builder SetArmor(Equipment armor)
+        {
+            chara.Data.Armor = armor;
+            return this;
+        }
+
+        public Builder SetProfession(ClassSO data)
+        {
+            Profession pro = new Profession(data);
             chara.Data.Profession = pro;
+            
+            var weaponSo = equipDb.GetSO<DefaultEquipSO>(data.DefaultWeaponId);
+            var armorSo = equipDb.GetSO<DefaultEquipSO>(data.DefaultArmorId);
+
+            SetWeapon(new Equipment(weaponSo));
+            SetArmor(new Equipment(armorSo));
+            
             return this;
         }
 
@@ -87,8 +117,7 @@ public partial class BaseCharacter
         public Builder SetRandomProfession()
         {
             var data = professionDb.GetRandom<ClassSO>();
-            Profession pro = new Profession(data);
-            SetProfession(pro);
+            SetProfession(data);
             return this;
         }
 
