@@ -28,3 +28,7 @@ MonoBehaviour:
     Gid: 770208132
   - SheetName: MonsterGroup
     Gid: 751043864
+  - SheetName: EventData
+    Gid: 1839847849
+  - SheetName: EventChoice
+    Gid: 539387026
