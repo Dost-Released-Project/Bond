@@ -56,7 +56,6 @@ public class AccessoryParser : TSVParserBase<AccessoryDTO, AccessoryItem>
 
             if (db != null)
             {
-                so.specialEffects.Clear(); // 중복 방지를 위해 초기화 후 추가
                 foreach (var id in ids)
                 {
                     var modSO = db.GetSO<StatModifierDataSO>(id.Trim());

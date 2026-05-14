@@ -23,6 +23,8 @@ public class InventoryView : MonoBehaviour
     
     private string _currentSearch = "";
     private ItemCategory? _currentFilter = null;
+    
+    private VisualElement _tooltip; // 상세 정보를 띄울 최상위 레이어
 
     [Inject]
     public void Construct(ITotalInventory total, InventoryTransferService service, 
@@ -128,44 +130,40 @@ public class InventoryView : MonoBehaviour
         // 3. 세이브 시스템 실행
         SaveLoadSystem.Save(save);
     }
-
+    
     private void SetupUI()
     {
         _root = GetComponent<UIDocument>().rootVisualElement;
-        _totalScroll = _root.Q<ScrollView>("total-inventory-grid");
         _totalGrid = _root.Q<VisualElement>("total-grid");
+        _totalScroll = _root.Q<ScrollView>("total-inventory-grid");
 
-        // 드래그 고스트 설정 (UIService로 관리)
-        _dragGhost = new VisualElement();
-        _dragGhost.style.position = Position.Absolute;
-        _dragGhost.pickingMode = PickingMode.Ignore;
-        _dragGhost.style.visibility = Visibility.Hidden;
-        _dragGhost.style.width = 60; _dragGhost.style.height = 60;
-        _root.Add(_dragGhost);
-        
+        // 1. 툴팁 & 드래그 고스트 초기화
+        _tooltip = CreateOverlayElement("inventory-tooltip");
+        _dragGhost = CreateOverlayElement(null, 60);
         _root.RegisterCallback<PointerMoveEvent>(OnPointerMove);
 
-        // 버튼 및 필드 연결 (기존 기능 100% 유지)
+        // 2. 버튼 및 검색 필드 (기존 로직 유지)
         _searchField = _root.Q<TextField>("inventory-search");
         _searchField?.RegisterValueChangedCallback(evt => { _currentSearch = evt.newValue; RefreshUI(); });
-
-        _root.Q<Button>("btn-sort")?.RegisterCallback<ClickEvent>(evt => { 
-            _totalInventory.SortById(); RefreshUI(); 
-        });
+        _root.Q<Button>("btn-sort")?.RegisterCallback<ClickEvent>(evt => { _totalInventory.SortById(); RefreshUI(); });
         _root.Q<Button>("btn-filter-consumable")?.RegisterCallback<ClickEvent>(evt => SetFilter(ItemCategory.Consume));
         _root.Q<Button>("btn-filter-accessory")?.RegisterCallback<ClickEvent>(evt => SetFilter(ItemCategory.Accessories));
         _root.Q<Button>("btn-filter-all")?.RegisterCallback<ClickEvent>(evt => SetFilter(null));
         _root.Q<Button>("btn-close")?.RegisterCallback<ClickEvent>(evt => ToggleWindow(false));
 
         _totalInventory.OnChanged += RefreshUI;
-        
         SyncSlotCount(_totalGrid, _totalInventory.Capacity, _totalSlotElements, _totalInventory);
     }
 
-    public void ToggleWindow(bool show)
+    // 오버레이 요소 생성 헬퍼 (코드 단축)
+    private VisualElement CreateOverlayElement(string className, float size = -1)
     {
-        _root.Q<VisualElement>("inventory-container").style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
-        if (show) { if (_totalScroll != null) _totalScroll.scrollOffset = Vector2.zero; RefreshUI();}
+        var ve = new VisualElement { style = { position = Position.Absolute, visibility = Visibility.Hidden } };
+        ve.pickingMode = PickingMode.Ignore;
+        if (!string.IsNullOrEmpty(className)) ve.AddToClassList(className);
+        if (size > 0) { ve.style.width = size; ve.style.height = size; }
+        _root.Add(ve);
+        return ve;
     }
 
     private void SyncSlotCount(VisualElement container, int targetCount, List<VisualElement> list, IInventory inv)
@@ -174,12 +172,110 @@ public class InventoryView : MonoBehaviour
         {
             int index = list.Count;
             var slot = new VisualElement();
-            slot.AddToClassList("inventory-slot-base");
+            slot.AddToClassList("inventory-list-item");
+            
+            // [복구] 초기 드래그 앤 드롭 로직 그대로 사용
             slot.RegisterCallback<PointerDownEvent>(evt => OnPointerDown(evt, inv, index));
             slot.RegisterCallback<PointerUpEvent>(evt => OnPointerUp(evt, inv, index));
+            
+            slot.RegisterCallback<MouseEnterEvent>(evt => ShowTooltip(inv.GetSlot(index), evt.mousePosition));
+            slot.RegisterCallback<MouseLeaveEvent>(evt => HideTooltip());
+
             container.Add(slot);
             list.Add(slot);
         }
+    }
+
+    private void UpdateGrid(List<VisualElement> elements, IInventory inv, IEnumerable<int> visibleIndices)
+    {
+        var visibleSet = new HashSet<int>(visibleIndices);
+        for (int i = 0; i < elements.Count; i++)
+        {
+            var visual = elements[i]; visual.Clear();
+            if (!visibleSet.Contains(i)) { visual.style.display = DisplayStyle.None; continue; }
+
+            visual.style.display = DisplayStyle.Flex;
+            var data = inv.GetSlot(i);
+            if (data.IsEmpty) continue;
+
+            // 아이콘
+            var icon = new VisualElement { style = { width = 55, height = 55, backgroundImage = new StyleBackground(data.item.icon) } };
+            icon.style.unityBackgroundScaleMode = ScaleMode.ScaleToFit;
+            visual.Add(icon);
+
+            // 텍스트 그룹 (이름 + 타입)
+            var textGroup = new VisualElement { style = { flexGrow = 1, marginLeft = 15, justifyContent = Justify.Center } };
+            textGroup.Add(new Label(data.item.DisplayName) { style = { color = Color.white, fontSize = 16, unityFontStyleAndWeight = FontStyle.Bold } });
+            textGroup.Add(new Label(data.item.category.ToString()) { style = { color = new Color(0.7f, 0.7f, 0.7f), fontSize = 12 } });
+            visual.Add(textGroup);
+
+            // 수량
+            visual.Add(new Label($"{data.quantity} / {data.item.totalGlobalMax}") { 
+                style = { color = Color.white, width = 70, unityTextAlign = TextAnchor.MiddleRight } 
+            });
+        }
+    }
+
+    private void ShowTooltip(InventorySlot slot, Vector2 position)
+    {
+        if (slot.IsEmpty || _uiService.CurrentSourceInventory != null) return;
+
+        _tooltip.Clear();
+        _tooltip.Add(new Label(slot.item.DisplayName) { name = "title" });
+        _tooltip.Q<Label>("title").AddToClassList("tooltip-title");
+
+        AddTooltipLabel($"설명: {(string.IsNullOrEmpty(slot.item.Description) ? "내용 없음" : slot.item.Description)}");
+        AddTooltipLabel($"전체 최대치: {slot.item.totalGlobalMax}");
+        AddTooltipLabel($"가방 제한: {slot.item.expeditionSlotMax}"); // [복구] 누락 데이터 추가
+
+        if (slot.item is ConsumableItem con) AddTooltipLabel($"회복량: <color=#00FF00>{con.healValue}</color>");
+        if (slot.item is AccessoryItem acc)
+        {
+            AddTooltipLabel("\n[장착 효과]");
+            foreach (var effect in acc.specialEffects)
+                AddTooltipLabel($"- {effect.name}: {effect.value} ({effect.mode})");
+        }
+
+        _tooltip.style.left = position.x + 20;
+        _tooltip.style.top = position.y + 20;
+        _tooltip.style.visibility = Visibility.Visible;
+        _tooltip.BringToFront();
+    }
+
+    private void AddTooltipLabel(string text)
+    {
+        var label = new Label(text);
+        label.AddToClassList("tooltip-text");
+        _tooltip.Add(label);
+    }
+
+    // 드래그 로직 (초기 버전 복구)
+    private void OnPointerDown(PointerDownEvent evt, IInventory inv, int index)
+    {
+        if (evt.button == 0 && !inv.GetSlot(index).IsEmpty)
+        {
+            HideTooltip();
+            _uiService.StartDrag(inv, index, inv.GetSlot(index).item.icon, _dragGhost, evt.position, new Vector2(30, 30));
+        }
+    }
+
+    private void OnPointerUp(PointerUpEvent evt, IInventory targetInv, int targetIndex)
+    {
+        if (_uiService.CurrentSourceInventory != null)
+        {
+            _transferService.ExecuteDragDrop(_uiService.CurrentSourceInventory, _uiService.CurrentDraggingIndex, targetInv, targetIndex);
+            _uiService.ResetDrag();
+        }
+    }
+
+    private void OnPointerMove(PointerMoveEvent evt) {
+        if (_uiService.CurrentSourceInventory != null) _uiService.UpdateGhostPosition(evt.position, new Vector2(30, 30));
+    }
+    
+    public void ToggleWindow(bool show)
+    {
+        _root.Q<VisualElement>("inventory-container").style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
+        if (show) { if (_totalScroll != null) _totalScroll.scrollOffset = Vector2.zero; RefreshUI();}
     }
 
     public void RefreshUI()
@@ -193,56 +289,7 @@ public class InventoryView : MonoBehaviour
         SaveTotalInventory();
     }
 
-    private void UpdateGrid(List<VisualElement> elements, IInventory inv, IEnumerable<int> visibleIndices)
-    {
-        var visibleSet = new HashSet<int>(visibleIndices);
-        for (int i = 0; i < elements.Count; i++)
-        {
-            var visual = elements[i];
-            visual.Clear();
-            if (visibleSet.Contains(i))
-            {
-                visual.style.display = DisplayStyle.Flex;
-                var data = inv.GetSlot(i);
-                if (!data.IsEmpty)
-                {
-                    var icon = new VisualElement();
-                    icon.style.backgroundImage = new StyleBackground(data.item.icon);
-                    icon.style.width = Length.Percent(100); 
-                    icon.style.height = Length.Percent(100);
-                    visual.Add(icon);
-                    var label = new Label(data.quantity.ToString());
-                    label.AddToClassList("slot-quantity-label");
-                    visual.Add(label);
-                }
-            }
-            else visual.style.display = DisplayStyle.None;
-        }
-    }
-
-    private void OnPointerDown(PointerDownEvent evt, IInventory inv, int index)
-    {
-        var slot = inv.GetSlot(index);
-        if (evt.button == 0)
-        {
-            if (slot.IsEmpty) return;
-            // UIService를 통해 드래그 시작
-            _uiService.StartDrag(inv, index, slot.item.icon, _dragGhost, evt.position, new Vector2(30, 30));
-        }
-    }
-
-    private void OnPointerUp(PointerUpEvent evt, IInventory targetInv, int targetIndex)
-    {
-        if (_uiService.CurrentSourceInventory != null)
-        {
-            _transferService.ExecuteDragDrop(_uiService.CurrentSourceInventory, _uiService.CurrentDraggingIndex, targetInv, targetIndex);
-            _uiService.ResetDrag();
-        }
-    }
-
-    private void OnPointerMove(PointerMoveEvent evt) { 
-        if (_uiService.CurrentSourceInventory != null) _uiService.UpdateGhostPosition(evt.position, new Vector2(30, 30)); 
-    }
-
     private void SetFilter(ItemCategory? cat) { _currentFilter = cat; RefreshUI(); }
+
+    private void HideTooltip() => _tooltip.style.visibility = Visibility.Hidden;
 }

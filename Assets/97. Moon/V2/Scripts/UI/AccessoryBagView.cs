@@ -8,25 +8,29 @@ public class AccessoryBagView : MonoBehaviour
 {
     private ITotalInventory _totalInventory;
     private CharacterItemService _itemService; 
-    private InventoryTransferService _transferService; // 주입 추가
+    private InventoryTransferService _transferService;
     
-    private VisualElement _grid;
+    private VisualElement _grid, _tooltip;
     private List<VisualElement> _uiSlots = new();
     private List<int> _mappedIndices = new();
 
     [Inject]
-    public void Construct(ITotalInventory total, CharacterItemService itemService, InventoryTransferService transferService, InventoryUIService uiService) 
+    public void Construct(ITotalInventory total, CharacterItemService itemService, InventoryTransferService transferService) 
     { 
-        _totalInventory = total; 
-        _itemService = itemService; 
-        _transferService = transferService;
+        _totalInventory = total; _itemService = itemService; _transferService = transferService;
     }
 
     private void Start()
     {
         var root = GetComponent<UIDocument>().rootVisualElement;
         _grid = root.Q<VisualElement>("accessory-grid");
-        
+
+        // 툴팁 초기화
+        _tooltip = new VisualElement();
+        _tooltip.AddToClassList("inventory-tooltip");
+        _tooltip.pickingMode = PickingMode.Ignore;
+        root.Add(_tooltip);
+    
         _totalInventory.OnChanged += RefreshUI;
         RefreshUI();
     }
@@ -37,28 +41,20 @@ public class AccessoryBagView : MonoBehaviour
         {
             int uiIdx = _uiSlots.Count;
             var slot = new VisualElement();
-            slot.AddToClassList("inventory-slot-base");
+            slot.AddToClassList("accessory-list-item"); // USS 적용
 
             slot.RegisterCallback<PointerDownEvent>(e => {
-                if (uiIdx < _mappedIndices.Count) {
-                    int actualInvIdx = _mappedIndices[uiIdx];
-                    var slotData = _totalInventory.GetSlot(actualInvIdx);
-                    
-                    if (e.button == 0) { // 좌클릭 드래그 시작
-                        if (slotData.IsEmpty) return;
-                        _transferService.StartDrag(_totalInventory, actualInvIdx);
-                    } 
-                    else if (e.button == 1) { // 우클릭 자동 장착
-                        _itemService.AutoEquip(_totalInventory, actualInvIdx);
-                    }
-                }
+                if (uiIdx >= _mappedIndices.Count) return;
+                int actualInvIdx = _mappedIndices[uiIdx];
+                if (_totalInventory.GetSlot(actualInvIdx).IsEmpty) return;
+
+                if (e.button == 0) _transferService.StartDrag(_totalInventory, actualInvIdx);
+                else if (e.button == 1) _itemService.AutoEquip(_totalInventory, actualInvIdx);
             });
 
             slot.RegisterCallback<PointerUpEvent>(e => {
                 if (_transferService.IsDragging && uiIdx < _mappedIndices.Count) {
-                    int targetIdx = _mappedIndices[uiIdx];
-                    // 가방 내부 스왑 진행
-                    _transferService.ExecuteDragDrop(_transferService.CurrentSourceInventory, _transferService.CurrentDraggingIndex, _totalInventory, targetIdx);
+                    _transferService.ExecuteDragDrop(_transferService.CurrentSourceInventory, _transferService.CurrentDraggingIndex, _totalInventory, _mappedIndices[uiIdx]);
                     _transferService.ResetDrag();
                 }
             });
@@ -71,35 +67,53 @@ public class AccessoryBagView : MonoBehaviour
     public void RefreshUI()
     {
         _mappedIndices = _totalInventory.GetFilteredIndices("", ItemCategory.Accessories).ToList();
+        _grid.style.flexDirection = FlexDirection.Column;
         SyncSlots(_mappedIndices.Count);
 
         for (int i = 0; i < _uiSlots.Count; i++)
         {
-            var slotVisual = _uiSlots[i];
-            slotVisual.Clear();
+            var visual = _uiSlots[i]; visual.Clear();
+            if (i >= _mappedIndices.Count) { visual.style.display = DisplayStyle.None; continue; }
 
-            if (i < _mappedIndices.Count)
-            {
-                slotVisual.style.display = DisplayStyle.Flex;
-                var data = _totalInventory.GetSlot(_mappedIndices[i]);
+            visual.style.display = DisplayStyle.Flex;
+            var data = _totalInventory.GetSlot(_mappedIndices[i]);
 
-                var icon = new VisualElement();
-                icon.style.backgroundImage = new StyleBackground(data.item.icon);
-                icon.pickingMode = PickingMode.Ignore;
-                icon.style.width = icon.style.height = Length.Percent(100);
-                
-                slotVisual.Add(icon);
-            }
-            else
-            {
-                slotVisual.style.display = DisplayStyle.None;
-            }
+            // 아이콘 (깨짐방지 클래스 적용)
+            var icon = new VisualElement { style = { backgroundImage = new StyleBackground(data.item.icon) } };
+            icon.AddToClassList("item-icon-pixelated");
+            icon.pickingMode = PickingMode.Ignore;
+            visual.Add(icon);
+
+            // 이름
+            visual.Add(new Label(data.item.DisplayName) { style = { color = Color.white, marginLeft = 10 }, pickingMode = PickingMode.Ignore });
+
+            // 툴팁 이벤트
+            visual.RegisterCallback<MouseEnterEvent>(evt => ShowTooltip(data, evt.mousePosition));
+            visual.RegisterCallback<MouseLeaveEvent>(evt => HideTooltip());
+            visual.RegisterCallback<PointerDownEvent>(evt => HideTooltip());
         }
     }
 
-    public void ToggleWindow()
+    private void ShowTooltip(InventorySlot slot, Vector2 position)
     {
-        var root = GetComponent<UIDocument>().rootVisualElement;
-        root.style.display = (root.style.display == DisplayStyle.None) ? DisplayStyle.Flex : DisplayStyle.None;
+        if (slot.IsEmpty) return;
+        _tooltip.Clear();
+        
+        var title = new Label(slot.item.DisplayName); title.AddToClassList("tooltip-title");
+        _tooltip.Add(title);
+
+        AddTooltipLabel(string.IsNullOrEmpty(slot.item.Description) ? "효과 없음" : slot.item.Description);
+
+        if (slot.item is AccessoryItem acc) {
+            AddTooltipLabel("\n[장착 효과]");
+            foreach (var mod in acc.specialEffects) AddTooltipLabel($"- {mod.name}: +{mod.value} ({mod.mode})");
+        }
+
+        _tooltip.style.left = position.x + 20; _tooltip.style.top = position.y + 20;
+        _tooltip.style.visibility = Visibility.Visible; _tooltip.BringToFront();
     }
+
+    private void AddTooltipLabel(string text) { var l = new Label(text); l.AddToClassList("tooltip-text"); _tooltip.Add(l); }
+    private void HideTooltip() => _tooltip.style.visibility = Visibility.Hidden;
+    public void ToggleWindow() { var r = GetComponent<UIDocument>().rootVisualElement; r.style.display = (r.style.display == DisplayStyle.None) ? DisplayStyle.Flex : DisplayStyle.None; }
 }
