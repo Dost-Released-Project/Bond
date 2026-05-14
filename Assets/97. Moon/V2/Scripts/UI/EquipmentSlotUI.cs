@@ -108,9 +108,22 @@ public class EquipmentSlotUI : MonoBehaviour
         _tooltip.Add(title);
         _tooltip.Add(new Label(slot.item.Description) { style = { color = Color.white, whiteSpace = WhiteSpace.Normal } });
         
-        _tooltip.style.left = position.x + 20; _tooltip.style.top = position.y + 20;
+        if (slot.item is AccessoryItem acc) {
+            AddTooltipLabel("\n[장착 효과]");
+            foreach (var mod in acc.specialEffects) AddTooltipLabel($"- {mod.name}: +{mod.value} ({mod.mode})");
+        }
+        
+        _tooltip.style.left = position.x + 20; _tooltip.style.top = position.y - 200;
         _tooltip.style.visibility = Visibility.Visible; _tooltip.BringToFront();
     }
+    
+    private void AddTooltipLabel(string text)
+    {
+        var label = new Label(text);
+        label.AddToClassList("tooltip-text");
+        _tooltip.Add(label);
+    }
+    
     private void HideTooltip() => _tooltip.style.visibility = Visibility.Hidden;
     private void OnDestroy() { if (_itemService != null) _itemService.OnEquipmentChanged -= RefreshUI; }
 }
