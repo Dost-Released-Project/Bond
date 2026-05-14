@@ -45,6 +45,7 @@
     --btn-primary-bg:       transparent;
     --btn-primary-border:   transparent;
     --btn-primary-text:     rgba(0,0,0,0);
+    --btn-action-bg:        transparent;
     --btn-secondary-border: transparent;
     --btn-secondary-text:   rgba(0,0,0,0);
 

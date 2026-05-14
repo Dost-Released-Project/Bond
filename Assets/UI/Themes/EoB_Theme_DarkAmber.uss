@@ -42,6 +42,7 @@
     --btn-primary-bg:       #2a1e10;
     --btn-primary-border:   #5a3e20;
     --btn-primary-text:     #c9a060;
+    --btn-action-bg:        #3a2a18;
     --btn-secondary-border: #2a2015;
     --btn-secondary-text:   #5a4a35;
 

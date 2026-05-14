@@ -11,8 +11,8 @@ namespace _90._HA.Temp.Test
     public class S1Test : MonoBehaviour
     {
         [Inject] public ExpeditionInventory _expeditionInventory;
-        [Inject] public EmbarkManager _embarkManager;
-        [Inject] public PartyManager _partyManager;
+        [Inject] public EmbarkController _embarkManager;
+        [Inject] public PartyController _partyManager;
         [Inject] public StageCoach _stageCoach;
         [Inject] public ExpeditionPayload payload;
         [Inject] public Roster roster;

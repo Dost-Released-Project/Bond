@@ -14,8 +14,6 @@ namespace Bond.Expedition
     public class ExpeditionPayload
     {
         // 마을 씬 → 탐사 씬으로 넘기는 데이터 컨테이너
-        // 에셋이라 씬 전환 후에도 유지됨
-        // OnEnable에서 초기화하여 플레이 시작마다 찌꺼기 제거
 
         public IReadOnlyList<BaseCharacter> Party { get; private set; }
         public ExpeditionInventory Supplies { get; private set; } = new ExpeditionInventory(2);
@@ -24,11 +22,6 @@ namespace Bond.Expedition
         public IReadOnlyList<BaseCharacter> EnemyParty { get; private set; }
         // 탐사 결과 (귀환 후 마을 씬이 읽음)
         public ExpeditionOutcome Outcome { get; private set; }
-
-        private void OnEnable()
-        {
-            Clear();
-        }
 
         public void SetContents(
             IReadOnlyList<BaseCharacter> party,
