@@ -596,6 +596,7 @@ public class MapGenerator : IMapGenerator
                 continue;
 
             node.AssignedMonsterGroupId = candidates[rng.Next(candidates.Count)].Id;
+            Debug.Log($"[MapGenerator] AssignedMonsterGroupId={node.AssignedMonsterGroupId}");
         }
     }
 

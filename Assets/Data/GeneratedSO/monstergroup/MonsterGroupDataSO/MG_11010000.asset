@@ -20,6 +20,6 @@ MonoBehaviour:
   - 10010000
   - 10010000
   - 10010000
-  MinLayer: 1
+  MinLayer: 0
   MaxLayer: 3
   IsElite: 0

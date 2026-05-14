@@ -13,4 +13,6 @@ MonoBehaviour:
   m_Name: EventConfig
   m_EditorClassIdentifier: Assembly-CSharp::EventConfig
   _events:
-  - {fileID: 11400000, guid: 3ac8bd6c1a68eae46bace4058bb1b265, type: 2}
+  - {fileID: 11400000, guid: 121fcfa83ebb6b349990e92f76b23cb6, type: 2}
+  - {fileID: 11400000, guid: f82e37bef9adc3a4fbca561887836071, type: 2}
+  - {fileID: 11400000, guid: b30678fd126824443ba7a8db63e59690, type: 2}

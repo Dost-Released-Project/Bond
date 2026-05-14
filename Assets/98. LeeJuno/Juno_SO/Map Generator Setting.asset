@@ -22,7 +22,7 @@ MonoBehaviour:
   MaxEdgesPerNode: 3
   EliteMinLayer: 5
   MinCampingCount: 2
-  WeightNormal: 0.5
+  WeightNormal: 0.4
   WeightElite: 0.15
-  WeightEvent: 0.22
-  WeightCamping: 0.12
+  WeightEvent: 0.25
+  WeightCamping: 0.2
