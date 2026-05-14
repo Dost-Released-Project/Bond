@@ -185,7 +185,7 @@ public class InventoryView : MonoBehaviour
             list.Add(slot);
         }
     }
-
+    
     private void UpdateGrid(List<VisualElement> elements, IInventory inv, IEnumerable<int> visibleIndices)
     {
         var visibleSet = new HashSet<int>(visibleIndices);
@@ -200,7 +200,8 @@ public class InventoryView : MonoBehaviour
 
             // 아이콘
             var icon = new VisualElement { style = { width = 55, height = 55, backgroundImage = new StyleBackground(data.item.icon) } };
-            icon.style.unityBackgroundScaleMode = ScaleMode.ScaleToFit;
+            // 배경 크기를 조절하는 표준 방식 (보통 ScaleToFit 대신 사용)
+            icon.style.backgroundSize = new BackgroundSize(BackgroundSizeType.Contain);
             visual.Add(icon);
 
             // 텍스트 그룹 (이름 + 타입)

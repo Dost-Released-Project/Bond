@@ -51,7 +51,6 @@ public class AdminTestTool : MonoBehaviour
         }
     }
     
-    [Obsolete("Obsolete")]
     void Update()
     {
         // 1. 캐릭터 데미지 입히기 (식당 테스트용)
@@ -71,7 +70,7 @@ public class AdminTestTool : MonoBehaviour
         // 3. 캐릭터 선택 (SettlementManager에 전달)
         if (Keyboard.current.f3Key.wasPressedThisFrame)
         {
-            FindObjectOfType<SettlementManager>().SelectCharacter(testHero);
+            FindAnyObjectByType<SettlementManager>().SelectCharacter(testHero);
             testHero.CalcStat();
         }
     }
