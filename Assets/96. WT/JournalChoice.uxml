@@ -1,4 +1,4 @@
-<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:Button text="Button" style="height: 72px; width: 146px; bottom: 96px; right: 168px; left: -6px; top: 278px; position: absolute;"/>
-    <ui:Button text="Button" style="height: 72px; width: 146px; bottom: 97px; right: 31px; left: 165px; top: 277px; position: absolute;"/>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/96.%20WT/Journal.uss?fileID=7433441132597879392&amp;guid=f45e93971af71524ea0cd2c0fa45cec9&amp;type=3#Journal"/>
+    <ui:Button text="선택지 내용" name="ChoiceButton" class="journal-choice-button"/>
 </ui:UXML>

@@ -13,5 +13,4 @@ MonoBehaviour:
   m_Name: JournalDataBase
   m_EditorClassIdentifier: Assembly-CSharp::Bond.WT.Journal.JournalDataBaseSO
   _soList:
-  - {fileID: 11400000, guid: 84e2e4e6ff9b3034fbece4068ab6c79f, type: 2}
   - {fileID: 11400000, guid: bb2e5b841cddc004a98719ca56350f9a, type: 2}

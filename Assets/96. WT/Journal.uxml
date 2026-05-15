@@ -1,8 +1,27 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/96.%20WT/Journal.uss?fileID=7433441132597879392&amp;guid=f45e93971af71524ea0cd2c0fa45cec9&amp;type=3#Journal"/>
-    <ui:VisualElement name="RootPanel" style="flex-grow: 1; justify-content: space-between;"/>
-    <ui:VisualElement name="IconImage" style="flex-grow: 1;"/>
-    <ui:VisualElement name="OptionContainer" style="flex-grow: 1;"/>
-    <ui:Label text="Label" name="ContentLabel"/>
-    <ui:Button text="Button" name="NextButton"/>
+    <ui:VisualElement name="RootPanel" class="root-panel">
+        <ui:VisualElement name="JournalContainer" class="journal-container">
+            
+            <!-- 상단 영역: 아이콘 및 일지 텍스트 -->
+            <ui:VisualElement name="TopArea" class="top-area">
+                <ui:VisualElement name="IconImage" class="icon-image" />
+                <ui:ScrollView name="ContentScroll" class="content-scroll">
+                    <ui:Label text="일지 내용이 여기에 표시됩니다..." name="ContentLabel" class="content-label"/>
+                </ui:ScrollView>
+            </ui:VisualElement>
+            
+            <!-- 중간 영역: 선택지 컨테이너 (스크립트에서 display 제어) -->
+            <ui:VisualElement name="OptionContainer" class="option-container">
+                <!-- JournalChoice.uxml 템플릿 인스턴스가 동적으로 추가됩니다 -->
+            </ui:VisualElement>
+            
+            <!-- 하단 영역: 네비게이션 버튼 -->
+            <ui:VisualElement name="NavigationArea" class="navigation-area">
+                <ui:Button text="이전 장" name="PrevButton" class="nav-button"/>
+                <ui:Button text="다음 장" name="NextButton" class="nav-button"/>
+            </ui:VisualElement>
+            
+        </ui:VisualElement>
+    </ui:VisualElement>
 </ui:UXML>
