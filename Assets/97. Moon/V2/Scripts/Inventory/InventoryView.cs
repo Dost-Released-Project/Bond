@@ -225,8 +225,8 @@ public class InventoryView : MonoBehaviour
         _tooltip.Add(new Label(slot.item.DisplayName) { name = "title" });
         _tooltip.Q<Label>("title").AddToClassList("tooltip-title");
 
-        AddTooltipLabel($"설명: {(string.IsNullOrEmpty(slot.item.Description) ? "내용 없음" : slot.item.Description)}");
-        AddTooltipLabel($"전체 최대치: {slot.item.totalGlobalMax}");
+        AddTooltipLabel($"{(string.IsNullOrEmpty(slot.item.Description) ? "내용 없음" : slot.item.Description)}");
+        AddTooltipLabel($"최대 저장 개수: {slot.item.totalGlobalMax}");
         AddTooltipLabel($"가방 제한: {slot.item.expeditionSlotMax}"); // [복구] 누락 데이터 추가
 
         if (slot.item is ConsumableItem con) AddTooltipLabel($"회복량: <color=#00FF00>{con.healValue}</color>");
@@ -234,7 +234,10 @@ public class InventoryView : MonoBehaviour
         {
             AddTooltipLabel("\n[장착 효과]");
             foreach (var effect in acc.specialEffects)
-                AddTooltipLabel($"- {effect.name}: {effect.value} ({effect.mode})");
+            {
+                var valueMode = effect.mode == ModifierMode.Flat ? $"{effect.value} 증가" : $"{effect.value:P1} 증가";
+                AddTooltipLabel($"- {effect.name}: {effect.type} + {valueMode}");
+            }
         }
 
         _tooltip.style.left = position.x + 20;

@@ -1,13 +1,13 @@
-﻿시트 페이지 2자리	캐릭터 클래스				아군 / 적군 여부		동일 타입 번호			
-08	00	전사			00	아군	00			
-	01	도적			01	중립				
-	02	마법사			02	적				
-	03	성직자							-	-
-	04									
-	05									
-(string)	(string)	(enum)	(int)	(int)	(int)	(int)	(int)	(string)		
-ID	ItemName	Category	BonusSTR	BonusAGI	BonusINT	TotalMax	ExpSlotMax	IconPath	ModifierIDs	
-08000000	The Ring of Power	Accessories	5	0	0	1	1	Sprite/Item/Ring_STR	13000000,13010000,13020000	
-08010000	The Ring of Agility	Accessories	0	5	0	1	1	Sprite/Item/Ring_AGI		
-08020000	The Ring of Intelligence	Accessories	0	0	5	1	1	Sprite/Item/Ring_INT		
-08030000	The Ring of Master	Accessories	2	2	2	1	1	Sprite/Item/Ring_Master		
+﻿시트 페이지 2자리	캐릭터 클래스		아군 / 적군 여부				
+08	00	전사	00	아군			
+	01	도적	01	중립			
+동일 타입 번호	02	마법사	02	적			
+00	03	성직자				-	-
+	04						
+	05						
+(string)	(string)	(enum)	(int)	(int)	(string)		
+ID	ItemName	Category	TotalMax	ExpSlotMax	IconPath	ModifierIDs	Description
+08000000	힘의 목걸이	Accessories	1	1	Sprite/Item/Ring_STR	13000000,13150000	착용 시 힘이 강해진다.
+08010000	민첩의 목걸이	Accessories	1	1	Sprite/Item/Ring_AGI	13010000,13160000	착용 시 몸이 가벼워진다.
+08020000	지능의 목걸이	Accessories	1	1	Sprite/Item/Ring_INT	13020000,13170000	착용 시 머리가 비상해진다.
+08030000	전능의 목걸이	Accessories	1	1	Sprite/Item/Ring_Master	13000000,13010000,13020000,13150000,13160000,13170000	착용 시 모든 능력치가 상승한다.

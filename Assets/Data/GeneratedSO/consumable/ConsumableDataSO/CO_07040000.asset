@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: CO_07040000
   m_EditorClassIdentifier: Assembly-CSharp::ConsumableItem
   _id: 07040000
-  _displayName: Sedative
-  _description: 
+  _displayName: "\uC9C4\uC815\uC81C"
+  _description: "\uC0AC\uC6A9 \uC2DC \uC815\uC2E0\uB825\uC744 \uD68C\uBCF5\uD55C\uB2E4."
   category: 0
   icon: {fileID: 21300000, guid: 9fdac2340725d6c40a4ae1b68fce892a, type: 3}
   totalGlobalMax: 10

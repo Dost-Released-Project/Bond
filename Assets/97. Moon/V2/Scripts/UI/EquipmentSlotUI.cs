@@ -110,7 +110,11 @@ public class EquipmentSlotUI : MonoBehaviour
         
         if (slot.item is AccessoryItem acc) {
             AddTooltipLabel("\n[장착 효과]");
-            foreach (var mod in acc.specialEffects) AddTooltipLabel($"- {mod.name}: +{mod.value} ({mod.mode})");
+            foreach (var effect in acc.specialEffects)
+            {
+                var valueMode = effect.mode == ModifierMode.Flat ? $"{effect.value} 증가" : $"{effect.value:P1} 증가";
+                AddTooltipLabel($"- {effect.name}: {effect.type} + {valueMode}");
+            }
         }
         
         _tooltip.style.left = position.x + 20; _tooltip.style.top = position.y - 200;

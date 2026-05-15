@@ -14,6 +14,7 @@ public class AccessoryDTO
     public int ExpSlotMax { get; set; }
     public string IconPath { get; set; }
     public string ModifierIDs { get; set; } // "Data00, Data01" 형태(콤마로 구분)
+    public string Descirption { get; set; }
 }
 
 public class AccessoryParser : TSVParserBase<AccessoryDTO, AccessoryItem>
@@ -26,7 +27,7 @@ public class AccessoryParser : TSVParserBase<AccessoryDTO, AccessoryItem>
 
     protected override void Populate(AccessoryItem so, AccessoryDTO dto)
     {
-        so.SetBaseData(dto.ID, dto.ItemName, "", dto.Category, dto.TotalMax, dto.ExpSlotMax);
+        so.SetBaseData(dto.ID, dto.ItemName, dto.Descirption, dto.Category, dto.TotalMax, dto.ExpSlotMax);
         
         if (!string.IsNullOrEmpty(dto.IconPath))
         {
@@ -111,5 +112,6 @@ public sealed class AccessoryMap : ClassMap<AccessoryDTO>
         Map(m => m.ExpSlotMax).Name("ExpSlotMax");
         Map(m => m.IconPath).Name("IconPath");
         Map(m => m.ModifierIDs).Name("ModifierIDs");
+        Map(m => m.Descirption).Name("Description");
     }
 }
