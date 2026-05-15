@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using BattleSystem;
 using BattleSystem.Interface;
@@ -69,6 +70,8 @@ public partial class BaseCharacter : ITurnUseUnit
         // Profession에게 "데이터와 모디파이어를 전달한 뒤 스탯 계산 요청
         Profession.CalculateStat(Stat, Data, StatController);
     }
+
+    public float HpRatio => Stat.current_Hp / Stat.max_Hp;
     
     public void ReduceHP(int amount) => Stat.current_Hp = Mathf.Max(Stat.current_Hp - amount, 0); // 체력 감소
     public void ReduceInsanity(int amount) => Data.Insanity = Mathf.Min(Data.Insanity + amount, 100); // 스트레스 증가

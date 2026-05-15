@@ -1,10 +1,13 @@
-using System.Collections.Generic;
+using BattleSystem;
 using Bond.Embark;
 using Bond.Expedition;
+using PipeLine;
+using Reactions;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 using VContainer;
+
+#if UNITY_EDITOR
 
 namespace _90._HA.Temp.Test
 {
@@ -16,54 +19,42 @@ namespace _90._HA.Temp.Test
         [Inject] public StageCoach _stageCoach;
         [Inject] public ExpeditionPayload payload;
         [Inject] public Roster roster;
-
-        public List<BaseItem> items;
+        [Inject] BattleManager bm;
 
         public void Start()
         {
             payload.Clear();
             FillRoster();
+            FillEnemy();
         }
 
         private void Update()
         {
             if (Keyboard.current.numpad0Key.wasPressedThisFrame)
             {
-                Debug.Log(payload);
-            }
-
-            if (Keyboard.current.numpad1Key.wasPressedThisFrame)
-            {
-                var slots = _expeditionInventory.GetAll();
-                Debug.Log(slots.Count);
-            }
-
-            if (Keyboard.current.numpad7Key.wasPressedThisFrame)
-            {
-                payload.Clear();
-                _partyManager.Clear();
-            }
-
-            if (Keyboard.current.numpad8Key.wasPressedThisFrame)
-            {
-                foreach (var item in items)
+                var chara = _stageCoach.GetRandomCharacter();
+                chara.RoleReactions[0] = new Reaction()
                 {
-                    _expeditionInventory.AddItemAuto(item, 1);
-                }
-                BaseCharacter[] enemyParty = new  BaseCharacter[4];
-                for (int i = 0; i < 4; i++)
+                    Agent = chara,
+                    Source = ReactionSource.Role,
+                    Behaviour = chara.Skills[0],
+                    Trigger = new Trigger()
+                    {
+                        Subject = chara,
+                        Condition = new EvadeCondition()
+                    }
+                };
+                chara.RoleReactions[1] = new Reaction()
                 {
-                    var chara = _stageCoach.GetRandomCharacter();
-                    enemyParty[i] = _stageCoach.GetRandomCharacter();
-                    _partyManager.TryAddMember(chara);
-                }
-                payload.SetEnemy(enemyParty);
-                _embarkManager.SavePayload();
-            }
-
-            if (Keyboard.current.numpad9Key.wasPressedThisFrame || Keyboard.current.digit9Key.wasPressedThisFrame)
-            {
-                SceneLoader.Load("Map");
+                    Agent = chara,
+                    Source = ReactionSource.Role,
+                    Behaviour = chara.Skills[0],
+                    Trigger = new Trigger()
+                    {
+                        Subject = chara,
+                        Condition = new CritCondition()
+                    }
+                };
             }
         }
 
@@ -74,5 +65,17 @@ namespace _90._HA.Temp.Test
                 roster.Hire(new StageCoach().GetRandomCharacter());
             }
         }
+
+        public void FillEnemy()
+        {
+            BaseCharacter[] enemies = new BaseCharacter[4];
+            for (int i = 0; i < 4; i++)
+            {
+                enemies[i] = _stageCoach.GetRandomCharacter();
+            }
+            payload.SetEnemy(enemies);
+        }
     }
 }
+
+#endif
