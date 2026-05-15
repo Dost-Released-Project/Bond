@@ -6,13 +6,14 @@ using UnityEngine;
 
 public class MonsterDTO
 {
-    public string Id { get; set; }
-    public string Name { get; set; }
-    public RoleType RoleType { get; set; }
-    public int Level { get; set; }
-    public int STR { get; set; }
-    public int AGI { get; set; }
-    public int INT { get; set; }
+    public string Id           { get; set; }
+    public string Name         { get; set; }
+    public RoleType RoleType   { get; set; }
+    public int Level           { get; set; }
+    public int STR             { get; set; }
+    public int AGI             { get; set; }
+    public int INT             { get; set; }
+    public string ImageAddress { get; set; }
 }
 
 public class MonsterParser : TSVParserBase<MonsterDTO, MonsterSO>
@@ -27,13 +28,14 @@ public class MonsterParser : TSVParserBase<MonsterDTO, MonsterSO>
     protected override void Populate(MonsterSO so, MonsterDTO dto)
     {
         so.SetData(
-            id:          dto.Id,
-            displayName: dto.Name,
-            roleType:    dto.RoleType,
-            level:       dto.Level,
-            str:         dto.STR,
-            agi:         dto.AGI,
-            intel:       dto.INT
+            id:           dto.Id,
+            displayName:  dto.Name,
+            roleType:     dto.RoleType,
+            level:        dto.Level,
+            str:          dto.STR,
+            agi:          dto.AGI,
+            intel:        dto.INT,
+            imageAddress: dto.ImageAddress
         );
     }
 
@@ -84,6 +86,7 @@ public class MonsterParser : TSVParserBase<MonsterDTO, MonsterSO>
             Map(m => m.STR).Name("STR").Default(0);
             Map(m => m.AGI).Name("AGI").Default(0);
             Map(m => m.INT).Name("INT").Default(0);
+            Map(m => m.ImageAddress).Name("ImageAddress").Default("");
         }
     }
 }

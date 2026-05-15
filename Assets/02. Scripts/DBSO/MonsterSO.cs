@@ -10,6 +10,7 @@ public class MonsterSO : BaseSO
     [Header("기본 정보")]
     public RoleType RoleType;
     public int Level;
+    public string ImageAddress;
 
     [Header("기본 스탯")]
     public int STR;
@@ -27,13 +28,15 @@ public class MonsterSO : BaseSO
         int level,
         int str,
         int agi,
-        int intel)
+        int intel,
+        string imageAddress)
     {
         base.Initialize(id, displayName, "");
-        this.RoleType = roleType;
-        this.Level    = level;
-        this.STR      = str;
-        this.AGI      = agi;
-        this.INT      = intel;
+        this.RoleType     = roleType;
+        this.Level        = level;
+        this.STR          = str;
+        this.AGI          = agi;
+        this.INT          = intel;
+        this.ImageAddress = imageAddress;
     }
 }
