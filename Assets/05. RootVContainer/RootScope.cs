@@ -57,6 +57,7 @@ namespace RootVContainer
             // Data & Logic
             builder.Register<JournalModel>(Lifetime.Singleton);
             builder.Register<LocationEventProvider>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<MockJournalActionHandler>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.RegisterEntryPoint<JournalSystem>(Lifetime.Singleton).AsSelf();
             builder.RegisterEntryPoint<JournalBinder>(Lifetime.Singleton);
             

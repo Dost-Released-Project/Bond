@@ -23,14 +23,14 @@ namespace Bond.WT.Journal
 
         public void Tick()
         {
-            // T 키를 누르면 이벤트 발생 시뮬레이션
+            // H 키를 누르면 이벤트 발생 시뮬레이션
             if (Keyboard.current.hKey.wasPressedThisFrame)
             {
-                Debug.Log("[JournalTestRunner] 'T' 키 입력 감지: 탐색 이벤트 트리거");
+                Debug.Log("[JournalTestRunner] 'H' 키 입력 감지: 탐색 이벤트 트리거");
 
-                // 1. 이벤트 데이터 세팅 (시트의 첫 번째 ID가 JE_001 이라고 가정)
-                // 만약 시트에 등록한 ID가 다르다면 아래 "JE_001"을 해당 ID로 변경해야 합니다.
+                // 1. 이벤트 데이터 세팅 (여러 건의 탐색 이벤트를 발생시킴)
                 _locationProvider.SetDiscovery("14000000", "어두운 숲", "낡은 지도");
+                _locationProvider.SetDiscovery("14000000", "버려진 야영지", "부러진 화살");
 
                 // 2. 일지 수집 및 송출
                 _journalSystem.CollectDailyLogs();

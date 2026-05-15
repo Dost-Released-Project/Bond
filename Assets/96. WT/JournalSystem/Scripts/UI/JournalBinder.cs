@@ -11,7 +11,7 @@ namespace Bond.WT.Journal
     /// <summary>
     /// [Feature]Binder 모델의 상태 변화를 UI 뷰에 연결
     /// </summary>
-    public class JournalBinder : IStartable, IDisposable, IObserver<string>, IObserver<IReadOnlyList<JournalOption>>, IObserver<bool>, IObserver<JournalReport>
+    public class JournalBinder : IStartable, IDisposable
     {
         private readonly JournalModel _model;
         private readonly IJournalVisualizer _view;
@@ -20,11 +20,18 @@ namespace Bond.WT.Journal
 
         private AsyncOperationHandle<Sprite>? _currentIconHandle;
 
-        // IObserver 구현을 위한 핸들러들
-        Action<string> IObserver<string>.EventHandler { get; set; }
-        Action<IReadOnlyList<JournalOption>> IObserver<IReadOnlyList<JournalOption>>.EventHandler { get; set; }
-        Action<bool> IObserver<bool>.EventHandler { get; set; }
-        Action<JournalReport> IObserver<JournalReport>.EventHandler { get; set; }
+        // 자체 IObserver 구현용 임시 래퍼 (ObservableValue가 IObserver<T>만 받으므로)
+        private class ObserverWrapper<T> : IObserver<T>
+        {
+            public Action<T> EventHandler { get; set; }
+        }
+
+        private readonly ObserverWrapper<string> _paragraphObserver = new ObserverWrapper<string>();
+        private readonly ObserverWrapper<IReadOnlyList<JournalOption>> _optionsObserver = new ObserverWrapper<IReadOnlyList<JournalOption>>();
+        private readonly ObserverWrapper<JournalReport> _reportObserver = new ObserverWrapper<JournalReport>();
+        private readonly ObserverWrapper<bool> _completeObserver = new ObserverWrapper<bool>();
+        private readonly ObserverWrapper<bool> _prevPageObserver = new ObserverWrapper<bool>();
+        private readonly ObserverWrapper<bool> _lastPageObserver = new ObserverWrapper<bool>();
 
         [Inject]
         public JournalBinder(JournalModel model, IJournalVisualizer view, JournalSystem system, ISpriteLoader spriteLoader)
@@ -35,7 +42,7 @@ namespace Bond.WT.Journal
             _spriteLoader = spriteLoader;
 
             // 핸들러 설정
-            ((IObserver<string>)this).EventHandler = text => 
+            _paragraphObserver.EventHandler = text => 
             {
                 if (!string.IsNullOrEmpty(text))
                 {
@@ -44,17 +51,17 @@ namespace Bond.WT.Journal
                 }
             };
 
-            ((IObserver<IReadOnlyList<JournalOption>>)this).EventHandler = options => _view.SetOptions(options);
-
-            ((IObserver<JournalReport>)this).EventHandler = report => 
+            _optionsObserver.EventHandler = options => 
             {
-                if (report != null)
-                {
-                    LoadAndSetIconAsync(report.IconId).Forget();
-                }
+                _view.SetOptions(options);
             };
 
-            ((IObserver<bool>)this).EventHandler = isComplete => 
+            _reportObserver.EventHandler = report => 
+            {
+                if (report != null) LoadAndSetIconAsync(report.IconId).Forget();
+            };
+
+            _completeObserver.EventHandler = isComplete => 
             {
                 if (isComplete)
                 {
@@ -63,6 +70,9 @@ namespace Bond.WT.Journal
                     ReleaseIconHandle();
                 }
             };
+
+            _prevPageObserver.EventHandler = hasPrev => _view.SetPrevButtonEnabled(hasPrev);
+            _lastPageObserver.EventHandler = isLast => _view.SetNextButtonText(isLast ? "닫기" : "다음 장");
         }
 
         private async UniTaskVoid LoadAndSetIconAsync(string iconId)
@@ -100,26 +110,31 @@ namespace Bond.WT.Journal
         public void Start()
         {
             // 모델 구독
-            _model.CurrentParagraph.Subscribe(this);
-            _model.CurrentOptions.Subscribe(this);
-            _model.IsJournalComplete.Subscribe(this);
-            _model.CurrentReport.Subscribe(this);
+            _model.CurrentParagraph.Subscribe(_paragraphObserver);
+            _model.CurrentOptions.Subscribe(_optionsObserver);
+            _model.IsJournalComplete.Subscribe(_completeObserver);
+            _model.CurrentReport.Subscribe(_reportObserver);
+            _model.HasPrevPage.Subscribe(_prevPageObserver);
+            _model.IsLastPage.Subscribe(_lastPageObserver);
+
+            // UI 뷰 초기 상태 강제 동기화
+            _prevPageObserver.EventHandler?.Invoke(_model.HasPrevPage.Value);
+            _lastPageObserver.EventHandler?.Invoke(_model.IsLastPage.Value);
 
             // 뷰 이벤트 연결
-            _view.OnNextClicked = () => 
-            {
-                _system.SelectOption(null); 
-            };
-            
+            _view.OnNextClicked = () => _system.NextPage();
+            _view.OnPrevClicked = () => _system.PrevPage();
             _view.OnOptionSelected = option => _system.SelectOption(option);
         }
 
         public void Dispose()
         {
-            _model.CurrentParagraph.Unsubscribe(this);
-            _model.CurrentOptions.Unsubscribe(this);
-            _model.IsJournalComplete.Unsubscribe(this);
-            _model.CurrentReport.Unsubscribe(this);
+            _model.CurrentParagraph.Unsubscribe(_paragraphObserver);
+            _model.CurrentOptions.Unsubscribe(_optionsObserver);
+            _model.IsJournalComplete.Unsubscribe(_completeObserver);
+            _model.CurrentReport.Unsubscribe(_reportObserver);
+            _model.HasPrevPage.Unsubscribe(_prevPageObserver);
+            _model.IsLastPage.Unsubscribe(_lastPageObserver);
             ReleaseIconHandle();
         }
     }

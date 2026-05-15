@@ -14,10 +14,14 @@ namespace Bond.WT.Journal
 
         // 조립에 필요한 데이터 (실제로는 생성자 주입이나 다른 시스템에서 설정됨)
         private readonly JournalDataBaseSO _journalDB;
-        private string _locationName = "숲";
-        private string _foundItemName = "낡은 지도";
-        private bool _hasEventOccurred = false;
-        private string _currentEventId;
+        
+        private class DiscoveryEvent
+        {
+            public string EventId;
+            public string LocationName;
+            public string FoundItemName;
+        }
+        private readonly List<DiscoveryEvent> _eventBuffer = new List<DiscoveryEvent>();
 
         public LocationEventProvider(JournalDataBaseSO journalDB)
         {
@@ -29,42 +33,49 @@ namespace Bond.WT.Journal
         /// </summary>
         public void SetDiscovery(string eventId, string location, string item)
         {
-            _currentEventId = eventId;
-            _locationName = location;
-            _foundItemName = item;
-            _hasEventOccurred = true;
+            _eventBuffer.Add(new DiscoveryEvent 
+            { 
+                EventId = eventId, 
+                LocationName = location, 
+                FoundItemName = item 
+            });
         }
 
-        public JournalReport GetDailyReport()
+        public IEnumerable<JournalReport> GetDailyReports()
         {
-            if (!_hasEventOccurred || string.IsNullOrEmpty(_currentEventId)) return null;
+            if (_eventBuffer.Count == 0) yield break;
 
-            // DB에서 해당 이벤트의 DataSO를 가져온다.
-            var template = _journalDB.GetSO<JournalDataSO>(_currentEventId);
-            if (template == null)
+            foreach (var evt in _eventBuffer)
             {
-                Debug.LogWarning($"[LocationEventProvider] 일지 데이터를 찾을 수 없습니다. ID: {_currentEventId}");
-                return null;
+                // DB에서 해당 이벤트의 DataSO를 가져온다.
+                var template = _journalDB.GetSO<JournalDataSO>(evt.EventId);
+                if (template == null)
+                {
+                    Debug.LogWarning($"[LocationEventProvider] 일지 데이터를 찾을 수 없습니다. ID: {evt.EventId}");
+                    continue;
+                }
+
+                // [Data Assembly] 템플릿과 변수를 조립하여 최종 문장 생성
+                var assembledParagraphs = new List<string>();
+                foreach (var para in template.Paragraphs)
+                {
+                    assembledParagraphs.Add(string.Format(para, evt.LocationName, evt.FoundItemName));
+                }
+
+                yield return new JournalReport
+                {
+                    Title = "탐색 보고",
+                    Paragraphs = assembledParagraphs,
+                    IconId = template.EntryIconId,
+                    Options = template.Options.ToList(),
+                    ProviderId = "LocationEvent"
+                };
             }
-
-            // [Data Assembly] 템플릿과 변수를 조립하여 최종 문장 생성
-            // 템플릿 예시: "오늘 {0}에서 {1}을(를) 발견했습니다."
-            string rawText = template.Paragraphs.Count > 0 ? template.Paragraphs[0] : "데이터 없음";
-            string finalDescription = string.Format(rawText, _locationName, _foundItemName);
-
-            return new JournalReport
-            {
-                Title = "탐색 보고",
-                Description = finalDescription,
-                IconId = template.EntryIconId,
-                Options = template.Options.ToList(),
-                ProviderId = "LocationEvent"
-            };
         }
 
         public void ClearBuffer()
         {
-            _hasEventOccurred = false;
+            _eventBuffer.Clear();
         }
     }
 }

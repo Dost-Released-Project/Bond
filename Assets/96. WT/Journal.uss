@@ -39,9 +39,10 @@
 }
 
 .option-container {
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
     margin-bottom: 20px;
-    align-items: stretch;
     /* 기본적으로 활성화, 스크립트에서 내용이 없으면 display: none 처리 */
 }
 
@@ -58,10 +59,19 @@
     border-radius: 10px;
 }
 
-/* JournalChoice Button Style (템플릿용) */
+.nav-button:disabled {
+    background-image: none;
+    background-color: rgb(180, 180, 180);
+    color: rgb(130, 130, 130);
+    opacity: 0.5;
+}
+
+/* JournalChoice Button Style */
 .journal-choice-button {
-    height: 65px;
-    margin-bottom: 15px;
-    font-size: 24px;
+    width: 60px;
+    height: 60px;
+    margin: 0 10px;
     border-radius: 10px;
+    font-size: 24px;
+    /* 텍스트나 이미지가 들어갈 단일 버튼 */
 }

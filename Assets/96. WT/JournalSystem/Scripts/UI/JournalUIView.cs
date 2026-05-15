@@ -23,9 +23,11 @@ namespace Bond.WT.Journal
         private VisualElement _entryIconImage;
         private VisualElement _optionButtonContainer;
         private Button _nextButton;
+        private Button _prevButton;
 
         // IJournalVisualizer 인터페이스 구현
         public Action OnNextClicked { get; set; }
+        public Action OnPrevClicked { get; set; }
         public Action<JournalOption> OnOptionSelected { get; set; }
 
         private Coroutine _typingCoroutine;
@@ -43,14 +45,38 @@ namespace Bond.WT.Journal
             _entryIconImage = root.Q<VisualElement>("IconImage");
             _optionButtonContainer = root.Q<VisualElement>("OptionContainer");
             _nextButton = root.Q<Button>("NextButton");
+            _prevButton = root.Q<Button>("PrevButton");
 
             if (_nextButton != null)
             {
                 _nextButton.clicked += () => OnNextClicked?.Invoke();
             }
+            
+            if (_prevButton != null)
+            {
+                _prevButton.clicked += () => OnPrevClicked?.Invoke();
+            }
 
             // 시작 시 UI 숨김
             SetVisible(false);
+        }
+
+        public void SetPrevButtonEnabled(bool isEnabled)
+        {
+            if (_prevButton != null)
+            {
+                // UI Toolkit에서 상호작용 가능 여부를 제어하는 코드
+                // isEnabled가 false면 버튼이 비활성화(회색)됩니다.
+                _prevButton.SetEnabled(isEnabled); 
+            }
+        }
+
+        public void SetNextButtonText(string text)
+        {
+            if (_nextButton != null)
+            {
+                _nextButton.text = text;
+            }
         }
 
         public void SetVisible(bool isVisible)
