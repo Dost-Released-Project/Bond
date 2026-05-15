@@ -10,9 +10,6 @@ public class AccessoryDTO
     public string ID { get; set; }
     public string ItemName { get; set; }
     public ItemCategory Category { get; set; }
-    public int BonusSTR { get; set; }
-    public int BonusAGI { get; set; }
-    public int BonusINT { get; set; }
     public int TotalMax { get; set; }
     public int ExpSlotMax { get; set; }
     public string IconPath { get; set; }
@@ -30,14 +27,6 @@ public class AccessoryParser : TSVParserBase<AccessoryDTO, AccessoryItem>
     protected override void Populate(AccessoryItem so, AccessoryDTO dto)
     {
         so.SetBaseData(dto.ID, dto.ItemName, "", dto.Category, dto.TotalMax, dto.ExpSlotMax);
-        
-        // Accessory 특화 데이터 (Equipment 정보 등)
-        if (so.equipmentData == null) so.equipmentData = new Equipment();
-        so.equipmentData.itemName = dto.ItemName;
-        so.equipmentData.type = EquipmentType.Accessory;
-        so.equipmentData.baseSTR = dto.BonusSTR;
-        so.equipmentData.baseAGI = dto.BonusAGI;
-        so.equipmentData.baseINT = dto.BonusINT;
         
         if (!string.IsNullOrEmpty(dto.IconPath))
         {
@@ -118,9 +107,6 @@ public sealed class AccessoryMap : ClassMap<AccessoryDTO>
         Map(m => m.ID).Name("ID");
         Map(m => m.ItemName).Name("ItemName");
         Map(m => m.Category).Name("Category");
-        Map(m => m.BonusSTR).Name("BonusSTR");
-        Map(m => m.BonusAGI).Name("BonusAGI");
-        Map(m => m.BonusINT).Name("BonusINT");
         Map(m => m.TotalMax).Name("TotalMax");
         Map(m => m.ExpSlotMax).Name("ExpSlotMax");
         Map(m => m.IconPath).Name("IconPath");

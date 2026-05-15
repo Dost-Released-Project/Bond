@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Reactions;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public enum RoleType
 {
@@ -33,7 +34,7 @@ public class BaseCharacterData
 
     [SerializeReference] public SkillBase[] Skills = new SkillBase[4];
     public Trait[] Traits = new Trait[4];
-    public Equipment[] Equips = new Equipment[2];
+    public AccessoryItem[] Accessories = new AccessoryItem[2];
     // [이관] 장비(무기, 방어구)
     public Equipment Weapon;
     public Equipment Armor;

@@ -12,9 +12,6 @@ public class Equipment
     public int upgradeLevel = 0;
     public const int MAX_UPGRADE = 5;
 
-    // [추가] 인벤토리로 되돌릴 때 필요한 원본 아이템 참조
-    public BaseItem originItem;
-
     public Equipment(DefaultEquipSO so)
     {
         baseSTR = so.STR;
@@ -52,19 +49,5 @@ public class Equipment
             // [참고] 업그레이드 시점에 별도의 수치 연산 없이 
             // 위 프로퍼티에서 실시간 계산되므로 데이터 동기화가 간편합니다.
         }
-    }
-
-    public Equipment Clone(BaseItem origin)
-    {
-        return new Equipment
-        {
-            itemName = this.itemName,
-            type = this.type,
-            upgradeLevel = this.upgradeLevel,
-            baseSTR = this.baseSTR,
-            baseAGI = this.baseAGI,
-            baseINT = this.baseINT,
-            originItem = origin // 원본 기록
-        };
     }
 }

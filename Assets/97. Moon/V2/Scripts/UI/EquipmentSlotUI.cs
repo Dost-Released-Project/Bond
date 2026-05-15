@@ -10,7 +10,7 @@ public class EquipmentSlotUI : MonoBehaviour
     private CharacterItemService _itemService;
     private InventoryTransferService _transferService;
     
-    [Inject] private CharacterSelector _selector;
+    //[Inject] private CharacterSelector _selector;
 
     [Inject]
     public void Construct(CharacterItemService itemService, InventoryTransferService transferService)
@@ -33,7 +33,7 @@ public class EquipmentSlotUI : MonoBehaviour
         
         if (hero?.Data != null)
         {
-            for (int i = 0; i < hero.Data.Equips.Length; i++)
+            for (int i = 0; i < hero.Data.Accessories.Length; i++)
             {
                 var slotVisual = _root.Q<VisualElement>($"char-acc-slot-{i}");
                 if (slotVisual != null) { _accSlots.Add(slotVisual); RegisterEvents(slotVisual, i); }
@@ -49,9 +49,9 @@ public class EquipmentSlotUI : MonoBehaviour
         slotVisual.RegisterCallback<PointerDownEvent>(evt => {
             HideTooltip();
             if (evt.button == 0) {
-                var eq = AdminTestTool.testHero.Data.Equips[index];
-                //var eq = _selector.Selected.Data.Equips[index];
-                if (eq?.originItem != null) _transferService.StartEquipmentDrag(index);
+                var acc = AdminTestTool.testHero.Data.Accessories[index];
+                //var acc = _selector.Selected.Data.accessories[index];
+                if (acc != null) _transferService.StartEquipmentDrag(index);
             }
         });
 
@@ -64,9 +64,9 @@ public class EquipmentSlotUI : MonoBehaviour
 
         // 장비 슬롯 툴팁 이벤트 추가
         slotVisual.RegisterCallback<MouseEnterEvent>(evt => {
-            var eq = AdminTestTool.testHero.Data.Equips[index];
-            //var eq = _selector.Selected.Data.Equips[index];
-            if (eq?.originItem != null) ShowTooltip(new InventorySlot { item = eq.originItem, quantity = 1 }, evt.mousePosition);
+            var acc = AdminTestTool.testHero.Data.Accessories[index];
+            //var acc = _selector.Selected.Data.accessories[index];
+            if (acc != null) ShowTooltip(new InventorySlot { item = acc, quantity = 1 }, evt.mousePosition);
         });
         slotVisual.RegisterCallback<MouseLeaveEvent>(evt => HideTooltip());
     }
@@ -75,17 +75,17 @@ public class EquipmentSlotUI : MonoBehaviour
     {
         var hero = AdminTestTool.testHero;
         //var hero = _selector.Selected;
-        if (hero?.Data?.Equips == null) return;
+        if (hero?.Data?.Accessories == null) return;
 
         for (int i = 0; i < _accSlots.Count; i++)
         {
             var visual = _accSlots[i]; visual.Clear();
-            if (i >= hero.Data.Equips.Length) continue;
+            if (i >= hero.Data.Accessories.Length) continue;
 
-            var eq = hero.Data.Equips[i];
-            if (eq?.originItem != null)
+            var acc = hero.Data.Accessories[i];
+            if (acc != null)
             {
-                var icon = new VisualElement { style = { backgroundImage = new StyleBackground(eq.originItem.icon) } };
+                var icon = new VisualElement { style = { backgroundImage = new StyleBackground(acc.icon) } };
                 icon.AddToClassList("item-icon-pixelated"); // 깨짐 방지 클래스
                 icon.style.width = Length.Percent(100); icon.style.height = Length.Percent(100);
                 icon.pickingMode = PickingMode.Ignore;

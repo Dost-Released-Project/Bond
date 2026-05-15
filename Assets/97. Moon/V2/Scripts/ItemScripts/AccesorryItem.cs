@@ -4,19 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewAccessory", menuName = "Items/Accessory")]
 public class AccessoryItem : BaseItem
 {
-    public Equipment equipmentData; // 실제 적용될 스탯 정보
     public List<StatModifier> specialEffects = new List<StatModifier>(); // 초기화 필수!
-    
-    // 인스펙터에서 값이 수정될 때 실행됩니다.
-    protected override void OnValidate()
-    {
-        category = ItemCategory.Accessories;
-        if (equipmentData != null)
-        {
-            // 자기 자신(SO)을 데이터 내부의 원본 참조로 넣어둠
-            equipmentData.originItem = this; 
-        }
-    }
 
     // 장착 시 효과 적용
     public void OnEquip(BaseCharacter target)
