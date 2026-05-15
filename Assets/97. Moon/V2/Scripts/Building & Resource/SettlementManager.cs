@@ -7,7 +7,7 @@ using VContainer;
 
 public class SettlementManager : MonoBehaviour, ISettlementManager
 {
-    private Transform[] constructionSlots; 
+    private Transform[] constructionSlots;
     
     private BuildingService _buildingService;
     private ResourceManager _resourceManager;

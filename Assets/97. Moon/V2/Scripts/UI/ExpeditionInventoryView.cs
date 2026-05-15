@@ -16,7 +16,7 @@ public class ExpeditionInventoryView : MonoBehaviour
     [Inject] private InventoryTransferService _transferService;
     [Inject] private CharacterItemService _itemService;
     [Inject] private ExpeditionPayload _payload;
-    //[Inject] private CharacterSelector _characterSeletor;
+    [Inject] private CharacterSelector _characterSeletor;
     
     private VisualElement _slotContainer;
     private List<VisualElement> _slots = new();
@@ -66,8 +66,8 @@ public class ExpeditionInventoryView : MonoBehaviour
                 // 장비 슬롯에서 마우스를 떼었을 때도 하얀 영역 밖일 때만 파괴
                 if (!_slotContainer.worldBound.Contains(evt.position))
                 {
-                    var hero = AdminTestTool.testHero;
-                    //var hero = _characterSeletor.Selected;
+                    //var hero = AdminTestTool.testHero;
+                    var hero = _characterSeletor.Selected;
                     if (hero != null)
                     {
                         _itemService.DiscardEquipment(hero, _transferService.SourceEquipmentSlotIndex);
@@ -131,8 +131,8 @@ public class ExpeditionInventoryView : MonoBehaviour
                 }
                 else if (evt.button == 1) { // 우클릭 자동 사용/장착
                     if (data.item.category == ItemCategory.Accessories) _itemService.AutoEquip(_payload.Supplies, index);
-                    else if (data.item.category == ItemCategory.Consume) _itemService.UseItem(AdminTestTool.testHero, _payload.Supplies, index);
-                    //else if (data.item.category == ItemCategory.Consume) _itemService.UseItem(_characterSeletor.Selected, _payload.Supplies, index);
+                    //else if (data.item.category == ItemCategory.Consume) _itemService.UseItem(AdminTestTool.testHero, _payload.Supplies, index);
+                    else if (data.item.category == ItemCategory.Consume) _itemService.UseItem(_characterSeletor.Selected, _payload.Supplies, index);
                 }
             });
 
@@ -144,8 +144,8 @@ public class ExpeditionInventoryView : MonoBehaviour
                 }
                 else if (_transferService.IsDraggingFromEquipment)
                 {
-                    var hero = AdminTestTool.testHero;
-                    //var hero = _characterSeletor.Selected;
+                    //var hero = AdminTestTool.testHero;
+                    var hero = _characterSeletor.Selected;
                     if (hero != null) {
                         _itemService.UnequipToInventorySlot(hero, _transferService.SourceEquipmentSlotIndex, _payload.Supplies, index);
                     }

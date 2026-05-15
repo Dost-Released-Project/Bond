@@ -9,7 +9,7 @@ public class AdminTestTool : MonoBehaviour
     public string id;
     public BaseCharacter hero;
     
-    public static BaseCharacter testHero = null;
+    public BaseCharacter testHero = null;
     
     private async void Awake()
     {

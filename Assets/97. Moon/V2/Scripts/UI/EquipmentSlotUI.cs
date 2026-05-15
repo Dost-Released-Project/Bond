@@ -10,7 +10,7 @@ public class EquipmentSlotUI : MonoBehaviour
     private CharacterItemService _itemService;
     private InventoryTransferService _transferService;
     
-    //[Inject] private CharacterSelector _selector;
+    [Inject] private CharacterSelector _selector;
 
     [Inject]
     public void Construct(CharacterItemService itemService, InventoryTransferService transferService)
@@ -28,19 +28,22 @@ public class EquipmentSlotUI : MonoBehaviour
         _tooltip.pickingMode = PickingMode.Ignore;
         _root.Add(_tooltip);
 
-        var hero = AdminTestTool.testHero;
-        //var hero = _selector.Selected;
-        
-        if (hero?.Data != null)
+        // [수정] 캐릭터 선택 여부와 관계없이 UI에 고정 배치된 슬롯 2개를 미리 캐싱하고 이벤트를 연결합니다.
+        for (int i = 0; i < 2; i++)
         {
-            for (int i = 0; i < hero.Data.Accessories.Length; i++)
-            {
-                var slotVisual = _root.Q<VisualElement>($"char-acc-slot-{i}");
-                if (slotVisual != null) { _accSlots.Add(slotVisual); RegisterEvents(slotVisual, i); }
-            }
+            var slotVisual = _root.Q<VisualElement>($"char-acc-slot-{i}");
+            if (slotVisual != null) { _accSlots.Add(slotVisual); RegisterEvents(slotVisual, i); }
         }
 
         _itemService.OnEquipmentChanged += RefreshUI;
+        _selector.OnSelectionChanged += HandleSelectionChanged; // [추가] 캐릭터 선택 변경 이벤트 구독
+        
+        RefreshUI();
+    }
+
+    // [추가] 캐릭터가 변경되었을 때 실행될 콜백 함수
+    private void HandleSelectionChanged(BaseCharacter newHero)
+    {
         RefreshUI();
     }
 
@@ -49,8 +52,7 @@ public class EquipmentSlotUI : MonoBehaviour
         slotVisual.RegisterCallback<PointerDownEvent>(evt => {
             HideTooltip();
             if (evt.button == 0) {
-                var acc = AdminTestTool.testHero.Data.Accessories[index];
-                //var acc = _selector.Selected.Data.accessories[index];
+                var acc = _selector.Selected?.Data?.Accessories?[index]; // [안전성] ?. 추가
                 if (acc != null) _transferService.StartEquipmentDrag(index);
             }
         });
@@ -64,8 +66,7 @@ public class EquipmentSlotUI : MonoBehaviour
 
         // 장비 슬롯 툴팁 이벤트 추가
         slotVisual.RegisterCallback<MouseEnterEvent>(evt => {
-            var acc = AdminTestTool.testHero.Data.Accessories[index];
-            //var acc = _selector.Selected.Data.accessories[index];
+            var acc = _selector.Selected?.Data?.Accessories?[index]; // [안전성] ?. 추가
             if (acc != null) ShowTooltip(new InventorySlot { item = acc, quantity = 1 }, evt.mousePosition);
         });
         slotVisual.RegisterCallback<MouseLeaveEvent>(evt => HideTooltip());
@@ -73,14 +74,13 @@ public class EquipmentSlotUI : MonoBehaviour
 
     public void RefreshUI()
     {
-        var hero = AdminTestTool.testHero;
-        //var hero = _selector.Selected;
-        if (hero?.Data?.Accessories == null) return;
+        var hero = _selector.Selected;
 
+        // [개선] 슬롯 비우기(Clear)는 캐릭터가 null일 때도 정상 작동하여 UI를 비워주어야 하므로 루프 구조를 정돈했습니다.
         for (int i = 0; i < _accSlots.Count; i++)
         {
             var visual = _accSlots[i]; visual.Clear();
-            if (i >= hero.Data.Accessories.Length) continue;
+            if (hero?.Data?.Accessories == null || i >= hero.Data.Accessories.Length) continue;
 
             var acc = hero.Data.Accessories[i];
             if (acc != null)
@@ -129,5 +129,10 @@ public class EquipmentSlotUI : MonoBehaviour
     }
     
     private void HideTooltip() => _tooltip.style.visibility = Visibility.Hidden;
-    private void OnDestroy() { if (_itemService != null) _itemService.OnEquipmentChanged -= RefreshUI; }
+    
+    private void OnDestroy() 
+    { 
+        if (_itemService != null) _itemService.OnEquipmentChanged -= RefreshUI; 
+        if (_selector != null) _selector.OnSelectionChanged -= HandleSelectionChanged; // [추가] 메모리 누수 방지 구독 해제
+    }
 }

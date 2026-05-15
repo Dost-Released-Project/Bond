@@ -6,7 +6,7 @@ public class CharacterItemService
 {
     public event Action OnEquipmentChanged;
     
-    //[Inject] private CharacterSelector _characterSeletor;
+    [Inject] private CharacterSelector _characterSeletor;
 
     public void UseItem(BaseCharacter hero, IInventory sourceInv, int index)
     {
@@ -96,8 +96,8 @@ public class CharacterItemService
     // 인벤토리 풀 상태에서도 1:1 직접 스왑 해제가 가능하게끔 처리
     public void EquipFromDrag(IInventory sourceInv, int invIndex, int charSlotIndex)
     {
-        var hero = AdminTestTool.testHero;
-        //var hero = _characterSeletor.Selected;
+        //var hero = AdminTestTool.testHero;
+        var hero = _characterSeletor.Selected;
         var slot = sourceInv.GetSlot(invIndex);
         if (hero == null || slot.IsEmpty || slot.item is not AccessoryItem accItem) return;
 
@@ -122,8 +122,8 @@ public class CharacterItemService
 
     public bool AutoEquip(IInventory sourceInv, int invIndex)
     {
-        var hero = AdminTestTool.testHero;
-        //var hero = _characterSeletor.Selected;
+        //var hero = AdminTestTool.testHero;
+        var hero = _characterSeletor.Selected;
         var slot = sourceInv.GetSlot(invIndex);
         if (hero == null || slot.item is not AccessoryItem accItem) return false;
 
