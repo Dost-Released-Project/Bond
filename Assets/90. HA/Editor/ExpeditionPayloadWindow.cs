@@ -14,6 +14,7 @@ public class ExpeditionPayloadWindow : EditorWindow
     private class CharacterSnapshot
     {
         public BaseCharacter data;
+        public Stat stat;
     }
 
     private class CharacterDataWrapper : ScriptableObject
@@ -106,7 +107,7 @@ public class ExpeditionPayloadWindow : EditorWindow
             {
                 var wrapper = ScriptableObject.CreateInstance<CharacterDataWrapper>();
                 wrapper.hideFlags = HideFlags.DontSave;
-                wrapper.character = new CharacterSnapshot { data = list[i]};
+                wrapper.character = new CharacterSnapshot { data = list[i], stat = list[i].Stat };
                 var so = new SerializedObject(wrapper);
                 CollapseRecursive(so.FindProperty("character"));
                 cached.Add((wrapper, so));
