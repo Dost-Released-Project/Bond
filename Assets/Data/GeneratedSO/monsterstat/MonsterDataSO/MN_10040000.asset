@@ -17,6 +17,7 @@ MonoBehaviour:
   _description: 
   RoleType: 1
   Level: 1
+  ImageAddress: GodOfNormalization
   STR: 6
   AGI: 4
   INT: 2

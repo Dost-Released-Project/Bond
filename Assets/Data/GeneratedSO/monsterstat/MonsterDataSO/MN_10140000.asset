@@ -17,6 +17,7 @@ MonoBehaviour:
   _description: 
   RoleType: 3
   Level: 6
+  ImageAddress: RiceSummoner
   STR: 8
   AGI: 10
   INT: 24
