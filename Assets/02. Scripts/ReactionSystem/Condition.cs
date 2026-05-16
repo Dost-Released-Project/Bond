@@ -6,14 +6,6 @@ using UnityEngine;
 
 namespace Reactions
 {
-    public enum E_ObserveFilter
-    {
-        Self,
-        Ally,
-        Enemy,
-        Specific
-    }
-
     public enum E_ContextTarget
     {
         Caster,
@@ -43,7 +35,29 @@ namespace Reactions
         }
     }
 
-    public class HpBelowCondition : ICondition
+    public static class TriggerTargetComparer
+    {
+        public static IEnumerable<BaseCharacter> Compare(E_ContextTarget target, E_ObserveFilter filter, BaseCharacter observer, BattleContext context, BaseCharacter subject)
+        {
+            List<BaseCharacter> compareTarget = target switch
+            {
+                E_ContextTarget.Caster => new() { context.caster },
+                E_ContextTarget.Target => context.targets,
+                _ => new List<BaseCharacter>()
+            };
+
+            List<BaseCharacter> observeTarget = filter switch
+            {
+                E_ObserveFilter.Self => new List<BaseCharacter>(){observer,},
+                E_ObserveFilter.Specific => new List<BaseCharacter>(){subject},
+                _ => new List<BaseCharacter>(){subject}
+            };
+
+            return compareTarget.Intersect(observeTarget);
+        }
+    }
+
+    public class HpBelowCondition
     {
         public float Threshold;
 

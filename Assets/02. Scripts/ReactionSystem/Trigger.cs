@@ -4,6 +4,14 @@ using UnityEngine;
 
 namespace Reactions
 {
+    public enum E_ObserveFilter
+    {
+        Self,
+        Ally,
+        Enemy,
+        Specific
+    }
+    
     public interface ITrigger
     {
         bool CheckCondition(BattleContext context);
@@ -12,6 +20,7 @@ namespace Reactions
     [Serializable]
     public class Trigger : ITrigger
     {
+        public E_ObserveFilter Filter;
         public BaseCharacter Subject;
         public ICondition Condition;
         
