@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: CO_07020000
   m_EditorClassIdentifier: Assembly-CSharp::ConsumableItem
   _id: 07020000
-  _displayName: 'Stimulant '
-  _description: 
+  _displayName: "\uC815\uC2E0 \uAC01\uC131\uC81C"
+  _description: "\uC0AC\uC6A9 \uC2DC \uC131\uD5A5\uC744 \uD574\uAE08\uD55C\uB2E4."
   category: 0
   icon: {fileID: 21300000, guid: 843d71197893c7d46b79d38219e785b1, type: 3}
   totalGlobalMax: 10

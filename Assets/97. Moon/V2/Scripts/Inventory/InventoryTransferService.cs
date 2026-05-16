@@ -97,17 +97,36 @@ public class InventoryTransferService
         if (slot.IsEmpty) return;
 
         BaseItem item = slot.item;
-        source.RemoveFromSlot(sourceIdx, 1); // 먼저 뺌
+        
+        MoveFromSlot(source, sourceIdx, target, item, 1);
+    }
+    
+    public void MoveAllFromSlot(IInventory source, int sourceIdx, IInventory target)
+    {
+        var slot = source.GetSlot(sourceIdx);
+        if (slot.IsEmpty) return;
+        
+        BaseItem item = slot.item;
+        
+        MoveFromSlot(source, sourceIdx, target, item, item.expeditionSlotMax);
+    }
 
-        int remain = target.AddItemAuto(item, 1);
+    public void MoveFromSlot(IInventory source, int sourceIdx, IInventory target, BaseItem item, int quantity)
+    {
+        var slot = source.GetSlot(sourceIdx);
+        if (slot.IsEmpty) return;
+        
+        source.RemoveFromSlot(sourceIdx, quantity); // 먼저 뺌
+
+        int remain = target.AddItemAuto(item, quantity);
         
         if (remain == 0) // 이동 성공
         {
-            Debug.Log($"[우클릭] {item.itemName} 1개, {target.GetType().Name}으로 이동");
+            Debug.Log($"[우클릭] {item.itemName} {quantity}개, {target.GetType().Name}으로 이동");
         }
         else
         {
-            if (remain > 0) source.AddItemAt(sourceIdx, item, 1); // 실패 시 복구
+            if (remain > 0) source.AddItemAt(sourceIdx, item, quantity); // 실패 시 복구
             Debug.LogWarning($"{target.GetType().Name}의 용량이 가득 찼습니다.");
         }
     }

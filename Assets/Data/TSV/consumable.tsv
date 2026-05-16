@@ -6,9 +6,9 @@
 	04									
 	05									
 (string)	(string)	(enum)	(enum/null)	(int)	(int)	(int)	(string)			
-ID	ItemName	Category	ConsumableType	HealValue	TotalMax	ExpSlotMax	IconPath			
-07000000	Old Bandage	Consume	Bandage	10	10	2	Sprite/Item/OldBandage			
-07010000	Old Sedative	Consume	Sedative	10	10	2	Sprite/Item/OldSedative			
-07020000	Stimulant 	Consume	Stimulant 	0	10	2	Sprite/Item/Stimulant			
-07030000	Bandage	Consume	Bandage	20	10	2	Sprite/Item/Bandage			
-07040000	Sedative	Consume	Sedative	20	10	2	Sprite/Item/Sedative			
+ID	ItemName	Category	ConsumableType	HealValue	TotalMax	ExpSlotMax	IconPath	Description		
+07000000	낡은 붕대	Consume	Bandage	10	10	2	Sprite/Item/OldBandage	사용 시 약간의 체력을 회복한다.		
+07010000	오래된 진정제	Consume	Sedative	10	10	2	Sprite/Item/OldSedative	사용 시 약간의 정신력을 회복한다.		
+07020000	정신 각성제	Consume	Stimulant 	0	10	2	Sprite/Item/Stimulant	사용 시 성향을 해금한다.		
+07030000	붕대	Consume	Bandage	20	10	2	Sprite/Item/Bandage	사용 시 체력을 회복한다.		
+07040000	진정제	Consume	Sedative	20	10	2	Sprite/Item/Sedative	사용 시 정신력을 회복한다.		

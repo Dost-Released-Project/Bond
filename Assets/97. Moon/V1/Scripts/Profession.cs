@@ -31,26 +31,14 @@ public class Profession
         int extraSTR = (characterData.Weapon?.bonusSTR ?? 0) + (characterData.Armor?.bonusSTR ?? 0);
         int extraAGI = (characterData.Weapon?.bonusAGI ?? 0) + (characterData.Armor?.bonusAGI ?? 0);
         int extraINT = (characterData.Weapon?.bonusINT ?? 0) + (characterData.Armor?.bonusINT ?? 0);
-        
-        // 1. 악세서리 스탯
-        if (characterData.Equips != null)
-        {
-            foreach (var accItem in characterData.Equips)
-            {
-                if (accItem == null) continue;
-                extraSTR+= accItem.baseSTR;
-                extraAGI += accItem.baseAGI; 
-                extraINT += accItem.baseINT;
-            }
-        }
 
-        // 2. 모디파이어 적용 (장비 스탯도 여기서 합산 후 적용)
+        // 1. 모디파이어 적용 (장비 스탯도 여기서 합산 후 적용)
         // 여기서는 기존 장비 코드를 유지하면서 '특수 효과'를 controller에서 가져오는 방식
         float finalSTR = controller.ApplyModifiers(StatType.STR, extraSTR + stat.STR);
         float finalAGI = controller.ApplyModifiers(StatType.AGI, extraAGI + stat.AGI);
         float finalINT = controller.ApplyModifiers(StatType.INT, extraINT + stat.INT);
 
-        // 3. ClassSO의 보정치 적용 및 모디파이어 합산 후 최종 산출
+        // 2. ClassSO의 보정치 적용 및 모디파이어 합산 후 최종 산출
         // STR 영향군
         stat.max_Hp = Mathf.RoundToInt(controller.ApplyModifiers(StatType.MaxHP, finalSTR * _classData.HP));
         stat.atk = Mathf.RoundToInt(controller.ApplyModifiers(StatType.Atk, finalSTR * _classData.Atk));

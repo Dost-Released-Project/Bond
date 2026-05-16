@@ -9,7 +9,7 @@ public class AdminTestTool : MonoBehaviour
     public string id;
     public BaseCharacter hero;
     
-    public static BaseCharacter testHero = null;
+    public BaseCharacter testHero = null;
     
     private async void Awake()
     {
@@ -70,7 +70,7 @@ public class AdminTestTool : MonoBehaviour
         // 3. 캐릭터 선택 (SettlementManager에 전달)
         if (Keyboard.current.f3Key.wasPressedThisFrame)
         {
-            FindObjectOfType<SettlementManager>().SelectCharacter(testHero);
+            FindAnyObjectByType<SettlementManager>().SelectCharacter(testHero);
             testHero.CalcStat();
         }
     }

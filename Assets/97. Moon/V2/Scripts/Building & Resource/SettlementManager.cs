@@ -7,7 +7,7 @@ using VContainer;
 
 public class SettlementManager : MonoBehaviour, ISettlementManager
 {
-    private Transform[] constructionSlots; 
+    private Transform[] constructionSlots;
     
     private BuildingService _buildingService;
     private ResourceManager _resourceManager;
@@ -17,7 +17,7 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     private IExpeditionInventory _expeditionInv;
     
     [Inject] private SmithyUIController _smithyUI; // UI 컨트롤러 주입
-    private BaseCharacter _selectedCharacter;
+    [Inject] private CharacterSelector _characterSelector;
 
     [Inject]
     public void Construct(BuildingService bs, ResourceManager rm, InventoryView iv, SupplyView supply, ITotalInventory total, IExpeditionInventory exp)
@@ -51,12 +51,16 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         {
             case BuildingType.Storage: _inventoryView.ToggleWindow(true); break;
             case BuildingType.Supply: _supplyView.Open(); break;
-            case BuildingType.Tavern: _buildingService.ExecuteTavern(_selectedCharacter, levelData); break;
-            case BuildingType.Inn: _buildingService.ExecuteInn(_selectedCharacter, levelData); break;
+            case BuildingType.Tavern: 
+                if (_characterSelector.Selected != null)
+                    _buildingService.ExecuteTavern(_characterSelector.Selected, levelData); break;
+            case BuildingType.Inn: 
+                if (_characterSelector.Selected != null)
+                    _buildingService.ExecuteInn(_characterSelector.Selected, levelData); break;
             case BuildingType.Smithy: // 이제 직접 강화하지 않고 UI를 엽니다.
                 // 선택된 캐릭터와 현재 대장간 건물 레벨을 전달합니다.
-                if (_selectedCharacter != null)
-                    _smithyUI.Open(_selectedCharacter, building.CurrentLevel);; break;
+                if (_characterSelector.Selected != null)
+                    _smithyUI.Open(_characterSelector.Selected, building.CurrentLevel);; break;
             case BuildingType.Guild: CollectGuildData(building); break;
         }
     }
@@ -146,23 +150,6 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         _resourceManager.AddMaterials((int)(reward*0.05f), (int)(reward*0.05f));
         Debug.Log($"길드에서 {reward}의 개척 데이터를 수급했습니다!");
     }
-
-    public void SelectCharacter(BaseCharacter character) => _selectedCharacter = character;
-    
-    // CreateBuildingVisual 및 기타 헬퍼 메서드 (기능 유지)
-    // private void CreateBuildingVisual(Transform parent, BuildingData data)
-    // {
-    //     GameObject buildingGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
-    //     buildingGo.name = $"Building_{data.DisplayName}";
-    //     buildingGo.transform.SetParent(parent);
-    //     buildingGo.transform.localPosition = new Vector3(0, 0.5f, 0); 
-    //     
-    //     var bObj = buildingGo.AddComponent<BuildingObject>();
-    //     bObj.Initialize(data, this);
-    //
-    //     var renderer = buildingGo.GetComponent<Renderer>();
-    //     renderer.material.color = GetColorByBuildingType(data.buildingType);
-    // }
     
     // 스프라이트로 건물 생성
     private void CreateBuildingVisual(Transform parent, BuildingData data)
@@ -191,21 +178,6 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         // 4. 기능 컴포넌트 부착
         var bObj = buildingGo.AddComponent<BuildingObject>();
         bObj.Initialize(data, this);
-    }
-
-    private Color GetColorByBuildingType(BuildingType type)
-    {
-        return type switch
-        {
-            BuildingType.Inn => Color.green,
-            BuildingType.Tavern => Color.orange,
-            BuildingType.Smithy => Color.red,
-            BuildingType.Guild => Color.purple, 
-            BuildingType.Storage => Color.blue,
-            BuildingType.Carriage => Color.yellow,
-            BuildingType.Supply => Color.black,
-            _ => Color.white
-        };
     }
     
     // 세이브 데이터 불러오기 전용 메소드
@@ -242,5 +214,11 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
                 });
         }
         SaveLoadSystem.Save(settSave);
+    }
+
+    // 임시
+    public void SelectCharacter(BaseCharacter testHero)
+    {
+        _characterSelector.Select(testHero);
     }
 }

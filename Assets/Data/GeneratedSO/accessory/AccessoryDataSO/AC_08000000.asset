@@ -13,36 +13,20 @@ MonoBehaviour:
   m_Name: AC_08000000
   m_EditorClassIdentifier: Assembly-CSharp::AccessoryItem
   _id: 08000000
-  _displayName: The Ring of Power
-  _description: 
+  _displayName: "\uD798\uC758 \uBAA9\uAC78\uC774"
+  _description: "\uCC29\uC6A9 \uC2DC \uD798\uC774 \uAC15\uD574\uC9C4\uB2E4."
   category: 1
   icon: {fileID: 21300000, guid: 4911458b7166c48418c84ba8b81785ca, type: 3}
   totalGlobalMax: 1
   expeditionSlotMax: 1
-  equipmentData:
-    itemName: The Ring of Power
-    type: 1
-    upgradeLevel: 0
-    originItem: {fileID: 11400000}
-    baseSTR: 5
-    baseAGI: 0
-    baseINT: 0
-    upSTR: 0
-    upAGI: 0
-    upINT: 0
   specialEffects:
   - id: 13000000
-    name: MOD_13000000
+    name: "\uD798 \uC99D\uAC00(\uC218\uCE58)"
     type: 0
     mode: 0
-    value: 10
-  - id: 13010000
-    name: MOD_13010000
-    type: 1
-    mode: 0
-    value: 10
-  - id: 13020000
-    name: MOD_13020000
-    type: 2
-    mode: 0
-    value: 10
+    value: 3
+  - id: 13150000
+    name: "\uD798 \uC99D\uAC00(\uBE44\uC728)"
+    type: 0
+    mode: 1
+    value: 0.1

@@ -1685,6 +1685,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5488191574566789866, guid: 464d270355f8dab47a4ab50cc174f5c5, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 5674226465204005832, guid: 464d270355f8dab47a4ab50cc174f5c5, type: 3}
       propertyPath: m_Name
       value: EquipmentSlotUI
@@ -1989,7 +1993,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2171420726810719254, guid: 24bf06a1abb9c5f44a8d4d763951a481, type: 3}
       propertyPath: id
-      value: 02010000
+      value: 02000000
       objectReference: {fileID: 0}
     - target: {fileID: 2171420726810719254, guid: 24bf06a1abb9c5f44a8d4d763951a481, type: 3}
       propertyPath: hero.Data.Name

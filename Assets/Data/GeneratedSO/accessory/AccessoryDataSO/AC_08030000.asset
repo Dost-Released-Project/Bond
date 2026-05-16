@@ -13,21 +13,40 @@ MonoBehaviour:
   m_Name: AC_08030000
   m_EditorClassIdentifier: Assembly-CSharp::AccessoryItem
   _id: 08030000
-  _displayName: The Ring of Master
-  _description: 
+  _displayName: "\uC804\uB2A5\uC758 \uBAA9\uAC78\uC774"
+  _description: "\uCC29\uC6A9 \uC2DC \uBAA8\uB4E0 \uB2A5\uB825\uCE58\uAC00 \uC0C1\uC2B9\uD55C\uB2E4."
   category: 1
   icon: {fileID: 21300000, guid: 496e9a87ba4b8fa41bd1d0459d221936, type: 3}
   totalGlobalMax: 1
   expeditionSlotMax: 1
-  equipmentData:
-    itemName: The Ring of Master
+  specialEffects:
+  - id: 13000000
+    name: "\uD798 \uC99D\uAC00(\uC218\uCE58)"
+    type: 0
+    mode: 0
+    value: 3
+  - id: 13010000
+    name: "\uBBFC\uCCA9 \uC99D\uAC00(\uC218\uCE58)"
     type: 1
-    upgradeLevel: 0
-    originItem: {fileID: 11400000}
-    baseSTR: 2
-    baseAGI: 2
-    baseINT: 2
-    upSTR: 0
-    upAGI: 0
-    upINT: 0
-  specialEffects: []
+    mode: 0
+    value: 3
+  - id: 13020000
+    name: "\uC9C0\uB2A5 \uC99D\uAC00(\uC218\uCE58)"
+    type: 2
+    mode: 0
+    value: 3
+  - id: 13150000
+    name: "\uD798 \uC99D\uAC00(\uBE44\uC728)"
+    type: 0
+    mode: 1
+    value: 0.1
+  - id: 13160000
+    name: "\uBBFC\uCCA9 \uC99D\uAC00(\uBE44\uC728)"
+    type: 1
+    mode: 1
+    value: 0.1
+  - id: 13170000
+    name: "\uC9C0\uB2A5 \uACE0\uC815 \uC218\uCE58 \uC99D\uAC00"
+    type: 2
+    mode: 1
+    value: 0.1

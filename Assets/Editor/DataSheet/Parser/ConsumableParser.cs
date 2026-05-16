@@ -15,6 +15,7 @@ public class ConsumableDTO
     public int TotalMax { get; set; }
     public int ExpSlotMax { get; set; }
     public string IconPath { get; set; }
+    public string Descirption { get; set; }
 }
 
 public class ConsumableParser : TSVParserBase<ConsumableDTO, ConsumableItem>
@@ -27,11 +28,10 @@ public class ConsumableParser : TSVParserBase<ConsumableDTO, ConsumableItem>
 
     protected override void Populate(ConsumableItem so, ConsumableDTO dto)
     {
-        so.SetBaseData(dto.ID, dto.ItemName, "", dto.Category, dto.TotalMax, dto.ExpSlotMax);
+        so.SetBaseData(dto.ID, dto.ItemName, dto.Descirption, dto.Category, dto.TotalMax, dto.ExpSlotMax);
         so.consumableType = dto.ConsumableType;
         so.healValue = dto.HealValue;
-    
-
+        
         if (!string.IsNullOrEmpty(dto.IconPath))
         {
             so.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/{dto.IconPath}.png");
@@ -86,5 +86,6 @@ public sealed class ConsumableMap : ClassMap<ConsumableDTO>
         Map(m => m.TotalMax).Name("TotalMax");
         Map(m => m.ExpSlotMax).Name("ExpSlotMax");
         Map(m => m.IconPath).Name("IconPath");
+        Map(m => m.Descirption).Name("Description");
     }
 }

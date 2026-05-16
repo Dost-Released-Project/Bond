@@ -1,5 +1,5 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/97.%20Moon/V2/Scripts/UI/Inventory/InventoryStyle.uss?fileID=7433441132597879392&amp;guid=2d9b46e0e3f6b80438edfeb73b2d389a&amp;type=3#InventoryStyle"/>
+    <Style src="project://database/Assets/97.%20Moon/V2/Scripts/UI/Inventory/inventory-list-item.uss?fileID=7433441132597879392&amp;guid=24fa4d010a7d9f846b5126ad4d064514&amp;type=3#inventory-list-item"/>
     <ui:ScrollView horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" style="position: absolute; width: 400px; height: 400px; top: 340px; left: auto; align-self: flex-end; align-items: stretch; justify-content: flex-start; align-content: flex-start; right: auto; flex-direction: row; flex-wrap: wrap; background-color: rgb(137, 104, 41);">
         <ui:VisualElement name="accessory-grid" style="flex-grow: 1; flex-direction: row; flex-wrap: wrap;"/>
     </ui:ScrollView>

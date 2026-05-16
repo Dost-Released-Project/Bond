@@ -1,0 +1,111 @@
+/* 인벤토리 슬롯 리스트 아이템 */
+.inventory-list-item {
+    flex-direction: row;
+    align-items: center;
+    height: 85px;
+    width: 100%;
+    flex-shrink: 0; /* 부모 크기에 상관없이 높이 유지 */
+    padding: 0 15px;
+    margin-bottom: 5px;
+    background-color: rgba(30, 30, 30, 0.8);
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.inventory-list-item:hover {
+    background-color: rgba(60, 60, 60, 0.9);
+}
+
+/* 툴팁 디자인 */
+.inventory-tooltip {
+    position: absolute;
+    background-color: rgba(10, 10, 10, 0.98);
+    padding: 12px;
+    border-width: 1px;
+    border-color: white;
+    min-width: 220px;
+    max-width: 300px;
+}
+
+.tooltip-title {
+    color: yellow;
+    font-size: 18px;
+    -unity-font-style: bold;
+    margin-bottom: 8px;
+}
+
+.tooltip-text {
+    color: white;
+    font-size: 13px;
+    white-space: normal;
+}
+
+/* 아이콘 스타일 */
+.inventory-item-icon {
+    width: 45px;
+    height: 45px;
+    flex-shrink: 0; /* 크기 고정 */
+    margin-right: 15px;
+}
+
+/* 텍스트 정보 레이아웃 */
+.inventory-item-info {
+    flex-grow: 1;
+    justify-content: center;
+}
+
+/* 텍스트 뭉치 (이름 + 카테고리) */
+.item-text-container {
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 15px;
+    flex-grow: 1;
+}
+
+/* 텍스트 영역 */
+.item-text-group {
+    flex-direction: column;
+    margin-left: 15px;
+    flex-grow: 1;
+}
+
+.inventory-item-name {
+    color: white;
+    font-size: 16px;
+    -unity-font-style: bold;
+}
+
+.inventory-item-category {
+    color: #999999;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* 수량 레이블 */
+.inventory-item-quantity {
+    color: #E0E0E0;
+    font-size: 13px;
+    width: 70px;
+    -unity-text-align: middle-right;
+}
+
+/* 장신구 가방 리스트 아이템 */
+.accessory-list-item {
+    flex-direction: row;
+    align-items: center;
+    height: 55px;
+    margin-bottom: 6px;
+    padding-left: 10px;
+    background-color: rgba(51, 38, 25, 0.8);
+    border-bottom-width: 2px;
+    border-bottom-color: rgba(102, 76, 51, 1);
+}
+
+/* 화질 깨짐 방지 아이콘 스타일 */
+.item-icon-pixelated {
+    width: 45px;
+    height: 45px;
+    flex-shrink: 0;
+    /* [핵심] 이미지 비율 유지 및 화질 저하 방지 */
+    -unity-background-scale-mode: scale-to-fit;
+}
