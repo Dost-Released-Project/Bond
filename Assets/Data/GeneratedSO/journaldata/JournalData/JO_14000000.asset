@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5749328eeb9677b4ab026fe783bb09f2, type: 3}
+  m_Name: JO_14000000
+  m_EditorClassIdentifier: Assembly-CSharp::Bond.WT.Journal.JournalDataSO
+  _id: 14000000
+  _displayName: 14000000
+  _description: 
+  _paragraphs:
+  - "\uC624\uB298 {0}\uC5D0\uC11C {1}\uC744(\uB97C) \uBC1C\uACAC\uD588\uC2B5\uB2C8\uB2E4."
+  - "\uC0DD\uAC01\uBCF4\uB2E4 \uB0A1\uC558\uAD70\uC694."
+  _options:
+  - text: "\uAC00\uC838\uAC04\uB2E4."
+    actionKey: Take_Item
+  - text: "\uADF8\uB0E5 \uB454\uB2E4"
+    actionKey: Leave_Item
+  _entryIconId: 

@@ -1,0 +1,77 @@
+.root-panel {
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+}
+
+.journal-container {
+    width: 80%;
+    height: 80%;
+    background-color: rgb(245, 245, 245); /* 일지 배경색 (임시) */
+    border-radius: 20px;
+    padding: 40px;
+    flex-direction: column;
+}
+
+.top-area {
+    flex-grow: 1;
+    flex-direction: row;
+    margin-bottom: 20px;
+}
+
+.icon-image {
+    width: 200px;
+    height: 200px;
+    background-color: rgb(200, 200, 200); /* 아이콘 자리 표시 (임시) */
+    margin-right: 30px;
+    border-radius: 10px;
+}
+
+.content-scroll {
+    flex-grow: 1;
+}
+
+.content-label {
+    white-space: normal; /* 텍스트 줄바꿈 허용 */
+    font-size: 26px;
+    color: rgb(50, 50, 50);
+}
+
+.option-container {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    /* 기본적으로 활성화, 스크립트에서 내용이 없으면 display: none 처리 */
+}
+
+.navigation-area {
+    flex-direction: row;
+    justify-content: space-between;
+    height: 60px;
+}
+
+.nav-button {
+    width: 160px;
+    height: 100%;
+    font-size: 24px;
+    border-radius: 10px;
+}
+
+.nav-button:disabled {
+    background-image: none;
+    background-color: rgb(180, 180, 180);
+    color: rgb(130, 130, 130);
+    opacity: 0.5;
+}
+
+/* JournalChoice Button Style */
+.journal-choice-button {
+    width: 60px;
+    height: 60px;
+    margin: 0 10px;
+    border-radius: 10px;
+    font-size: 24px;
+    /* 텍스트나 이미지가 들어갈 단일 버튼 */
+}

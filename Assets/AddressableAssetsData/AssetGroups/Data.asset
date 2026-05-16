@@ -35,6 +35,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4d604cea4f96ca740a999e0d6c392eaf
+    m_Address: JournalDataBase
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5d489f423e31aee4bbada1cd1e83daa4
     m_Address: ClassDataBase
     m_ReadOnly: 0

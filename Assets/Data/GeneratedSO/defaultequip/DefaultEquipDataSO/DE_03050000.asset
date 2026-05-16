@@ -13,16 +13,12 @@ MonoBehaviour:
   m_Name: DE_03050000
   m_EditorClassIdentifier: Assembly-CSharp::DefaultEquipSO
   _id: 03050000
-  _displayName: DE_03050000
+  _displayName: Assassin
   _description: 
-  ID: 
-  ClassType: 1
+  ClassType: Assassin
   STR: 1
   AGI: 0
   INT: 1
-  UpSTR: 1
-  UpAGI: 0
-  UpINT: 1
-  ArmorID: 
-  WeaponID: 
-  IconID: Icon_Rogue
+  ArmorId: 
+  WeaponId: 
+  IconId: Icon_Rogue

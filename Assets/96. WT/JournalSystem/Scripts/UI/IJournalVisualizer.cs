@@ -39,6 +39,10 @@ namespace Bond.WT.Journal
         /// 뷰에서 발생하는 이벤트 핸들러
         /// </summary>
         Action OnNextClicked { get; set; }
+        Action OnPrevClicked { get; set; }
         Action<JournalOption> OnOptionSelected { get; set; }
+        
+        void SetPrevButtonEnabled(bool isEnabled);
+        void SetNextButtonText(string text);
     }
 }
