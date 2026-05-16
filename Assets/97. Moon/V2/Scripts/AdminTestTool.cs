@@ -35,12 +35,12 @@ public class AdminTestTool : MonoBehaviour
 
             // 4. Equipment 객체 생성 및 순수 데이터 주입
             // 요청하신 대로 STR, AGI, INT만 우선 할당합니다.
-            testHero.Data.Weapon = new Equipment(weaponSO) 
+            testHero.Weapon = new Equipment(weaponSO) 
             {
                 itemName = "기본 무기", // 임시
             };
             
-            testHero.Data.Armor = new Equipment(armorSO) 
+            testHero.Armor = new Equipment(armorSO) 
             {
                 itemName = "기본 방어구", // 임시
             };

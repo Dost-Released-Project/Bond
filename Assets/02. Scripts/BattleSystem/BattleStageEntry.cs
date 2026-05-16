@@ -77,10 +77,10 @@ namespace BattleSystem
                 Debug.Log(
                     $"[BattleStageEntry] 적 슬롯 배치\n" +
                     $"  슬롯 인덱스  : {i}\n" +
-                    $"  ID           : {enemy[i].Data.Id}\n" +
-                    $"  Name         : {enemy[i].Data.Name}\n" +
-                    $"  Level        : {enemy[i].Data.Level}\n" +
-                    $"  RoleType     : {enemy[i].Data.RoleType}\n" +
+                    $"  ID           : {enemy[i].Id}\n" +
+                    $"  Name         : {enemy[i].Name}\n" +
+                    $"  Level        : {enemy[i].Level}\n" +
+                    $"  RoleType     : {enemy[i].RoleType}\n" +
                     $"  STR={enemy[i].Stat.STR}  AGI={enemy[i].Stat.AGI}  INT={enemy[i].Stat.INT}"
                 );
                 m_formationManager.SetCharacterToSlot(enemy[i], E_BattleSide.Enemy, i);

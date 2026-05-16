@@ -54,11 +54,11 @@ public class MonsterFactory
         BaseCharacter monster = BaseCharacter.Sample;
 
         // Data 필드 설정
-        monster.Data.Id           = so.Id;
-        monster.Data.Name         = so.DisplayName;
-        monster.Data.Level        = so.Level;
-        monster.Data.RoleType     = so.RoleType;
-        monster.Data.ImageAddress = so.ImageAddress;
+        monster.Id           = so.Id;
+        monster.Name         = so.DisplayName;
+        monster.Level        = so.Level;
+        monster.RoleType     = so.RoleType;
+        monster.ImageAddress = so.ImageAddress;
 
         // 스탯 직접 세팅 (Profession 없는 몬스터는 CalcStat() 미호출)
         monster.Stat.STR = so.STR;
@@ -77,10 +77,10 @@ public class MonsterFactory
         // 개별 필드를 직접 참조하는 포맷 문자열로 출력한다.
         Debug.Log(
             $"[MonsterFactory] 몬스터 생성 완료\n" +
-            $"  ID       : {monster.Data.Id}\n" +
-            $"  Name     : {monster.Data.Name}\n" +
-            $"  Level    : {monster.Data.Level}\n" +
-            $"  RoleType : {monster.Data.RoleType}\n" +
+            $"  ID       : {monster.Id}\n" +
+            $"  Name     : {monster.Name}\n" +
+            $"  Level    : {monster.Level}\n" +
+            $"  RoleType : {monster.RoleType}\n" +
             $"  STR={monster.Stat.STR}  AGI={monster.Stat.AGI}  INT={monster.Stat.INT}"
         );
         // ────────────────────────────────────────────────────────────────

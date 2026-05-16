@@ -27,7 +27,7 @@ public partial class BaseCharacter
             }
         };
         
-        private readonly BaseCharacter chara = Sample;
+        private readonly BaseCharacter chara = new BaseCharacter();
 
         private DataBaseSO professionDb = null;
         private DataBaseSO skillDb = null;
@@ -39,13 +39,13 @@ public partial class BaseCharacter
             DataBaseSO equipDb
             )
         {
-            chara.Data.Id = "Missing Id";
-            chara.Data.ImageAddress = "Missing ImageAddress";
-            chara.Data.Name = "Outis";
-            chara.Data.Profession = new SampleProfession();
-            chara.Data.Level = 0;
-            chara.Data.Insanity = 0; // 스트레스(광기) 지수 0~100, Stress는 STR과 혼동될 수 있어서 명칭 변경
-            chara.Data.RoleType = RoleType.None;
+            chara.Id = "Missing Id";
+            chara.ImageAddress = "Missing ImageAddress";
+            chara.Name = "Outis";
+            chara.Profession = new SampleProfession();
+            chara.Level = 0;
+            chara.Insanity = 0; // 스트레스(광기) 지수 0~100, Stress는 STR과 혼동될 수 있어서 명칭 변경
+            chara.RoleType = RoleType.None;
             
             this.professionDb = proDb;
             this.skillDb = skillDb;
@@ -60,38 +60,38 @@ public partial class BaseCharacter
 
         public Builder SetId(string id)
         {
-            chara.Data.Id = id;
+            chara.Id = id;
             return this;
         }
 
         public Builder SetImageAddress(string address)
         {
-            chara.Data.ImageAddress = address;
+            chara.ImageAddress = address;
             return this;
         }
 
         public Builder SetName(string name)
         {
-            chara.Data.Name = name;
+            chara.Name = name;
             return this;
         }
 
         public Builder SetWeapon(Equipment weapon)
         {
-            chara.Data.Weapon = weapon;
+            chara.Weapon = weapon;
             return this;
         }
 
         public Builder SetArmor(Equipment armor)
         {
-            chara.Data.Armor = armor;
+            chara.Armor = armor;
             return this;
         }
 
         public Builder SetProfession(ClassSO data)
         {
             Profession pro = new Profession(data);
-            chara.Data.Profession = pro;
+            chara.Profession = pro;
             
             var weaponSo = equipDb.GetSO<DefaultEquipSO>(data.DefaultWeaponId);
             var armorSo = equipDb.GetSO<DefaultEquipSO>(data.DefaultArmorId);
@@ -104,13 +104,13 @@ public partial class BaseCharacter
 
         public Builder SetSkills(SkillBase[] skills)
         {
-            chara.Data.Skills = skills;
+            chara.Skills = skills;
             return this;
         }
 
         public Builder SetTraits(Trait[] traits)
         {
-            chara.Data.Traits = traits;
+            chara.Traits = traits;
             return this;
         }
 

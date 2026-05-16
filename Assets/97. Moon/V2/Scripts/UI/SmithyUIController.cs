@@ -24,8 +24,8 @@ public class SmithyUIController : MonoBehaviour
         _costLabel = _root.Q<Label>("upgrade-cost");
         _upgradeButton = _root.Q<Button>("btn-upgrade");
 
-        _root.Q<Button>("slot-weapon").clicked += () => SelectEquipment(_character?.Data.Weapon);
-        _root.Q<Button>("slot-armor").clicked += () => SelectEquipment(_character?.Data.Armor);
+        _root.Q<Button>("slot-weapon").clicked += () => SelectEquipment(_character?.Weapon);
+        _root.Q<Button>("slot-armor").clicked += () => SelectEquipment(_character?.Armor);
         _root.Q<Button>("btn-close").clicked += Close;
         
         _upgradeButton.clicked += OnUpgradeClicked;
@@ -38,7 +38,7 @@ public class SmithyUIController : MonoBehaviour
         _root.style.display = DisplayStyle.Flex;
         
         // 기본적으로 무기 선택 상태로 시작
-        SelectEquipment(_character.Data.Weapon);
+        SelectEquipment(_character.Weapon);
     }
 
     public void Close() => _root.style.display = DisplayStyle.None;
