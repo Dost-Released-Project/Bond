@@ -12,6 +12,7 @@ public static class TSVImportCoordinator
     private const string OUTPUT_ROOT = "Assets/Data/GeneratedSO/";
     private const string CONFIG_PATH = "Assets/Data/GoogleSheetConfig/";
 
+
     private static Dictionary<string, ITSVParser> BuildParserMap()
     {
         return System.AppDomain.CurrentDomain.GetAssemblies()

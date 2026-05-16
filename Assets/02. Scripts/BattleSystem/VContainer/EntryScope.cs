@@ -11,6 +11,7 @@ namespace BattleSystem.VContainer
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterEntryPoint<BattleStageEntry>(Lifetime.Singleton).As<IBattleStageEntry>();
+            builder.Register<MonsterFactory>(Lifetime.Singleton);
         }
     }
 }

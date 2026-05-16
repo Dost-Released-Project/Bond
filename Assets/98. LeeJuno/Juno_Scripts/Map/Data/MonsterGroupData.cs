@@ -19,4 +19,24 @@ public class MonsterGroupData : BaseSO
 
     [Header("그룹 등급")]
     public bool IsElite; // true = 엘리트 전용 그룹, false = 노말 전용 그룹
+
+    /// <summary>
+    /// 파서 등 외부에서 프로그래밍 방식으로 데이터를 초기화하는 메서드.
+    /// BaseSO.Initialize 에 직접 접근하기 위해 MonsterGroupData 에서 래핑한다.
+    /// </summary>
+    public void SetData(
+        string id,
+        string displayName,
+        string description,
+        List<string> monsterIds,
+        int minLayer,
+        int maxLayer,
+        bool isElite)
+    {
+        Initialize(id, displayName, description);
+        MonsterIds = monsterIds;
+        MinLayer   = minLayer;
+        MaxLayer   = maxLayer;
+        IsElite    = isElite;
+    }
 }

@@ -30,6 +30,7 @@ public class StageLoader : IStageLoader
 {
     private readonly MapConfigCache _mapConfigCache;
     private readonly IEventContext _eventContext;
+    private readonly IStageMonsterContext _stageMonsterContext;
     private readonly Dictionary<StageType, StageConfig> _stageConfigMap;
 
     private SceneInstance _currentScene;         // 현재 로드된 씬 인스턴스
@@ -42,10 +43,11 @@ public class StageLoader : IStageLoader
     private EventSystem _mapEventSystem;
 
     [Inject]
-    public StageLoader(MapConfigCache mapConfigCache, IEventContext eventContext)
+    public StageLoader(MapConfigCache mapConfigCache, IEventContext eventContext, IStageMonsterContext stageMonsterContext)
     {
         _mapConfigCache = mapConfigCache;
         _eventContext = eventContext;
+        _stageMonsterContext = stageMonsterContext;
         _hasLoadedScene = false;
         _stageConfigMap = new Dictionary<StageType, StageConfig>();
     }
@@ -93,7 +95,7 @@ public class StageLoader : IStageLoader
     /// 지정한 StageType에 대응하는 씬을 Additive로 비동기 로드한다.
     /// 이미 씬이 로드되어 있으면 언로드 후 새 씬을 로드한다.
     /// StageConfig에 SceneAddress가 설정되어 있지 않으면 로드하지 않는다.
-    /// Normal 스테이지의 경우 씬 로드 직전 NormalStageContext에 몬스터 정보를 기록한다.
+    /// Normal 스테이지의 경우 씬 로드 직전 IStageMonsterContext에 몬스터 정보를 기록한다.
     /// 비동기 실행 중 이중 호출이 들어오면 즉시 반환한다.
     /// </summary>
     public async UniTask LoadStage(StageType stageType, MapNode node)
@@ -135,7 +137,7 @@ public class StageLoader : IStageLoader
             // ARCH-04: SetNormalStageContext 직전 잔류 데이터 제거
             if (stageType == StageType.Normal)
             {
-                NormalStageContext.Clear();
+                _stageMonsterContext.Clear();
                 SetNormalStageContext(node);
             }
             else if (stageType == StageType.Event)
@@ -278,7 +280,7 @@ public class StageLoader : IStageLoader
 
     /// <summary>
     /// 이벤트 전투 전환 비동기 처리.
-    /// 현재 이벤트 씬을 언로드하고 EventBattleContext 의 몬스터 정보를 NormalStageContext 로 이전한 뒤
+    /// 현재 이벤트 씬을 언로드하고 EventBattleContext 의 몬스터 정보를 IStageMonsterContext 로 이전한 뒤
     /// EventBattleConfig 에 지정된 전투 씬을 로드한다.
     /// </summary>
     private async UniTask TransitionToEventBattleAsync()
@@ -309,8 +311,8 @@ public class StageLoader : IStageLoader
                 return;
             }
 
-            // EventBattleContext 에서 몬스터 정보를 NormalStageContext 로 이전
-            NormalStageContext.Set(EventBattleContext.MonsterGroupId, EventBattleContext.MonsterIds);
+            // EventBattleContext 에서 몬스터 정보를 IStageMonsterContext 로 이전
+            _stageMonsterContext.Set(EventBattleContext.MonsterGroupId, EventBattleContext.MonsterIds);
             EventBattleContext.Clear();
 
             // 전투 씬 완료 콜백 재등록 후 씬 로드
@@ -351,14 +353,17 @@ public class StageLoader : IStageLoader
     }
 
     /// <summary>
-    /// Normal 스테이지 로드 직전 NormalStageContext에 몬스터 정보를 기록한다.
+    /// Normal 스테이지 로드 직전 IStageMonsterContext에 몬스터 정보를 기록한다.
     /// AssignedMonsterGroupId 가 비어 있거나 그룹을 찾지 못하면 빈 컨텍스트를 기록한다.
     /// </summary>
     private void SetNormalStageContext(MapNode node)
     {
+        // TODO: 검증 완료 후 제거
+        Debug.Log($"[StageLoader] SetNormalStageContext → NodeType={node.GetType().Name}");
+
         if (string.IsNullOrEmpty(node.AssignedMonsterGroupId))
         {
-            NormalStageContext.Set(string.Empty, new List<string>());
+            _stageMonsterContext.Set(string.Empty, new List<string>());
             return;
         }
 
@@ -366,11 +371,13 @@ public class StageLoader : IStageLoader
 
         if (group == null)
         {
-            NormalStageContext.Set(string.Empty, new List<string>());
+            _stageMonsterContext.Set(string.Empty, new List<string>());
             return;
         }
 
-        NormalStageContext.Set(group.Id, group.MonsterIds);
+        // TODO: 검증 완료 후 제거
+        Debug.Log($"[StageLoader] SetNormalStageContext — group.Id='{group.Id}', MonsterIds={group.MonsterIds.Count}");
+        _stageMonsterContext.Set(group.Id, group.MonsterIds);
     }
 
     /// <summary>

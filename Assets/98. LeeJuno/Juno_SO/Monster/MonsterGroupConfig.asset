@@ -13,4 +13,6 @@ MonoBehaviour:
   m_Name: MonsterGroupConfig
   m_EditorClassIdentifier: Assembly-CSharp::MonsterGroupConfig
   Groups:
-  - {fileID: 11400000, guid: 31da925471abbf9439e11ef11a62dc7b, type: 2}
+  - {fileID: 11400000, guid: 81a88050c49c8d84090bc0b2015e5345, type: 2}
+  - {fileID: 11400000, guid: 727141f091fa5594d802c2536f8165f4, type: 2}
+  - {fileID: 11400000, guid: c77ca06491b352f46b2bddbf92b9ccb7, type: 2}
