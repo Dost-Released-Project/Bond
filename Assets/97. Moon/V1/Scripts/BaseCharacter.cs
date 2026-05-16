@@ -19,7 +19,7 @@ public enum RoleType
     Supporter // 활성 트리거: TRG_SIT_ALLY_TURN_END (아군 턴 종료 시), TRG_DEF_STATUS (상태이상 시)
 }
 
-[Serializable][JsonObject(MemberSerialization.OptIn)]
+[Serializable]
 public partial class BaseCharacter : ITurnUseUnit
 {
     /// <summary>
@@ -47,16 +47,16 @@ public partial class BaseCharacter : ITurnUseUnit
     public Reaction[] RoleReactions = new Reaction[2];
     public Reaction[] TraitReactions = new Reaction[4];
     
-    public Stat Stat { get; } = new Stat();
-    public StatController StatController { get; } = new StatController();
+    [JsonIgnore] public Stat Stat { get; } = new Stat();
+    [JsonIgnore] public StatController StatController { get; } = new StatController();
     
-    public bool isPlayable { get; set; }
+    [JsonIgnore] public bool isPlayable { get; set; }
     public AutoBattle battleType { get; set; }
 
     public BaseCharacter sup_Character { get; set; } // 지원 선택 대상. 대상이 행동할 때 역할군에 따른 지원. 탱커: 피격 시 엄호, 서포터: 피격 후 치유, 딜러: 공격 시 지원 공격.\
     
     // BattleManager가 구독할 이벤트. BattleContext는 공격자, 방어자, 스킬 정보 등을 담는 클래스. BattleManager는 이 이벤트를 구독하여 BattleContext를 받아 처리.
-    public Func<BattleContext, UniTask> onBattleAction;
+    [JsonIgnore] public Func<BattleContext, UniTask> onBattleAction;
     private IFormationManager m_formationManager;
 
     private BaseCharacter()
@@ -101,7 +101,7 @@ public partial class BaseCharacter : ITurnUseUnit
 
     #region Formaiton
 
-    public CharacterSlot CurrentSlot { get; set; }
+    [JsonIgnore] public CharacterSlot CurrentSlot { get; set; }
     private FormationMask CurrentFormation => CurrentSlot?.rank ?? FormationMask.None;
 
     private bool[] GetUsableSkills()
@@ -123,8 +123,8 @@ public partial class BaseCharacter : ITurnUseUnit
     
     #region ITurnUseUnit
 
-    public int Speed => Stat.speed;
-    public bool IsDead { get; private set; } = false;
+    [JsonIgnore] public int Speed => Stat.speed;
+    [JsonIgnore] public bool IsDead { get; private set; } = false;
     string ITurnUseUnit.ImageAddress => ImageAddress;
     public int RandomSpeed { get; set; }
     
