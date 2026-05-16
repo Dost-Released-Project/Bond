@@ -10,13 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 802da45069c146b8883fe3a90d113b92, type: 3}
-  m_Name: ConfigSample(character)
+  m_Name: ConfigSample(Stat)
   m_EditorClassIdentifier: Assembly-CSharp-Editor::GoogleSheetConfig
-  SpreadsheetId: 1df1V7NEohwTiojIu69NrKxxIFCgivuYLD8ZVuSeR_BQ
+  SpreadsheetId: 
   Entries:
-  - SheetName: skill
-    Gid: 0
-  - SheetName: class
-    Gid: 1569803349
-  - SheetName: defaultEquip
-    Gid: 2018517279
+  - SheetName: StatModifier
+    Gid: 1741562393
