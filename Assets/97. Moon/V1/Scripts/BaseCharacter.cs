@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using BattleSystem;
 using BattleSystem.Interface;
@@ -46,6 +47,7 @@ public partial class BaseCharacter : ITurnUseUnit
 
     public Reaction[] RoleReactions = new Reaction[2];
     public Reaction[] TraitReactions = new Reaction[4];
+    [JsonIgnore] public Reaction[] Reactions => RoleReactions.Concat(TraitReactions).ToArray();
     
     [JsonIgnore] public Stat Stat { get; } = new Stat();
     [JsonIgnore] public StatController StatController { get; } = new StatController();
