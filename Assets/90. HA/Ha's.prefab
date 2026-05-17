@@ -113,7 +113,6 @@ GameObject:
   m_Component:
   - component: {fileID: 974865723861685469}
   - component: {fileID: 6298278301363056750}
-  - component: {fileID: 7431985782134365108}
   m_Layer: 0
   m_Name: RoleReactionEditior
   m_TagString: Untagged
@@ -159,24 +158,6 @@ MonoBehaviour:
   m_PivotReferenceSize: 0
   m_Pivot: 0
   m_WorldSpaceCollider: {fileID: 0}
---- !u!114 &7431985782134365108
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5610794781526219478}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff85ddf575ea8df43b99165bfa897794, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Bond.UI.RoleReactionEditor.RoleReactionEditorController
-  slotTemplate: {fileID: 9197481963319205126, guid: 9001fd5d018c0cf4a96fd4daaed61dfa, type: 3}
-  charIconTemplate: {fileID: 9197481963319205126, guid: 65b21462728dabf439ba9f5fb8bb3c0f, type: 3}
-  partyMembers: []
-  references:
-    version: 2
-    RefIds: []
 --- !u!1 &6071759986490397064
 GameObject:
   m_ObjectHideFlags: 0
@@ -221,13 +202,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1707140ce9847f2b6158a774732b5fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_90._HA.Temp.Test.S1Test
-  items:
-  - {fileID: 11400000, guid: 019cc815310479d4ab3f22b04f5ddb2e, type: 2}
-  - {fileID: 11400000, guid: c0e289c02ea68ff41b6e99f2644437e6, type: 2}
-  - {fileID: 11400000, guid: 79a3f3b43a306d043936189b4f005a40, type: 2}
-  - {fileID: 11400000, guid: ad9ac3c0466c8134994a26d0b260e6ea, type: 2}
-  - {fileID: 11400000, guid: fcdc5e272ebf2fe4fb3fac7df8519cdb, type: 2}
-  - {fileID: 11400000, guid: 4b8cc943813d76b4fba6278e09bc4d6e, type: 2}
-  - {fileID: 11400000, guid: e75570ad13d163b428fde68863d15426, type: 2}
-  - {fileID: 11400000, guid: 7f805646301c7ed41835f010cdd648b8, type: 2}
-  - {fileID: 11400000, guid: 65eb6c50376659a478e3f3dce7db0128, type: 2}
+  reaction:
+    Id: bff2591c-f620-4518-b2aa-f5144fc3652f
+    Source: 0
+    Trigger:
+      rid: 8081819874856009981
+    Behaviour:
+      rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 8081819874856009981
+      type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        ObFilter: 0
+        CoFilter: 0
+        Subject:
+          rid: -2
+        Condition:
+          rid: -2

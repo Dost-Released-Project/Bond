@@ -1,3 +1,4 @@
+using System;
 using BattleSystem;
 using Bond.Embark;
 using Bond.Expedition;
@@ -21,6 +22,8 @@ namespace _90._HA.Temp.Test
         [Inject] public Roster roster;
         [Inject] BattleManager bm;
 
+        public Reaction reaction = new Reaction() { Trigger = new Trigger()};
+
         public void Start()
         {
             payload.Clear();
@@ -35,25 +38,9 @@ namespace _90._HA.Temp.Test
                 var chara = _stageCoach.GetRandomCharacter();
                 chara.RoleReactions[0] = new Reaction()
                 {
-                    Agent = chara,
                     Source = ReactionSource.Role,
                     Behaviour = chara.Skills[0],
-                    Trigger = new Trigger()
-                    {
-                        Subject = chara,
-                        Condition = new EvadeCondition()
-                    }
-                };
-                chara.RoleReactions[1] = new Reaction()
-                {
-                    Agent = chara,
-                    Source = ReactionSource.Role,
-                    Behaviour = chara.Skills[0],
-                    Trigger = new Trigger()
-                    {
-                        Subject = chara,
-                        Condition = new CritCondition()
-                    }
+                    Trigger = new Trigger(E_ObserveFilter.Self, E_CompareFilter.Target, chara, new HpBelowCondition(0.3f))
                 };
             }
         }
