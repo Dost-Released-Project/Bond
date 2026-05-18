@@ -11,15 +11,30 @@ namespace Bond.WT.Journal
     public class JournalSystem : IInitializable
     {
         private readonly JournalModel _model;
-        private readonly IReadOnlyList<IJournalContentProvider> _providers;
+        private readonly List<IJournalContentProvider> _providers = new List<IJournalContentProvider>();
         private readonly IReadOnlyList<IJournalActionHandler> _actionHandlers;
 
         [Inject]
         public JournalSystem(JournalModel model, IReadOnlyList<IJournalContentProvider> providers, IReadOnlyList<IJournalActionHandler> actionHandlers)
         {
             _model = model;
-            _providers = providers;
+            if (providers != null)
+            {
+                _providers.AddRange(providers);
+            }
             _actionHandlers = actionHandlers;
+        }
+
+        public void AddProvider(IJournalContentProvider provider)
+        {
+            if (!_providers.Contains(provider))
+                _providers.Add(provider);
+        }
+
+        public void RemoveProvider(IJournalContentProvider provider)
+        {
+            if (_providers.Contains(provider))
+                _providers.Remove(provider);
         }
 
         public void Initialize()
