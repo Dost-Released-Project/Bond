@@ -20,6 +20,7 @@ namespace Bond.Embark
         private readonly ExpeditionInventory _expeditionInventory;
         private readonly IPartyController _partyManager;
         private readonly ExpeditionResultService _expeditionResultService;
+        private readonly InventoryTransferService _transferService;
 
         public event Action OnOverlayOpened;
         public event Action OnOverlayClosed;
@@ -30,13 +31,15 @@ namespace Bond.Embark
             TotalInventory totalInventory,
             ExpeditionInventory expeditionInventory,
             IPartyController partyManager,
-            ExpeditionResultService expeditionResultService)
+            ExpeditionResultService expeditionResultService,
+            InventoryTransferService transferService)
         {
             _payload = payload;
             _totalInventory = totalInventory;
             _expeditionInventory = expeditionInventory;
             _partyManager = partyManager;
             _expeditionResultService = expeditionResultService;
+            _transferService = transferService;
         }
 
         public void Open()
@@ -77,9 +80,7 @@ namespace Bond.Embark
             var item = slot.item;
             int qty = 1;//slot.quantity;
             
-            _totalInventory.RemoveFromSlot(index, qty);
-            _expeditionInventory.AddItemAuto(item, qty);
-
+            _transferService.MoveOneFromSlot(_totalInventory, index, _expeditionInventory);
             NotifyChanged();
         }
 
@@ -88,8 +89,7 @@ namespace Bond.Embark
             var item = slot.item;
             int qty = 1;//slot.quantity;
             
-            _expeditionInventory.RemoveFromSlot(index, qty);
-            _totalInventory.AddItemAuto(item, qty);
+            _transferService.MoveOneFromSlot(_expeditionInventory, index, _totalInventory);
             NotifyChanged();
         }
 
