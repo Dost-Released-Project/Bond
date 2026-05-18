@@ -74,6 +74,16 @@ namespace BattleSystem
                 E_BattleSide.Enemy : 
                 E_BattleSide.Player;
 
+            if (battleContext.runtimeSkill == null)
+            {
+                Debug.Log("runtime skill is null");
+            }
+
+            if (battleContext.runtimeSkill.Data == null)
+            {
+                Debug.unityLogger.Log("runtime skill Data is null");
+            }
+
             switch (battleContext.runtimeSkill.Data.Target)
             {
                 case SkillTarget.Enemy:

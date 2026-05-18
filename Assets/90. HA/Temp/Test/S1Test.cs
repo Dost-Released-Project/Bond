@@ -19,7 +19,6 @@ namespace _90._HA.Temp.Test
         [Inject] public StageCoach _stageCoach;
         [Inject] public ExpeditionPayload payload;
         [Inject] public Roster roster;
-        [Inject] BattleManager bm;
 
         public void Start()
         {
