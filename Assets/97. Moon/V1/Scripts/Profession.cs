@@ -5,7 +5,7 @@ using UnityEngine;
 [Serializable]
 public class Profession
 {
-    [JsonProperty] private readonly ClassSO _classData;
+    [SerializeField] private ClassSO _classData;
     private bool isFirst;
 
     public Profession(ClassSO classData)
@@ -18,6 +18,7 @@ public class Profession
     }
 
     [JsonIgnore] public string Name => _classData.DisplayName;
+    [JsonIgnore] public int Id => int.Parse(_classData.ClassType);
     
     public void CalculateStat(BaseCharacter character, StatController controller)
     {
