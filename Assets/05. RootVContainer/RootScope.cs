@@ -36,10 +36,8 @@ namespace RootVContainer
             builder.Register<ISpriteLoader, SpriteLoader>(Lifetime.Singleton);
 
             builder.Register<IStageMonsterContext,StageMonsterContextService>(Lifetime.Singleton);
-            // =================================================================================
-            // [ Journal System ] - 일지 시스템 관련 컴포넌트 등록
-            // =================================================================================
-            
+
+            #region 일지
             // View Instance 동적 탐색 (비활성화된 오브젝트 포함)
             var journalView = UnityEngine.Object.FindAnyObjectByType<JournalUIView>(FindObjectsInactive.Include);
             if (journalView != null)
@@ -64,8 +62,7 @@ namespace RootVContainer
             
             // [Test] 런타임 테스트 러너
             builder.RegisterEntryPoint<JournalTestRunner>(Lifetime.Singleton).AsSelf();
-
-            // =================================================================================
+            #endregion
         }
     }
 }
