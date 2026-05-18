@@ -1,0 +1,127 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de894a873e7947fa91bb18fac5ef4aac, type: 3}
+  m_Name: CharacterPreset_GodOfNormalization
+  m_EditorClassIdentifier: Assembly-CSharp::_90._HA.CharacterPreset
+  BaseCharacter:
+    Id: Missing Id
+    ImageAddress: GodOfNormalization
+    Name: GodOfNormalization
+    Profession:
+      _classData: {fileID: 11400000, guid: 7d1e93aef3c816642a94d515292cf2fd, type: 2}
+    Level: 0
+    Insanity: 0
+    RoleType: 2
+    Skills:
+    - rid: 8081819896858542494
+    - rid: 8081819896858542495
+    - rid: 8081819896858542496
+    - rid: 8081819896858542497
+    Traits:
+    - Name: A
+      Description: aaa
+    - Name: A
+      Description: aaa
+    - Name: Missing
+      Description: Missing
+    - Name: Missing
+      Description: Missing
+    Weapon:
+      itemName: 
+      type: 0
+      upgradeLevel: 0
+      baseSTR: 2
+      baseAGI: 0
+      baseINT: 0
+      upSTR: 2
+      upAGI: 0
+      upINT: 0
+    Armor:
+      itemName: 
+      type: 0
+      upgradeLevel: 0
+      baseSTR: 0
+      baseAGI: 1
+      baseINT: 1
+      upSTR: 0
+      upAGI: 1
+      upINT: 1
+    Accessories:
+    - {fileID: 0}
+    - {fileID: 0}
+    RoleReactions:
+    - Id: 24dd4139-9b3f-4e77-8cb9-76b593c4126b
+      Source: 0
+      Trigger:
+        rid: -2
+      Behaviour:
+        rid: -2
+    - Id: 6463f833-05c1-4e2e-8dec-e745efb0eedb
+      Source: 0
+      Trigger:
+        rid: -2
+      Behaviour:
+        rid: -2
+    TraitReactions:
+    - Id: a57b5c4b-5824-4db3-858d-a5b5d9f43609
+      Source: 0
+      Trigger:
+        rid: -2
+      Behaviour:
+        rid: -2
+    - Id: 879f70f2-7a10-4003-ba8c-0a346ce28490
+      Source: 0
+      Trigger:
+        rid: -2
+      Behaviour:
+        rid: -2
+    - Id: 651ac7f7-7772-4846-ae2e-828d0e015b9e
+      Source: 0
+      Trigger:
+        rid: -2
+      Behaviour:
+        rid: -2
+    - Id: 1f7445d8-05cd-43bd-8664-2c9d8f9c69eb
+      Source: 0
+      Trigger:
+        rid: -2
+      Behaviour:
+        rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 8081819896858542494
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: efc57f736ae37d241a8cab48bd3e9d67, type: 2}
+    - rid: 8081819896858542495
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: 2168ec6edc6110f4f9667b7e376bd352, type: 2}
+    - rid: 8081819896858542496
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: e140d0a3f66776349b579e49437fe8c3, type: 2}
+    - rid: 8081819896858542497
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: 963dbd7ea6fa9bc46ac9daf74cf1f1d8, type: 2}

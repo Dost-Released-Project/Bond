@@ -1,0 +1,127 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de894a873e7947fa91bb18fac5ef4aac, type: 3}
+  m_Name: CharacterPreset_MTE
+  m_EditorClassIdentifier: Assembly-CSharp::_90._HA.CharacterPreset
+  BaseCharacter:
+    Id: Missing Id
+    ImageAddress: MTE
+    Name: MTE
+    Profession:
+      _classData: {fileID: 11400000, guid: be9027a2dfbfccb49969b49ccefe3230, type: 2}
+    Level: 0
+    Insanity: 0
+    RoleType: 3
+    Skills:
+    - rid: 8081819896858542430
+    - rid: 8081819896858542431
+    - rid: 8081819896858542432
+    - rid: 8081819896858542433
+    Traits:
+    - Name: B
+      Description: bbb
+    - Name: B
+      Description: bbb
+    - Name: Missing
+      Description: Missing
+    - Name: Missing
+      Description: Missing
+    Weapon:
+      itemName: 
+      type: 0
+      upgradeLevel: 0
+      baseSTR: 0
+      baseAGI: 0
+      baseINT: 2
+      upSTR: 0
+      upAGI: 0
+      upINT: 2
+    Armor:
+      itemName: 
+      type: 0
+      upgradeLevel: 0
+      baseSTR: 1
+      baseAGI: 1
+      baseINT: 0
+      upSTR: 1
+      upAGI: 1
+      upINT: 0
+    Accessories:
+    - {fileID: 0}
+    - {fileID: 0}
+    RoleReactions:
+    - Id: ea4eedf9-96c4-4c4f-a077-902cf2bd5698
+      Source: 0
+      Trigger:
+        rid: -2
+      Behaviour:
+        rid: -2
+    - Id: 44e8afd2-bfd6-47b6-b90b-e37ee5d43ea5
+      Source: 0
+      Trigger:
+        rid: -2
+      Behaviour:
+        rid: -2
+    TraitReactions:
+    - Id: 800d0031-c13d-4f02-a342-e846081227af
+      Source: 0
+      Trigger:
+        rid: -2
+      Behaviour:
+        rid: -2
+    - Id: e2f2e1db-b546-41b5-826c-127f09b5e386
+      Source: 0
+      Trigger:
+        rid: -2
+      Behaviour:
+        rid: -2
+    - Id: 74665971-231d-4068-a4c5-39f1c51eec79
+      Source: 0
+      Trigger:
+        rid: -2
+      Behaviour:
+        rid: -2
+    - Id: 2dd5ecd4-e4a8-4bfc-9d73-98552b739e53
+      Source: 0
+      Trigger:
+        rid: -2
+      Behaviour:
+        rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 8081819896858542430
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: 7f1a3001486938949bfd35b67465fb4c, type: 2}
+    - rid: 8081819896858542431
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: 9cffa0d32b8017147b8af7dfd003f972, type: 2}
+    - rid: 8081819896858542432
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: 858bd87259958fa44a02098d804ba1c2, type: 2}
+    - rid: 8081819896858542433
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: 123903391a58c1d40965ebb84691dc53, type: 2}

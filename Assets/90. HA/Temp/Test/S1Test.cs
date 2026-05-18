@@ -1,10 +1,15 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using BattleSystem;
 using Bond.Embark;
 using Bond.Expedition;
 using PipeLine;
 using Reactions;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.InputSystem;
 using VContainer;
 
@@ -20,15 +25,45 @@ namespace _90._HA.Temp.Test
         [Inject] public StageCoach _stageCoach;
         [Inject] public ExpeditionPayload payload;
         [Inject] public Roster roster;
-        [Inject] BattleManager bm;
+        DataBaseSO professionDb;
+        public List<BaseCharacter> characters;
 
         public Reaction reaction = new Reaction() { Trigger = new Trigger()};
 
         public void Start()
         {
+            professionDb = Addressables.LoadAssetAsync<DataBaseSO>("ClassDataBase").WaitForCompletion();
+            
             payload.Clear();
             FillRoster();
             FillEnemy();
+
+            var db = professionDb.Query<ClassSO>(so => true);
+
+            Debug.Log(db.Count());
+            foreach (var so in db)
+            {
+                var chara = roster.Characters.Find(c => so.DisplayName == c.Profession.Name);
+                SaveCharacterAsPreset(chara);
+            }
+            
+            characters = roster.Characters;
+        }
+
+        private void SaveCharacterAsPreset(BaseCharacter character)
+        {
+            string root = "Assets/90. HA/Temp/Test/So";
+            string path = Path.Combine(root, $"CharacterPreset_{character.Name}.asset");
+            
+            var so = AssetDatabase.LoadAssetAtPath<CharacterPreset>(path);
+            bool isNew = so == null;
+            if (isNew) so = ScriptableObject.CreateInstance<CharacterPreset>();
+
+            so.BaseCharacter = character;
+            
+            if (isNew) AssetDatabase.CreateAsset(so, path);
+            EditorUtility.SetDirty(so);
+            AssetDatabase.SaveAssetIfDirty(so); // Unity 6+ 에서 즉시 저장을 보장
         }
 
         private void Update()
@@ -47,7 +82,7 @@ namespace _90._HA.Temp.Test
 
         public void FillRoster()
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 20; i++)
             {
                 roster.Hire(new StageCoach().GetRandomCharacter());
             }
