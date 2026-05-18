@@ -13,4 +13,15 @@ MonoBehaviour:
   m_Name: JournalDataBase
   m_EditorClassIdentifier: Assembly-CSharp::Bond.WT.Journal.JournalDataBaseSO
   _soList:
-  - {fileID: 11400000, guid: bb2e5b841cddc004a98719ca56350f9a, type: 2}
+  - {fileID: 11400000, guid: 2aa5773f5b84eb6468eecfc1e317446a, type: 2}
+  - {fileID: 11400000, guid: 903120641103a4b47841aef23abc6caf, type: 2}
+  - {fileID: 11400000, guid: 06ee8c2b857abfe45af047177aff094c, type: 2}
+  - {fileID: 11400000, guid: 2b0673ddd35a58a45bb66bc80bd9f880, type: 2}
+  - {fileID: 11400000, guid: 777b4154769871c4f94056e753c4d4bb, type: 2}
+  - {fileID: 11400000, guid: b6d8a8be766f3e645b6bc1950567cf95, type: 2}
+  - {fileID: 11400000, guid: da29988b0f168f34c9d6f4c365551e46, type: 2}
+  - {fileID: 11400000, guid: 2b5cc15b795283443925b57b1e426092, type: 2}
+  - {fileID: 11400000, guid: 89a3e9c9daec7f447a6cfe11cda1a0b4, type: 2}
+  - {fileID: 11400000, guid: 882c9a6a095033b4cbc0f6a76636911d, type: 2}
+  - {fileID: 11400000, guid: 612003cbdf5c1bc4bbf53f55d7d1322f, type: 2}
+  - {fileID: 11400000, guid: 7d2fad5c74b7f244288b21ca463bedb4, type: 2}

@@ -7,7 +7,7 @@ using UnityEngine;
 public abstract class BaseSO : ScriptableObject
 {
     [Header("식별자")]
-    [Tooltip("시트 ID (8자리): 예) 01010000")]
+    [Tooltip("시트 ID : 예) 01010000, EVT_BATTLE_END")]
     [SerializeField] private string _id;
 
     [Tooltip("표시용 이름 — Object.name과 구분")]
@@ -36,8 +36,7 @@ public abstract class BaseSO : ScriptableObject
 #if UNITY_EDITOR
     protected virtual void OnValidate()
     {
-        if (!string.IsNullOrEmpty(_id) && _id.Length != 8)
-            Debug.LogWarning($"[BaseSO] ID는 8자리여야 합니다: '{_id}' ({name})", this);
+        
     }
 #endif
 }

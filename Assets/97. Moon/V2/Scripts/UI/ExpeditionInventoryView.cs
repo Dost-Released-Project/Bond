@@ -24,6 +24,9 @@ public class ExpeditionInventoryView : MonoBehaviour
 
     private async void Start()
     {
+        _root = GetComponent<UIDocument>().rootVisualElement;
+        _slotContainer = _root.Q<VisualElement>("expedition-container");
+        
         // 1. 탐사 중에도 아이템 정보를 알아야 하므로 DB 로드 필요
         var conHandle = Addressables.LoadAssetAsync<ConsumableDataBaseSO>("ConsumableDataBase");
         var accHandle = Addressables.LoadAssetAsync<AccessoryDataBaseSO>("AccessoryDataBase");
@@ -31,9 +34,6 @@ public class ExpeditionInventoryView : MonoBehaviour
 
         // 2. "exp_inv" 파일만 로드
         LoadExpeditionInventory(conHandle.Result, accHandle.Result);
-        
-        _root = GetComponent<UIDocument>().rootVisualElement;
-        _slotContainer = _root.Q<VisualElement>("expedition-container");
 
         // [개선] 마우스 커서가 하얀 영역(_slotContainer)을 완전히 벗어났을 때만 버리기 판정
         _root.RegisterCallback<PointerUpEvent>(evt => {
