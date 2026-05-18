@@ -36,6 +36,7 @@ public partial class BaseCharacter : ITurnUseUnit
     public int Level = 0;
     public int Insanity = 0; // 스트레스(광기) 지수 0~100, Stress는 STR과 혼동될 수 있어서 명칭 변경
     public RoleType RoleType = RoleType.None;
+    [field: SerializeReference, SubclassSelector] public AutoBattle battleType { get; set; }
 
     [SerializeReference] public SkillBase[] Skills = new SkillBase[4];
     public Trait[] Traits = new Trait[4];
@@ -53,7 +54,6 @@ public partial class BaseCharacter : ITurnUseUnit
     [JsonIgnore] public StatController StatController { get; } = new StatController();
     
     [JsonIgnore] public bool isPlayable { get; set; }
-    public AutoBattle battleType { get; set; }
 
     public BaseCharacter sup_Character { get; set; } // 지원 선택 대상. 대상이 행동할 때 역할군에 따른 지원. 탱커: 피격 시 엄호, 서포터: 피격 후 치유, 딜러: 공격 시 지원 공격.\
     

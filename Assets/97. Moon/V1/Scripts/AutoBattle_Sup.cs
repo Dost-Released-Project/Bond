@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 // 3. 서포터: SUPPORT_SPELL 선호
+[Serializable]
 public class AutoBattle_Sup : AutoBattle
 {
     public override SkillBase BattleAction(SkillBase[] skills)
@@ -10,5 +12,6 @@ public class AutoBattle_Sup : AutoBattle
         var favorites = new List<SkillType> { SkillType.SUPPORT };
         return DecideSkill(skills, favorites);
     }
+    public AutoBattle_Sup() { }
     public AutoBattle_Sup(string str) { Debug.Log($"{str}: 서포터 세팅"); }
 }

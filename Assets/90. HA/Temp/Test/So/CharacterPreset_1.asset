@@ -14,13 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::_90._HA.CharacterPreset
   BaseCharacter:
     Id: 6c4f9d65-458a-4c09-8f5a-8128e4e112b3
-    ImageAddress: Wildboar
-    Name: Wildboar
+    ImageAddress: MTE
+    Name: MTE
     Profession:
       _classData: {fileID: 11400000, guid: b8de67576ddb60c4eb3dcccb2e641b32, type: 2}
     Level: 0
     Insanity: 0
-    RoleType: 1
+    RoleType: 2
+    <battleType>k__BackingField:
+      rid: 8081819896858542650
     Skills:
     - rid: 8081819896858542539
     - rid: 8081819896858542540
@@ -119,3 +121,7 @@ MonoBehaviour:
         damage: 0
         currentLevel: 0
         _skillData: {fileID: 11400000, guid: c3800a5157df56746b6faaabe18004a8, type: 2}
+    - rid: 8081819896858542650
+      type: {class: AutoBattle_Atk, ns: , asm: Assembly-CSharp}
+      data:
+        isPlayable: 0

@@ -20,7 +20,9 @@ MonoBehaviour:
       _classData: {fileID: 11400000, guid: 2d37152c4d21f1940ac73dc3eb5701d0, type: 2}
     Level: 0
     Insanity: 0
-    RoleType: 1
+    RoleType: 3
+    <battleType>k__BackingField:
+      rid: 8081819896858542653
     Skills:
     - rid: 8081819896858542547
     - rid: 8081819896858542548
@@ -119,3 +121,7 @@ MonoBehaviour:
         damage: 0
         currentLevel: 0
         _skillData: {fileID: 11400000, guid: 8a822e3b68cced248bf7a58c104e7428, type: 2}
+    - rid: 8081819896858542653
+      type: {class: AutoBattle_Sup, ns: , asm: Assembly-CSharp}
+      data:
+        isPlayable: 0

@@ -20,7 +20,9 @@ MonoBehaviour:
       _classData: {fileID: 11400000, guid: be9027a2dfbfccb49969b49ccefe3230, type: 2}
     Level: 0
     Insanity: 0
-    RoleType: 1
+    RoleType: 2
+    <battleType>k__BackingField:
+      rid: 8081819896858542651
     Skills:
     - rid: 8081819896858542543
     - rid: 8081819896858542544
@@ -119,3 +121,7 @@ MonoBehaviour:
         damage: 0
         currentLevel: 0
         _skillData: {fileID: 11400000, guid: 123903391a58c1d40965ebb84691dc53, type: 2}
+    - rid: 8081819896858542651
+      type: {class: AutoBattle_Atk, ns: , asm: Assembly-CSharp}
+      data:
+        isPlayable: 0

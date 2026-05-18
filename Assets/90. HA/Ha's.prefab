@@ -202,24 +202,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1707140ce9847f2b6158a774732b5fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_90._HA.Temp.Test.S1Test
-  reaction:
-    Id: bff2591c-f620-4518-b2aa-f5144fc3652f
-    Source: 0
-    Trigger:
-      rid: 8081819874856009981
-    Behaviour:
-      rid: -2
-  references:
-    version: 2
-    RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
-    - rid: 8081819874856009981
-      type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
-      data:
-        ObFilter: 0
-        CoFilter: 0
-        Subject:
-          rid: -2
-        Condition:
-          rid: -2
+  professionDb: {fileID: 0}
+  TriggerPresets: []
+  CharacterPresets:
+  - {fileID: 11400000, guid: c685a8b888cb8a444bee840545025720, type: 2}
+  - {fileID: 11400000, guid: a46265b92f6a5fc499eb407f0497d4f2, type: 2}
+  - {fileID: 11400000, guid: ac170dbfb186bc944b30a8b93a73bbfa, type: 2}
+  - {fileID: 11400000, guid: 4b3f95035b5b63743862a15e5e119f6b, type: 2}

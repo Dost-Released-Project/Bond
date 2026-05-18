@@ -26,9 +26,9 @@ namespace _90._HA.Temp.Test
         [Inject] public ExpeditionPayload payload;
         [Inject] public Roster roster;
         public DataBaseSO professionDb;
+        
         public List<TriggerPreset> TriggerPresets;
-
-        public Reaction reaction = new Reaction() { Trigger = new Trigger() };
+        public List<CharacterPreset> CharacterPresets;
 
         public void Start()
         {
@@ -36,7 +36,6 @@ namespace _90._HA.Temp.Test
             
             payload.Clear();
             FillRoster();
-            FillEnemy();
         }
 
         private void CreateCharacterPresets()
@@ -78,10 +77,14 @@ namespace _90._HA.Temp.Test
 
         public void FillRoster()
         {
-            for (int i = 0; i < 20; i++)
+            foreach (var preset in CharacterPresets)
             {
-                roster.Hire(new StageCoach().GetRandomCharacter());
+                roster.Hire(preset.BaseCharacter);
             }
+            // for (int i = 0; i < 20; i++)
+            // {
+            //     roster.Hire(new StageCoach().GetRandomCharacter());
+            // }
         }
 
         public void FillEnemy()
