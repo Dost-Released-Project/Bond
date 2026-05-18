@@ -227,20 +227,14 @@ public class StageLoader : IStageLoader
         if (_mapCamera == null)
             _mapCamera = Object.FindFirstObjectByType<Camera>();
 
-        if (_mapAudioListener == null)
-            _mapAudioListener = Object.FindFirstObjectByType<AudioListener>();
-
         if (_mapEventSystem == null)
             _mapEventSystem = Object.FindFirstObjectByType<EventSystem>();
 
         if (_mapCamera != null)
-            _mapCamera.enabled = false;
-
-        if (_mapAudioListener != null)
-            _mapAudioListener.enabled = false;
+            _mapCamera.gameObject.SetActive(false);
 
         if (_mapEventSystem != null)
-            _mapEventSystem.enabled = false;
+            _mapEventSystem.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -250,13 +244,10 @@ public class StageLoader : IStageLoader
     private void RestoreMapComponents()
     {
         if (_mapCamera != null)
-            _mapCamera.enabled = true;
-
-        if (_mapAudioListener != null)
-            _mapAudioListener.enabled = true;
+            _mapCamera.gameObject.SetActive(true);
 
         if (_mapEventSystem != null)
-            _mapEventSystem.enabled = true;
+            _mapEventSystem.gameObject.SetActive(true);
     }
 
     /// <summary>
