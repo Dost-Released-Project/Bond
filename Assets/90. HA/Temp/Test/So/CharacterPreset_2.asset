@@ -10,25 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: de894a873e7947fa91bb18fac5ef4aac, type: 3}
-  m_Name: CharacterPreset_GodOfWar
+  m_Name: CharacterPreset_2
   m_EditorClassIdentifier: Assembly-CSharp::_90._HA.CharacterPreset
   BaseCharacter:
-    Id: Missing Id
-    ImageAddress: GodOfWar
-    Name: GodOfWar
+    Id: 36d29cb8-ea96-4806-ac92-1d3d0770f199
+    ImageAddress: RiceSummoner
+    Name: RiceSummoner
     Profession:
-      _classData: {fileID: 11400000, guid: b8de67576ddb60c4eb3dcccb2e641b32, type: 2}
+      _classData: {fileID: 11400000, guid: be9027a2dfbfccb49969b49ccefe3230, type: 2}
     Level: 0
     Insanity: 0
     RoleType: 1
     Skills:
-    - rid: 8081819896858542498
-    - rid: 8081819896858542499
-    - rid: 8081819896858542500
-    - rid: 8081819896858542501
+    - rid: 8081819896858542543
+    - rid: 8081819896858542544
+    - rid: 8081819896858542545
+    - rid: 8081819896858542546
     Traits:
-    - Name: B
-      Description: bbb
+    - Name: C
+      Description: ccc
     - Name: B
       Description: bbb
     - Name: Missing
@@ -40,88 +40,82 @@ MonoBehaviour:
       type: 0
       upgradeLevel: 0
       baseSTR: 0
-      baseAGI: 2
-      baseINT: 0
+      baseAGI: 0
+      baseINT: 2
       upSTR: 0
-      upAGI: 2
-      upINT: 0
+      upAGI: 0
+      upINT: 2
     Armor:
       itemName: 
       type: 0
       upgradeLevel: 0
       baseSTR: 1
-      baseAGI: 0
-      baseINT: 1
+      baseAGI: 1
+      baseINT: 0
       upSTR: 1
-      upAGI: 0
-      upINT: 1
+      upAGI: 1
+      upINT: 0
     Accessories:
     - {fileID: 0}
     - {fileID: 0}
     RoleReactions:
-    - Id: be267054-4a73-4da1-bff5-9e5db4c24b82
+    - Id: 55bd7d63-3897-4855-b1e7-a298e97ded4a
       Source: 0
       Trigger:
         rid: -2
-      Behaviour:
-        rid: -2
-    - Id: 627c443c-acca-477e-9d3e-a656f71fab6e
+      SkillIndex: 0
+    - Id: 9956eb19-2e62-4b39-b2e3-b2704e5d6d7e
       Source: 0
       Trigger:
         rid: -2
-      Behaviour:
-        rid: -2
+      SkillIndex: 0
     TraitReactions:
-    - Id: c48a3243-966f-470a-a06a-2b2ff757fbf0
+    - Id: 0db8d20f-e173-4b74-9550-6de16eb509ce
       Source: 0
       Trigger:
         rid: -2
-      Behaviour:
-        rid: -2
-    - Id: 04fdbac5-31a1-42b2-8bb0-8ebfc89d3124
+      SkillIndex: 0
+    - Id: 33b81311-2856-455a-bfe8-5a8374cf44bf
       Source: 0
       Trigger:
         rid: -2
-      Behaviour:
-        rid: -2
-    - Id: ec827231-8018-444f-b9c1-0fa6a7488c82
+      SkillIndex: 0
+    - Id: 9b4fcd8c-1422-43b3-aa01-74a11ddc4876
       Source: 0
       Trigger:
         rid: -2
-      Behaviour:
-        rid: -2
-    - Id: 6134b0e3-5b94-4a7a-807a-7943c9a6658e
+      SkillIndex: 0
+    - Id: 195fd2df-d4d6-43e3-ae3d-20cd79240410
       Source: 0
       Trigger:
         rid: -2
-      Behaviour:
-        rid: -2
+      SkillIndex: 0
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 8081819896858542498
+    - rid: 8081819896858542543
       type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
       data:
         damage: 0
         currentLevel: 0
-        _skillData: {fileID: 11400000, guid: c3800a5157df56746b6faaabe18004a8, type: 2}
-    - rid: 8081819896858542499
+        _skillData: {fileID: 11400000, guid: 7f1a3001486938949bfd35b67465fb4c, type: 2}
+    - rid: 8081819896858542544
       type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
       data:
         damage: 0
         currentLevel: 0
-        _skillData: {fileID: 11400000, guid: 4fc73c819bd461b4eb823e24ced1104a, type: 2}
-    - rid: 8081819896858542500
+        _skillData: {fileID: 11400000, guid: 9cffa0d32b8017147b8af7dfd003f972, type: 2}
+    - rid: 8081819896858542545
       type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
       data:
         damage: 0
         currentLevel: 0
-        _skillData: {fileID: 11400000, guid: 6dad1ff08f6b8d742870a02e408b0965, type: 2}
-    - rid: 8081819896858542501
+        _skillData: {fileID: 11400000, guid: 858bd87259958fa44a02098d804ba1c2, type: 2}
+    - rid: 8081819896858542546
       type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
       data:
         damage: 0
         currentLevel: 0
-        _skillData: {fileID: 11400000, guid: 4a98f320f02106149807140a6cb71a87, type: 2}
+        _skillData: {fileID: 11400000, guid: 123903391a58c1d40965ebb84691dc53, type: 2}

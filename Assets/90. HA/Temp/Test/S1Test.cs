@@ -25,10 +25,10 @@ namespace _90._HA.Temp.Test
         [Inject] public StageCoach _stageCoach;
         [Inject] public ExpeditionPayload payload;
         [Inject] public Roster roster;
-        DataBaseSO professionDb;
-        public List<BaseCharacter> characters;
+        public DataBaseSO professionDb;
+        public List<TriggerPreset> TriggerPresets;
 
-        public Reaction reaction = new Reaction() { Trigger = new Trigger()};
+        public Reaction reaction = new Reaction() { Trigger = new Trigger() };
 
         public void Start()
         {
@@ -37,23 +37,29 @@ namespace _90._HA.Temp.Test
             payload.Clear();
             FillRoster();
             FillEnemy();
+        }
 
+        private void CreateCharacterPresets()
+        {
             var db = professionDb.Query<ClassSO>(so => true);
 
-            Debug.Log(db.Count());
-            foreach (var so in db)
+            Debug.Assert(db.Count() >= 4);
+
+            for (int i = 0; i < 4; i++)
             {
-                var chara = roster.Characters.Find(c => so.DisplayName == c.Profession.Name);
+                var chara = _stageCoach.GetCharacter(db.ElementAt(i));
+                roster.Characters[i] = chara;
+
+                chara.RoleReactions[0] = new Reaction();
+                
                 SaveCharacterAsPreset(chara);
             }
-            
-            characters = roster.Characters;
         }
 
         private void SaveCharacterAsPreset(BaseCharacter character)
         {
             string root = "Assets/90. HA/Temp/Test/So";
-            string path = Path.Combine(root, $"CharacterPreset_{character.Name}.asset");
+            string path = Path.Combine(root, $"CharacterPreset_{character.Profession.Id}.asset");
             
             var so = AssetDatabase.LoadAssetAtPath<CharacterPreset>(path);
             bool isNew = so == null;
@@ -63,21 +69,11 @@ namespace _90._HA.Temp.Test
             
             if (isNew) AssetDatabase.CreateAsset(so, path);
             EditorUtility.SetDirty(so);
-            AssetDatabase.SaveAssetIfDirty(so); // Unity 6+ 에서 즉시 저장을 보장
+            AssetDatabase.SaveAssetIfDirty(so);
         }
 
         private void Update()
         {
-            if (Keyboard.current.numpad0Key.wasPressedThisFrame)
-            {
-                var chara = _stageCoach.GetRandomCharacter();
-                chara.RoleReactions[0] = new Reaction()
-                {
-                    Source = ReactionSource.Role,
-                    Behaviour = chara.Skills[0],
-                    Trigger = new Trigger(E_ObserveFilter.Self, E_CompareFilter.Target, chara, new HpBelowCondition(0.3f))
-                };
-            }
         }
 
         public void FillRoster()

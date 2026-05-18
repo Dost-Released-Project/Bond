@@ -22,6 +22,8 @@ public class SampleSkill : SkillBase
     //     _skillData.SetData(rawData);
     // }
 
+    public SampleSkill() { }
+    
     public SampleSkill(SkillData skillData)
     {
         _skillData = skillData;

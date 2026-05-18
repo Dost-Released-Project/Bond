@@ -5,6 +5,8 @@ using UnityEngine;
 
 public partial class BaseCharacter
 {
+    public static Dictionary<string, BaseCharacter> Dict = new Dictionary<string, BaseCharacter>();
+    
     public class Builder
     {
         // TODO: 나중에 데이터베이스에서 가져오는 걸로 변경
@@ -27,6 +29,7 @@ public partial class BaseCharacter
             }
         };
         
+        private List<string> names = new List<string>(){"Wildboar","GodOfNormalization","MTE","GodOfWar","RiceSummoner"};
         private readonly BaseCharacter chara = new BaseCharacter();
 
         private DataBaseSO professionDb = null;
@@ -54,7 +57,10 @@ public partial class BaseCharacter
 
         public BaseCharacter Build()
         {
+            chara.SetRole(RandomUtil.GetRandom(RoleType.None));
             chara.CalcStat();
+            chara.Id = System.Guid.NewGuid().ToString();
+            Dict[chara.Id] = chara;
             return chara;
         }
 
@@ -73,6 +79,14 @@ public partial class BaseCharacter
         public Builder SetName(string name)
         {
             chara.Name = name;
+            return this;
+        }
+        
+        public Builder SetRandomName()
+        {
+            var name = names.GetRandom();
+            SetName(name);
+            SetImageAddress(name);
             return this;
         }
 
@@ -98,6 +112,8 @@ public partial class BaseCharacter
 
             SetWeapon(new Equipment(weaponSo));
             SetArmor(new Equipment(armorSo));
+
+            FillSkill();
             
             return this;
         }

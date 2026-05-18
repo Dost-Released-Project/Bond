@@ -207,4 +207,9 @@ public partial class BaseCharacter : ITurnUseUnit
     {
         return $"Name: {Name}, Level: {Level}, Profession: {Profession.Name}";
     }
+
+    public static implicit operator string(BaseCharacter character)
+    {
+        return character.Id;
+    }
 }

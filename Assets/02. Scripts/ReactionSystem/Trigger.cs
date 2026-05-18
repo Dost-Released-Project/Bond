@@ -28,8 +28,8 @@ namespace Reactions
     {
         public E_ObserveFilter ObFilter;
         public E_CompareFilter CoFilter;
-        [SerializeReference] public BaseCharacter Subject;
-        [SerializeReference] public ICondition Condition;
+        public string SubjectCharacterId; // 캐릭터 ID
+        [SerializeReference, SubclassSelector] public ICondition Condition;
 
         public Trigger() { }
 
@@ -40,13 +40,14 @@ namespace Reactions
         {
             ObFilter = obFilter;
             CoFilter = coFilter;
-            Subject = subject;
+            SubjectCharacterId = subject;
             Condition = condition;
         }
         
         public bool CheckCondition(BattleContext context)
         {
-            return Condition.IsMet(Subject, context);
+            Debug.Assert(BaseCharacter.Dict.ContainsKey(SubjectCharacterId));
+            return Condition.IsMet(BaseCharacter.Dict[SubjectCharacterId], context);
         }
     }
     
