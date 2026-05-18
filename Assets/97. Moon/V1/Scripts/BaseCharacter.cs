@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using BattleSystem;
 using BattleSystem.Interface;
@@ -10,76 +11,97 @@ using Reactions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[Serializable][JsonObject(MemberSerialization.OptIn)]
+public enum RoleType
+{
+    None,
+    Tanker,   // 활성 트리거: TRG_DEF_TG_IN (피격 시), TRG_SIT_ALLY_CRISIS (아군 위기 시)
+    Dealer,   // 활성 트리거: TRG_OFF_KILL (적 처치 시), TRG_OFF_CRIT (치명타 시)
+    Supporter // 활성 트리거: TRG_SIT_ALLY_TURN_END (아군 턴 종료 시), TRG_DEF_STATUS (상태이상 시)
+}
+
+[Serializable]
 public partial class BaseCharacter : ITurnUseUnit
 {
     /// <summary>
     /// 테스트 용 객체
     /// </summary>
-    public static BaseCharacter Sample => new BaseCharacter(BaseCharacterData.Sample);
+    public static BaseCharacter Sample => new BaseCharacter();
 
-    [JsonProperty] public BaseCharacterData Data;
-    public Stat Stat { get; } = new Stat();
-    // [추가] 스탯 모디파이어 컨트롤러 (로직 레이어)
-    public StatController StatController { get; } = new StatController();
+    public string Id;
+    public string ImageAddress;
+    public string Name;
     
-    // 읽는 쪽에서 편하라고 일단 만들어두긴 했는데 너무 길어지면 지우는게 나을지도
-    public string Name => Data.Name;
-    public int Level => Data.Level;
-    public Profession Profession
-    {
-        get => Data.Profession;
-        set => Data.Profession = value;
-    }
+    public Profession Profession;
+    public int Level = 0;
+    public int Insanity = 0; // 스트레스(광기) 지수 0~100, Stress는 STR과 혼동될 수 있어서 명칭 변경
+    public RoleType RoleType = RoleType.None;
 
-    public SkillBase[] Skills => Data.Skills;
-    public Trait[] Traits => Data.Traits;
-    public Reaction[] RoleReactions => Data.RoleReactions;
-    public Reaction[] TraitReactions => Data.TraitReactions;
-    public RoleType RoleType => Data.RoleType;
-    public int Insanity => Data.Insanity;
+    [SerializeReference] public SkillBase[] Skills = new SkillBase[4];
+    public Trait[] Traits = new Trait[4];
+    public Equipment Weapon;
+    public Equipment Armor;
+    public AccessoryItem[] Accessories = new AccessoryItem[2];
+
+    public Dictionary<BaseCharacter, int> Relation = new Dictionary<BaseCharacter, int>();
+
+    public Reaction[] RoleReactions = new Reaction[2];
+    public Reaction[] TraitReactions = new Reaction[4];
     
-    public bool isPlayable { get; set; }
+    [JsonIgnore] public Stat Stat { get; } = new Stat();
+    [JsonIgnore] public StatController StatController { get; } = new StatController();
+    
+    [JsonIgnore] public bool isPlayable { get; set; }
     public AutoBattle battleType { get; set; }
 
     public BaseCharacter sup_Character { get; set; } // 지원 선택 대상. 대상이 행동할 때 역할군에 따른 지원. 탱커: 피격 시 엄호, 서포터: 피격 후 치유, 딜러: 공격 시 지원 공격.\
     
     // BattleManager가 구독할 이벤트. BattleContext는 공격자, 방어자, 스킬 정보 등을 담는 클래스. BattleManager는 이 이벤트를 구독하여 BattleContext를 받아 처리.
-    public Func<BattleContext, UniTask> onBattleAction;
+    [JsonIgnore] public Func<BattleContext, UniTask> onBattleAction;
     private IFormationManager m_formationManager;
 
-    public BaseCharacter(BaseCharacterData data)
+    private BaseCharacter()
     {
-        Data = data;
+        for(int i = 0; i < RoleReactions.Length; i++)
+        {
+            RoleReactions[i] = new Reaction();
+        }
+
+        for (int i = 0; i < TraitReactions.Length; i++)
+        {
+            TraitReactions[i] = new Reaction();
+        }
     }
 
     public void SetRole(RoleType role)
     {
-        Data.RoleType = role;
+        RoleType = role;
         battleType = role switch
         {
             RoleType.Dealer => new AutoBattle_Atk(Name),
             RoleType.Tanker => new AutoBattle_Def(Name),
-            RoleType.Supporter => new AutoBattle_Sup(Name)
+            RoleType.Supporter => new AutoBattle_Sup(Name),
+            _ => new AutoBattle_Atk(Name)
         };
     }
 
     public void CalcStat()
     {
         // Profession에게 "데이터와 모디파이어를 전달한 뒤 스탯 계산 요청
-        Profession.CalculateStat(Stat, Data, StatController);
+        Profession.CalculateStat(this, StatController);
     }
+
+    public float HpRatio => Stat.current_Hp / Stat.max_Hp;
     
     public void ReduceHP(int amount) => Stat.current_Hp = Mathf.Max(Stat.current_Hp - amount, 0); // 체력 감소
-    public void ReduceInsanity(int amount) => Data.Insanity = Mathf.Min(Data.Insanity + amount, 100); // 스트레스 증가
+    public void ReduceInsanity(int amount) => Insanity = Mathf.Min(Insanity + amount, 100); // 스트레스 증가
     
     // 회복 관련 메서드 추가
     public void RecoverHp(int amount) => Stat.current_Hp = Mathf.Min(Stat.current_Hp + amount, Stat.max_Hp);
-    public void RecoverInsanity(int amount) => Data.Insanity = Mathf.Max(Data.Insanity - amount, 0);
+    public void RecoverInsanity(int amount) => Insanity = Mathf.Max(Insanity - amount, 0);
 
     #region Formaiton
 
-    public CharacterSlot CurrentSlot { get; set; }
+    [JsonIgnore] public CharacterSlot CurrentSlot { get; set; }
     private FormationMask CurrentFormation => CurrentSlot?.rank ?? FormationMask.None;
 
     private bool[] GetUsableSkills()
@@ -87,10 +109,10 @@ public partial class BaseCharacter : ITurnUseUnit
         bool[] availability = new bool[Skills.Length];
         for (int i = 0; i < Skills.Length; i++)
         {
-            if (Data.Skills[i] == null) continue;
-            bool rankMatch = (Data.Skills[i].Data.UseableSlots & (int)CurrentSlot.rank) != 0;
+            if (Skills[i] == null) continue;
+            bool rankMatch = (Skills[i].Data.UseableSlots & (int)CurrentSlot.rank) != 0;
 
-            bool targetMatch = m_formationManager.HasAnyValidTarget(this, Data.Skills[i].Data);
+            bool targetMatch = m_formationManager.HasAnyValidTarget(this, Skills[i].Data);
             
             availability[i] = rankMatch && targetMatch;
         }
@@ -101,9 +123,9 @@ public partial class BaseCharacter : ITurnUseUnit
     
     #region ITurnUseUnit
 
-    public int Speed => Stat.speed;
-    public bool IsDead { get; private set; } = false;
-    public string ImageAddress => Data.ImageAddress;
+    [JsonIgnore] public int Speed => Stat.speed;
+    [JsonIgnore] public bool IsDead { get; private set; } = false;
+    string ITurnUseUnit.ImageAddress => ImageAddress;
     public int RandomSpeed { get; set; }
     
     private AutoResetUniTaskCompletionSource<bool> _tcs;

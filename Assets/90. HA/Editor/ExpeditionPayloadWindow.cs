@@ -13,7 +13,7 @@ public class ExpeditionPayloadWindow : EditorWindow
     [System.Serializable]
     private class CharacterSnapshot
     {
-        public BaseCharacterData data;
+        public BaseCharacter data;
         public Stat stat;
     }
 
@@ -107,7 +107,7 @@ public class ExpeditionPayloadWindow : EditorWindow
             {
                 var wrapper = ScriptableObject.CreateInstance<CharacterDataWrapper>();
                 wrapper.hideFlags = HideFlags.DontSave;
-                wrapper.character = new CharacterSnapshot { data = list[i].Data, stat = list[i].Stat };
+                wrapper.character = new CharacterSnapshot { data = list[i], stat = list[i].Stat };
                 var so = new SerializedObject(wrapper);
                 CollapseRecursive(so.FindProperty("character"));
                 cached.Add((wrapper, so));
@@ -119,7 +119,7 @@ public class ExpeditionPayloadWindow : EditorWindow
         {
             var (_, so) = cached[i];
             so.Update();
-            EditorGUILayout.PropertyField(so.FindProperty("character"), new GUIContent(list[i].Data.Name ?? "(이름 없음)"), true);
+            EditorGUILayout.PropertyField(so.FindProperty("character"), new GUIContent(list[i].Name ?? "(이름 없음)"), true);
         }
 
         EditorGUI.indentLevel--;

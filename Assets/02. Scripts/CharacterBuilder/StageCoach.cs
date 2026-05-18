@@ -8,10 +8,11 @@ public class StageCoach
     private List<string> names = new List<string>(){"Wildboar","GodOfNormalization","MTE","GodOfWar","RiceSummoner"};
     DataBaseSO professionDb = Addressables.LoadAssetAsync<DataBaseSO>("ClassDataBase").WaitForCompletion();
     DataBaseSO skillDb = Addressables.LoadAssetAsync<DataBaseSO>("SkillDataBase").WaitForCompletion();
+    DataBaseSO equipDb = Addressables.LoadAssetAsync<DataBaseSO>("DefaultEquipDataBase").WaitForCompletion();
     
     public BaseCharacter GetRandomCharacter()
     {
-        BaseCharacter.Builder builder = new BaseCharacter.Builder(professionDb, skillDb);
+        BaseCharacter.Builder builder = new BaseCharacter.Builder(professionDb, skillDb, equipDb);
 
         string name = names.GetRandom();
 
@@ -25,7 +26,6 @@ public class StageCoach
         
         var chara = builder.Build();
         
-        chara.CalcStat();
         chara.SetRole(RandomUtil.GetRandom(RoleType.None));
         
         return chara;

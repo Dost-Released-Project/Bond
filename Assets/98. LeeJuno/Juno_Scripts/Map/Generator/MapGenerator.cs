@@ -350,7 +350,7 @@ public class MapGenerator : IMapGenerator
             return StageType.Camping;
 
         if (layer == 0)
-            return StageType.Event;
+            return StageType.Normal;
 
         float[] weights = GetWeights(layer, config);
         return WeightedRandom(weights, rng);
@@ -596,6 +596,7 @@ public class MapGenerator : IMapGenerator
                 continue;
 
             node.AssignedMonsterGroupId = candidates[rng.Next(candidates.Count)].Id;
+            Debug.Log($"[MapGenerator] AssignedMonsterGroupId={node.AssignedMonsterGroupId}");
         }
     }
 

@@ -52,7 +52,7 @@ public class EquipmentSlotUI : MonoBehaviour
         slotVisual.RegisterCallback<PointerDownEvent>(evt => {
             HideTooltip();
             if (evt.button == 0) {
-                var acc = _selector.Selected?.Data?.Accessories?[index]; // [안전성] ?. 추가
+                var acc = _selector.Selected?.Accessories?[index]; // [안전성] ?. 추가
                 if (acc != null) _transferService.StartEquipmentDrag(index);
             }
         });
@@ -66,7 +66,7 @@ public class EquipmentSlotUI : MonoBehaviour
 
         // 장비 슬롯 툴팁 이벤트 추가
         slotVisual.RegisterCallback<MouseEnterEvent>(evt => {
-            var acc = _selector.Selected?.Data?.Accessories?[index]; // [안전성] ?. 추가
+            var acc = _selector.Selected?.Accessories?[index]; // [안전성] ?. 추가
             if (acc != null) ShowTooltip(new InventorySlot { item = acc, quantity = 1 }, evt.mousePosition);
         });
         slotVisual.RegisterCallback<MouseLeaveEvent>(evt => HideTooltip());
@@ -80,9 +80,9 @@ public class EquipmentSlotUI : MonoBehaviour
         for (int i = 0; i < _accSlots.Count; i++)
         {
             var visual = _accSlots[i]; visual.Clear();
-            if (hero?.Data?.Accessories == null || i >= hero.Data.Accessories.Length) continue;
+            if (hero?.Accessories == null || i >= hero.Accessories.Length) continue;
 
-            var acc = hero.Data.Accessories[i];
+            var acc = hero.Accessories[i];
             if (acc != null)
             {
                 var icon = new VisualElement { style = { backgroundImage = new StyleBackground(acc.icon) } };

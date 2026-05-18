@@ -27,68 +27,97 @@ public partial class BaseCharacter
             }
         };
         
-        private readonly BaseCharacter chara = Sample;
+        private readonly BaseCharacter chara = new BaseCharacter();
 
         private DataBaseSO professionDb = null;
         private DataBaseSO skillDb = null;
+        private DataBaseSO equipDb = null;
         
-        public Builder(DataBaseSO proDb, DataBaseSO skillDb)
+        public Builder(
+            DataBaseSO proDb,
+            DataBaseSO skillDb,
+            DataBaseSO equipDb
+            )
         {
-            chara.Data.Id = "Missing Id";
-            chara.Data.ImageAddress = "Missing ImageAddress";
-            chara.Data.Name = "Outis";
-            chara.Data.Profession = new SampleProfession();
-            chara.Data.Level = 0;
-            chara.Data.Insanity = 0; // 스트레스(광기) 지수 0~100, Stress는 STR과 혼동될 수 있어서 명칭 변경
-            chara.Data.RoleType = RoleType.None;
+            chara.Id = "Missing Id";
+            chara.ImageAddress = "Missing ImageAddress";
+            chara.Name = "Outis";
+            chara.Profession = new SampleProfession();
+            chara.Level = 0;
+            chara.Insanity = 0; // 스트레스(광기) 지수 0~100, Stress는 STR과 혼동될 수 있어서 명칭 변경
+            chara.RoleType = RoleType.None;
             
             this.professionDb = proDb;
             this.skillDb = skillDb;
+            this.equipDb = equipDb;
         }
 
-        public BaseCharacter Build() => chara;
+        public BaseCharacter Build()
+        {
+            chara.CalcStat();
+            return chara;
+        }
 
         public Builder SetId(string id)
         {
-            chara.Data.Id = id;
+            chara.Id = id;
             return this;
         }
 
         public Builder SetImageAddress(string address)
         {
-            chara.Data.ImageAddress = address;
+            chara.ImageAddress = address;
             return this;
         }
 
         public Builder SetName(string name)
         {
-            chara.Data.Name = name;
+            chara.Name = name;
             return this;
         }
 
-        public Builder SetProfession(Profession pro)
+        public Builder SetWeapon(Equipment weapon)
         {
-            chara.Data.Profession = pro;
+            chara.Weapon = weapon;
+            return this;
+        }
+
+        public Builder SetArmor(Equipment armor)
+        {
+            chara.Armor = armor;
+            return this;
+        }
+
+        public Builder SetProfession(ClassSO data)
+        {
+            Profession pro = new Profession(data);
+            chara.Profession = pro;
+            
+            var weaponSo = equipDb.GetSO<DefaultEquipSO>(data.DefaultWeaponId);
+            var armorSo = equipDb.GetSO<DefaultEquipSO>(data.DefaultArmorId);
+
+            SetWeapon(new Equipment(weaponSo));
+            SetArmor(new Equipment(armorSo));
+            
             return this;
         }
 
         public Builder SetSkills(SkillBase[] skills)
         {
-            chara.Data.Skills = skills;
+            chara.Skills = skills;
             return this;
         }
 
         public Builder SetTraits(Trait[] traits)
         {
-            chara.Data.Traits = traits;
+            chara.Traits = traits;
             return this;
         }
 
         public Builder SetRandomProfession()
         {
             var data = professionDb.GetRandom<ClassSO>();
-            Profession pro = new Profession(data);
-            SetProfession(pro);
+            SetProfession(data);
             return this;
         }
 

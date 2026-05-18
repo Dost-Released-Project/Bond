@@ -13,6 +13,11 @@ public class TurnLifetimeScope : LifetimeScope
     protected override void Configure(IContainerBuilder builder)
     {
         builder.RegisterEntryPoint<TurnManager>(Lifetime.Singleton).AsSelf();
-        builder.RegisterComponent(_ui);
+
+        // 씬에 배치된 MonoBehaviour 를 DI 대상으로 등록
+        if (_ui != null)
+            builder.RegisterComponent(_ui);
+        else
+            Debug.LogError("[TurnLifetimeScope] _ui 가 연결되지 않았습니다. Inspector 에서 TurnUI 를 연결하세요.", this);
     }
 }

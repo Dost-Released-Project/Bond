@@ -48,10 +48,6 @@ namespace Bond.Embark
 
         // 조회
         public List<BaseCharacter> GetCurrentParty() => currentParty;
-        public List<BaseCharacterData> GetCurrentPartyDataOnly()
-        {
-            return currentParty.Select((character => character.Data)).ToList();
-        }
         public int GetPartyCount() => currentParty.Count;
         
         

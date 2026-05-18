@@ -19,18 +19,20 @@ public class Profession
 
     [JsonIgnore] public string Name => _classData.DisplayName;
     
-    public void CalculateStat(Stat stat, BaseCharacterData characterData, StatController controller)
+    public void CalculateStat(BaseCharacter character, StatController controller)
     {
         if (_classData == null) return;
 
+        Stat stat = character.Stat;
+        
         // 0. 기본 능력치
         stat.AGI = _classData.AGI;
         stat.STR = _classData.STR;
         stat.INT = _classData.INT;
         
-        int extraSTR = (characterData.Weapon?.bonusSTR ?? 0) + (characterData.Armor?.bonusSTR ?? 0);
-        int extraAGI = (characterData.Weapon?.bonusAGI ?? 0) + (characterData.Armor?.bonusAGI ?? 0);
-        int extraINT = (characterData.Weapon?.bonusINT ?? 0) + (characterData.Armor?.bonusINT ?? 0);
+        int extraSTR = (character.Weapon?.bonusSTR ?? 0) + (character.Armor?.bonusSTR ?? 0);
+        int extraAGI = (character.Weapon?.bonusAGI ?? 0) + (character.Armor?.bonusAGI ?? 0);
+        int extraINT = (character.Weapon?.bonusINT ?? 0) + (character.Armor?.bonusINT ?? 0);
 
         // 1. 모디파이어 적용 (장비 스탯도 여기서 합산 후 적용)
         // 여기서는 기존 장비 코드를 유지하면서 '특수 효과'를 controller에서 가져오는 방식

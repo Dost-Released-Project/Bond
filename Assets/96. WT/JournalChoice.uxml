@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/96.%20WT/Journal.uss?fileID=7433441132597879392&amp;guid=f45e93971af71524ea0cd2c0fa45cec9&amp;type=3#Journal"/>
+    <ui:Button name="ChoiceButton" class="journal-choice-button"/>
+</ui:UXML>

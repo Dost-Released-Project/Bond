@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using Bond.Expedition;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
@@ -44,11 +45,11 @@ public class MapInitializer : IAsyncStartable, IDisposable
         MapConfigCache mapConfigCache)
     {
         _mapConfigLoader = mapConfigLoader;
-        _mapGenerator    = mapGenerator;
-        _mapNavigator    = mapNavigator;
-        _mapRepository   = mapRepository;
+        _mapGenerator = mapGenerator;
+        _mapNavigator = mapNavigator;
+        _mapRepository = mapRepository;
         _mapUIController = mapUIController;
-        _mapConfigCache  = mapConfigCache;
+        _mapConfigCache = mapConfigCache;
     }
 
     /// <summary>
@@ -95,7 +96,8 @@ public class MapInitializer : IAsyncStartable, IDisposable
 
         // SO 해제 전에 MapGenerator, StageLoader 가 참조할 수 있도록 캐시에 저장한다.
         // MapConfigCache 는 SO 참조를 그대로 보관하므로 ReleaseConfigs() 전에 반드시 호출해야 한다.
-        _mapConfigCache.Set(package.GeneratorConfig, package.StageConfigs, package.MonsterGroupConfig, package.EventConfig, package.EventBattleConfig);
+        _mapConfigCache.Set(package.GeneratorConfig, package.StageConfigs, package.MonsterGroupConfig,
+            package.EventConfig, package.EventBattleConfig);
 
         MapData mapData;
 
@@ -105,7 +107,7 @@ public class MapInitializer : IAsyncStartable, IDisposable
             // 현재는 임시 시드값을 사용한다.
             int seed = UnityEngine.Random.Range(0, int.MaxValue);
             mapData = _mapGenerator.GenerateMap(seed);
-
+            Debug.Log("시드 = " + seed);
             if (mapData == null)
             {
                 Debug.LogError("[MapInitializer] GenerateMap() 이 null 을 반환했습니다.");

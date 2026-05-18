@@ -55,7 +55,7 @@ namespace Bond.Expedition
             string str = "";
             foreach (var c in Party)
             {
-                str += $"{c.Data.Name}\n";
+                str += $"{c.Name}\n";
             }
 
             foreach (var slot in Supplies.GetAll())

@@ -1,7 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements">
-    <!-- 파티 바 캐릭터 아이콘 1개 단위 템플릿 -->
-    <ui:Button class="rre-char-icon">
-        <ui:VisualElement name="iconImage" class="rre-char-icon__image" />
-        <ui:Label name="iconName" class="rre-char-icon__name" text="이름" />
-    </ui:Button>
-</ui:UXML>

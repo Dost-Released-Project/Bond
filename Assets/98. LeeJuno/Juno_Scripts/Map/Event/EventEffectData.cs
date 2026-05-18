@@ -64,4 +64,30 @@ public class EventEffectData
     // 몬스터 풀은 EventBattleConfig SO 에서 관리한다.
     // 여기서는 "이 선택지가 전투를 트리거한다"는 플래그 역할만 한다.
     // 별도 필드 불필요 — EffectType == Battle 자체가 플래그.
+
+    /// <summary>
+    /// 파서에서 호출하는 초기화 메서드.
+    /// 모든 필드가 private 이므로 EventEffectData 내부에서만 접근 가능하다.
+    /// </summary>
+    public void SetData(
+        EffectType     effectType,
+        TargetType     targetType,
+        int            hpChangeAmount,
+        string         statusEffectId,
+        ItemRewardType itemRewardType,
+        string         guaranteedItemId,
+        float          itemProbability,
+        string         probabilityItemId,
+        List<string>   itemPool)
+    {
+        _effectType        = effectType;
+        _targetType        = targetType;
+        _hpChangeAmount    = hpChangeAmount;
+        _statusEffectId    = statusEffectId;
+        _itemRewardType    = itemRewardType;
+        _guaranteedItemId  = guaranteedItemId;
+        _itemProbability   = itemProbability;
+        _probabilityItemId = probabilityItemId;
+        _itemPool          = itemPool ?? new List<string>();
+    }
 }

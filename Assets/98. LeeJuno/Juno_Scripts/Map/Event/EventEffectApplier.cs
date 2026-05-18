@@ -108,7 +108,7 @@ public class EventEffectApplier : IEventEffectApplier
             else
                 character.ReduceHP(-amount);
 
-            Debug.Log($"[EventEffectApplier] HP 변화 적용: {character.Data.Name}, amount={amount}");
+            Debug.Log($"[EventEffectApplier] HP 변화 적용: {character.Name}, amount={amount}");
         }
     }
 
@@ -133,7 +133,7 @@ public class EventEffectApplier : IEventEffectApplier
         else
             target.ReduceHP(-amount);
 
-        Debug.Log($"[EventEffectApplier] 랜덤 HP 변화 적용: {target.Data.Name}, amount={amount}");
+        Debug.Log($"[EventEffectApplier] 랜덤 HP 변화 적용: {target.Name}, amount={amount}");
     }
 
     /// <summary>
