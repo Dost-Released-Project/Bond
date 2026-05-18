@@ -35,10 +35,9 @@ namespace _90._HA.Temp.Test
             professionDb = Addressables.LoadAssetAsync<DataBaseSO>("ClassDataBase").WaitForCompletion();
             
             payload.Clear();
-            FillRoster();
         }
 
-        private void CreateCharacterPresets()
+        public void CreateCharacterPresets()
         {
             var db = professionDb.Query<ClassSO>(so => true);
 
@@ -47,9 +46,6 @@ namespace _90._HA.Temp.Test
             for (int i = 0; i < 4; i++)
             {
                 var chara = _stageCoach.GetCharacter(db.ElementAt(i));
-                roster.Characters[i] = chara;
-
-                chara.RoleReactions[0] = new Reaction();
                 
                 SaveCharacterAsPreset(chara);
             }
@@ -64,7 +60,7 @@ namespace _90._HA.Temp.Test
             bool isNew = so == null;
             if (isNew) so = ScriptableObject.CreateInstance<CharacterPreset>();
 
-            so.BaseCharacter = character;
+            so.BaseCharacter = (character);
             
             if (isNew) AssetDatabase.CreateAsset(so, path);
             EditorUtility.SetDirty(so);
@@ -79,22 +75,13 @@ namespace _90._HA.Temp.Test
         {
             foreach (var preset in CharacterPresets)
             {
-                roster.Hire(preset.BaseCharacter);
+                roster.Hire(Instantiate(preset).BaseCharacter);
             }
-            // for (int i = 0; i < 20; i++)
-            // {
-            //     roster.Hire(new StageCoach().GetRandomCharacter());
-            // }
         }
 
-        public void FillEnemy()
+        public void Test()
         {
-            BaseCharacter[] enemies = new BaseCharacter[4];
-            for (int i = 0; i < 4; i++)
-            {
-                enemies[i] = _stageCoach.GetRandomCharacter();
-            }
-            payload.SetEnemy(enemies);
+            roster.Characters[0].Name = "Hex";
         }
     }
 }

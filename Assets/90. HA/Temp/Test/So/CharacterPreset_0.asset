@@ -2,7 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CharacterPreset_0
   m_EditorClassIdentifier: Assembly-CSharp::_90._HA.CharacterPreset
   BaseCharacter:
-    Id: ccefc140-da79-46ce-96e9-e37f514c30dd
+    Id: c2048033-026e-4f39-b1f5-186d70a24d55
     ImageAddress: Wildboar
     Name: Wildboar
     Profession:
@@ -22,12 +22,12 @@ MonoBehaviour:
     Insanity: 0
     RoleType: 1
     <battleType>k__BackingField:
-      rid: 8081819896858542654
+      rid: 8081819896858542995
     Skills:
-    - rid: 8081819896858542535
-    - rid: 8081819896858542536
-    - rid: 8081819896858542537
-    - rid: 8081819896858542538
+    - rid: 8081819896858542976
+    - rid: 8081819896858542977
+    - rid: 8081819896858542978
+    - rid: 8081819896858542979
     Traits:
     - Name: C
       Description: ccc
@@ -61,33 +61,33 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     RoleReactions:
-    - Id: 16cc8c8e-689b-4ed1-ae7f-f6b048d2a01b
+    - Id: cfe69b6e-1adf-4e12-a92a-99956c6d67dc
       Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
-    - Id: 6f1aaab9-795f-4b9d-b5ec-25a5de7b2ea3
+    - Id: e64916ff-1698-4f01-86f2-5abf7595767d
       Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
     TraitReactions:
-    - Id: 77c1c161-d082-46fb-8f76-c7e007e4dd55
+    - Id: c68a7e49-c63b-46bd-87ec-c8f16346ef5d
       Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
-    - Id: 0ccbba39-07f7-4012-8203-f37a7537bb32
+    - Id: 5739a627-a1de-42dc-8eb5-4ba7e9ebdc26
       Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
-    - Id: fce05411-52bf-4eeb-a4d0-81398fd8bed2
+    - Id: 834a1549-219c-48df-bd92-ed7229d90a48
       Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
-    - Id: f95398bd-9c6c-4389-934e-0340472f29ab
+    - Id: 53fc86ff-eb12-4aaf-aa3a-f32e6c509aaa
       Source: 0
       Trigger:
         rid: -2
@@ -97,31 +97,31 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 8081819896858542535
-      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
-      data:
-        damage: 0
-        currentLevel: 0
-        _skillData: {fileID: 11400000, guid: efc57f736ae37d241a8cab48bd3e9d67, type: 2}
-    - rid: 8081819896858542536
+    - rid: 8081819896858542976
       type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
       data:
         damage: 0
         currentLevel: 0
         _skillData: {fileID: 11400000, guid: 2168ec6edc6110f4f9667b7e376bd352, type: 2}
-    - rid: 8081819896858542537
-      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
-      data:
-        damage: 0
-        currentLevel: 0
-        _skillData: {fileID: 11400000, guid: b92e19dd7aa8ce749a136708ffabdc0e, type: 2}
-    - rid: 8081819896858542538
+    - rid: 8081819896858542977
       type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
       data:
         damage: 0
         currentLevel: 0
         _skillData: {fileID: 11400000, guid: 963dbd7ea6fa9bc46ac9daf74cf1f1d8, type: 2}
-    - rid: 8081819896858542654
+    - rid: 8081819896858542978
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: efc57f736ae37d241a8cab48bd3e9d67, type: 2}
+    - rid: 8081819896858542979
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: b92e19dd7aa8ce749a136708ffabdc0e, type: 2}
+    - rid: 8081819896858542995
       type: {class: AutoBattle_Def, ns: , asm: Assembly-CSharp}
       data:
         isPlayable: 0

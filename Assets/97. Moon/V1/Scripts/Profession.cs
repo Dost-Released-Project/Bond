@@ -5,7 +5,7 @@ using UnityEngine;
 [Serializable]
 public class Profession
 {
-    [SerializeField] private ClassSO _classData;
+    [JsonProperty][SerializeField] private ClassSO _classData;
     private bool isFirst;
 
     public Profession(ClassSO classData)

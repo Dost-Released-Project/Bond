@@ -2,7 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 52
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -13,24 +13,24 @@ MonoBehaviour:
   m_Name: CharacterPreset_1
   m_EditorClassIdentifier: Assembly-CSharp::_90._HA.CharacterPreset
   BaseCharacter:
-    Id: 6c4f9d65-458a-4c09-8f5a-8128e4e112b3
-    ImageAddress: MTE
-    Name: MTE
+    Id: c65ebae5-9fea-404d-bda0-9dba540a5ade
+    ImageAddress: GodOfWar
+    Name: GodOfWar
     Profession:
       _classData: {fileID: 11400000, guid: b8de67576ddb60c4eb3dcccb2e641b32, type: 2}
     Level: 0
     Insanity: 0
     RoleType: 2
     <battleType>k__BackingField:
-      rid: 8081819896858542650
+      rid: 8081819896858542996
     Skills:
-    - rid: 8081819896858542539
-    - rid: 8081819896858542540
-    - rid: 8081819896858542541
-    - rid: 8081819896858542542
+    - rid: 8081819896858542981
+    - rid: 8081819896858542982
+    - rid: 8081819896858542983
+    - rid: 8081819896858542984
     Traits:
-    - Name: A
-      Description: aaa
+    - Name: B
+      Description: bbb
     - Name: A
       Description: aaa
     - Name: Missing
@@ -61,33 +61,33 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     RoleReactions:
-    - Id: a6c20cbf-583e-49b4-b162-22ca60339555
+    - Id: 9d1e1ff3-c499-4230-8c36-52d274dbc28e
       Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
-    - Id: 718f8f7c-b48a-45f9-af8c-7b251d01f77e
+    - Id: b023ba72-6d00-4e24-85c8-70b77732aca2
       Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
     TraitReactions:
-    - Id: 8f701060-c6a7-4fd2-8e28-1613d00533ac
+    - Id: 3f224a9b-af19-4463-a60e-be11210e9fe4
       Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
-    - Id: 6da5c869-8bb4-4dd0-96f7-d24ea44d50fa
+    - Id: 09481e3f-d0e8-44ea-8fd0-278ba4ff3cd4
       Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
-    - Id: 0e8d553e-45bf-4ba4-9913-af160c4e9474
+    - Id: 0e4a2d92-42a5-45e2-bfa7-be7a771cc65c
       Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
-    - Id: 5bf5b995-eeba-4fa1-9faf-574bef3aad3c
+    - Id: d1526da0-a844-4152-bbda-d7a985e06908
       Source: 0
       Trigger:
         rid: -2
@@ -97,31 +97,31 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 8081819896858542539
-      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
-      data:
-        damage: 0
-        currentLevel: 0
-        _skillData: {fileID: 11400000, guid: 6dad1ff08f6b8d742870a02e408b0965, type: 2}
-    - rid: 8081819896858542540
+    - rid: 8081819896858542981
       type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
       data:
         damage: 0
         currentLevel: 0
         _skillData: {fileID: 11400000, guid: 1601c6c3cbf849d48814fa216a44e153, type: 2}
-    - rid: 8081819896858542541
-      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
-      data:
-        damage: 0
-        currentLevel: 0
-        _skillData: {fileID: 11400000, guid: 4a98f320f02106149807140a6cb71a87, type: 2}
-    - rid: 8081819896858542542
+    - rid: 8081819896858542982
       type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
       data:
         damage: 0
         currentLevel: 0
         _skillData: {fileID: 11400000, guid: c3800a5157df56746b6faaabe18004a8, type: 2}
-    - rid: 8081819896858542650
+    - rid: 8081819896858542983
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: 6dad1ff08f6b8d742870a02e408b0965, type: 2}
+    - rid: 8081819896858542984
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: 4fc73c819bd461b4eb823e24ced1104a, type: 2}
+    - rid: 8081819896858542996
       type: {class: AutoBattle_Atk, ns: , asm: Assembly-CSharp}
       data:
         isPlayable: 0
