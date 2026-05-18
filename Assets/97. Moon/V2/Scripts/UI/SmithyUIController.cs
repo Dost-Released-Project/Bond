@@ -54,7 +54,7 @@ public class SmithyUIController : MonoBehaviour
         if (_selectedEquipment == null) return;
 
         _itemNameLabel.text = $"{_selectedEquipment.itemName} (+{_selectedEquipment.upgradeLevel})";
-        _statInfoLabel.text = $"STR: {_selectedEquipment.bonusSTR} \nAGI: {_selectedEquipment.bonusAGI} \nINT: {_selectedEquipment.bonusINT}";
+        _statInfoLabel.text = $"{_selectedEquipment.bonusSTR} \n{_selectedEquipment.bonusAGI} \n{_selectedEquipment.bonusINT}";
         
         // 비용 계산 (광석 추가)
         int costLog = (_selectedEquipment.upgradeLevel + 1) * 100;
