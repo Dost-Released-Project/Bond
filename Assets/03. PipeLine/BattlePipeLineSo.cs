@@ -18,7 +18,6 @@ namespace PipeLine
         
         public bool isCritical;
         public bool isEvaded;
-
         public float value;
         
         public IReadOnlyList<ReactionExecution> reactions = null;

@@ -23,6 +23,7 @@ namespace RootVContainer
             builder.Register<JournalModel>(Lifetime.Singleton);
             builder.Register<LocationEventProvider>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<MockJournalActionHandler>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<JournalInventoryActionHandler>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.RegisterEntryPoint<JournalSystem>(Lifetime.Singleton).AsSelf();
             
             // [Test] 런타임 테스트 러너

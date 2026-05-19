@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CL_02030000
   m_EditorClassIdentifier: Assembly-CSharp::ClassSO
   _id: 02030000
-  _displayName: 03
+  _displayName: 
   _description: 
   STR: 1
   AGI: 2

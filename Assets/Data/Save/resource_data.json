@@ -1,9 +1,9 @@
 {
-  "frontierCur": 175,
-  "frontierMax": 1000,
-  "woodCur": 0,
-  "woodMax": 100,
-  "oreCur": 0,
-  "oreMax": 100,
+  "frontierCur": 25,
+  "frontierMax": 3000,
+  "woodCur": 100,
+  "woodMax": 300,
+  "oreCur": 100,
+  "oreMax": 300,
   "Key": "resource_data"
 }

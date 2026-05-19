@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VContainer;
 using VContainer.Unity;
+using Cysharp.Threading.Tasks;
 
 namespace Bond.WT.Journal
 {
@@ -78,14 +79,16 @@ namespace Bond.WT.Journal
             // 마지막 페이지에서 다음(또는 닫기)를 누른 경우, 그동안 저장된 모든 선택 결과를 일괄 실행
             if (_model.IsLastPage.Value)
             {
-                ExecuteAllDeferredOptions();
+                ExecuteAllDeferredOptions().Forget();
             }
 
             _model.NextPage();
         }
 
-        private void ExecuteAllDeferredOptions()
+        private async UniTaskVoid ExecuteAllDeferredOptions()
         {
+            var tasks = new List<UniTask>();
+
             foreach (var report in _model.Reports)
             {
                 if (report.SelectedOption.HasValue)
@@ -101,7 +104,7 @@ namespace Bond.WT.Journal
                         {
                             if (handler.CanHandle(opt.actionKey))
                             {
-                                handler.ExecuteAction(opt.actionKey);
+                                tasks.Add(handler.ExecuteAction(opt.actionKey, report));
                                 handled = true;
                             }
                         }
@@ -113,6 +116,13 @@ namespace Bond.WT.Journal
                         UnityEngine.Debug.LogWarning($"[JournalSystem] '{opt.actionKey}' 액션을 처리할 IJournalActionHandler를 찾을 수 없습니다.");
                     }
                 }
+            }
+
+            // 모든 액션 병렬 실행 대기
+            if (tasks.Count > 0)
+            {
+                await UniTask.WhenAll(tasks);
+                UnityEngine.Debug.Log($"<color=cyan>[JournalSystem]</color> 모든 지연된 선택지 액션 처리가 완료되었습니다. (총 {tasks.Count}건)");
             }
         }
 

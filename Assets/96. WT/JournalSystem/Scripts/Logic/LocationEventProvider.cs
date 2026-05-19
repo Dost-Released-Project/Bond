@@ -20,6 +20,8 @@ namespace Bond.WT.Journal
             public string EventId;
             public string LocationName;
             public string FoundItemName;
+            public string ItemId;
+            public int Quantity; // 새로 추가
         }
         private readonly List<DiscoveryEvent> _eventBuffer = new List<DiscoveryEvent>();
 
@@ -31,13 +33,15 @@ namespace Bond.WT.Journal
         /// <summary>
         /// 테스트용 데이터 설정 (이벤트 발생 시뮬레이션)
         /// </summary>
-        public void SetDiscovery(string eventId, string location, string item)
+        public void SetDiscovery(string eventId, string location, string item, string itemId = null, int quantity = 1)
         {
             _eventBuffer.Add(new DiscoveryEvent 
             { 
                 EventId = eventId, 
                 LocationName = location, 
-                FoundItemName = item 
+                FoundItemName = item,
+                ItemId = itemId,
+                Quantity = quantity
             });
         }
 
@@ -62,7 +66,7 @@ namespace Bond.WT.Journal
                     assembledParagraphs.Add(string.Format(para, evt.LocationName, evt.FoundItemName));
                 }
 
-                yield return new JournalReport
+                var report = new JournalReport
                 {
                     Title = "탐색 보고",
                     Paragraphs = assembledParagraphs,
@@ -70,6 +74,14 @@ namespace Bond.WT.Journal
                     Options = template.Options.ToList(),
                     ProviderId = "LocationEvent"
                 };
+
+                if (!string.IsNullOrEmpty(evt.ItemId))
+                {
+                    report.Metadata["ItemId"] = evt.ItemId;
+                    report.Metadata["Quantity"] = evt.Quantity.ToString(); // Quantity 메타데이터 추가
+                }
+
+                yield return report;
             }
         }
 
