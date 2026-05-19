@@ -27,7 +27,6 @@ namespace _90._HA.Temp.Test
         [Inject] public Roster roster;
         public DataBaseSO professionDb;
         
-        public List<TriggerPreset> TriggerPresets;
         public List<CharacterPreset> CharacterPresets;
 
         public void Start()
