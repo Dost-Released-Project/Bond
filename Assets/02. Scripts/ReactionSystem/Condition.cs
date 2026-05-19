@@ -31,7 +31,7 @@ namespace Reactions
             List<BaseCharacter> compareTarget = coFilter switch
             {
                 E_CompareFilter.Caster => new() { context.caster },
-                E_CompareFilter.Target => context.targets,
+                E_CompareFilter.Target => context.target != null ? new() { context.target } : new(),
                 _ => new List<BaseCharacter>()
             };
 
@@ -63,7 +63,7 @@ namespace Reactions
 
         public bool IsMet(BaseCharacter subject, BattleContext context)
         {
-            return context.targets.Contains(subject) && subject.HpRatio <= Threshold;
+            return context.target == subject && subject.HpRatio <= Threshold;
         }
 
         public ICondition Copy()
@@ -91,7 +91,7 @@ namespace Reactions
     {
         public bool IsMet(BaseCharacter subject, BattleContext context)
         {
-            return context.targets.Contains(subject) && context.isEvaded;
+            return context.target == subject && context.isEvaded;
         }
 
         public ICondition Copy()
@@ -105,7 +105,7 @@ namespace Reactions
     {
         public bool IsMet(BaseCharacter subject, BattleContext context)
         {
-            return context.caster == subject && context.targets.Any(c => c.IsDead);
+            return context.caster == subject && context.target != null && context.target.IsDead;
         }
 
         public ICondition Copy()
@@ -119,7 +119,7 @@ namespace Reactions
     {
         public bool IsMet(BaseCharacter subject, BattleContext context)
         {
-            return context.targets.Contains(subject) && context.isEvaded == false;
+            return context.target == subject && context.isEvaded == false;
         }
 
         public ICondition Copy()
@@ -133,7 +133,7 @@ namespace Reactions
     {
         public bool IsMet(BaseCharacter subject, BattleContext context)
         {
-            return context.targets.Contains(subject);
+            return context.target == subject;
         }
 
         public ICondition Copy()
