@@ -63,10 +63,10 @@ public class Profession
         // 추후 수정 필요. 최초 1회만 계산되게 한다든가, 제한을 두는 방식으로 항시 발동하지 않게 해야 함(안 그러면 이거 부를 때마다 풀피됨)
         stat.current_Hp = Mathf.Clamp(stat.current_Hp, 0, stat.max_Hp);
         
-        Debug.Log($"STR: {finalSTR} AGI: {finalAGI} INT: {finalINT}" + 
-                  $"\nHP: {stat.max_Hp} DEF: {stat.def} ATK: {stat.atk}" + 
-                  $"\nSPD: {stat.speed} CRT: {stat.crt} ACC: {stat.acc}" + 
-                  $"\nInsanity_Ctrl: {stat.Insanity_Ctrl} Reaction_Ctrl: {stat.Reaction_Ctrl} Sp_Atk: {stat.Sp_Atk}");
+        // Debug.Log($"STR: {finalSTR} AGI: {finalAGI} INT: {finalINT}" + 
+        //           $"\nHP: {stat.max_Hp} DEF: {stat.def} ATK: {stat.atk}" + 
+        //           $"\nSPD: {stat.speed} CRT: {stat.crt} ACC: {stat.acc}" + 
+        //           $"\nInsanity_Ctrl: {stat.Insanity_Ctrl} Reaction_Ctrl: {stat.Reaction_Ctrl} Sp_Atk: {stat.Sp_Atk}");
     }
 
 

@@ -18,6 +18,7 @@ namespace PipeLine
         
         public bool isCritical;
         public bool isEvaded;
+        public bool isReaction;
 
         public float value;
         
@@ -139,7 +140,7 @@ namespace PipeLine
             if (context.isEvaded || context.target == null || context.target.IsDead) return context;
 
             // TODO: 개별 타겟 치명타 확률 로직 (현재는 임시로 시전자 crt 사용)
-            context.isCritical = Random.Range(0f, 100f) < context.caster.Stat.crt;
+            //context.isCritical = Random.Range(0f, 100f) < context.caster.Stat.crt;
             
             if (context.isCritical)
             {
@@ -189,10 +190,11 @@ namespace PipeLine
             Debug.Log("Executing ReactionCall");
             if (reactionSystem != null)
             {
-                context.reactions = reactionSystem.Resolve(context);
-                foreach (var reaction in context.reactions)
+                var executions = reactionSystem.Resolve(context);
+                foreach (var execution in executions)
                 {
-                    Debug.Log($"<color=yellow>Reaction: {reaction}</color>");
+                    Debug.Log($"<color=yellow>Reaction: {execution.ToString()}</color>");
+                    execution.Agent.ExecuteReaction(execution.Reaction, context);
                 }
             }
             return context;

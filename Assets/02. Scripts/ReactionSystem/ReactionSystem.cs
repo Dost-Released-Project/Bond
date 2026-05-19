@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using PipeLine;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
@@ -27,7 +28,7 @@ namespace Reactions
     // 아니면 context에 캐릭터들의 참조를 담거나
     public class ReactionSystem : IReactionResolver
     {
-        private readonly List<BaseCharacter> Characters;
+        private readonly List<BaseCharacter> Characters = new List<BaseCharacter>();
         
         public void Register(BaseCharacter agent)
         {
@@ -46,9 +47,11 @@ namespace Reactions
             // 조건에 맞는 리액션 색출
             foreach (var chara in Characters)
             {
+                if (chara.IsDead) continue;
+                
                 foreach (var reaction in chara.Reactions)
                 {
-                    if (reaction.Trigger.CheckCondition(context))
+                    if (reaction.Check(context))
                     {
                         var result = IsSuccess(chara, reaction);
                         var execution = new ReactionExecution(chara, reaction, result);
@@ -58,15 +61,22 @@ namespace Reactions
                 }
             }
             
-            // 리액션 성공 실패 계산
-            // TODO: 정렬 과정 필요
-            return executions.AsReadOnly(); 
+            executions.Sort();
+
+            var sb = new StringBuilder();
+            foreach (var reaction in executions)
+            {
+                sb.AppendLine($"Reaction | Speed: {reaction.Agent.Speed}");
+            }
+            Debug.Log($"<color=red>Reaction Count: {executions.Count}\n" +
+                      $"{sb.ToString()}</color>");
+            
+            return executions.AsReadOnly();
         }
 
         /// <summary>
         /// 리액션의 성공 확률을 계산해 반환합니다.
         /// </summary>
-        /// <param name="execution">성공을 계산할 리액션</param>
         /// <returns></returns>
         private static ReactionResult IsSuccess(BaseCharacter agent, Reaction reaction) // TODO: 구현
         {
@@ -77,15 +87,5 @@ namespace Reactions
             
             return (ReactionResult)Random.Range(0,3); // 임시 처리임
         }
-        
-        /// <summary>
-        /// 리액션의 성공 확률을 계산해 리액션 데이터를 수정합니다.
-        /// </summary>
-        /// <param name="reactions">성공을 계산할 리액션들</param>
-        /// <returns></returns>
-        // private static IEnumerable<ReactionExecution> ExecuteReactions(IEnumerable<Reaction> reactions)
-        // {
-        //     return reactions.Select(reaction => new ReactionExecution(reaction, ReactionResult.Success));
-        // }
     }
 }
