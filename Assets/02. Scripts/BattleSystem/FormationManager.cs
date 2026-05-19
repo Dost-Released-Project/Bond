@@ -181,6 +181,7 @@ namespace BattleSystem
         public void SetCharacterToSlot(BaseCharacter character, E_BattleSide side, int index)
         {
             if (index < 0 || index >= 4) return;
+            character.SetFormationManager(this);
             GetData(side).Slots[index]?.SetOccupant(character);
         }
         #endregion

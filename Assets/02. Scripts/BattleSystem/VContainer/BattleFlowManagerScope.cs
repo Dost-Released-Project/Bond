@@ -1,5 +1,6 @@
 using BattleStage;
 using BattleSystem.Interface;
+using Bond.WT.Journal;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -9,6 +10,7 @@ namespace BattleSystem.VContainer
     public class BattleFlowManagerScope : LifetimeScope
     {
         [SerializeField] private BattleFlowManager expeditionFlowManager;
+        [SerializeField] private Bond.WT.Journal.JournalUIView _journalUIPrefab;
         
         public CharacterSlot[] slots;
         protected override void Configure(IContainerBuilder builder)
@@ -33,6 +35,9 @@ namespace BattleSystem.VContainer
 
             // Journal 연동 Provider (스코프 시작 시 JournalSystem에 자가 등록)
             builder.RegisterEntryPoint<Bond.WT.Journal.BattleEventProvider>(Lifetime.Singleton).AsSelf();
+
+            // Journal UI 및 Binder 지역 스코프 등록
+            builder.RegisterJournalUI(_journalUIPrefab);
         }
     }
 }

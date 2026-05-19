@@ -3,12 +3,15 @@ using _90._HA.Temp.Test;
 using Bond.Embark;
 using Bond.Expedition;
 using Bond.UI.Town;
+using Bond.WT.Journal;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
 public class TownScope : LifetimeScope
 {
+    [SerializeField] private Bond.WT.Journal.JournalUIView _journalUIPrefab;
+
     protected override void Configure(IContainerBuilder builder)
     {
         // Manager & Service (싱글톤처럼 유지)
@@ -51,5 +54,8 @@ public class TownScope : LifetimeScope
 
         // 테스트용 스크립트
         builder.RegisterComponentInHierarchy<S1Test>();
+
+        // Journal UI 및 Binder 지역 스코프 등록
+        builder.RegisterJournalUI(_journalUIPrefab);
     }
 }

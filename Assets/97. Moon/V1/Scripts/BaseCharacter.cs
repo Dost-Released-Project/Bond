@@ -61,6 +61,11 @@ public partial class BaseCharacter : ITurnUseUnit
     [JsonIgnore] public Func<BattleContext, UniTask> onBattleAction;
     private IFormationManager m_formationManager;
 
+    public void SetFormationManager(IFormationManager formationManager)
+    {
+        m_formationManager = formationManager;
+    }
+
     private BaseCharacter()
     {
         for(int i = 0; i < RoleReactions.Length; i++)
@@ -136,6 +141,7 @@ public partial class BaseCharacter : ITurnUseUnit
     {
         SkillBase skill = null;
         Debug.Log($"<color=green>{Name} 차례</color>");
+        
         if (isPlayable)
         {
             _tcs = AutoResetUniTaskCompletionSource<bool>.Create();
@@ -144,14 +150,38 @@ public partial class BaseCharacter : ITurnUseUnit
         }
         else
         {
-            // 배틀액션에서 스킬을 직접 실행하는데 아마 직접 실행이 아닌 스킬을 선택해 반환하고 여기서 사용하는 방식으로 변경이 필요할거임.
-            skill = battleType.BattleAction(Skills);
+            // GetUsableSkills()를 통해 현재 사용할 수 있는 스킬 판별
+            bool[] usableFlags = GetUsableSkills();
+            var usableSkills = new System.Collections.Generic.List<SkillBase>();
+            
+            for (int i = 0; i < Skills.Length; i++)
+            {
+                if (Skills[i] != null && usableFlags[i])
+                {
+                    usableSkills.Add(Skills[i]);
+                }
+            }
+
+            // 사용 가능한 스킬이 하나라도 있으면 AI에게 넘겨 판단하게 함
+            if (usableSkills.Count > 0)
+            {
+                skill = battleType.BattleAction(usableSkills.ToArray());
+            }
+            else
+            {
+                // TODO: 스킬을 사용할 수 없는 경우 (턴 패스 또는 대기) 예외 처리
+                Debug.LogWarning($"<color=yellow>{Name}은(는) 현재 타겟이 없어 스킬을 사용할 수 없습니다.</color>");
+            }
         }
         
-        BattleContext battleContext = CreateBattleContext(skill);
-        if (onBattleAction != null)
+        // 사용 가능한 스킬이 없어 skill이 null이면 턴 액션을 발생시키지 않음
+        if (skill != null)
         {
-            await onBattleAction.Invoke(battleContext);
+            BattleContext battleContext = CreateBattleContext(skill);
+            if (onBattleAction != null)
+            {
+                await onBattleAction.Invoke(battleContext);
+            }
         }
     
         await UniTask.Delay(1000); // 턴 종료 딜레이
