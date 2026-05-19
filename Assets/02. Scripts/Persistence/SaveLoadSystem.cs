@@ -43,7 +43,7 @@ namespace Bond.Persistence
         private static readonly string SAVE_ROOT = Path.Combine(Application.persistentDataPath, "Save");
 #endif
         
-        private static JsonSerializerSettings settings = new JsonSerializerSettings()
+        public static JsonSerializerSettings Settings = new JsonSerializerSettings()
         {
             TypeNameHandling = TypeNameHandling.Auto,
         };
@@ -60,7 +60,7 @@ namespace Bond.Persistence
 
         private static void Save(string key, object data)
         {
-            string json = JsonConvert.SerializeObject(data, Formatting.Indented, settings);
+            string json = JsonConvert.SerializeObject(data, Formatting.Indented, Settings);
             string path = GetPath(key);
             File.WriteAllText(path, json);
 
@@ -72,7 +72,7 @@ namespace Bond.Persistence
             foreach (var filePath in Directory.EnumerateFiles(SAVE_ROOT, "*.json"))
             {
                 string json = File.ReadAllText(filePath);
-                var obj = JsonConvert.DeserializeObject(json, settings);
+                var obj = JsonConvert.DeserializeObject(json, Settings);
 
                 yield return obj as ISaveable;
             }
@@ -82,14 +82,14 @@ namespace Bond.Persistence
         {
             string json = File.ReadAllText(GetPath(saveable.Key));
             Type type = saveable.Data.GetType();
-            var obj = JsonConvert.DeserializeObject(json, type, settings);
+            var obj = JsonConvert.DeserializeObject(json, type, Settings);
             saveable.Restore(obj);
         }
 
         public static void Load<T>(ISaveable<T> saveable)
         {
             string json = File.ReadAllText(GetPath(saveable.Key));
-            var obj = JsonConvert.DeserializeObject<T>(json, settings);
+            var obj = JsonConvert.DeserializeObject<T>(json, Settings);
             saveable.Restore(obj);
         }
     }

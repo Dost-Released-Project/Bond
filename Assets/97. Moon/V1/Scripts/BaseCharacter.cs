@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using BattleSystem;
 using BattleSystem.Interface;
@@ -35,6 +36,7 @@ public partial class BaseCharacter : ITurnUseUnit
     public int Level = 0;
     public int Insanity = 0; // 스트레스(광기) 지수 0~100, Stress는 STR과 혼동될 수 있어서 명칭 변경
     public RoleType RoleType = RoleType.None;
+    [field: SerializeReference, SubclassSelector] public AutoBattle battleType { get; set; }
 
     [SerializeReference] public SkillBase[] Skills = new SkillBase[4];
     public Trait[] Traits = new Trait[4];
@@ -46,18 +48,23 @@ public partial class BaseCharacter : ITurnUseUnit
 
     public Reaction[] RoleReactions = new Reaction[2];
     public Reaction[] TraitReactions = new Reaction[4];
+    [JsonIgnore] public Reaction[] Reactions => RoleReactions.Concat(TraitReactions).ToArray();
     
     [JsonIgnore] public Stat Stat { get; } = new Stat();
     [JsonIgnore] public StatController StatController { get; } = new StatController();
     
     [JsonIgnore] public bool isPlayable { get; set; }
-    public AutoBattle battleType { get; set; }
 
     public BaseCharacter sup_Character { get; set; } // 지원 선택 대상. 대상이 행동할 때 역할군에 따른 지원. 탱커: 피격 시 엄호, 서포터: 피격 후 치유, 딜러: 공격 시 지원 공격.\
     
     // BattleManager가 구독할 이벤트. BattleContext는 공격자, 방어자, 스킬 정보 등을 담는 클래스. BattleManager는 이 이벤트를 구독하여 BattleContext를 받아 처리.
     [JsonIgnore] public Func<BattleContext, UniTask> onBattleAction;
     private IFormationManager m_formationManager;
+
+    public void SetFormationManager(IFormationManager formationManager)
+    {
+        m_formationManager = formationManager;
+    }
 
     private BaseCharacter()
     {
@@ -134,6 +141,7 @@ public partial class BaseCharacter : ITurnUseUnit
     {
         SkillBase skill = null;
         Debug.Log($"<color=green>{Name} 차례</color>");
+        
         if (isPlayable)
         {
             _tcs = AutoResetUniTaskCompletionSource<bool>.Create();
@@ -142,14 +150,38 @@ public partial class BaseCharacter : ITurnUseUnit
         }
         else
         {
-            // 배틀액션에서 스킬을 직접 실행하는데 아마 직접 실행이 아닌 스킬을 선택해 반환하고 여기서 사용하는 방식으로 변경이 필요할거임.
-            skill = battleType.BattleAction(Skills);
+            // GetUsableSkills()를 통해 현재 사용할 수 있는 스킬 판별
+            bool[] usableFlags = GetUsableSkills();
+            var usableSkills = new System.Collections.Generic.List<SkillBase>();
+            
+            for (int i = 0; i < Skills.Length; i++)
+            {
+                if (Skills[i] != null && usableFlags[i])
+                {
+                    usableSkills.Add(Skills[i]);
+                }
+            }
+
+            // 사용 가능한 스킬이 하나라도 있으면 AI에게 넘겨 판단하게 함
+            if (usableSkills.Count > 0)
+            {
+                skill = battleType.BattleAction(usableSkills.ToArray());
+            }
+            else
+            {
+                // TODO: 스킬을 사용할 수 없는 경우 (턴 패스 또는 대기) 예외 처리
+                Debug.LogWarning($"<color=yellow>{Name}은(는) 현재 타겟이 없어 스킬을 사용할 수 없습니다.</color>");
+            }
         }
         
-        BattleContext battleContext = CreateBattleContext(skill);
-        if (onBattleAction != null)
+        // 사용 가능한 스킬이 없어 skill이 null이면 턴 액션을 발생시키지 않음
+        if (skill != null)
         {
-            await onBattleAction.Invoke(battleContext);
+            BattleContext battleContext = CreateBattleContext(skill);
+            if (onBattleAction != null)
+            {
+                await onBattleAction.Invoke(battleContext);
+            }
         }
     
         await UniTask.Delay(1000); // 턴 종료 딜레이
@@ -204,5 +236,10 @@ public partial class BaseCharacter : ITurnUseUnit
     public override string ToString()
     {
         return $"Name: {Name}, Level: {Level}, Profession: {Profession.Name}";
+    }
+
+    public static implicit operator string(BaseCharacter character)
+    {
+        return character.Id;
     }
 }

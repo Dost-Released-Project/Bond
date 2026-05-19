@@ -9,15 +9,30 @@ namespace Reactions
         Role,
         Trait
     }
+
+    [Serializable]
+    public class ReactionExecution
+    {
+        public BaseCharacter Agent;
+        public Reaction Reaction;
+        public ReactionResult Result = ReactionResult.Success;
+
+        public ReactionExecution(BaseCharacter agent, Reaction reaction, ReactionResult result)
+        {
+            Agent = agent;
+            Reaction = reaction;
+            Result = result;
+        }
+    }
     
     [Serializable]
     public class Reaction
     {
         public string Id;
         public ReactionSource Source;                       // 출처 (역할 or 성향)
-        [NonSerialized] public BaseCharacter Agent;         // 조건이 만족 됐을때 행동할 주체
-        [SerializeReference] public ITrigger Trigger;       // 리액션 행동을 발동시키는 조건
-        [SerializeReference] public SkillBase Behaviour;    // 조건 만족시 하게될 행동
+        [SerializeReference, SubclassSelector] public ITrigger Trigger;       // 리액션 행동을 발동시키는 조건
+        public int SkillIndex; // 반응으로 실행할 스킬의 인덱스
+        //[SerializeReference, SubclassSelector] public SkillBase Behaviour;    // 조건 만족시 하게될 행동
         //[SerializeReference] public SkillBase AnomalySkill; // 돌발 행동 시 행동
 
         public Reaction()
@@ -25,14 +40,10 @@ namespace Reactions
             Id = System.Guid.NewGuid().ToString();
         }
 
-        public Reaction(SerializationInfo info, StreamingContext context)
+        public Reaction(ITrigger trigger, SkillBase behaviour)
         {
-            Id = info.GetString("Id");
-        }
-        
-        public override string ToString()
-        {
-            return $"ID: {Id} | {Agent}'s reaction-{Behaviour}-";
+            Trigger = trigger;
+            //Behaviour = behaviour;
         }
     }
 }

@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 // 1. 딜러: OFFENSIVE, OFFENSIVE_SPELL 선호
+[Serializable]
 public class AutoBattle_Atk : AutoBattle
 {
     public override SkillBase BattleAction(SkillBase[] skills)
@@ -11,5 +13,6 @@ public class AutoBattle_Atk : AutoBattle
         
         return DecideSkill(skills, favorites);
     }
+    public AutoBattle_Atk() { }
     public AutoBattle_Atk(string str) { Debug.Log($"{str}: 딜러 세팅"); }
 }
