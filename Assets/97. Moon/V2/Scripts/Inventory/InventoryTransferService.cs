@@ -10,15 +10,23 @@ public class InventoryTransferService
     // ================= 기존 내부 메서드 수정 없이 상단/하단에 추가할 코드 =================
     public bool IsDraggingFromEquipment { get; private set; }
     public int SourceEquipmentSlotIndex { get; private set; } = -1;
+    
+    // 장비창에서 시작된 드래그인지 확인하기 위한 상태값들
+    public bool IsEquipmentDragging { get; private set; }
+    public int DraggingEquipmentSlotIndex { get; private set; }
 
     public void StartEquipmentDrag(int slotIndex)
     {
+        IsEquipmentDragging = true;
+        DraggingEquipmentSlotIndex = slotIndex;
         IsDraggingFromEquipment = true;
         SourceEquipmentSlotIndex = slotIndex;
     }
 
     public void ResetEquipmentDrag()
     {
+        IsEquipmentDragging = false;
+        DraggingEquipmentSlotIndex = -1;
         IsDraggingFromEquipment = false;
         SourceEquipmentSlotIndex = -1;
     }
