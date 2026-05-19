@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::_90._HA.CharacterPreset
   BaseCharacter:
     Id: 94902a61-bf07-438b-8f04-3307a6f014ab
-    ImageAddress: GodOfWar
-    Name: GodOfWar
+    ImageAddress: GodOfNormalization
+    Name: GodOfNormalization
     Profession:
       _classData: {fileID: 11400000, guid: 2d37152c4d21f1940ac73dc3eb5701d0, type: 2}
     Level: 0

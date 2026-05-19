@@ -73,9 +73,19 @@ namespace _90._HA.Temp.Test
 
         public void FillRoster()
         {
+            while (roster.IsFull == false)
+            {
+                roster.Hire(_stageCoach.GetRandomCharacter());
+            }
+        }
+
+        public void FillRosterFromPreset()
+        {
             foreach (var preset in CharacterPresets)
             {
-                roster.Hire(Instantiate(preset).BaseCharacter);
+                var c = Instantiate(preset).BaseCharacter;
+                c.CalcStat();
+                roster.Hire(c);
             }
         }
 

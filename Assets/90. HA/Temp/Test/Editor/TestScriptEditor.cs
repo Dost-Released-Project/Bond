@@ -38,6 +38,11 @@ namespace _90._HA.Temp.Test
                 Debug.Log(chara);
             }
 
+            if (GUILayout.Button("Fill Roster"))
+            {
+                test.FillRoster();
+            }
+
             if (GUILayout.Button("Create Character Preset"))
             {
                 test.CreateCharacterPresets();
@@ -45,7 +50,7 @@ namespace _90._HA.Temp.Test
             
             if (GUILayout.Button("Fill Roster From Presets"))
             {
-                test.FillRoster();
+                test.FillRosterFromPreset();
             }
             
             if (GUILayout.Button("Test Presets"))
