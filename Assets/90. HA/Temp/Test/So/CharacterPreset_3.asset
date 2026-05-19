@@ -64,12 +64,7 @@ MonoBehaviour:
     - Id: 00dcc66e-74ee-4079-8548-cc0c3bed0349
       Source: 0
       Trigger:
-        rid: -2
-      SkillIndex: 0
-    - Id: 8920ffad-268d-4a2c-8095-ef2a1cd3dc1d
-      Source: 0
-      Trigger:
-        rid: -2
+        rid: 8081819915636179013
       SkillIndex: 0
     TraitReactions:
     - Id: 307d1473-ccd3-4d32-9aef-d9fe57e3325b
@@ -125,3 +120,15 @@ MonoBehaviour:
       type: {class: AutoBattle_Sup, ns: , asm: Assembly-CSharp}
       data:
         isPlayable: 0
+    - rid: 8081819915636179013
+      type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        ObFilter: 3
+        CoFilter: 1
+        SubjectCharacterId: c2048033-026e-4f39-b1f5-186d70a24d55
+        Condition:
+          rid: 8081819915636179014
+    - rid: 8081819915636179014
+      type: {class: HpBelowCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Threshold: 0.5

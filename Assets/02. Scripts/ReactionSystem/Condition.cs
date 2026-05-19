@@ -72,6 +72,7 @@ namespace Reactions
         }
     }
 
+    [Serializable]
     public class CritCondition : ICondition
     {
         public bool IsMet(BaseCharacter subject, BattleContext context)
@@ -85,6 +86,7 @@ namespace Reactions
         }
     }
     
+    [Serializable]
     public class EvadeCondition : ICondition
     {
         public bool IsMet(BaseCharacter subject, BattleContext context)
@@ -98,6 +100,7 @@ namespace Reactions
         }
     }
 
+    [Serializable]
     public class KillCondition : ICondition
     {
         public bool IsMet(BaseCharacter subject, BattleContext context)
@@ -111,6 +114,7 @@ namespace Reactions
         }
     }
 
+    [Serializable]
     public class HitCondition : ICondition
     {
         public bool IsMet(BaseCharacter subject, BattleContext context)
@@ -124,6 +128,7 @@ namespace Reactions
         }
     }
     
+    [Serializable]
     public class TargetCondition : ICondition
     {
         public bool IsMet(BaseCharacter subject, BattleContext context)

@@ -26,7 +26,7 @@ namespace Reactions
     [Serializable]
     public class Trigger : ITrigger
     {
-        public E_ObserveFilter ObFilter;
+        public E_ObserveFilter ObFilter = E_ObserveFilter.Specific;
         public E_CompareFilter CoFilter;
         public string SubjectCharacterId; // 캐릭터 ID
         [SerializeReference, SubclassSelector] public ICondition Condition;

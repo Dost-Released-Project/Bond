@@ -64,13 +64,13 @@ MonoBehaviour:
     - Id: 9d1e1ff3-c499-4230-8c36-52d274dbc28e
       Source: 0
       Trigger:
-        rid: -2
-      SkillIndex: 0
+        rid: 8081819915636179015
+      SkillIndex: 3
     - Id: b023ba72-6d00-4e24-85c8-70b77732aca2
       Source: 0
       Trigger:
-        rid: -2
-      SkillIndex: 0
+        rid: 8081819915636179020
+      SkillIndex: 3
     TraitReactions:
     - Id: 3f224a9b-af19-4463-a60e-be11210e9fe4
       Source: 0
@@ -125,3 +125,25 @@ MonoBehaviour:
       type: {class: AutoBattle_Atk, ns: , asm: Assembly-CSharp}
       data:
         isPlayable: 0
+    - rid: 8081819915636179015
+      type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        ObFilter: 3
+        CoFilter: 1
+        SubjectCharacterId: c65ebae5-9fea-404d-bda0-9dba540a5ade
+        Condition:
+          rid: 8081819915636179017
+    - rid: 8081819915636179017
+      type: {class: EvadeCondition, ns: Reactions, asm: Assembly-CSharp}
+      data: 
+    - rid: 8081819915636179020
+      type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        ObFilter: 3
+        CoFilter: 0
+        SubjectCharacterId: c65ebae5-9fea-404d-bda0-9dba540a5ade
+        Condition:
+          rid: 8081819915636179021
+    - rid: 8081819915636179021
+      type: {class: CritCondition, ns: Reactions, asm: Assembly-CSharp}
+      data: 
