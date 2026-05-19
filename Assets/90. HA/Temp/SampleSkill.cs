@@ -29,6 +29,7 @@ public class SampleSkill : SkillBase
     
     public override void UseSkill()
     {
+        
     }
     
     public override string ToString()

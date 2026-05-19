@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using BattleSystem.Interface;
 using Cysharp.Threading.Tasks;
@@ -84,22 +85,24 @@ namespace BattleSystem
                 Debug.unityLogger.Log("runtime skill Data is null");
             }
 
+            List<BaseCharacter> targets = new List<BaseCharacter>();
+
             switch (battleContext.runtimeSkill.Data.Target)
             {
                 case SkillTarget.Enemy:
-                    ProcessTargeting(battleContext, enemySide, battleContext.runtimeSkill.Data.EnemyTargetMask);
+                    targets = GetTargets(enemySide, battleContext.runtimeSkill.Data.EnemyTargetMask);
                     break;
                 case SkillTarget.Party:
-                    ProcessTargeting(battleContext, casterSlot.side, battleContext.runtimeSkill.Data.AllyTargetMask);
+                    targets = GetTargets(casterSlot.side, battleContext.runtimeSkill.Data.AllyTargetMask);
                     break;
                 case SkillTarget.Self:
-                    ProcessTargeting(battleContext, casterSlot.side, (int)casterSlot.rank);
+                    targets = GetTargets(casterSlot.side, (int)casterSlot.rank);
                     break;
             }
 
             // 4. 대상자 강조 (Click)
-            Debug.Log($"Target Count: {battleContext.targets.Count}");
-            foreach (var target in battleContext.targets)
+            Debug.Log($"Target Count: {targets.Count}");
+            foreach (var target in targets)
             {
                 target.CurrentSlot.SetForceClick(true);
             }
@@ -107,43 +110,36 @@ namespace BattleSystem
             // 5. 1000ms 대기
             await UniTask.Delay(1000);
 
-            // 6. 기술 실행
-            SkillApplyLogic(battleContext);
+            // 6. 기술 실행 (개별 타겟 단위)
+            foreach (var target in targets)
+            {
+                BattleContext targetContext = new BattleContext(battleContext, target);
+                SkillApplyLogic(targetContext);
+            }
 
             // 7. 연출 초기화 (시각적 피드백 유지 후 해제)
             casterSlot.SetForceHover(false);
-            foreach (var target in battleContext.targets)
+            foreach (var target in targets)
             {
                 target.CurrentSlot.SetForceClick(false);
             }
         }
 
-        private void ProcessTargeting(BattleContext context, E_BattleSide side, int targetMask)
+        private List<BaseCharacter> GetTargets(E_BattleSide side, int targetMask)
         {
-            bool isDead = false;
-            foreach (var target in context.targets)
-            {
-                if (target.IsDead)
-                {
-                    isDead = true;
-                } 
-            }
-
-            if (isDead)
-            {
-                Debug.Log("죽은 대상 지정");
-                return;
-            }
-            
-            context.targets.Clear();
+            List<BaseCharacter> targetList = new List<BaseCharacter>();
             for (int i = 0; i < 4; i++)
             {
                 if ((targetMask & (1 << i)) != 0)
                 {
                     var target = m_formationManager.GetCharacterAt(side, (FormationMask)(1 << i));
-                    if (target != null) context.targets.Add(target);
+                    if (target != null && !target.IsDead) 
+                    {
+                        targetList.Add(target);
+                    }
                 }
             }
+            return targetList;
         }
         
         private BattleContext SkillApplyLogic(BattleContext context)

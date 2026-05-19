@@ -42,7 +42,7 @@ namespace Reactions
             List<BaseCharacter> compareTarget = target switch
             {
                 E_ContextTarget.Caster => new() { context.caster },
-                E_ContextTarget.Target => context.targets,
+                E_ContextTarget.Target => context.target != null ? new() { context.target } : new(),
                 _ => new List<BaseCharacter>()
             };
 
@@ -63,7 +63,7 @@ namespace Reactions
 
         public bool IsMet(BaseCharacter subject, BattleContext context)
         {
-            return context.targets.Contains(subject) && subject.HpRatio <= Threshold;
+            return context.target == subject && subject.HpRatio <= Threshold;
         }
     }
     
@@ -71,7 +71,7 @@ namespace Reactions
     {
         public bool IsMet(BaseCharacter subject, BattleContext context)
         {
-            return context.caster == subject && context.targets.Any(c => c.IsDead);
+            return context.caster == subject && context.target != null && context.target.IsDead;
         }
     }
 
@@ -79,7 +79,7 @@ namespace Reactions
     {
         public bool IsMet(BaseCharacter subject, BattleContext context)
         {
-            return context.targets.Contains(subject);
+            return context.target == subject;
         }
     }
     
