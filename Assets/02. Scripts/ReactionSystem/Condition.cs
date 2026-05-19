@@ -6,12 +6,6 @@ using UnityEngine;
 
 namespace Reactions
 {
-    public enum E_ContextTarget
-    {
-        Caster,
-        Target
-    }
-    
     public enum E_ComparisonOperator
     {
         EqualTo,
@@ -23,30 +17,25 @@ namespace Reactions
     
     public interface ICondition
     {
-        bool IsMet(
-            BaseCharacter subject, BattleContext context);
-    }
-
-    public class CritCondition : ICondition
-    {
-        public bool IsMet(BaseCharacter subject, BattleContext context)
-        {
-            return context.caster == subject && context.isCritical;
-        }
+        bool IsMet(BaseCharacter subject, BattleContext context);
+        ICondition Copy();
+        
+        // bool IsMet(E_CompareFilter coFilter, E_ObserveFilter obFilter, BaseCharacter observer, BattleContext context, BaseCharacter subject);
+        // IEnumerable<BaseCharacter> GetTargets(E_CompareFilter coFilter, E_ObserveFilter obFilter, BaseCharacter observer, BattleContext context, BaseCharacter subject);
     }
 
     public static class TriggerTargetComparer
     {
-        public static IEnumerable<BaseCharacter> Compare(E_ContextTarget target, E_ObserveFilter filter, BaseCharacter observer, BattleContext context, BaseCharacter subject)
+        public static IEnumerable<BaseCharacter> Compare(E_CompareFilter coFilter, E_ObserveFilter obFilter, BaseCharacter observer, BattleContext context, BaseCharacter subject)
         {
-            List<BaseCharacter> compareTarget = target switch
+            List<BaseCharacter> compareTarget = coFilter switch
             {
-                E_ContextTarget.Caster => new() { context.caster },
-                E_ContextTarget.Target => context.target != null ? new() { context.target } : new(),
+                E_CompareFilter.Caster => new() { context.caster },
+                E_CompareFilter.Target => context.targets,
                 _ => new List<BaseCharacter>()
             };
 
-            List<BaseCharacter> observeTarget = filter switch
+            List<BaseCharacter> observeTarget = obFilter switch
             {
                 E_ObserveFilter.Self => new List<BaseCharacter>(){observer,},
                 E_ObserveFilter.Specific => new List<BaseCharacter>(){subject},
@@ -55,39 +44,101 @@ namespace Reactions
 
             return compareTarget.Intersect(observeTarget);
         }
+
+        public static bool IsThere(E_CompareFilter target, E_ObserveFilter filter, BaseCharacter observer, BattleContext context, BaseCharacter subject)
+            => Compare(target, filter, observer, context, subject).Any();
     }
 
-    public class HpBelowCondition
+    [Serializable]
+    public class HpBelowCondition : ICondition
     {
         public float Threshold;
+        
+        public HpBelowCondition() { }
+
+        public HpBelowCondition(float threshold)
+        {
+            Threshold = threshold;
+        }
 
         public bool IsMet(BaseCharacter subject, BattleContext context)
         {
-            return context.target == subject && subject.HpRatio <= Threshold;
+            return context.targets.Contains(subject) && subject.HpRatio <= Threshold;
         }
-    }
-    
-    public class KillCondition : ICondition
-    {
-        public bool IsMet(BaseCharacter subject, BattleContext context)
+
+        public ICondition Copy()
         {
-            return context.caster == subject && context.target != null && context.target.IsDead;
+            return new HpBelowCondition(Threshold);
         }
     }
 
-    public class TargetingCondition : ICondition
+    [Serializable]
+    public class CritCondition : ICondition
     {
         public bool IsMet(BaseCharacter subject, BattleContext context)
         {
-            return context.target == subject;
+            return context.caster == subject && context.isCritical;
+        }
+
+        public ICondition Copy()
+        {
+            return new CritCondition();
         }
     }
     
+    [Serializable]
     public class EvadeCondition : ICondition
     {
         public bool IsMet(BaseCharacter subject, BattleContext context)
         {
-            return context.caster == subject && context.isEvaded;
+            return context.targets.Contains(subject) && context.isEvaded;
+        }
+
+        public ICondition Copy()
+        {
+            return new EvadeCondition();
+        }
+    }
+
+    [Serializable]
+    public class KillCondition : ICondition
+    {
+        public bool IsMet(BaseCharacter subject, BattleContext context)
+        {
+            return context.caster == subject && context.targets.Any(c => c.IsDead);
+        }
+
+        public ICondition Copy()
+        {
+            return new KillCondition();
+        }
+    }
+
+    [Serializable]
+    public class HitCondition : ICondition
+    {
+        public bool IsMet(BaseCharacter subject, BattleContext context)
+        {
+            return context.targets.Contains(subject) && context.isEvaded == false;
+        }
+
+        public ICondition Copy()
+        {
+            return new HitCondition();
+        }
+    }
+    
+    [Serializable]
+    public class TargetCondition : ICondition
+    {
+        public bool IsMet(BaseCharacter subject, BattleContext context)
+        {
+            return context.targets.Contains(subject);
+        }
+
+        public ICondition Copy()
+        {
+            return new TargetCondition();
         }
     }
 }

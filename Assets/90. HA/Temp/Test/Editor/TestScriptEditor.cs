@@ -38,28 +38,24 @@ namespace _90._HA.Temp.Test
                 Debug.Log(chara);
             }
 
-            if (GUILayout.Button("Save"))
+            if (GUILayout.Button("Fill Roster"))
             {
-                var roster = new Roster();
+                test.FillRoster();
+            }
 
-                for (int i = 0; i < 4; i++)
-                {
-                    roster.Hire(new StageCoach().GetRandomCharacter());
-                }
-                SaveLoadSystem.Save(roster);
+            if (GUILayout.Button("Create Character Preset"))
+            {
+                test.CreateCharacterPresets();
             }
             
-            if (GUILayout.Button("Load"))
+            if (GUILayout.Button("Fill Roster From Presets"))
             {
-                var roster = new Roster();
-                SaveLoadSystem.Load(roster);
-
-                StringBuilder sb = new StringBuilder();
-                foreach (var cha in roster.Characters)
-                {
-                    sb.AppendLine(cha.ToString());
-                }
-                Debug.Log(sb.ToString());
+                test.FillRosterFromPreset();
+            }
+            
+            if (GUILayout.Button("Test Presets"))
+            {
+                test.Test();
             }
         }
     }

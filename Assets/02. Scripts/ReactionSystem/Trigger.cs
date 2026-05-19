@@ -12,6 +12,12 @@ namespace Reactions
         Specific
     }
     
+    public enum E_CompareFilter
+    {
+        Caster,
+        Target
+    }
+    
     public interface ITrigger
     {
         bool CheckCondition(BattleContext context);
@@ -20,13 +26,28 @@ namespace Reactions
     [Serializable]
     public class Trigger : ITrigger
     {
-        public E_ObserveFilter Filter;
-        public BaseCharacter Subject;
-        public ICondition Condition;
+        public E_ObserveFilter ObFilter = E_ObserveFilter.Specific;
+        public E_CompareFilter CoFilter;
+        public string SubjectCharacterId; // 캐릭터 ID
+        [SerializeReference, SubclassSelector] public ICondition Condition;
+
+        public Trigger() { }
+
+        public Trigger(TriggerPreset preset, BaseCharacter subject)
+            : this(preset.ObserveFilter, preset.SkillTargetFilter, subject, preset.Condition.Copy()) { }
+        
+        public Trigger(E_ObserveFilter obFilter, E_CompareFilter coFilter, BaseCharacter subject, ICondition condition)
+        {
+            ObFilter = obFilter;
+            CoFilter = coFilter;
+            SubjectCharacterId = subject;
+            Condition = condition;
+        }
         
         public bool CheckCondition(BattleContext context)
         {
-            return Condition.IsMet(Subject, context);
+            Debug.Assert(BaseCharacter.Dict.ContainsKey(SubjectCharacterId));
+            return Condition.IsMet(BaseCharacter.Dict[SubjectCharacterId], context);
         }
     }
     

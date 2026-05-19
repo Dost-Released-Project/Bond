@@ -1,0 +1,134 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 52
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de894a873e7947fa91bb18fac5ef4aac, type: 3}
+  m_Name: CharacterPreset_0
+  m_EditorClassIdentifier: Assembly-CSharp::_90._HA.CharacterPreset
+  BaseCharacter:
+    Id: c2048033-026e-4f39-b1f5-186d70a24d55
+    ImageAddress: Wildboar
+    Name: Wildboar
+    Profession:
+      _classData: {fileID: 11400000, guid: 7d1e93aef3c816642a94d515292cf2fd, type: 2}
+    Level: 0
+    Insanity: 0
+    RoleType: 1
+    <battleType>k__BackingField:
+      rid: 8081819896858542995
+    Skills:
+    - rid: 8081819896858542976
+    - rid: 8081819896858542977
+    - rid: 8081819896858542978
+    - rid: 8081819896858542979
+    Traits:
+    - Name: C
+      Description: ccc
+    - Name: C
+      Description: ccc
+    - Name: Missing
+      Description: Missing
+    - Name: Missing
+      Description: Missing
+    Weapon:
+      itemName: 
+      type: 0
+      upgradeLevel: 0
+      baseSTR: 2
+      baseAGI: 0
+      baseINT: 0
+      upSTR: 2
+      upAGI: 0
+      upINT: 0
+    Armor:
+      itemName: 
+      type: 0
+      upgradeLevel: 0
+      baseSTR: 0
+      baseAGI: 1
+      baseINT: 1
+      upSTR: 0
+      upAGI: 1
+      upINT: 1
+    Accessories:
+    - {fileID: 0}
+    - {fileID: 0}
+    RoleReactions:
+    - Id: cfe69b6e-1adf-4e12-a92a-99956c6d67dc
+      Source: 0
+      Trigger:
+        rid: 8081819896858542999
+      SkillIndex: 0
+    TraitReactions:
+    - Id: c68a7e49-c63b-46bd-87ec-c8f16346ef5d
+      Source: 0
+      Trigger:
+        rid: -2
+      SkillIndex: 0
+    - Id: 5739a627-a1de-42dc-8eb5-4ba7e9ebdc26
+      Source: 0
+      Trigger:
+        rid: -2
+      SkillIndex: 0
+    - Id: 834a1549-219c-48df-bd92-ed7229d90a48
+      Source: 0
+      Trigger:
+        rid: -2
+      SkillIndex: 0
+    - Id: 53fc86ff-eb12-4aaf-aa3a-f32e6c509aaa
+      Source: 0
+      Trigger:
+        rid: -2
+      SkillIndex: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 8081819896858542976
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: 2168ec6edc6110f4f9667b7e376bd352, type: 2}
+    - rid: 8081819896858542977
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: 963dbd7ea6fa9bc46ac9daf74cf1f1d8, type: 2}
+    - rid: 8081819896858542978
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: efc57f736ae37d241a8cab48bd3e9d67, type: 2}
+    - rid: 8081819896858542979
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: b92e19dd7aa8ce749a136708ffabdc0e, type: 2}
+    - rid: 8081819896858542995
+      type: {class: AutoBattle_Def, ns: , asm: Assembly-CSharp}
+      data:
+        isPlayable: 0
+    - rid: 8081819896858542999
+      type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        ObFilter: 3
+        CoFilter: 1
+        SubjectCharacterId: c2048033-026e-4f39-b1f5-186d70a24d55
+        Condition:
+          rid: 8081819896858543000
+    - rid: 8081819896858543000
+      type: {class: HpBelowCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Threshold: 0.3

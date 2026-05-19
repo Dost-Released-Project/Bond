@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using BattleSystem;
 using BattleSystem.Interface;
@@ -35,6 +36,7 @@ public partial class BaseCharacter : ITurnUseUnit
     public int Level = 0;
     public int Insanity = 0; // 스트레스(광기) 지수 0~100, Stress는 STR과 혼동될 수 있어서 명칭 변경
     public RoleType RoleType = RoleType.None;
+    [field: SerializeReference, SubclassSelector] public AutoBattle battleType { get; set; }
 
     [SerializeReference] public SkillBase[] Skills = new SkillBase[4];
     public Trait[] Traits = new Trait[4];
@@ -46,12 +48,12 @@ public partial class BaseCharacter : ITurnUseUnit
 
     public Reaction[] RoleReactions = new Reaction[2];
     public Reaction[] TraitReactions = new Reaction[4];
+    [JsonIgnore] public Reaction[] Reactions => RoleReactions.Concat(TraitReactions).ToArray();
     
     [JsonIgnore] public Stat Stat { get; } = new Stat();
     [JsonIgnore] public StatController StatController { get; } = new StatController();
     
     [JsonIgnore] public bool isPlayable { get; set; }
-    public AutoBattle battleType { get; set; }
 
     public BaseCharacter sup_Character { get; set; } // 지원 선택 대상. 대상이 행동할 때 역할군에 따른 지원. 탱커: 피격 시 엄호, 서포터: 피격 후 치유, 딜러: 공격 시 지원 공격.\
     
@@ -234,5 +236,10 @@ public partial class BaseCharacter : ITurnUseUnit
     public override string ToString()
     {
         return $"Name: {Name}, Level: {Level}, Profession: {Profession.Name}";
+    }
+
+    public static implicit operator string(BaseCharacter character)
+    {
+        return character.Id;
     }
 }

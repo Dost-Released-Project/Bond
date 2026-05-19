@@ -5,7 +5,6 @@ using UnityEngine.AddressableAssets;
 
 public class StageCoach
 {
-    private List<string> names = new List<string>(){"Wildboar","GodOfNormalization","MTE","GodOfWar","RiceSummoner"};
     DataBaseSO professionDb = Addressables.LoadAssetAsync<DataBaseSO>("ClassDataBase").WaitForCompletion();
     DataBaseSO skillDb = Addressables.LoadAssetAsync<DataBaseSO>("SkillDataBase").WaitForCompletion();
     DataBaseSO equipDb = Addressables.LoadAssetAsync<DataBaseSO>("DefaultEquipDataBase").WaitForCompletion();
@@ -14,20 +13,25 @@ public class StageCoach
     {
         BaseCharacter.Builder builder = new BaseCharacter.Builder(professionDb, skillDb, equipDb);
 
-        string name = names.GetRandom();
-
         builder
-            .SetName(name)
-            .SetImageAddress(name)
+            .SetRandomName()
             .SetRandomProfession()
-            .FillSkill()
             .AddRandomTrait()
             .AddRandomTrait();
         
-        var chara = builder.Build();
+        return builder.Build();
+    }
+
+    public BaseCharacter GetCharacter(ClassSO classSO)
+    {
+        BaseCharacter.Builder builder = new BaseCharacter.Builder(professionDb, skillDb, equipDb);
         
-        chara.SetRole(RandomUtil.GetRandom(RoleType.None));
+        builder
+            .SetRandomName()
+            .SetProfession(classSO)
+            .AddRandomTrait()
+            .AddRandomTrait();
         
-        return chara;
+        return builder.Build();
     }
 }

@@ -5,6 +5,8 @@ using UnityEngine;
 
 public partial class BaseCharacter
 {
+    public static Dictionary<string, BaseCharacter> Dict = new Dictionary<string, BaseCharacter>();
+    
     public class Builder
     {
         // TODO: 나중에 데이터베이스에서 가져오는 걸로 변경
@@ -27,6 +29,7 @@ public partial class BaseCharacter
             }
         };
         
+        private List<string> names = new List<string>(){"Wildboar","GodOfNormalization","MTE","GodOfWar","RiceSummoner"};
         private readonly BaseCharacter chara = new BaseCharacter();
 
         private DataBaseSO professionDb = null;
@@ -54,7 +57,10 @@ public partial class BaseCharacter
 
         public BaseCharacter Build()
         {
+            chara.SetRole(RandomUtil.GetRandom(RoleType.None));
             chara.CalcStat();
+            chara.Id = System.Guid.NewGuid().ToString();
+            Dict[chara.Id] = chara;
             return chara;
         }
 
@@ -73,6 +79,14 @@ public partial class BaseCharacter
         public Builder SetName(string name)
         {
             chara.Name = name;
+            return this;
+        }
+        
+        public Builder SetRandomName()
+        {
+            var name = names.GetRandom();
+            SetName(name);
+            SetImageAddress(name);
             return this;
         }
 
@@ -98,6 +112,8 @@ public partial class BaseCharacter
 
             SetWeapon(new Equipment(weaponSo));
             SetArmor(new Equipment(armorSo));
+
+            FillSkill();
             
             return this;
         }
@@ -138,33 +154,53 @@ public partial class BaseCharacter
 
         public Builder FillSkill()
         {
-            // TODO: 실제 직업으로 필터링 하도록 교체
-            //skillDb.Query<SkillData>((skill) => skill.UseableClasses == chara.Data.Profession.class)
-            var skills = skillDb.Query<SkillData>((s) => true).ToArray();
-            Debug.Assert(skills.Count() >= chara.Skills.Length);
-
-            var shuffled = skills.GetShuffled();
-            for (int i = 0; i < chara.Skills.Length; i++)
+            while (chara.Skills.Any(skill => skill == null))
             {
-                chara.Skills[i] = new SampleSkill(shuffled[i]);
+                AddRandomSkill();
             }
             
             return this;
         }
 
+        // 슬롯 꽉 찬 상태에서 실행 시 랜덤 스킬 교체
         public Builder AddRandomSkill()
         {
-            SkillBase randomSkill = new SampleSkill();
-
-            int i = Array.FindIndex(chara.Skills, trait => trait == null);
-            if (i == -1)
-            {
-                i = UnityEngine.Random.Range(0, chara.Skills.Length);
-            }
+            // 빈 슬롯 혹은 랜덤 슬롯 찾기
+            // 직업에 맞는 아무 스킬
+            SkillBase randomSkill = new SampleSkill(GetAssignableSkills().GetRandom());
+            int i = FindEmptyIndexOrRandom();
 
             chara.Skills[i] = randomSkill;
 
             return this;
+        }
+
+        private SkillData[] GetAssignableSkills()
+        {
+            // 직업 필터링
+            var skills = skillDb.Query<SkillData>((skill) => skill.UseableClasses == chara.Profession.Id);
+            Debug.Assert(skills.Count() >= chara.Skills.Length);
+
+            // 이미 있는 스킬 확인
+            var already
+                = chara.Skills
+                .Where(skill => skill != null && skills.Contains(skill.Data))
+                .Select(skill => skill.Data);
+
+            // 이미 있는 스킬 제외
+            var result = skills.Except(already).ToArray();
+            return result;
+        }
+
+        private int FindEmptyIndexOrRandom()
+        {
+            int length = chara.Skills.Length;
+            for (int i = 0; i < length; i++)
+            {
+                if (chara.Skills[i] == null)
+                    return i;
+            }
+            return UnityEngine.Random.Range(0, length);
         }
     }
 }
