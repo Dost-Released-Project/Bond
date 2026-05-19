@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 public abstract class InventoryBase : IInventory
 {
@@ -101,4 +102,5 @@ public abstract class InventoryBase : IInventory
     
     public void SortById() { _slots = _slots.OrderBy(s => s.item?.id ?? "ZZZ").ToList(); OnChanged?.Invoke(); }
     public abstract int AddItemAuto(BaseItem item, int quantity);
+    public abstract Task<int> AddItemId(string id, int quantity);
 }

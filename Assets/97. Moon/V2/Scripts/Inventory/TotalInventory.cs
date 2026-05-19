@@ -1,4 +1,6 @@
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class TotalInventory : InventoryBase, ITotalInventory
 {
@@ -54,5 +56,25 @@ public class TotalInventory : InventoryBase, ITotalInventory
     {
         _resourceManager.AddFrontierData(quantity * 5);
         Debug.Log($"<color=cyan>[로그]</color> {item.itemName} 초과분 {quantity}개 데이터 전환.");
+    }
+    
+    public override async Task<int> AddItemId(string id, int quantity)
+    {
+        // 1. 아이템 DB 로드
+        var conHandle = Addressables.LoadAssetAsync<ConsumableDataBaseSO>("ConsumableDataBase");
+        var accHandle = Addressables.LoadAssetAsync<AccessoryDataBaseSO>("AccessoryDataBase");
+        await System.Threading.Tasks.Task.WhenAll(conHandle.Task, accHandle.Task);
+        
+        var accDB = accHandle.Result;
+        var conDB = conHandle.Result;
+        
+        var item = accDB.GetSO<BaseItem>(id);
+        // 없으면 소모품 DB에서 검색
+        if (item == null)
+        {
+            item = conDB.GetSO<BaseItem>(id);
+        }
+        
+        return item != null ? AddItemAuto(item, quantity) : quantity;
     }
 }

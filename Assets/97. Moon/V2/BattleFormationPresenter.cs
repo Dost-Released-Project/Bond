@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VContainer;
@@ -8,7 +9,8 @@ namespace BattleSystem
     public class BattleFormationPresenter : MonoBehaviour
     {
         // 인스펙터 노출 제거: 이제 코드가 알아서 찾을 겁니다.
-        private CharacterSlot[] characterSlots;
+        [SerializeField]
+        private CharacterSlot[] characterSlots = new CharacterSlot[4];
         private ICharacterSelector m_CharacterSelector;
 
         [Inject]
@@ -58,11 +60,9 @@ namespace BattleSystem
             UnbindSlots();
 
             // 2. 씬에 존재하는 모든 CharacterSlot 컴포넌트를 찾아 배열에 담습니다. (태그나 레이어 상관없이 스크립트 기준으로 찾음)
-#if UNITY_2023_1_OR_NEWER
-            characterSlots = FindObjectsByType<CharacterSlot>(FindObjectsSortMode.None);
-#else
-            characterSlots = FindObjectsOfType<CharacterSlot>();
-#endif
+            characterSlots = FindObjectsByType<CharacterSlot>(FindObjectsSortMode.None)
+                .Where(slot => slot.CompareTag("PlayerSlot")) 
+                .ToArray();
 
             if (characterSlots.Length == 0)
             {

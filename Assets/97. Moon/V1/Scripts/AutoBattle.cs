@@ -27,10 +27,6 @@ public abstract class AutoBattle
     // SkillBase에서 Type을 안전하게 가져오기 위한 헬퍼 (캐스팅 처리)
     private SkillType GetSkillType(SkillBase skill)
     {
-        if (skill is TestSkillAttack s1) return s1.Type;
-        if (skill is TestSkillShield s2) return s2.Type;
-        if (skill is TestSkillSpellAtk s3) return s3.Type;
-        if (skill is TestSkillBuff s4) return s4.Type;
         return SkillType.OFFENSIVE; // 기본값
     }
 }

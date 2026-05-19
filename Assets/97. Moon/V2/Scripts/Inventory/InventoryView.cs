@@ -37,31 +37,21 @@ public class InventoryView : MonoBehaviour
 
     private async void Start()
     {
-        // 1. 아이템 DB 로드
-        var conHandle = Addressables.LoadAssetAsync<ConsumableDataBaseSO>("ConsumableDataBase");
-        var accHandle = Addressables.LoadAssetAsync<AccessoryDataBaseSO>("AccessoryDataBase");
-        await System.Threading.Tasks.Task.WhenAll(conHandle.Task, accHandle.Task);
+        // 1. "total_inv" 파일만 로드
+        await LoadTotalInventory();
         
-        var accDB = accHandle.Result;
-        var conDB = conHandle.Result;
-
-        // 2. "total_inv" 파일만 로드
-        LoadTotalInventory(conHandle.Result, accHandle.Result);
-        
-        // (임시) DB의 GetSO 함수를 사용하여 아이템 추가
-        // 토탈 인벤토리의 아이템이 너무 넘친다면 2. 파일 로드 부분을 아래로 내리면 해결됨.
+        // 2. ID로 테스트 아이템 추가.
         // 소모품 추가
-        AddInventoryItem(conDB, "07000000", 5);
-        AddInventoryItem(conDB, "07010000", 5);
-        AddInventoryItem(conDB, "07020000", 5);
-        AddInventoryItem(conDB, "07030000", 5);
-        AddInventoryItem(conDB, "07040000", 5);
-    
-        // 악세서리 추가
-        AddInventoryItem(accDB, "08000000", 1);
-        AddInventoryItem(accDB, "08010000", 1);
-        AddInventoryItem(accDB, "08020000", 1);
-        AddInventoryItem(accDB, "08030000", 1);   
+        _totalInventory.AddItemId("07000000", 5);
+        _totalInventory.AddItemId("07010000", 5);
+        _totalInventory.AddItemId("07020000", 5);
+        _totalInventory.AddItemId("07030000", 5);
+        _totalInventory.AddItemId("07040000", 5);
+        // 장신구 추가.
+        _totalInventory.AddItemId("08000000", 1);
+        _totalInventory.AddItemId("08010000", 1);
+        _totalInventory.AddItemId("08020000", 1);
+        _totalInventory.AddItemId("08030000", 1);
         
         // 3. 탐사 후 타운으로 넘어올 때, 탐사 인벤토리 아이템 모두 토탈 인벤토리로 이동. 파일 로드 이후 적용해야지 적용됨
         _expeditionResultService.ProcessExpeditionReturn();
@@ -70,16 +60,16 @@ public class InventoryView : MonoBehaviour
         ToggleWindow(false);
     }
 
-    // (임시) 초기 아이템 지급 메소드
-    private void AddInventoryItem(DataBaseSO db, string id, int count)
+    private async Task LoadTotalInventory()
     {
-        var item = db.GetSO<BaseItem>(id); // 작성하신 GetSO 활용!
-        if (item != null)
-            _totalInventory.AddItemAuto(item, count);
-    }
-
-    private void LoadTotalInventory(params DataBaseSO[] dbs)
-    {
+        var conHandle = Addressables.LoadAssetAsync<ConsumableDataBaseSO>("ConsumableDataBase");
+        var accHandle = Addressables.LoadAssetAsync<AccessoryDataBaseSO>("AccessoryDataBase");
+        
+        // [중요] 두 데이터베이스가 하드디스크/메모리에서 완전히 로드될 때까지 기다림
+        await Task.WhenAll(conHandle.Task, accHandle.Task);
+        
+        DataBaseSO[] dbs = { conHandle.Result, accHandle.Result };
+        
         // 로드 시도
         var save = new InventorySaveData("total_inv");
         // SaveLoadSystem의 GetPath와 Key를 조합하여 경로 생성 (시스템 수정 없이 대응)

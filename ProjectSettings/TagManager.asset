@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - ConstructionSlot
+  - PlayerSlot
+  - EnemySlot
   layers:
   - Default
   - TransparentFX
