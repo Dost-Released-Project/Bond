@@ -138,7 +138,7 @@ namespace PipeLine
         public float criticalBonus = 0.5f;
         public UniTask<BattleContext> Execute(BattleContext context)
         {
-            if (context.target == null || context.target.IsDead) return UniTask.FromResult(context);
+            if (context.isEvaded || context.target == null || context.target.IsDead) return UniTask.FromResult(context);
 
             // TODO: 개별 타겟 치명타 확률 로직 (현재는 임시로 시전자 crt 사용)
             //context.isCritical = Random.Range(0f, 100f) < context.caster.Stat.crt;
@@ -188,7 +188,7 @@ namespace PipeLine
         
         public async UniTask<BattleContext> Execute(BattleContext context)
         {
-            if (context.isEvaded || context.target == null || context.target.IsDead) return context;
+            if (context.target == null || context.target.IsDead) return context;
 
             Debug.Log("Executing ReactionCall");
             if (reactionSystem != null)
