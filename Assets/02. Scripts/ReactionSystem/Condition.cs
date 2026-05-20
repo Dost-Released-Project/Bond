@@ -126,7 +126,7 @@ namespace Reactions
     {
         public bool IsMet(BaseCharacter subject, BattleContext context)
         {
-            return context.target == subject && context.isEvaded == false;
+            return context.target == subject && context.isEvaded == false && context.runtimeSkill.Data.Type == SkillType.OFFENSIVE;
         }
 
         public ICondition Copy()
