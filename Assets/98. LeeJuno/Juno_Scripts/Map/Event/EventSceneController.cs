@@ -21,6 +21,8 @@ public class EventSceneController : MonoBehaviour
     private EventBattleConfig _battleConfig;
     private IEventEffectApplier _effectApplier;
     private IEventContext _eventContext;
+    private EventJournalProvider _journalProvider;
+    private string _currentEventId;
 
     /// <summary>
     /// VContainer 로부터 주입받는다.
@@ -28,11 +30,16 @@ public class EventSceneController : MonoBehaviour
     /// </summary>
     /// <param name="effectApplier">이벤트 효과 적용 서비스.</param>
     /// <param name="eventContext">이벤트 컨텍스트 — StageLoader 가 씬 로드 직전에 기록한 이벤트 데이터.</param>
+    /// <param name="journalProvider">이벤트 선택 결과를 JournalSystem 에 보고하는 Provider.</param>
     [Inject]
-    public void Construct(IEventEffectApplier effectApplier, IEventContext eventContext)
+    public void Construct(
+        IEventEffectApplier effectApplier,
+        IEventContext eventContext,
+        EventJournalProvider journalProvider)
     {
-        _effectApplier = effectApplier;
-        _eventContext = eventContext;
+        _effectApplier   = effectApplier;
+        _eventContext    = eventContext;
+        _journalProvider = journalProvider;
     }
 
     private void Start()
@@ -42,8 +49,9 @@ public class EventSceneController : MonoBehaviour
 
         // 씬 로드 직후 컨텍스트를 읽고 즉시 Clear() 호출
         // 방어적 복사 — Clear() 이후에도 로컬 참조가 유효하도록
-        _choices = new List<EventChoice>(_eventContext.Choices);
-        _battleConfig = _eventContext.BattleConfig;
+        _choices        = new List<EventChoice>(_eventContext.Choices);
+        _battleConfig   = _eventContext.BattleConfig;
+        _currentEventId = _eventContext.EventId; // Clear() 전에 EventId 저장 — OnChoiceSelected 에서 사용
         _eventContext.Clear();
 
         BuildChoiceButtons();
@@ -89,6 +97,10 @@ public class EventSceneController : MonoBehaviour
     {
         // 중복 선택 방지 — 모든 버튼을 비활성화한다
         SetButtonsInteractable(false);
+
+        // 이벤트 선택 결과를 JournalSystem 에 보고한다
+        // _currentEventId 는 Start() 에서 _eventContext.Clear() 전에 저장한 값이다
+        _journalProvider?.RecordChoice(_currentEventId, choice);
 
         EventEffectData effect = choice.Effect;
 
