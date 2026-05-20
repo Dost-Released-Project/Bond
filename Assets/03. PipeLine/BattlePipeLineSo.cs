@@ -190,10 +190,11 @@ namespace PipeLine
             Debug.Log("Executing ReactionCall");
             if (reactionSystem != null)
             {
-                context.reactions = reactionSystem.Resolve(context);
-                foreach (var reaction in context.reactions)
+                var executions = reactionSystem.Resolve(context);
+                foreach (var execution in executions)
                 {
-                    Debug.Log($"<color=yellow>Reaction: {reaction}</color>");
+                    Debug.Log($"<color=yellow>Reaction: {execution.ToString()}</color>");
+                    execution.Agent.ExecuteReaction(execution.Reaction, context);
                 }
             }
             return context;
