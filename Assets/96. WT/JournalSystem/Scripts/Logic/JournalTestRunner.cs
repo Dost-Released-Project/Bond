@@ -28,9 +28,9 @@ namespace Bond.WT.Journal
             {
                 Debug.Log("[JournalTestRunner] 'H' 키 입력 감지: 탐색 이벤트 트리거");
 
-                // 1. 이벤트 데이터 세팅 (여러 건의 탐색 이벤트를 발생시킴)
-                _locationProvider.SetDiscovery("EVT_FIND_ITEM", "어두운 숲", "낡은 지도");
-                _locationProvider.SetDiscovery("EVT_FIND_ITEM", "버려진 야영지", "부러진 화살");
+                // 1. 이벤트 데이터 세팅 (여러 건의 탐색 이벤트를 발생시키고, 메타데이터인 ItemId도 함께 전달)
+                _locationProvider.SetDiscovery("EVT_FIND_ITEM", "어두운 숲", "낡은 지도", "08000000", 2);
+                _locationProvider.SetDiscovery("EVT_FIND_ITEM", "버려진 야영지", "부러진 화살", "08000000");
 
                 // 2. 일지 수집 및 송출
                 _journalSystem.CollectDailyLogs();

@@ -12,14 +12,16 @@ namespace Bond.WT.Journal
         public List<string> Paragraphs = new List<string>();
         public string IconId;
         public List<JournalOption> Options = new List<JournalOption>();
-        
+
         // 유저가 이 페이지에서 선택한 옵션을 임시 저장
         public JournalOption? SelectedOption;
-        
+
         // 추가적인 메타데이터 (누가 보냈는지 등)
         public string ProviderId;
-    }
 
+        // 아이템 ID, 캐릭터 ID 등 외부 로직 처리에 필요한 메타데이터
+        public Dictionary<string, string> Metadata = new Dictionary<string, string>();
+    }
     /// <summary>
     /// [Logic Interface] 일지 데이터를 제공하는 주체들이 구현할 인터페이스
     /// </summary>
