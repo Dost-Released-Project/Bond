@@ -52,9 +52,11 @@ public class TownScope : LifetimeScope
         // 타운 UI
         builder.RegisterComponentInHierarchy<TownUIController>();
 
+#if UNITY_EDITOR
         // 테스트용 스크립트
         builder.RegisterComponentInHierarchy<S1Test>();
-
+#endif
+        
         // Journal UI 및 Binder 지역 스코프 등록
         builder.RegisterJournalUI(_journalUIPrefab);
     }
