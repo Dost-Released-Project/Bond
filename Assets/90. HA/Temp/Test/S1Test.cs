@@ -69,6 +69,18 @@ namespace _90._HA.Temp.Test
 
         private void Update()
         {
+            if (Keyboard.current.numpad0Key.wasPressedThisFrame)
+                Depart();
+        }
+
+        public void Depart()
+        {
+            FillRosterFromPreset();
+            foreach (var rosterCharacter in roster.Characters)
+            {
+                _partyManager.TryAddMember(rosterCharacter);
+            }
+            _embarkManager.ConfirmEmbark();
         }
 
         public void FillRoster()

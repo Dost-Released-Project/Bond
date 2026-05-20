@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using PipeLine;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -29,22 +32,35 @@ namespace Reactions
     public class Trigger : ITrigger
     {
         public string SubjectCharacterId; // 캐릭터 ID
-        [SerializeReference, SubclassSelector] public ICondition Condition;
+        [SerializeReference, SubclassSelector] public List<ICondition> Conditions = new List<ICondition>();
 
         public Trigger() { }
 
-        public Trigger(BaseCharacter subject, ICondition condition)
+        public Trigger(BaseCharacter subject, params ICondition[] condition)
         {
             SubjectCharacterId = subject;
-            Condition = condition;
+            Conditions = condition.ToList();
         }
         
         public bool CheckCondition(BattleContext context)
         {
             Debug.Assert(BaseCharacter.Dict.ContainsKey(SubjectCharacterId));
-            return Condition.IsMet(BaseCharacter.Dict[SubjectCharacterId], context);
+            var subject = BaseCharacter.Dict[SubjectCharacterId];
+            return Conditions.All(condition => condition.IsMet(subject, context));
         }
 
-        public string Description => $"{BaseCharacter.Dict[SubjectCharacterId].Name}이 {Condition.Description}";
+        public string Description
+        {
+            get
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append(Conditions[0].Description);
+                for (int i = 1; i < Conditions.Count; i++)
+                {
+                    sb.Append($" && {Conditions[i].Description}");
+                }
+                return $"{BaseCharacter.Dict[SubjectCharacterId].Name}이 {sb.ToString()}";
+            }
+        }
     }
 }
