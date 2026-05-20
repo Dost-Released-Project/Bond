@@ -11,6 +11,7 @@
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
 /Assets/[Ii][Gg]nore/
+/Assets/Data/[Ss]ave/
 .claude/
 CLAUDE.md
 *.log
