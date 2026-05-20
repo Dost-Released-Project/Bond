@@ -87,17 +87,24 @@ namespace BattleSystem
 
             List<BaseCharacter> targets = new List<BaseCharacter>();
 
-            switch (battleContext.runtimeSkill.Data.Target)
+            if (battleContext.target == null)
             {
-                case SkillTarget.Enemy:
-                    targets = GetTargets(enemySide, battleContext.runtimeSkill.Data.EnemyTargetMask);
-                    break;
-                case SkillTarget.Party:
-                    targets = GetTargets(casterSlot.side, battleContext.runtimeSkill.Data.AllyTargetMask);
-                    break;
-                case SkillTarget.Self:
-                    targets = GetTargets(casterSlot.side, (int)casterSlot.rank);
-                    break;
+                switch (battleContext.runtimeSkill.Data.Target)
+                {
+                    case SkillTarget.Enemy:
+                        targets = GetTargets(enemySide, battleContext.runtimeSkill.Data.EnemyTargetMask);
+                        break;
+                    case SkillTarget.Party:
+                        targets = GetTargets(casterSlot.side, battleContext.runtimeSkill.Data.AllyTargetMask);
+                        break;
+                    case SkillTarget.Self:
+                        targets = GetTargets(casterSlot.side, (int)casterSlot.rank);
+                        break;
+                }
+            }
+            else
+            {
+                targets.Add(battleContext.target);
             }
 
             // 4. 대상자 강조 (Click)
