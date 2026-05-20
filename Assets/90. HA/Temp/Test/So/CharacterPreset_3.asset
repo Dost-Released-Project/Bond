@@ -61,42 +61,18 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     RoleReactions:
-    - Source: 0
-      Trigger:
+    - Trigger:
         rid: 8081819941751750748
       SkillIndex: 0
-      ReactionSkillTarget: 1
-    - Source: 0
-      Trigger:
+      ReactionSkillTarget: 2
+    - Trigger:
         rid: 8081819941751750749
       SkillIndex: 0
-      ReactionSkillTarget: 1
-    TraitReactions:
-    - Source: 0
-      Trigger:
-        rid: -2
-      SkillIndex: 0
-      ReactionSkillTarget: 0
-    - Source: 0
-      Trigger:
-        rid: -2
-      SkillIndex: 0
-      ReactionSkillTarget: 0
-    - Source: 0
-      Trigger:
-        rid: -2
-      SkillIndex: 0
-      ReactionSkillTarget: 0
-    - Source: 0
-      Trigger:
-        rid: -2
-      SkillIndex: 0
-      ReactionSkillTarget: 0
+      ReactionSkillTarget: 2
+    TraitReactions: []
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
     - rid: 8081819941751750741
       type: {class: AutoBattle_Sup, ns: , asm: Assembly-CSharp}
       data:
@@ -130,16 +106,36 @@ MonoBehaviour:
       data:
         SubjectCharacterId: 76efe732-631c-45fd-be5d-95ee3c0d7887
         Conditions:
+        - rid: 8081819941751750815
+        - rid: 8081819941751750816
         - rid: 8081819941751750759
     - rid: 8081819941751750749
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
         SubjectCharacterId: 1d5f4aa9-0454-435f-8da4-0207a021d864
         Conditions:
-        - rid: 8081819941751750760
+        - rid: 8081819941751750817
+        - rid: 8081819941751750818
+        - rid: 8081819941751750819
     - rid: 8081819941751750759
       type: {class: HitCondition, ns: Reactions, asm: Assembly-CSharp}
       data: 
-    - rid: 8081819941751750760
+    - rid: 8081819941751750815
+      type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Filter: 2
+    - rid: 8081819941751750816
+      type: {class: SkillTypeCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Type: 1
+    - rid: 8081819941751750817
+      type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Filter: 2
+    - rid: 8081819941751750818
+      type: {class: SkillTypeCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Type: 1
+    - rid: 8081819941751750819
       type: {class: HitCondition, ns: Reactions, asm: Assembly-CSharp}
       data: 

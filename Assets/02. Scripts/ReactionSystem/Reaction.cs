@@ -37,7 +37,7 @@ namespace Reactions
     [Serializable]
     public class Reaction
     {
-        public ReactionSource Source;
+        //public ReactionSource Source;
         [SerializeReference, SubclassSelector] public ITrigger Trigger;
         public int SkillIndex; // 반응으로 실행할 스킬의 인덱스
         public E_TargetFilter ReactionSkillTarget;

@@ -199,7 +199,8 @@ namespace PipeLine
                 var executions = reactionSystem.Resolve(context);
                 foreach (var execution in executions)
                 {
-                    Debug.Log($"<color=yellow>Reaction: {execution.ToString()}</color>");
+                    Debug.Log($"<color=yellow>Reaction:\n" +
+                              $"{execution.ToString()}</color>");
                     await execution.Agent.ExecuteReaction(execution.Reaction, context);
                 }
             }

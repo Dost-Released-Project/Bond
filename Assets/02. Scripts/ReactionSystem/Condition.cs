@@ -68,8 +68,8 @@ namespace Reactions
         public BaseCharacter Subject;
     }
     
-    [Serializable]
-    public class TargetCondition: ReactionTriggerCondition
+    [Serializable][AddTypeMenu("SubjectIs", -1000)]
+    public class SubjectCondition: ReactionTriggerCondition
     {
         public E_TargetFilter Filter = E_TargetFilter.None;
         public override bool IsMet(ReactionTriggerConditionArgs args)
@@ -86,7 +86,7 @@ namespace Reactions
 
         public override ReactionTriggerCondition Copy()
         {
-            return new TargetCondition() { Filter = Filter };
+            return new SubjectCondition() { Filter = Filter };
         }
 
         public override string Description
@@ -103,7 +103,7 @@ namespace Reactions
         }
     }
     
-    [Serializable]
+    [Serializable][AddTypeMenu("SkillTypeIs", -100)]
     public class SkillTypeCondition: ReactionTriggerCondition
     {
         public SkillType Type = SkillType.None;

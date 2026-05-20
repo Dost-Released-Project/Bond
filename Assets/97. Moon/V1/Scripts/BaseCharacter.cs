@@ -66,18 +66,7 @@ public partial class BaseCharacter : ITurnUseUnit
         m_formationManager = formationManager;
     }
 
-    private BaseCharacter()
-    {
-        for(int i = 0; i < RoleReactions.Length; i++)
-        {
-            RoleReactions[i] = new Reaction();
-        }
-
-        for (int i = 0; i < TraitReactions.Length; i++)
-        {
-            TraitReactions[i] = new Reaction();
-        }
-    }
+    private BaseCharacter() { }
 
     public void SetRole(RoleType role)
     {
