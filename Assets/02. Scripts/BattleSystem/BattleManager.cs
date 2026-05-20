@@ -121,7 +121,7 @@ namespace BattleSystem
             foreach (var target in targets)
             {
                 BattleContext targetContext = new BattleContext(battleContext, target);
-                SkillApplyLogic(targetContext);
+                await SkillApplyLogic(targetContext);
             }
 
             // 7. 연출 초기화 (시각적 피드백 유지 후 해제)
@@ -149,12 +149,12 @@ namespace BattleSystem
             return targetList;
         }
         
-        private BattleContext SkillApplyLogic(BattleContext context)
+        private async UniTask<BattleContext> SkillApplyLogic(BattleContext context)
         {
             // [입구] 로직 파이프라인 실행
             if (m_skillApplyPipeline != null)
             {
-                return m_skillApplyPipeline.Run(context);
+                return await m_skillApplyPipeline.Run(context);
             }
 
             return context;
