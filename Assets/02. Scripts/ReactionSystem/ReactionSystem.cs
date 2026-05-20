@@ -51,6 +51,7 @@ namespace Reactions
                 
                 foreach (var reaction in chara.Reactions)
                 {
+                    if (reaction == null) continue;
                     if (reaction.Check(context))
                     {
                         var result = IsSuccess(chara, reaction);

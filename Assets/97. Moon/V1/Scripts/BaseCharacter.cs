@@ -157,6 +157,7 @@ public partial class BaseCharacter : ITurnUseUnit
             
             for (int i = 0; i < Skills.Length; i++)
             {
+                Debug.Assert(Skills[i] != null, $"{Name}'s Skills[{i}] is null");
                 if (Skills[i] != null && usableFlags[i])
                 {
                     usableSkills.Add(Skills[i]);

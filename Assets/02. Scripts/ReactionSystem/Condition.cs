@@ -50,6 +50,13 @@ namespace Reactions
             => Compare(target, filter, observer, context, subject).Any();
     }
 
+    public abstract class ReactionTriggerCondition : ICondition
+    {
+        public abstract bool IsMet(BaseCharacter subject, BattleContext context);
+        public abstract ICondition Copy();
+        public abstract string Description { get; }
+    }
+
     [Serializable]
     public class HpBelowCondition : ICondition
     {
@@ -64,7 +71,7 @@ namespace Reactions
 
         public bool IsMet(BaseCharacter subject, BattleContext context)
         {
-            return context.target == subject && subject.HpRatio <= Threshold;
+            return context.target == subject && subject.HpRatio <= Threshold && context.runtimeSkill.Data.Type == SkillType.OFFENSIVE;;
         }
 
         public ICondition Copy()
@@ -72,7 +79,7 @@ namespace Reactions
             return new HpBelowCondition(Threshold);
         }
 
-        public string Description => $"Hp 비율이 {Threshold} 이하일 때";
+        public string Description => $"Hp 비율이 {Threshold} 이하인 상태에서 공격 받았을 때";
     }
 
     [Serializable]
@@ -80,7 +87,7 @@ namespace Reactions
     {
         public bool IsMet(BaseCharacter subject, BattleContext context)
         {
-            return context.caster == subject && context.isCritical;
+            return context.caster == subject && context.isCritical && context.runtimeSkill.Data.Type == SkillType.OFFENSIVE;
         }
 
         public ICondition Copy()
@@ -88,7 +95,7 @@ namespace Reactions
             return new CritCondition();
         }
 
-        public string Description => $"크리 공격을 가했을 때";
+        public string Description => $"공격 스킬로 크리를 가했을 때";
     }
     
     [Serializable]
@@ -96,7 +103,7 @@ namespace Reactions
     {
         public bool IsMet(BaseCharacter subject, BattleContext context)
         {
-            return context.target == subject && context.isEvaded;
+            return context.target == subject && context.isEvaded && context.runtimeSkill.Data.Type == SkillType.OFFENSIVE;;
         }
 
         public ICondition Copy()
@@ -111,14 +118,14 @@ namespace Reactions
     {
         public bool IsMet(BaseCharacter subject, BattleContext context)
         {
-            return context.caster == subject && context.target != null && context.target.IsDead;
+            return context.caster == subject && context.target.IsDead && context.runtimeSkill.Data.Type == SkillType.OFFENSIVE;;
         }
 
         public ICondition Copy()
         {
             return new KillCondition();
         }
-        public string Description => $"죽였을 때";
+        public string Description => $"공격 스킬로 죽였을 때";
     }
 
     [Serializable]
