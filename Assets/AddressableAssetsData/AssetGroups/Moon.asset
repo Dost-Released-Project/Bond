@@ -10,14 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: unifiedraytracing1
+  m_Name: Moon
   m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
-  m_GroupName: unifiedraytracing1
-  m_GUID: c9047ea32debac44498954b4601c966d
-  m_SerializeEntries: []
+  m_GroupName: Moon
+  m_GUID: ac641a8448e02f14fb8f0aa796135860
+  m_SerializeEntries:
+  - m_GUID: 3927827441b3eb04cb05038d1cde3a48
+    m_Address: Town
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 2844d279e9fd27e4a9c0e38b898d6b70, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 25126a3e1afa8e04c9ebf63bd3952e84, type: 2}
-    - {fileID: 11400000, guid: b7cf0e6ef1cb44d48ba6f9b30726b9e1, type: 2}
+    - {fileID: 11400000, guid: 8d42256df0a393c40bd6089a9e3230b8, type: 2}
+    - {fileID: 11400000, guid: ecde42f3c43398c46a269df40a27980f, type: 2}
