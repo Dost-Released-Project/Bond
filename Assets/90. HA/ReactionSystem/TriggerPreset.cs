@@ -7,7 +7,7 @@ namespace Reactions
     public class TriggerPreset : ScriptableObject
     {
         public E_ObserveFilter ObserveFilter;
-        public E_CompareFilter SkillTargetFilter;
+        public E_TargetFilter SkillTargetFilter;
         [SerializeReference, SubclassSelector] public ICondition Condition;
     }
 }

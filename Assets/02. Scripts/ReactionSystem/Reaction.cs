@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.Serialization;
+using PipeLine;
 using UnityEngine;
 
 namespace Reactions
@@ -11,7 +12,7 @@ namespace Reactions
     }
 
     [Serializable]
-    public class ReactionExecution
+    public class ReactionExecution : IComparable<ReactionExecution>
     {
         public BaseCharacter Agent;
         public Reaction Reaction;
@@ -23,27 +24,29 @@ namespace Reactions
             Reaction = reaction;
             Result = result;
         }
+        
+        public int CompareTo(ReactionExecution other) => other.Agent.Speed.CompareTo(Agent.Speed);
+
+        public override string ToString()
+        {
+            return $"Agent: {Agent.Name}, Trigger: {Reaction.Trigger.Description}";
+        }
     }
     
     [Serializable]
     public class Reaction
     {
-        public string Id;
-        public ReactionSource Source;                       // 출처 (역할 or 성향)
-        [SerializeReference, SubclassSelector] public ITrigger Trigger;       // 리액션 행동을 발동시키는 조건
+        public ReactionSource Source;
+        [SerializeReference, SubclassSelector] public ITrigger Trigger;
         public int SkillIndex; // 반응으로 실행할 스킬의 인덱스
-        //[SerializeReference, SubclassSelector] public SkillBase Behaviour;    // 조건 만족시 하게될 행동
+        public E_TargetFilter ReactionSkillTarget;
         //[SerializeReference] public SkillBase AnomalySkill; // 돌발 행동 시 행동
 
-        public Reaction()
+        public bool Check(BattleContext context)
         {
-            Id = System.Guid.NewGuid().ToString();
-        }
-
-        public Reaction(ITrigger trigger, SkillBase behaviour)
-        {
-            Trigger = trigger;
-            //Behaviour = behaviour;
+            if (Trigger == null)
+                return false;
+            return Trigger.CheckCondition(context);
         }
     }
 }

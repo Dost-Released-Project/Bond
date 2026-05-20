@@ -61,32 +61,32 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     RoleReactions:
-    - Id: 00dcc66e-74ee-4079-8548-cc0c3bed0349
-      Source: 0
+    - Source: 0
       Trigger:
         rid: 8081819915636179013
       SkillIndex: 0
+      ReactionSkillTarget: 1
     TraitReactions:
-    - Id: 307d1473-ccd3-4d32-9aef-d9fe57e3325b
-      Source: 0
+    - Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
-    - Id: de36c13c-6138-48ec-8a48-ff6c59afa9b9
-      Source: 0
+      ReactionSkillTarget: 0
+    - Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
-    - Id: a744fb17-0de9-4997-a33a-841b0fb6dd39
-      Source: 0
+      ReactionSkillTarget: 0
+    - Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
-    - Id: 8e11ecf4-54f1-4234-ba80-97d5ffea3b20
-      Source: 0
+      ReactionSkillTarget: 0
+    - Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
+      ReactionSkillTarget: 0
   references:
     version: 2
     RefIds:
@@ -123,9 +123,8 @@ MonoBehaviour:
     - rid: 8081819915636179013
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
-        ObFilter: 3
-        CoFilter: 1
         SubjectCharacterId: c2048033-026e-4f39-b1f5-186d70a24d55
+        CompareFilter: 1
         Condition:
           rid: 8081819915636179014
     - rid: 8081819915636179014

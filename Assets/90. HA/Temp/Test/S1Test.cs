@@ -35,6 +35,7 @@ namespace _90._HA.Temp.Test
             professionDb = Addressables.LoadAssetAsync<DataBaseSO>("ClassDataBase").WaitForCompletion();
             
             payload.Clear();
+            FillRosterFromPreset();
         }
 
         public void CreateCharacterPresets()
@@ -85,6 +86,7 @@ namespace _90._HA.Temp.Test
             {
                 var c = Instantiate(preset).BaseCharacter;
                 c.CalcStat();
+                BaseCharacter.Dict[c.Id] = c;
                 roster.Hire(c);
             }
         }

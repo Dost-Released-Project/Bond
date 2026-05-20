@@ -61,37 +61,37 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     RoleReactions:
-    - Id: 1ca812d9-337b-478c-a0d3-5014c4786714
-      Source: 0
+    - Source: 0
       Trigger:
         rid: 8081819915636179018
       SkillIndex: 3
-    - Id: 467d3c13-9633-412b-a771-d0360c57c837
-      Source: 0
+      ReactionSkillTarget: 1
+    - Source: 0
       Trigger:
         rid: 8081819915636179022
       SkillIndex: 3
+      ReactionSkillTarget: 1
     TraitReactions:
-    - Id: 97aab4c2-5685-4e96-af89-c234240b3b3a
-      Source: 0
+    - Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
-    - Id: 751db5dc-77f1-4d11-9643-9c59a2ed1fbd
-      Source: 0
+      ReactionSkillTarget: 0
+    - Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
-    - Id: 66c4750f-9a20-4ba6-9e6b-eaaf8856933d
-      Source: 0
+      ReactionSkillTarget: 0
+    - Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
-    - Id: a20d053e-5d29-40af-bec5-876fcc4b2793
-      Source: 0
+      ReactionSkillTarget: 0
+    - Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
+      ReactionSkillTarget: 0
   references:
     version: 2
     RefIds:
@@ -128,22 +128,20 @@ MonoBehaviour:
     - rid: 8081819915636179018
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
-        ObFilter: 3
-        CoFilter: 0
-        SubjectCharacterId: 
+        SubjectCharacterId: 5fb63e10-7000-4137-aa13-c065b0779b30
+        CompareFilter: 0
         Condition:
-          rid: 8081819915636179019
-    - rid: 8081819915636179019
-      type: {class: CritCondition, ns: Reactions, asm: Assembly-CSharp}
-      data: 
+          rid: 8081819915636179172
     - rid: 8081819915636179022
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
-        ObFilter: 3
-        CoFilter: 0
         SubjectCharacterId: c65ebae5-9fea-404d-bda0-9dba540a5ade
+        CompareFilter: 0
         Condition:
           rid: 8081819915636179023
     - rid: 8081819915636179023
       type: {class: CritCondition, ns: Reactions, asm: Assembly-CSharp}
+      data: 
+    - rid: 8081819915636179172
+      type: {class: EvadeCondition, ns: Reactions, asm: Assembly-CSharp}
       data: 

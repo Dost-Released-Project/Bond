@@ -159,6 +159,7 @@ namespace BattleSystem
             foreach (var character in characters)
             {
                 character.onBattleAction += ApplyAct;
+                m_reactionSystem.Register(character);
             }
         }
 
@@ -167,6 +168,7 @@ namespace BattleSystem
             foreach (var character in characters)
             {
                 character.onBattleAction -= ApplyAct;
+                m_reactionSystem.Unregister(character);
             }
         }
         #endregion
