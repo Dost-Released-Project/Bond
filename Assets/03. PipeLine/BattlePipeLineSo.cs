@@ -55,7 +55,10 @@ namespace PipeLine
         protected override bool ShouldBreak(BattleContext context)
         {
             // 회피가 성공했다면 이후 데미지/크리티컬 계산 등을 수행하지 않고 중단합니다.
-            return context.isEvaded;
+            //return context.isEvaded;
+            // 원래는 저랬는데, 리액션 검증이 회피 시에도 진행해야 함으로 제거
+
+            return false;
         }
 
         public void SetReactionSystem(ReactionSystem reactionSystem)
@@ -142,7 +145,7 @@ namespace PipeLine
 
             // TODO: 개별 타겟 치명타 확률 로직 (현재는 임시로 시전자 crt 사용)
             //context.isCritical = Random.Range(0f, 100f) < context.caster.Stat.crt;
-            context.isCritical = true;
+            context.isCritical = false;
             
             if (context.isCritical)
             {
