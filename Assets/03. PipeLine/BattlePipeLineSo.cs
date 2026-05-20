@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BattleSystem;
+using Cysharp.Threading.Tasks;
 using PipeLine.PipeLineBase;
 using UnityEngine;
 using Reactions;
@@ -71,7 +72,7 @@ namespace PipeLine
     [System.Serializable]
     public class EntryStep : IPipeLineStep<BattleContext>
     {
-        public BattleContext Execute(BattleContext context)
+        public UniTask<BattleContext> Execute(BattleContext context)
         {
             // 시전자의 스탯과 스킬의 수치를 결합하는 로직 (SkillType에 따라 유연하게 참조)
             float characterStat = 0f;
@@ -105,29 +106,29 @@ namespace PipeLine
             context.value = characterStat + skillValue;
             
             Debug.Log($"[EntryStep] 최종 산출 수치: {context.value} (스탯 {characterStat} + 스킬 위력 {skillValue})");
-            return context;
+            return UniTask.FromResult(context);
         }
     }
 
     [System.Serializable]
     public class EvasionStep : IPipeLineStep<BattleContext>
     {
-        public BattleContext Execute(BattleContext context)
+        public UniTask<BattleContext> Execute(BattleContext context)
         {
-            if (context.target == null || context.target.IsDead) return context;
+            if (context.target == null || context.target.IsDead) return UniTask.FromResult(context);
             
             // 지원/힐 스킬은 회피 판정을 생략
             if (context.runtimeSkill.Data.Type == SkillType.SUPPORT)
             {
                 context.isEvaded = false;
-                return context;
+                return UniTask.FromResult(context);
             }
 
             float hitRate = context.caster.Stat.acc - (context.target.Stat.AGI * 0.5f);
             context.isEvaded = Random.Range(0f, 100f) > hitRate;
             
             Debug.Log($"[EvasionStep] 타겟: {context.target.Name}, 명중률: {hitRate}%, 회피 발생 여부: {context.isEvaded}");
-            return context;
+            return UniTask.FromResult(context);
         }
     }
 
@@ -135,12 +136,13 @@ namespace PipeLine
     public class CriticalStep : IPipeLineStep<BattleContext>
     {
         public float criticalBonus = 0.5f;
-        public BattleContext Execute(BattleContext context)
+        public UniTask<BattleContext> Execute(BattleContext context)
         {
-            if (context.isEvaded || context.target == null || context.target.IsDead) return context;
+            if (context.isEvaded || context.target == null || context.target.IsDead) return UniTask.FromResult(context);
 
             // TODO: 개별 타겟 치명타 확률 로직 (현재는 임시로 시전자 crt 사용)
-            context.isCritical = Random.Range(0f, 100f) < context.caster.Stat.crt;
+            //context.isCritical = Random.Range(0f, 100f) < context.caster.Stat.crt;
+            context.isCritical = true;
             
             if (context.isCritical)
             {
@@ -148,16 +150,16 @@ namespace PipeLine
                 context.value += bonus;
                 Debug.Log($"[CriticalStep] 크리티컬 발생! 보너스: {bonus}, 타겟: {context.target.Name}");
             }
-            return context;
+            return UniTask.FromResult(context);
         }
     }
 
     [System.Serializable]
     public class DefenseStep : IPipeLineStep<BattleContext>
     {
-        public BattleContext Execute(BattleContext context)
+        public UniTask<BattleContext> Execute(BattleContext context)
         {
-            if (context.isEvaded || context.target == null || context.target.IsDead) return context;
+            if (context.isEvaded || context.target == null || context.target.IsDead) return UniTask.FromResult(context);
 
             if (context.runtimeSkill.Data.Type == SkillType.SUPPORT)
             {
@@ -170,7 +172,7 @@ namespace PipeLine
                 Debug.Log($"[DefenseStep] 방어력({def}) 차감 후 최종 수치: {context.value} (타겟: {context.target.Name})");
             }
             
-            return context;
+            return UniTask.FromResult(context);
         }
     }
     
@@ -183,7 +185,8 @@ namespace PipeLine
         {
             this.reactionSystem = reactionSystem;
         }
-        public BattleContext Execute(BattleContext context)
+        
+        public async UniTask<BattleContext> Execute(BattleContext context)
         {
             if (context.isEvaded || context.target == null || context.target.IsDead) return context;
 
@@ -194,7 +197,7 @@ namespace PipeLine
                 foreach (var execution in executions)
                 {
                     Debug.Log($"<color=yellow>Reaction: {execution.ToString()}</color>");
-                    execution.Agent.ExecuteReaction(execution.Reaction, context);
+                    await execution.Agent.ExecuteReaction(execution.Reaction, context);
                 }
             }
             return context;
@@ -204,9 +207,9 @@ namespace PipeLine
     [System.Serializable]
     public class ApplyStep : IPipeLineStep<BattleContext>
     {
-        public BattleContext Execute(BattleContext context)
+        public UniTask<BattleContext> Execute(BattleContext context)
         {
-            if (context.isEvaded || context.target == null || context.target.IsDead) return context;
+            if (context.isEvaded || context.target == null || context.target.IsDead) return UniTask.FromResult(context);
 
             int finalAmount = Mathf.RoundToInt(context.value);
 
@@ -222,7 +225,7 @@ namespace PipeLine
             }
 
             //TODO 연출 로직 추가해야함
-            return context;
+            return UniTask.FromResult(context);
         }
     }
 

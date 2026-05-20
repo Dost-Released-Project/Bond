@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace PipeLine.PipeLineBase
@@ -6,7 +7,7 @@ namespace PipeLine.PipeLineBase
     public interface IPipeLine<T>
     {
         void Enqueue(IPipeLineStep<T> step, int priority);
-        T Run(T context);
+        UniTask<T> Run(T context);
     }
 
     /// <summary>
@@ -24,13 +25,13 @@ namespace PipeLine.PipeLineBase
             throw new System.NotImplementedException();
         }
 
-        public T Run(T context)
+        public async UniTask<T> Run(T context)
         {
             if (steps == null) return context;
 
             foreach (var step in steps)
             {
-                context = step.Execute(context);
+                context = await step.Execute(context);
 
                 // 각 단계 실행 후 중단 조건 체크
                 if (ShouldBreak(context))

@@ -1,7 +1,9 @@
+using Cysharp.Threading.Tasks;
+
 namespace PipeLine.PipeLineBase
 {
     public interface IPipeLineStep<T>
     {
-        T Execute(T context);
+        UniTask<T> Execute(T context);
     }
 }
