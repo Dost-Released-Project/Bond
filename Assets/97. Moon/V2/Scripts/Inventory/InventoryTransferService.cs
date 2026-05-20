@@ -60,6 +60,41 @@ public class InventoryTransferService
         int sQty = sSlot.quantity;
         BaseItem tItem = tSlot.item; // 비어있을 수 있음
         int tQty = tSlot.quantity;
+        
+        // =========================================================================
+        // [핵심 추가] 동일 아이템 합산(Merge) 예외 처리 레이어
+        // 같은 아이템 위로 떨어뜨렸고, 타겟 슬롯의 제한치(expeditionSlotMax)에 여유가 있다면 합칩니다.
+        // =========================================================================
+        if (!tSlot.IsEmpty && sItem.id == tItem.id)
+        {
+            int slotMax = sItem.expeditionSlotMax;
+            if (slotMax <= 0) slotMax = 1;
+
+            // 타겟 슬롯에 담길 수 있는 남은 여유 공간 계산
+            int roomInTarget = slotMax - tQty;
+
+            if (roomInTarget > 0)
+            {
+                // 이동할 수 있는 수량 결정
+                int moveQty = Mathf.Min(sQty, roomInTarget);
+
+                // 1. 소스 슬롯 처리
+                source.ClearSlot(sourceIdx); // 우선 싹 비우고
+                if (sQty - moveQty > 0)
+                {
+                    // 다 못 옮기고 남은 잔량이 있다면 기존 자리에 남은 만큼만 다시 꽂아줌
+                    source.AddItemAt(sourceIdx, sItem, sQty - moveQty);
+                }
+
+                // 2. 타겟 슬롯 처리
+                target.ClearSlot(targetIdx); // 기존 타겟 슬롯을 잠깐 비운 뒤
+                target.AddItemAt(targetIdx, tItem, tQty + moveQty); // 합산된 최종 수량으로 다시 꽂아줌
+
+                Debug.Log($"[아이템 합산] {sItem.itemName} {moveQty}개가 합쳐졌습니다. 최종 수량: {tQty + moveQty}");
+                return; // 합산 완료되었으므로 아래의 강제 스왑 로직을 타지 않고 종료
+            }
+        }
+        // =========================================================================
 
         // 2. 인출(Withdraw): 두 슬롯을 완전히 비워서 인벤토리에서 '제거'된 상태로 만듦
         source.ClearSlot(sourceIdx);

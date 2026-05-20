@@ -21,24 +21,4 @@ public class ExpeditionInventory : InventoryBase, IExpeditionInventory
         if (emptyIdx != -1) return AddItemAt(emptyIdx, item, quantity);
         return quantity;
     }
-
-    public override async Task<int> AddItemId(string id, int quantity)
-    {
-        // 1. 아이템 DB 로드
-        var conHandle = Addressables.LoadAssetAsync<ConsumableDataBaseSO>("ConsumableDataBase");
-        var accHandle = Addressables.LoadAssetAsync<AccessoryDataBaseSO>("AccessoryDataBase");
-        await System.Threading.Tasks.Task.WhenAll(conHandle.Task, accHandle.Task);
-        
-        var accDB = accHandle.Result;
-        var conDB = conHandle.Result;
-        
-        var item = accDB.GetSO<BaseItem>(id);
-        // 없으면 소모품 DB에서 검색
-        if (item == null)
-        {
-            item = conDB.GetSO<BaseItem>(id);
-        }
-        
-        return item != null ? AddItemAuto(item, quantity) : quantity;
-    }
 }
