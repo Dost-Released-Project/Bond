@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Reactions;
 
-namespace Bond.UI.Town
+namespace Bond.UI
 {
     public class CharacterDetailController
     {

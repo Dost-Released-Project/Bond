@@ -2,6 +2,7 @@ using System;
 using _90._HA.Temp.Test;
 using Bond.Embark;
 using Bond.Expedition;
+using Bond.UI;
 using Bond.UI.Town;
 using Bond.WT.Journal;
 using UnityEngine;
@@ -37,6 +38,7 @@ public class TownScope : LifetimeScope
         builder.Register<Roster>(Lifetime.Scoped);
         builder.Register<CharacterSelector>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
         builder.Register<CharacterDetailController>(Lifetime.Scoped).WithParameter("skillDb", skillDb);
+        builder.RegisterComponentInHierarchy<CharacterDetailPresenter>();
 
         // 씬에 배치된 컴포넌트
         builder.RegisterComponentInHierarchy<TownUIController>();

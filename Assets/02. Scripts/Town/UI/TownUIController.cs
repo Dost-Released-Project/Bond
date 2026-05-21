@@ -1,4 +1,5 @@
 using Bond.Embark;
+using Bond.UI;
 using Bond.UI.Town;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -13,13 +14,11 @@ namespace Bond.UI.Town
         private CharacterSelector _selector;
         private Roster _roster;
         private EmbarkController _embarkController;
-        private CharacterDetailController _detailController;
+        private CharacterDetailPresenter _characterDetail;
         private AccessoryBagView _accessoryBagView;
-        private InventoryTransferService _transferService;
         private ITotalInventory _townInventory;
 
         private TownRosterPanelPresenter _rosterPresenter;
-        private CharacterDetailPresenter _detailPresenter;
         private EmbarkPresenter _embarkPresenter;
         private Button _toggleBtn;
 
@@ -28,17 +27,15 @@ namespace Bond.UI.Town
             CharacterSelector selector,
             Roster roster,
             EmbarkController embarkController,
-            CharacterDetailController detailController,
+            CharacterDetailPresenter characterDetail,
             AccessoryBagView accessoryBagView,
-            InventoryTransferService transferService,
             ITotalInventory townInventory)
         {
-            _selector         = selector;
-            _roster           = roster;
+            _selector       = selector;
+            _roster         = roster;
             _embarkController = embarkController;
-            _detailController = detailController;
+            _characterDetail  = characterDetail;
             _accessoryBagView = accessoryBagView;
-            _transferService  = transferService;
             _townInventory    = townInventory;
         }
 
@@ -47,8 +44,6 @@ namespace Bond.UI.Town
             var root = townUIDocument.rootVisualElement;
 
             _rosterPresenter = new TownRosterPanelPresenter(root, _roster, _selector);
-            _detailPresenter = new CharacterDetailPresenter(
-                root, _selector, _detailController, _accessoryBagView, _transferService);
             _embarkPresenter = new EmbarkPresenter(root, _embarkController, _roster);
 
             foreach (var tc in root.Query<TemplateContainer>().ToList())
@@ -58,11 +53,15 @@ namespace Bond.UI.Town
             _toggleBtn.clicked += ToggleRoster;
             root.Q<Button>("embark-btn").clicked += _embarkController.Open;
 
-            // 마을 씬 = FullEdit 모드 + 마을 인벤토리
+            _characterDetail.OnCloseRequested       += _selector.Deselect;
+            _characterDetail.OnInventoryOpenRequested += _accessoryBagView.ToggleWindow;
+
             _selector.OnSelectionChanged += character =>
             {
                 if (character != null)
-                    _detailPresenter.Show(character, CharacterDetailViewMode.FullEdit, _townInventory);
+                    _characterDetail.Show(character, CharacterDetailViewMode.FullEdit, _townInventory);
+                else
+                    _characterDetail.Hide();
             };
         }
 

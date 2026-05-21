@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Bond.UI.Town
+namespace Bond.UI
 {
     public class EquipSlotsPresenter
     {
@@ -24,7 +24,7 @@ namespace Bond.UI.Town
         public EquipSlotsPresenter(
             VisualElement root,
             CharacterDetailController controller,
-            InventoryTransferService transferService,
+            InventoryTransferService transferService = null,
             VisualElement tooltipRoot = null)
         {
             _controller      = controller;
@@ -94,7 +94,7 @@ namespace Bond.UI.Town
                 _chipAcc[idx].RegisterCallback<PointerUpEvent>(evt =>
                 {
                     // AccessoryBagView에서 드래그 중인 아이템을 이 칩에 드롭
-                    if (_transferService.IsDragging && _editable)
+                    if (_transferService != null && _transferService.IsDragging && _editable)
                     {
                         var slot = _transferService.CurrentSourceInventory.GetSlot(_transferService.CurrentDraggingIndex);
                         if (slot.item is AccessoryItem acc)
@@ -108,7 +108,7 @@ namespace Bond.UI.Town
 
                 _chipAcc[idx].RegisterCallback<PointerEnterEvent>(evt =>
                 {
-                    if (_editable && _transferService.IsDragging)
+                    if (_editable && _transferService != null && _transferService.IsDragging)
                         _chipAcc[idx].AddToClassList("equip-slots__chip--drop-target");
                 });
 

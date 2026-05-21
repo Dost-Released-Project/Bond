@@ -3,18 +3,16 @@
     <Style src="TownUI.uss" />
     <Style src="project://database/Assets/UI/Embark/EmbarkOverlay.uss" />
 
-    <ui:Template name="RosterPanel"     src="RosterPanel.uxml" />
-    <ui:Template name="CharacterDetail" src="CharacterDetail.uxml" />
-    <ui:Template name="EmbarkOverlay"   src="project://database/Assets/UI/Embark/EmbarkOverlay.uxml" />
+    <ui:Template name="RosterPanel"   src="RosterPanel.uxml" />
+    <ui:Template name="EmbarkOverlay" src="project://database/Assets/UI/Embark/EmbarkOverlay.uxml" />
 
     <ui:VisualElement name="town-ui-root" picking-mode="Ignore" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;">
 
         <ui:Button name="roster-toggle-btn" class="roster-toggle-btn" text="대원 명부 ▶" />
         <ui:Button name="embark-btn" text="탐사 출발" />
 
-        <ui:Instance template="RosterPanel"     picking-mode="Ignore" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
-        <ui:Instance template="CharacterDetail" picking-mode="Ignore" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
-        <ui:Instance template="EmbarkOverlay"   picking-mode="Ignore" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
+        <ui:Instance template="RosterPanel"   picking-mode="Ignore" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
+        <ui:Instance template="EmbarkOverlay" picking-mode="Ignore" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
 
     </ui:VisualElement>
 </ui:UXML>

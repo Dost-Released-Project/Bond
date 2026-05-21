@@ -1,48 +1,45 @@
 using System;
+using Bond.UI;
 using Reactions;
 using UnityEngine;
 using UnityEngine.UIElements;
+using VContainer;
 
-namespace Bond.UI.Town
+namespace Bond.UI
 {
-    public class CharacterDetailPresenter
+    public class CharacterDetailPresenter : MonoBehaviour
     {
-        private readonly CharacterSelector _selector;
-        private readonly CharacterDetailController _controller;
-        private readonly AccessoryBagView _accessoryBagView;
-        private readonly EquipSlotsPresenter _equipSlots;
+        [SerializeField] private UIDocument _document;
 
-        private readonly VisualElement _panel;
-        private readonly Label _titleLabel;
-        private readonly Label _classLevelLabel;
+        private CharacterDetailController _controller;
+        private InventoryTransferService _transferService;
+        private EquipSlotsPresenter _equipSlots;
 
-        // Task 4: 역할 드롭다운
-        private readonly Button        _roleBtnCurrent;
-        private readonly VisualElement _rolePicker;
-        private readonly Button        _roleOptTanker, _roleOptDealer, _roleOptSupporter;
+        // 씬별 연결 이벤트 — 구독 여부는 각 씬 코디네이터가 결정
+        public event Action OnCloseRequested;
+        public event Action OnInventoryOpenRequested;
+
+        private VisualElement _panel;
+        private Label _titleLabel;
+        private Label _classLevelLabel;
+
+        private Button        _roleBtnCurrent;
+        private VisualElement _rolePicker;
+        private Button        _roleOptTanker, _roleOptDealer, _roleOptSupporter;
         private bool _rolePickerOpen;
 
-        // Task 1: 기본 능력치 박스
-        private readonly Label _baseStatStr, _baseStatAgi, _baseStatInt;
+        private Label _baseStatStr, _baseStatAgi, _baseStatInt;
+        private Label _statHp, _statDef, _statAtk, _statSpd;
+        private Label _statCrt, _statAcc, _statInsanityCtrl, _statReactionCtrl;
 
-        // 전투 스탯
-        private readonly Label _statHp, _statDef, _statAtk, _statSpd;
-        private readonly Label _statCrt, _statAcc, _statInsanityCtrl, _statReactionCtrl;
+        private Label         _gaugeInsanityVal;
+        private Label         _gaugeInsanityWarnLabel;
+        private VisualElement _gaugeHpFill, _gaugeInsanityFill;
 
-        // Task 2: 게이지
-        private readonly Label         _gaugeInsanityVal;
-        private readonly Label         _gaugeInsanityWarnLabel;
-        private readonly VisualElement _gaugeHpFill, _gaugeInsanityFill;
+        private Label _lockBannerRole, _lockBannerEquip, _lockBannerReaction;
+        private VisualElement _traitList;
+        private VisualElement _skillGrid;
 
-        // 잠금 배너
-        private readonly Label _lockBannerRole, _lockBannerEquip, _lockBannerReaction;
-
-        // Task 3: 성향 태그
-        private readonly VisualElement _traitList;
-
-        private readonly VisualElement _skillGrid;
-
-        // Task 5: 리액션 슬롯 3분할
         private readonly VisualElement[] _reactionSlots         = new VisualElement[6];
         private readonly Label[]         _reactionTargetLabels  = new Label[6];
         private readonly Label[]         _reactionTriggerLabels = new Label[6];
@@ -52,7 +49,6 @@ namespace Bond.UI.Town
         private readonly VisualElement[] _reactionTriggerParts  = new VisualElement[6];
         private readonly VisualElement[] _reactionSkillParts    = new VisualElement[6];
 
-        // 인라인 풀
         private readonly VisualElement[] _reactionPools = new VisualElement[6];
         private int    _openPoolSlot = -1;
         private string _openPoolPart = null;
@@ -61,24 +57,27 @@ namespace Bond.UI.Town
         private CharacterDetailViewMode _viewMode;
         private IInventory _currentInventory;
 
-        public CharacterDetailPresenter(
-            VisualElement root,
-            CharacterSelector selector,
-            CharacterDetailController controller,
-            AccessoryBagView accessoryBagView,
-            InventoryTransferService transferService)
+        [Inject]
+        public void Construct(CharacterDetailController controller, InventoryTransferService transferService)
         {
-            _selector         = selector;
-            _controller       = controller;
-            _accessoryBagView = accessoryBagView;
+            _controller      = controller;
+            _transferService = transferService;
+        }
+
+        private void Start()
+        {
+            var root = _document.rootVisualElement;
 
             _panel      = root.Q("character-detail");
             _titleLabel = root.Q<Label>("character-detail__title");
-            root.Q<Button>("character-detail__close-btn").clicked += OnCloseBtnClicked;
+            root.Q<Button>("character-detail__close-btn").clicked += () =>
+            {
+                Hide();
+                OnCloseRequested?.Invoke();
+            };
 
             _classLevelLabel = root.Q<Label>("char-detail__class-level");
 
-            // Task 4: 역할 드롭다운
             _roleBtnCurrent   = root.Q<Button>("role-btn-current");
             _rolePicker       = root.Q("char-detail__role-picker");
             _roleOptTanker    = root.Q<Button>("role-opt-tanker");
@@ -90,18 +89,15 @@ namespace Bond.UI.Town
             _roleOptDealer.clicked    += () => { _controller.SetRole(RoleType.Dealer);    CloseRolePicker(); };
             _roleOptSupporter.clicked += () => { _controller.SetRole(RoleType.Supporter); CloseRolePicker(); };
 
-            // Task 1: 기본 능력치 박스
             _baseStatStr = root.Q<Label>("base-stat-str");
             _baseStatAgi = root.Q<Label>("base-stat-agi");
             _baseStatInt = root.Q<Label>("base-stat-int");
 
-            // 전투 스탯
             _statHp  = root.Q<Label>("stat-hp");
             _statDef = root.Q<Label>("stat-def");
             _statAtk = root.Q<Label>("stat-atk");
             _statSpd = root.Q<Label>("stat-spd");
 
-            // Task 2: 추가 스탯 + 게이지
             _statCrt                = root.Q<Label>("stat-crt");
             _statAcc                = root.Q<Label>("stat-acc");
             _statInsanityCtrl       = root.Q<Label>("stat-insanity-ctrl");
@@ -118,7 +114,6 @@ namespace Bond.UI.Town
             _traitList = root.Q("char-detail__trait-list");
             _skillGrid  = root.Q("char-detail__skill-grid");
 
-            // Task 5: 리액션 슬롯 3분할
             for (int i = 0; i < 6; i++)
             {
                 _reactionSlots[i]         = root.Q($"reaction-slot-{i}");
@@ -131,7 +126,6 @@ namespace Bond.UI.Town
                 _reactionSkillParts[i]    = root.Q($"reaction-slot-{i}__skill-part");
             }
 
-            // 성향 슬롯(2~5) target·trigger는 편집 불가
             for (int i = 2; i < 6; i++)
             {
                 _reactionTargetParts[i]?.AddToClassList("char-detail__slot-part--fixed");
@@ -139,19 +133,17 @@ namespace Bond.UI.Town
             }
 
             var equipRoot = root.Q("char-detail__equip-slots");
-            _equipSlots = new EquipSlotsPresenter(equipRoot, controller, transferService, _panel);
-            _equipSlots.OnInventoryOpenRequested += () => _accessoryBagView.ToggleWindow();
+            _equipSlots = new EquipSlotsPresenter(equipRoot, _controller, _transferService, _panel);
+            _equipSlots.OnInventoryOpenRequested += () => OnInventoryOpenRequested?.Invoke();
             _equipSlots.OnUnequipRequested       += OnUnequipRequested;
 
             _controller.OnRoleChanged      += _ => RefreshIdentity();
             _controller.OnReactionChanged  += RefreshReactionSlot;
             _controller.OnAccessoryChanged += () => _equipSlots.SetCharacter(_character);
 
-            // 리액션 인라인 풀 요소 쿼리
             for (int i = 0; i < 6; i++)
                 _reactionPools[i] = root.Q($"inline-pool-{i}");
 
-            // 스킬 파트 클릭 → 인라인 풀
             for (int i = 0; i < 6; i++)
             {
                 int idx = i;
@@ -164,7 +156,6 @@ namespace Bond.UI.Town
                 });
             }
 
-            // 역할 슬롯(0~1) target·trigger 파트 클릭 → 인라인 풀
             for (int i = 0; i < 2; i++)
             {
                 int idx = i;
@@ -182,14 +173,11 @@ namespace Bond.UI.Town
                 });
             }
 
-            // 바깥 클릭 시 역할 드롭다운 닫기
             _panel.RegisterCallback<PointerDownEvent>(evt =>
             {
                 if (_rolePickerOpen && !_rolePicker.worldBound.Contains(evt.position))
                     CloseRolePicker();
             });
-
-            _selector.OnSelectionChanged += character => { if (character == null) Hide(); };
         }
 
         public void Show(BaseCharacter character, CharacterDetailViewMode mode, IInventory inventory)
@@ -446,7 +434,6 @@ namespace Bond.UI.Town
 
             if (locked) return;
 
-            // target (SubjectCharacterId)
             bool hasTarget = string.IsNullOrEmpty(reaction.SubjectCharacterId) == false;
             string targetName = hasTarget && BaseCharacter.Dict.TryGetValue(reaction.SubjectCharacterId, out var subj)
                 ? subj.Name
@@ -455,7 +442,6 @@ namespace Bond.UI.Town
             _reactionTargetLabels[slotIndex].EnableInClassList(
                 "char-detail__slot-part-val--placeholder", !hasTarget);
 
-            // trigger (조건)
             bool hasTrigger = reaction.Trigger is Trigger tt && tt.Conditions.Count > 0;
             _reactionTriggerLabels[slotIndex].text = hasTrigger
                 ? GetTriggerDisplayText(reaction.Trigger)
@@ -463,7 +449,6 @@ namespace Bond.UI.Town
             _reactionTriggerLabels[slotIndex].EnableInClassList(
                 "char-detail__slot-part-val--placeholder", !hasTrigger);
 
-            // skill
             bool hasSkill = reaction.SkillIndex >= 0
                 && reaction.SkillIndex < _character.Skills.Length
                 && _character.Skills[reaction.SkillIndex] != null;
@@ -473,7 +458,6 @@ namespace Bond.UI.Town
             _reactionSkillLabels[slotIndex].EnableInClassList(
                 "char-detail__slot-part-val--placeholder", !hasSkill);
 
-            // echo
             bool complete = hasTarget && hasTrigger && hasSkill;
             _reactionEchoLabels[slotIndex].text = complete ? "◈" : "○";
             _reactionEchoLabels[slotIndex].EnableInClassList("char-detail__slot-echo--empty", !complete);
@@ -537,7 +521,6 @@ namespace Bond.UI.Town
             var pool = _reactionPools[slotIndex];
             if (pool == null) return;
 
-            // 헤더
             var header = new VisualElement();
             header.AddToClassList("char-detail__pool-header");
 
@@ -556,7 +539,6 @@ namespace Bond.UI.Town
             header.Add(closeBtn);
             pool.Add(header);
 
-            // 칩 컨테이너
             var chips = new VisualElement();
             chips.AddToClassList("char-detail__pool-chips");
             switch (part)
@@ -689,7 +671,5 @@ namespace Bond.UI.Town
             if (_currentInventory == null) return;
             _controller.UnequipAccessory(accIndex, _currentInventory);
         }
-
-        private void OnCloseBtnClicked() => _selector.Deselect();
     }
 }
