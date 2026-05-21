@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Bond.WT.Journal;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -24,6 +25,9 @@ public class EventSceneView : MonoBehaviour, IEventChoiceView
 
     /// <summary>플레이어가 선택지를 클릭했을 때 EventChoicePresenter 가 구독하는 핸들러.</summary>
     public Action<EventChoice> OnChoiceSelected { get; set; }
+
+    /// <summary>2차 선택지 클릭 이벤트 핸들러. EventSceneController 가 구독한다.</summary>
+    public Action<JournalOption> OnSecondaryOptionSelected { get; set; }
 
     private void OnEnable()
     {
@@ -148,5 +152,62 @@ public class EventSceneView : MonoBehaviour, IEventChoiceView
         }
 
         _choiceContainer.Clear();
+    }
+
+    /// <summary>
+    /// 2차 선택지 화면으로 전환한다.
+    /// 기존 1차 버튼을 제거하고 Paragraphs 텍스트와 JournalOption 버튼을 표시한다.
+    /// </summary>
+    /// <param name="paragraphs">문단 목록. 개행으로 연결해 DescriptionLabel 에 표시한다.</param>
+    /// <param name="options">JournalDataSO.Options 기반 2차 선택지 목록.</param>
+    public void ShowSecondaryPhase(IReadOnlyList<string> paragraphs, IReadOnlyList<JournalOption> options)
+    {
+        if (_descriptionLabel == null || _choiceContainer == null)
+        {
+            Debug.LogError("[EventSceneView] UI 요소가 초기화되지 않았습니다.", this);
+            return;
+        }
+
+        if (_choiceButtonTemplate == null)
+        {
+            Debug.LogError("[EventSceneView] _choiceButtonTemplate 이 연결되지 않았습니다.", this);
+            return;
+        }
+
+        // Paragraphs 개행 연결 표시
+        _descriptionLabel.text = paragraphs != null
+            ? string.Join("\n\n", paragraphs)
+            : string.Empty;
+
+        ClearChoices();
+
+        if (options == null || options.Count == 0)
+        {
+            return;
+        }
+
+        foreach (JournalOption option in options)
+        {
+            TemplateContainer buttonInstance = _choiceButtonTemplate.Instantiate();
+            Button btn = buttonInstance.Q<Button>("ChoiceButton");
+
+            if (btn == null)
+            {
+                Debug.LogWarning("[EventSceneView] 템플릿에서 'ChoiceButton' 을 찾을 수 없습니다.");
+                continue;
+            }
+
+            Label label = btn.Q<Label>("ChoiceLabel");
+            if (label != null)
+            {
+                label.text = option.text;
+            }
+
+            // 각 버튼에 개별 option 데이터를 바인딩하기 위해 람다를 사용한다
+            JournalOption captured = option;
+            btn.clicked += () => OnSecondaryOptionSelected?.Invoke(captured);
+
+            _choiceContainer.Add(buttonInstance);
+        }
     }
 }

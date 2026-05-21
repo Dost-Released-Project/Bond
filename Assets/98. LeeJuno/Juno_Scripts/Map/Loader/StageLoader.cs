@@ -402,7 +402,7 @@ public class StageLoader : IStageLoader
     {
         if (string.IsNullOrEmpty(node.AssignedEventId))
         {
-            _eventContext.Set(string.Empty, string.Empty, new List<EventChoice>(), null);
+            _eventContext.Set(string.Empty, string.Empty, new List<EventChoice>(), null, null);
             return;
         }
 
@@ -410,11 +410,11 @@ public class StageLoader : IStageLoader
 
         if (ev == null)
         {
-            _eventContext.Set(string.Empty, string.Empty, new List<EventChoice>(), null);
+            _eventContext.Set(string.Empty, string.Empty, new List<EventChoice>(), null, null);
             return;
         }
 
-        _eventContext.Set(ev.Id, ev.Description, ev.Choices, _mapConfigCache.EventBattleConfig);
+        _eventContext.Set(ev.Id, ev.Description, ev.Choices, _mapConfigCache.EventBattleConfig, ev);
     }
 
     /// <summary>

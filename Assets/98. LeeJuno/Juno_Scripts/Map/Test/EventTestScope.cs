@@ -1,4 +1,5 @@
 using Bond.WT.Journal;
+using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
@@ -13,7 +14,7 @@ using VContainer.Unity;
 /// </summary>
 public class EventTestScope : LifetimeScope
 {
-    [UnityEngine.SerializeField] private FakeEventContext _fakeEventContext;
+    [SerializeField] private FakeEventContext _fakeEventContext;
 
     protected override void Configure(IContainerBuilder builder)
     {
@@ -24,7 +25,7 @@ public class EventTestScope : LifetimeScope
         }
         else
         {
-            UnityEngine.Debug.LogError("[EventTestScope] _fakeEventContext 가 연결되지 않았습니다.", this);
+            Debug.LogError("[EventTestScope] _fakeEventContext 가 연결되지 않았습니다.", this);
         }
 
         // IEventEffectApplier → NullEventEffectApplier (효과 미적용 스텁)
@@ -33,7 +34,10 @@ public class EventTestScope : LifetimeScope
         // NullJournalSystem 을 JournalSystem 타입으로도 노출 → EventJournalProvider 생성자 충족
         builder.Register<NullJournalSystem>(Lifetime.Singleton).As<JournalSystem>().AsSelf();
 
-        // EventJournalProvider — JournalSystem 대신 NullJournalSystem 주입
+        // JournalDataBaseSO Mock 등록 불필요 — EventJournalProvider 가 DB 를 참조하지 않음
+        // EventData SO 의 _journalData 슬롯에 직접 연결된 JournalDataSO 를 사용한다
+
+        // EventJournalProvider — NullJournalSystem 을 JournalSystem 으로 주입
         // AsSelf(): EventSceneController 가 구체 타입으로 직접 주입받아 RecordChoice() 를 호출하기 위해 노출
         builder.RegisterEntryPoint<EventJournalProvider>(Lifetime.Scoped).AsSelf();
 

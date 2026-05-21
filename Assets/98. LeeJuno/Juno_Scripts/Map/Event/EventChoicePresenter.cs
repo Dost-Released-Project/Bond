@@ -49,6 +49,7 @@ public class EventChoicePresenter : IStartable, IDisposable
     /// </summary>
     public void Dispose()
     {
-        _view.OnChoiceSelected = null;
+        _view.OnChoiceSelected          = null;
+        _view.OnSecondaryOptionSelected = null;
     }
 }
