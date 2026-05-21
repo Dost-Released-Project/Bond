@@ -5,17 +5,15 @@ using VContainer;
 
 /// <summary>
 /// 이벤트 씬의 진입점 MonoBehaviour.
-/// Start() 에서 EventContext 를 읽어 선택지 버튼을 동적으로 생성한다.
+/// Start() 에서 EventContext 를 읽어 선택지 데이터를 로드하고 IEventChoiceView 에 위임한다.
 /// 씬 로드 시 EventContext 의 데이터를 소비하고 Clear() 를 호출한다.
 ///
-/// Inspector 연결 필요:
-///   _choiceContainer    — 버튼을 배치할 부모 Transform (VerticalLayoutGroup 권장)
-///   _choiceButtonPrefab — EventChoiceButton 컴포넌트를 가진 버튼 프리팹
+/// UI 생성은 IEventChoiceView(EventSceneView) 에 위임하며,
+/// EventChoicePresenter 가 Start() 시점에 BindView() 를 호출해 View 를 주입한다.
 /// </summary>
 public class EventSceneController : MonoBehaviour
 {
-    [SerializeField] private Transform _choiceContainer;
-    [SerializeField] private EventChoiceButton _choiceButtonPrefab;
+    private IEventChoiceView _choiceView;
 
     private List<EventChoice> _choices;
     private EventBattleConfig _battleConfig;
@@ -51,52 +49,41 @@ public class EventSceneController : MonoBehaviour
         // 방어적 복사 — Clear() 이후에도 로컬 참조가 유효하도록
         _choices        = new List<EventChoice>(_eventContext.Choices);
         _battleConfig   = _eventContext.BattleConfig;
-        _currentEventId = _eventContext.EventId; // Clear() 전에 EventId 저장 — OnChoiceSelected 에서 사용
+        _currentEventId = _eventContext.EventId; // Clear() 전에 EventId 저장 — OnChoiceSelectedFromView 에서 사용
         _eventContext.Clear();
 
-        BuildChoiceButtons();
+        // EventChoicePresenter.Start() 가 먼저 실행되어 _choiceView 가 이미 주입된 경우 즉시 표시한다
+        // Presenter.Start() 가 아직 실행되지 않은 경우 BindView() 호출 시 ShowChoices() 가 실행된다
+        _choiceView?.ShowChoices(_choices);
     }
 
     /// <summary>
-    /// _choices 목록을 순회해 선택지 버튼을 동적으로 생성한다.
-    /// 각 버튼에 EventChoice 데이터와 선택 콜백을 주입한다.
+    /// EventChoicePresenter 가 Start() 시점에 View 를 주입한다.
+    /// MonoBehaviour Start() 와 IStartable.Start() 의 실행 순서가 보장되지 않으므로
+    /// _choices 로드 여부를 확인해 방어적으로 처리한다.
     /// </summary>
-    private void BuildChoiceButtons()
+    /// <param name="view">UI Toolkit 기반 이벤트 선택지 View.</param>
+    public void BindView(IEventChoiceView view)
     {
-        if (_choiceContainer == null)
-        {
-            Debug.LogError("[EventSceneController] _choiceContainer 가 연결되지 않았습니다.", this);
-            return;
-        }
+        _choiceView = view;
 
-        if (_choiceButtonPrefab == null)
+        // Controller.Start() 가 먼저 실행되어 _choices 가 이미 채워진 경우 즉시 표시한다
+        if (_choices != null && _choices.Count > 0)
         {
-            Debug.LogError("[EventSceneController] _choiceButtonPrefab 이 연결되지 않았습니다.", this);
-            return;
-        }
-
-        // 이전 호출로 생성된 버튼이 남아있을 수 있으므로 기존 자식을 모두 제거한다
-        foreach (Transform child in _choiceContainer)
-            Destroy(child.gameObject);
-
-        foreach (EventChoice choice in _choices)
-        {
-            EventChoiceButton button = Object.Instantiate(_choiceButtonPrefab, _choiceContainer);
-            // 각 버튼에 개별 choice 데이터를 바인딩하기 위해 람다를 사용한다
-            button.Setup(choice, () => OnChoiceSelected(choice));
+            _choiceView.ShowChoices(_choices);
         }
     }
 
     /// <summary>
-    /// 플레이어가 선택지를 선택했을 때 호출된다.
+    /// EventChoicePresenter 를 통해 View 이벤트가 전달된다.
     /// EffectType 이 Battle 이면 전투 씬 전환을 요청하고,
     /// 그 외에는 IEventEffectApplier 를 통해 효과를 적용한 뒤 스테이지를 완료한다.
     /// </summary>
     /// <param name="choice">선택된 EventChoice 데이터.</param>
-    private void OnChoiceSelected(EventChoice choice)
+    public void OnChoiceSelectedFromView(EventChoice choice)
     {
         // 중복 선택 방지 — 모든 버튼을 비활성화한다
-        SetButtonsInteractable(false);
+        _choiceView?.SetInteractable(false);
 
         // 이벤트 선택 결과를 JournalSystem 에 보고한다
         // _currentEventId 는 Start() 에서 _eventContext.Clear() 전에 저장한 값이다
@@ -146,7 +133,7 @@ public class EventSceneController : MonoBehaviour
         if (_battleConfig == null)
         {
             Debug.LogError("[EventSceneController] EventBattleConfig 가 없습니다. 전투 전환을 취소합니다.");
-            SetButtonsInteractable(true);
+            _choiceView?.SetInteractable(true);
             return;
         }
 
@@ -155,7 +142,7 @@ public class EventSceneController : MonoBehaviour
         if (pool == null || pool.Count == 0)
         {
             Debug.LogError("[EventSceneController] MonsterGroupPool 이 비어 있습니다. 전투 전환을 취소합니다.");
-            SetButtonsInteractable(true);
+            _choiceView?.SetInteractable(true);
             return;
         }
 
@@ -175,22 +162,5 @@ public class EventSceneController : MonoBehaviour
         };
 
         StageCompletionChannel.Invoke(result);
-    }
-
-    /// <summary>
-    /// _choiceContainer 의 모든 EventChoiceButton 의 인터랙션 가능 여부를 설정한다.
-    /// </summary>
-    /// <param name="interactable">true 면 활성화, false 면 비활성화.</param>
-    private void SetButtonsInteractable(bool interactable)
-    {
-        if (_choiceContainer == null)
-            return;
-
-        foreach (Transform child in _choiceContainer)
-        {
-            EventChoiceButton btn = child.GetComponent<EventChoiceButton>();
-            if (btn != null)
-                btn.SetInteractable(interactable);
-        }
     }
 }
