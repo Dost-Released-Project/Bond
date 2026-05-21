@@ -126,17 +126,28 @@ public partial class BaseCharacter : ITurnUseUnit
     public int RandomSpeed { get; set; }
     
     private AutoResetUniTaskCompletionSource<bool> _tcs;
-    
+    private SkillBase _selectedSkill;
+
+    public event Action<BaseCharacter> onPlayerTurnStarted;
+
+    public void ConfirmSkillSelection(SkillBase skill)
+    {
+        _selectedSkill = skill;
+        _tcs?.TrySetResult(true);
+    }
+
     public async UniTask TakeTurnAsync()
     {
         SkillBase skill = null;
         Debug.Log($"<color=green>{Name} 차례</color>");
-        
+
         if (isPlayable)
         {
+            _selectedSkill = null;
             _tcs = AutoResetUniTaskCompletionSource<bool>.Create();
-            // 플레이어 입력으로 스킬을 결정하고
+            onPlayerTurnStarted?.Invoke(this);
             await _tcs.Task;
+            skill = _selectedSkill;
         }
         else
         {

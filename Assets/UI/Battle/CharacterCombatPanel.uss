@@ -1,0 +1,306 @@
+/* ── CharacterCombatPanel.uss ── */
+/* 모든 색상·폰트는 EoB 테마 변수만 사용. 하드코딩 금지. */
+
+/* ─ 루트 ─────────────────────────────────────────────── */
+
+.character-combat-panel {
+    flex-direction: row;
+    align-items: stretch;
+    background-color: var(--bg-surface);
+    border-width: 1px;
+    border-color: var(--border-default);
+    border-radius: 4px;
+    padding: 10px 12px;
+}
+
+.character-combat-panel--danger {
+    border-color: var(--border-danger);
+}
+
+/* ─ 아이덴티티 ───────────────────────────────────────── */
+
+.combat-panel__identity {
+    flex-direction: column;
+    align-items: center;
+    width: 66px;
+    flex-shrink: 0;
+    margin-right: 8px;
+}
+
+.combat-panel__char-icon {
+    width: 54px;
+    height: 54px;
+    background-color: var(--bg-raised);
+    border-width: 1px;
+    border-color: var(--border-default);
+    border-radius: 3px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.combat-panel__char-icon:hover {
+    border-color: var(--border-highlight);
+}
+
+.combat-panel__icon-text {
+    font-size: var(--font-size-name);
+    color: var(--text-secondary);
+    -unity-text-align: middle-center;
+}
+
+.combat-panel__char-name {
+    font-size: var(--font-size-name);
+    color: var(--text-primary);
+    -unity-text-align: middle-center;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.combat-panel__char-job {
+    font-size: var(--font-size-class);
+    color: var(--text-muted);
+    -unity-text-align: middle-center;
+    letter-spacing: 2px;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.combat-panel__char-role {
+    font-size: var(--font-size-class);
+    color: var(--text-label);
+    -unity-text-align: middle-center;
+    letter-spacing: 1px;
+    border-width: 1px;
+    border-color: var(--border-default);
+    border-radius: 2px;
+    padding: 1px 5px;
+    margin-top: 2px;
+}
+
+/* ─ 구분선 ───────────────────────────────────────────── */
+
+.combat-panel__divider {
+    width: 1px;
+    background-color: var(--bg-divider);
+    align-self: stretch;
+    flex-shrink: 0;
+    margin: 0 8px;
+}
+
+/* ─ 상태 영역 ────────────────────────────────────────── */
+
+.combat-panel__status {
+    flex-direction: column;
+    width: 148px;
+    flex-shrink: 0;
+    margin-right: 0;
+}
+
+.combat-panel__section-label {
+    font-size: var(--font-size-class);
+    color: var(--text-label);
+    letter-spacing: 4px;
+    margin-bottom: 4px;
+}
+
+.combat-panel__status-section {
+    margin-bottom: 6px;
+}
+
+.combat-panel__stat-section {
+    flex-direction: column;
+}
+
+/* HP 게이지 */
+
+.combat-panel__hp-row,
+.combat-panel__insanity-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 3px;
+}
+
+.combat-panel__hp-label,
+.combat-panel__insanity-label {
+    font-size: var(--font-size-system);
+    color: var(--text-muted);
+    width: 24px;
+    flex-shrink: 0;
+    -unity-text-align: middle-right;
+}
+
+.combat-panel__hp-track,
+.combat-panel__insanity-track {
+    flex-grow: 1;
+    height: 6px;
+    background-color: var(--bg-divider);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 0 4px;
+}
+
+.combat-panel__hp-fill {
+    height: 100%;
+    width: 0%;
+    background-color: var(--hp-safe);
+}
+
+.combat-panel__hp-fill--low {
+    background-color: var(--hp-low);
+}
+
+.combat-panel__insanity-fill {
+    height: 100%;
+    width: 0%;
+    background-color: var(--stress-safe);
+}
+
+.combat-panel__insanity-fill--warn {
+    background-color: var(--stress-warn);
+}
+
+.combat-panel__insanity-fill--crit {
+    background-color: var(--stress-crit);
+}
+
+.combat-panel__hp-value,
+.combat-panel__insanity-value {
+    font-size: var(--font-size-system);
+    color: var(--text-muted);
+    min-width: 32px;
+    -unity-text-align: middle-left;
+}
+
+/* 스탯 그리드 */
+
+.combat-panel__stat-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.combat-panel__stat-cell {
+    width: 44px;
+    flex-shrink: 0;
+    background-color: var(--bg-base);
+    border-width: 1px;
+    border-color: var(--border-default);
+    border-radius: 2px;
+    padding: 2px 4px;
+    flex-direction: column;
+    align-items: center;
+    margin: 1px;
+}
+
+.combat-panel__stat-key {
+    font-size: var(--font-size-system);
+    color: var(--text-label);
+    -unity-text-align: middle-center;
+}
+
+.combat-panel__stat-value {
+    font-size: var(--font-size-system);
+    color: var(--text-secondary);
+    -unity-text-align: middle-center;
+}
+
+.combat-panel__stat-value--accent {
+    color: var(--text-accent);
+}
+
+/* ─ 우측 영역 ────────────────────────────────────────── */
+
+.combat-panel__right {
+    flex-direction: column;
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.combat-panel__skill-section {
+    margin-bottom: 6px;
+}
+
+.combat-panel__skill-row {
+    flex-direction: row;
+}
+
+/* 스킬 슬롯 */
+
+.combat-panel__skill-slot {
+    flex-grow: 1;
+    height: 52px;
+    background-color: var(--bg-surface);
+    border-width: 1px;
+    border-color: var(--border-default);
+    border-radius: 3px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 2px;
+    position: relative;
+}
+
+.combat-panel__skill-slot--inactive {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.combat-panel__skill-slot--ready {
+    border-color: var(--border-active);
+    cursor: pointer;
+}
+
+.combat-panel__skill-slot--ready:hover {
+    border-color: var(--border-highlight);
+    background-color: var(--bg-raised);
+}
+
+.combat-panel__skill-slot--selected {
+    border-color: var(--text-accent);
+    background-color: var(--bg-raised);
+    cursor: pointer;
+}
+
+.combat-panel__skill-num {
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    font-size: var(--font-size-system);
+    color: var(--text-disabled);
+}
+
+.combat-panel__skill-icon {
+    width: 18px;
+    height: 18px;
+    -unity-background-scale-mode: scale-to-fit;
+    margin-bottom: 2px;
+}
+
+.combat-panel__skill-name {
+    font-size: var(--font-size-system);
+    color: var(--text-muted);
+    -unity-text-align: middle-center;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100%;
+    padding: 0 4px;
+}
+
+.combat-panel__skill-slot--selected .combat-panel__skill-name {
+    color: var(--text-accent);
+}
+
+/* 장비 영역 */
+
+.combat-panel__equip-section {
+    flex-direction: column;
+}
+
+.combat-panel__equip-mount {
+    margin-top: 2px;
+}
