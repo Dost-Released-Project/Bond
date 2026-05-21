@@ -9,6 +9,7 @@ public class AccessoryBagView : MonoBehaviour
     private ITotalInventory _totalInventory;
     private CharacterItemService _itemService; 
     private InventoryTransferService _transferService;
+    [Inject] private CharacterSelector _selector;
     
     private VisualElement _grid, _tooltip;
     private List<VisualElement> _uiSlots = new();
@@ -30,6 +31,28 @@ public class AccessoryBagView : MonoBehaviour
         _tooltip.AddToClassList("inventory-tooltip");
         _tooltip.pickingMode = PickingMode.Ignore;
         root.Add(_tooltip);
+        
+        // [정밀 튜닝] 가방 컨테이너 전체에 Drop 이벤트 배치 및 타겟 검증 분기
+        _grid.RegisterCallback<PointerUpEvent>(e => {
+            if (_transferService.IsEquipmentDragging)
+            {
+                // [핵심] 마우스를 놓은 최종 대상(e.target)이 리스트 아이템 슬롯이 아닐 때만 실행합니다.
+                // 즉, 가방의 빈 여백 영역이나 스크롤 뷰 컨테이너 자체에 드롭했을 때만 '순수 해제'를 수행합니다.
+                if (e.target == _grid || e.target is ScrollView || e.target is Scroller || 
+                    (e.target as VisualElement).ClassListContains("accessory-list-item") == false)
+                {
+                    var hero = _selector.Selected;
+
+                    if (hero != null)
+                    {
+                        // 인벤토리 자체의 빈 공간을 자동으로 탐색하여 안전하게 안착
+                        _itemService.UnequipToInventory(hero, _transferService.DraggingEquipmentSlotIndex, _totalInventory);
+                    }
+                    _transferService.ResetDrag();
+                    e.StopPropagation(); // 가방 여백 영역에서 처리 끝났으므로 전파 중단
+                }
+            }
+        });
     
         _totalInventory.OnChanged += RefreshUI;
         RefreshUI();
@@ -53,6 +76,26 @@ public class AccessoryBagView : MonoBehaviour
             });
 
             slot.RegisterCallback<PointerUpEvent>(e => {
+                int targetBagSlotIdx = _mappedIndices[uiIdx];
+
+                // 만약 장비 슬롯에서 드래그가 시작된 상태라면?
+                if (_transferService.IsEquipmentDragging)
+                {
+                    var hero = _selector.Selected;
+                    if (hero != null)
+                    {
+                        // 가방 정보를 직접 넘겨주며 직접 해제 연산 수행!
+                        _itemService.UnequipToInventorySlot(
+                            hero, 
+                            _transferService.DraggingEquipmentSlotIndex, 
+                            _totalInventory, 
+                            targetBagSlotIdx
+                        );
+                    }
+                    _transferService.ResetDrag();
+                    return;
+                }
+                
                 if (_transferService.IsDragging && uiIdx < _mappedIndices.Count) {
                     _transferService.ExecuteDragDrop(_transferService.CurrentSourceInventory, _transferService.CurrentDraggingIndex, _totalInventory, _mappedIndices[uiIdx]);
                     _transferService.ResetDrag();

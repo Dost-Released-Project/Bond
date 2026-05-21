@@ -1,4 +1,5 @@
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 namespace Bond.WT.Journal
 {
@@ -13,11 +14,14 @@ namespace Bond.WT.Journal
             return !string.IsNullOrEmpty(actionKey);
         }
 
-        public void ExecuteAction(string actionKey)
+        public async UniTask ExecuteAction(string actionKey, JournalReport report)
         {
-            Debug.Log($"<color=cyan>[MockJournalActionHandler]</color> 외부 시스템에서 액션 실행: <b>{actionKey}</b>");
-            
+            string itemIdInfo = report.Metadata.ContainsKey("ItemId") ? $", ItemId: {report.Metadata["ItemId"]}" : "";
+            string quantityInfo = report.Metadata.ContainsKey("Quantity") ? $", Quantity: {report.Metadata["Quantity"]}" : "";
+            Debug.Log($"<color=cyan>[MockJournalActionHandler]</color> 외부 시스템에서 액션 실행: <b>{actionKey}</b>{itemIdInfo}{quantityInfo}");
+
             // 실제 프로젝트에서는 여기서 InventorySystem.AddItem() 등을 호출하게 됩니다.
+            await UniTask.Yield(); // 비동기 구문을 맞추기 위해 1 프레임 대기
         }
     }
 }

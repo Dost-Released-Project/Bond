@@ -1,3 +1,5 @@
+using Cysharp.Threading.Tasks;
+
 namespace Bond.WT.Journal
 {
     /// <summary>
@@ -13,6 +15,6 @@ namespace Bond.WT.Journal
         /// <summary>
         /// 실제 외부 시스템 로직(아이템 지급, 스탯 변화 등)을 실행합니다.
         /// </summary>
-        void ExecuteAction(string actionKey);
+        UniTask ExecuteAction(string actionKey, JournalReport report);
     }
 }

@@ -42,16 +42,16 @@ public class InventoryView : MonoBehaviour
         
         // 2. ID로 테스트 아이템 추가.
         // 소모품 추가
-        _totalInventory.AddItemId("07000000", 5);
-        _totalInventory.AddItemId("07010000", 5);
-        _totalInventory.AddItemId("07020000", 5);
-        _totalInventory.AddItemId("07030000", 5);
-        _totalInventory.AddItemId("07040000", 5);
+        await _totalInventory.AddItemId("07000000", 5);
+        await _totalInventory.AddItemId("07010000", 5);
+        await _totalInventory.AddItemId("07020000", 5);
+        await _totalInventory.AddItemId("07030000", 5);
+        await _totalInventory.AddItemId("07040000", 5);
         // 장신구 추가.
-        _totalInventory.AddItemId("08000000", 1);
-        _totalInventory.AddItemId("08010000", 1);
-        _totalInventory.AddItemId("08020000", 1);
-        _totalInventory.AddItemId("08030000", 1);
+        await _totalInventory.AddItemId("08000000", 1);
+        await _totalInventory.AddItemId("08010000", 1);
+        await _totalInventory.AddItemId("08020000", 1);
+        await _totalInventory.AddItemId("08030000", 1);
         
         // 3. 탐사 후 타운으로 넘어올 때, 탐사 인벤토리 아이템 모두 토탈 인벤토리로 이동. 파일 로드 이후 적용해야지 적용됨
         _expeditionResultService.ProcessExpeditionReturn();

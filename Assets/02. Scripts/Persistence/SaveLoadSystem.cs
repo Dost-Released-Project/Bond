@@ -64,7 +64,9 @@ namespace Bond.Persistence
             string path = GetPath(key);
             File.WriteAllText(path, json);
 
+#if UNITY_EDITOR
             AssetDatabase.Refresh();
+#endif
         }
 
         public static IEnumerable<ISaveable> ReadAll()

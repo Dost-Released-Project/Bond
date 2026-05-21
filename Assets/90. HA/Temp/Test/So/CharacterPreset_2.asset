@@ -2,7 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
-  m_ObjectHideFlags: 52
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -13,26 +13,26 @@ MonoBehaviour:
   m_Name: CharacterPreset_2
   m_EditorClassIdentifier: Assembly-CSharp::_90._HA.CharacterPreset
   BaseCharacter:
-    Id: 5fb63e10-7000-4137-aa13-c065b0779b30
+    Id: 1d5f4aa9-0454-435f-8da4-0207a021d864
     ImageAddress: RiceSummoner
     Name: RiceSummoner
     Profession:
       _classData: {fileID: 11400000, guid: be9027a2dfbfccb49969b49ccefe3230, type: 2}
     Level: 0
     Insanity: 0
-    RoleType: 2
+    RoleType: 1
     <battleType>k__BackingField:
-      rid: 8081819896858542997
+      rid: 8081819941751750736
     Skills:
-    - rid: 8081819896858542986
-    - rid: 8081819896858542987
-    - rid: 8081819896858542988
-    - rid: 8081819896858542989
+    - rid: 8081819941751750737
+    - rid: 8081819941751750738
+    - rid: 8081819941751750739
+    - rid: 8081819941751750740
     Traits:
-    - Name: C
-      Description: ccc
     - Name: A
       Description: aaa
+    - Name: B
+      Description: bbb
     - Name: Missing
       Description: Missing
     - Name: Missing
@@ -61,89 +61,85 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     RoleReactions:
-    - Id: 1ca812d9-337b-478c-a0d3-5014c4786714
-      Source: 0
+    - Source: 0
       Trigger:
-        rid: 8081819915636179018
-      SkillIndex: 3
-    - Id: 467d3c13-9633-412b-a771-d0360c57c837
-      Source: 0
+        rid: 8081819941751750747
+      SkillIndex: 0
+      ReactionSkillTarget: 0
+    - Source: 0
       Trigger:
-        rid: 8081819915636179022
-      SkillIndex: 3
+        rid: 8081819941751750746
+      SkillIndex: 0
+      ReactionSkillTarget: 1
     TraitReactions:
-    - Id: 97aab4c2-5685-4e96-af89-c234240b3b3a
-      Source: 0
+    - Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
-    - Id: 751db5dc-77f1-4d11-9643-9c59a2ed1fbd
-      Source: 0
+      ReactionSkillTarget: 0
+    - Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
-    - Id: 66c4750f-9a20-4ba6-9e6b-eaaf8856933d
-      Source: 0
+      ReactionSkillTarget: 0
+    - Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
-    - Id: a20d053e-5d29-40af-bec5-876fcc4b2793
-      Source: 0
+      ReactionSkillTarget: 0
+    - Source: 0
       Trigger:
         rid: -2
       SkillIndex: 0
+      ReactionSkillTarget: 0
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 8081819896858542986
-      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+    - rid: 8081819941751750736
+      type: {class: AutoBattle_Def, ns: , asm: Assembly-CSharp}
       data:
-        damage: 0
-        currentLevel: 0
-        _skillData: {fileID: 11400000, guid: 123903391a58c1d40965ebb84691dc53, type: 2}
-    - rid: 8081819896858542987
-      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
-      data:
-        damage: 0
-        currentLevel: 0
-        _skillData: {fileID: 11400000, guid: 7f1a3001486938949bfd35b67465fb4c, type: 2}
-    - rid: 8081819896858542988
-      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
-      data:
-        damage: 0
-        currentLevel: 0
-        _skillData: {fileID: 11400000, guid: 858bd87259958fa44a02098d804ba1c2, type: 2}
-    - rid: 8081819896858542989
+        isPlayable: 0
+    - rid: 8081819941751750737
       type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
       data:
         damage: 0
         currentLevel: 0
         _skillData: {fileID: 11400000, guid: 9cffa0d32b8017147b8af7dfd003f972, type: 2}
-    - rid: 8081819896858542997
-      type: {class: AutoBattle_Atk, ns: , asm: Assembly-CSharp}
+    - rid: 8081819941751750738
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
       data:
-        isPlayable: 0
-    - rid: 8081819915636179018
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: 858bd87259958fa44a02098d804ba1c2, type: 2}
+    - rid: 8081819941751750739
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: 123903391a58c1d40965ebb84691dc53, type: 2}
+    - rid: 8081819941751750740
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: 7f1a3001486938949bfd35b67465fb4c, type: 2}
+    - rid: 8081819941751750746
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
-        ObFilter: 3
-        CoFilter: 0
-        SubjectCharacterId: 
-        Condition:
-          rid: 8081819915636179019
-    - rid: 8081819915636179019
-      type: {class: CritCondition, ns: Reactions, asm: Assembly-CSharp}
+        SubjectCharacterId: 12c65b3a-efef-405e-b6fd-98e360b245ed
+        Conditions:
+        - rid: 8081819941751750758
+    - rid: 8081819941751750747
+      type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        SubjectCharacterId: 1d5f4aa9-0454-435f-8da4-0207a021d864
+        Conditions:
+        - rid: 8081819941751750757
+    - rid: 8081819941751750757
+      type: {class: EvadeCondition, ns: Reactions, asm: Assembly-CSharp}
       data: 
-    - rid: 8081819915636179022
-      type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
-      data:
-        ObFilter: 3
-        CoFilter: 0
-        SubjectCharacterId: c65ebae5-9fea-404d-bda0-9dba540a5ade
-        Condition:
-          rid: 8081819915636179023
-    - rid: 8081819915636179023
+    - rid: 8081819941751750758
       type: {class: CritCondition, ns: Reactions, asm: Assembly-CSharp}
       data: 

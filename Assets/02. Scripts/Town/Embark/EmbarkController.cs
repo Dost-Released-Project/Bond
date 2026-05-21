@@ -77,18 +77,12 @@ namespace Bond.Embark
         {
             if (index < 0 || slot.IsEmpty) return;
 
-            var item = slot.item;
-            int qty = 1;//slot.quantity;
-            
             _transferService.MoveOneFromSlot(_totalInventory, index, _expeditionInventory);
             NotifyChanged();
         }
 
         public void SuppToTown(int index, InventorySlot slot)
         {
-            var item = slot.item;
-            int qty = 1;//slot.quantity;
-            
             _transferService.MoveOneFromSlot(_expeditionInventory, index, _totalInventory);
             NotifyChanged();
         }
