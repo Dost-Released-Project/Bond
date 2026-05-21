@@ -491,6 +491,21 @@
     margin-bottom: 10px;
 }
 
+/* ── 역할·성향 반반 행 ── */
+.char-detail__role-trait-row {
+    flex-direction: row;
+    margin-bottom: 10px;
+}
+.char-detail__role-trait-half {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    margin-bottom: 0;
+}
+.char-detail__role-trait-row > .char-detail__role-section {
+    margin-right: 8px;
+}
+
 /* ── 스킬 그리드 ── */
 .char-detail__skill-section {
     flex-direction: column;

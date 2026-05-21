@@ -23,24 +23,9 @@
                         <!-- 초상화 -->
                         <ui:VisualElement name="char-detail__portrait" class="char-detail__portrait" />
 
-                        <!-- 정체성 (클래스·레벨·역할) -->
+                        <!-- 정체성 (클래스·레벨) -->
                         <ui:VisualElement class="char-detail__identity">
                             <ui:Label name="char-detail__class-level" class="char-detail__class-level" text="" />
-                            <!-- Task 4: 역할 드롭다운 -->
-                            <ui:VisualElement class="char-detail__role-section">
-                                <ui:VisualElement class="char-detail__section-header-row">
-                                    <ui:Label class="char-detail__section-label" text="역할" />
-                                    <ui:Label name="lock-banner-role" class="char-detail__lock-banner" text="" />
-                                </ui:VisualElement>
-                                <ui:VisualElement name="char-detail__role-area" class="char-detail__role-area">
-                                    <ui:Button name="role-btn-current" class="char-detail__role-current" text="—" />
-                                    <ui:VisualElement name="char-detail__role-picker" class="char-detail__role-picker">
-                                        <ui:Button name="role-opt-tanker"    class="char-detail__role-option char-detail__role-option--tanker"    text="탱커" />
-                                        <ui:Button name="role-opt-dealer"    class="char-detail__role-option char-detail__role-option--dealer"    text="딜러" />
-                                        <ui:Button name="role-opt-supporter" class="char-detail__role-option char-detail__role-option--supporter" text="서포터" />
-                                    </ui:VisualElement>
-                                </ui:VisualElement>
-                            </ui:VisualElement>
                         </ui:VisualElement>
 
                         <!-- Task 1: 기본 능력치 박스형 -->
@@ -117,12 +102,6 @@
                             </ui:VisualElement>
                         </ui:VisualElement>
 
-                        <!-- Task 3: 성향 태그 칩형 -->
-                        <ui:VisualElement class="char-detail__traits">
-                            <ui:Label class="char-detail__section-label" text="성향" />
-                            <ui:VisualElement name="char-detail__trait-list" class="char-detail__trait-list" />
-                        </ui:VisualElement>
-
                         <!-- 장비 -->
                         <ui:VisualElement class="char-detail__equipment">
                             <ui:VisualElement class="char-detail__section-header-row">
@@ -136,6 +115,30 @@
 
                     <!-- ── 우측 컬럼 ── -->
                     <ui:VisualElement class="char-detail__right-col">
+
+                        <!-- 역할 + 성향 (반반) -->
+                        <ui:VisualElement class="char-detail__role-trait-row">
+                            <!-- 역할 -->
+                            <ui:VisualElement class="char-detail__role-section char-detail__role-trait-half">
+                                <ui:VisualElement class="char-detail__section-header-row">
+                                    <ui:Label class="char-detail__section-label" text="역할" />
+                                    <ui:Label name="lock-banner-role" class="char-detail__lock-banner" text="" />
+                                </ui:VisualElement>
+                                <ui:VisualElement name="char-detail__role-area" class="char-detail__role-area">
+                                    <ui:Button name="role-btn-current" class="char-detail__role-current" text="—" />
+                                    <ui:VisualElement name="char-detail__role-picker" class="char-detail__role-picker">
+                                        <ui:Button name="role-opt-tanker"    class="char-detail__role-option char-detail__role-option--tanker"    text="탱커" />
+                                        <ui:Button name="role-opt-dealer"    class="char-detail__role-option char-detail__role-option--dealer"    text="딜러" />
+                                        <ui:Button name="role-opt-supporter" class="char-detail__role-option char-detail__role-option--supporter" text="서포터" />
+                                    </ui:VisualElement>
+                                </ui:VisualElement>
+                            </ui:VisualElement>
+                            <!-- 성향 -->
+                            <ui:VisualElement class="char-detail__traits char-detail__role-trait-half">
+                                <ui:Label class="char-detail__section-label" text="성향" />
+                                <ui:VisualElement name="char-detail__trait-list" class="char-detail__trait-list" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
 
                         <!-- 스킬 -->
                         <ui:VisualElement class="char-detail__skill-section">
