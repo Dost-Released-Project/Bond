@@ -39,5 +39,10 @@ public class EventTestScope : LifetimeScope
 
         // EventSceneController (씬 히어라키에서 탐색)
         builder.RegisterComponentInHierarchy<EventSceneController>();
+
+        builder.RegisterComponentInHierarchy<EventSceneView>()
+            .AsImplementedInterfaces()
+            .AsSelf();
+        builder.RegisterEntryPoint<EventChoicePresenter>(Lifetime.Scoped);
     }
 }

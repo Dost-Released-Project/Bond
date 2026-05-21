@@ -9,11 +9,15 @@ using UnityEngine;
 public class EventContextService : IEventContext
 {
     private string _eventId = string.Empty;
+    private string _description = string.Empty;
     private List<EventChoice> _choices = new List<EventChoice>();
     private EventBattleConfig _battleConfig;
 
     /// <summary>현재 배정된 이벤트 ID.</summary>
     public string EventId => _eventId;
+
+    /// <summary>현재 이벤트의 설명 텍스트.</summary>
+    public string Description => _description;
 
     /// <summary>현재 이벤트의 선택지 목록 (읽기 전용).</summary>
     public IReadOnlyList<EventChoice> Choices => _choices;
@@ -26,11 +30,13 @@ public class EventContextService : IEventContext
     /// 기존 데이터를 덮어쓰고 choices 는 방어적 복사를 수행한다.
     /// </summary>
     /// <param name="eventId">배정된 이벤트 ID.</param>
+    /// <param name="description">이벤트 설명 텍스트.</param>
     /// <param name="choices">이벤트의 선택지 목록.</param>
     /// <param name="battleConfig">이벤트 전투 Config. Battle 선택지가 없으면 null.</param>
-    public void Set(string eventId, List<EventChoice> choices, EventBattleConfig battleConfig)
+    public void Set(string eventId, string description, List<EventChoice> choices, EventBattleConfig battleConfig)
     {
         _eventId = eventId;
+        _description = description;
         // 외부 리스트 변경이 내부 상태에 영향을 미치지 않도록 방어적 복사
         _choices = new List<EventChoice>(choices);
         _battleConfig = battleConfig;
@@ -45,6 +51,7 @@ public class EventContextService : IEventContext
     public void Clear()
     {
         _eventId = string.Empty;
+        _description = string.Empty;
         _choices.Clear();
         _battleConfig = null;
         // TODO: 검증 완료 후 제거

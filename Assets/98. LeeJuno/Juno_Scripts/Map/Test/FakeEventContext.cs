@@ -15,10 +15,12 @@ public class FakeEventContext : MonoBehaviour, IEventContext
     [SerializeField] private EventBattleConfig _testBattleConfig;
 
     private string _eventId = "TEST_EVENT_001";
+    private string _description = string.Empty;
     private List<EventChoice> _choices = new List<EventChoice>();
     private EventBattleConfig _battleConfig;
 
     public string EventId => _eventId;
+    public string Description => _description;
     public IReadOnlyList<EventChoice> Choices => _choices;
     public EventBattleConfig BattleConfig => _battleConfig;
 
@@ -33,20 +35,23 @@ public class FakeEventContext : MonoBehaviour, IEventContext
         }
 
         _eventId      = _testEventData.Id;
+        _description  = _testEventData.Description;
         _choices      = new List<EventChoice>(_testEventData.Choices);
         _battleConfig = _testBattleConfig;
     }
 
-    public void Set(string eventId, List<EventChoice> choices, EventBattleConfig battleConfig)
+    public void Set(string eventId, string description, List<EventChoice> choices, EventBattleConfig battleConfig)
     {
         _eventId      = eventId;
+        _description  = description;
         _choices      = new List<EventChoice>(choices);
         _battleConfig = battleConfig;
     }
 
     public void Clear()
     {
-        _eventId = string.Empty;
+        _eventId      = string.Empty;
+        _description  = string.Empty;
         _choices.Clear();
         _battleConfig = null;
     }

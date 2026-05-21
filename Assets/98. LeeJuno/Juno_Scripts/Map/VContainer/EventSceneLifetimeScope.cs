@@ -17,5 +17,10 @@ public class EventSceneLifetimeScope : LifetimeScope
         // 이벤트 씬 생명주기 동안만 JournalSystem 에 등록/해제되는 Provider
         // AsSelf(): EventSceneController 가 구체 타입으로 직접 주입받아 RecordChoice() 를 호출하기 위해 노출
         builder.RegisterEntryPoint<EventJournalProvider>(Lifetime.Scoped).AsSelf();
+
+        builder.RegisterComponentInHierarchy<EventSceneView>()
+            .AsImplementedInterfaces()
+            .AsSelf();
+        builder.RegisterEntryPoint<EventChoicePresenter>(Lifetime.Scoped);
     }
 }

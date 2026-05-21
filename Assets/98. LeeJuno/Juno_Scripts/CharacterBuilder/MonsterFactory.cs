@@ -78,9 +78,9 @@ public class MonsterFactory
         }
 
         // 스킬 장착 로직
-        if (so.SkillIds != null && so.SkillIds.Length > 0)
+        if (so.SkillIds != null && so.SkillIds.Count > 0)
         {
-            int maxSkills = Mathf.Min(so.SkillIds.Length, 4);
+            int maxSkills = Mathf.Min(so.SkillIds.Count, 4);
             for (int i = 0; i < maxSkills; i++)
             {
                 if (string.IsNullOrEmpty(so.SkillIds[i]) == false)
