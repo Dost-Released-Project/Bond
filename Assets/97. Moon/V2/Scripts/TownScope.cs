@@ -39,6 +39,7 @@ public class TownScope : LifetimeScope
         builder.Register<CharacterSelector>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
         builder.Register<CharacterDetailController>(Lifetime.Scoped).WithParameter("skillDb", skillDb);
         builder.RegisterComponentInHierarchy<CharacterDetailPresenter>();
+        builder.RegisterComponentInHierarchy<CharacterCombatPanelPresenter>();
 
         // 씬에 배치된 컴포넌트
         builder.RegisterComponentInHierarchy<TownUIController>();

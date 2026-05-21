@@ -1,5 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="project://database/Assets/UI/Themes/EoB_Theme_DarkAmber.uss" />
     <ui:Style src="CharacterCombatPanel.uss" />
+    <Style src="project://database/Assets/UI/Shared/EquipSlots.uss" />
     <ui:Template name="EquipSlots" src="../Shared/EquipSlots.uxml" />
 
     <ui:VisualElement class="character-combat-panel">

@@ -4,6 +4,9 @@
 /* ─ 루트 ─────────────────────────────────────────────── */
 
 .character-combat-panel {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
     flex-direction: row;
     align-items: stretch;
     background-color: var(--bg-surface);
@@ -36,7 +39,6 @@
     border-radius: 3px;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
     -unity-background-scale-mode: scale-to-fit;
 }
 
@@ -247,12 +249,10 @@
 
 .combat-panel__skill-slot--inactive {
     opacity: 0.4;
-    cursor: not-allowed;
 }
 
 .combat-panel__skill-slot--ready {
     border-color: var(--border-active);
-    cursor: pointer;
 }
 
 .combat-panel__skill-slot--ready:hover {
@@ -263,7 +263,6 @@
 .combat-panel__skill-slot--selected {
     border-color: var(--text-accent);
     background-color: var(--bg-raised);
-    cursor: pointer;
 }
 
 .combat-panel__skill-num {
