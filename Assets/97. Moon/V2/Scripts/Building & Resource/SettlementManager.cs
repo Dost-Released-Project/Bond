@@ -91,7 +91,7 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
 
             // [복구] 기존 슬롯 시각적 요소 및 기능 제거
             // 슬롯 컴포넌트나 메쉬를 꺼서 더 이상 건설 창이 뜨지 않게 합니다.
-            if (slotTransform.TryGetComponent<MeshRenderer>(out var mr)) mr.enabled = false;
+            if (slotTransform.TryGetComponent<SpriteRenderer>(out var mr)) mr.enabled = false;
             if (slotTransform.TryGetComponent<BoxCollider>(out var bc)) bc.enabled = false;
             if (slotTransform.TryGetComponent<ConstructionSlot>(out var slotScript)) slotScript.enabled = false;
 
@@ -187,7 +187,7 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         Transform slotTransform = constructionSlots[slotIndex];
 
         // 1. 슬롯 비활성화 (겹침 방지)
-        if (slotTransform.TryGetComponent<MeshRenderer>(out var mr)) mr.enabled = false;
+        if (slotTransform.TryGetComponent<SpriteRenderer>(out var mr)) mr.enabled = false;
         if (slotTransform.TryGetComponent<BoxCollider>(out var bc)) bc.enabled = false;
         if (slotTransform.TryGetComponent<ConstructionSlot>(out var cs)) cs.enabled = false;
 
