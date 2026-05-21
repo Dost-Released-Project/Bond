@@ -29,13 +29,17 @@ MonoBehaviour:
     - rid: 8081819941751750734
     - rid: 8081819941751750735
     Traits:
-    - Name: A
+    - Type: 0
+      Name: A
       Description: aaa
-    - Name: C
+    - Type: 0
+      Name: C
       Description: ccc
-    - Name: Missing
+    - Type: 0
+      Name: Missing
       Description: Missing
-    - Name: Missing
+    - Type: 0
+      Name: Missing
       Description: Missing
     Weapon:
       itemName: 
@@ -69,10 +73,28 @@ MonoBehaviour:
         rid: 8081819941751750754
       SkillIndex: 1
       ReactionSkillTarget: 2
-    TraitReactions: []
+    TraitReactions:
+    - Trigger:
+        rid: -2
+      SkillIndex: 0
+      ReactionSkillTarget: 0
+    - Trigger:
+        rid: -2
+      SkillIndex: 0
+      ReactionSkillTarget: 0
+    - Trigger:
+        rid: -2
+      SkillIndex: 0
+      ReactionSkillTarget: 0
+    - Trigger:
+        rid: -2
+      SkillIndex: 0
+      ReactionSkillTarget: 0
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 8081819941751750731
       type: {class: AutoBattle_Atk, ns: , asm: Assembly-CSharp}
       data:
