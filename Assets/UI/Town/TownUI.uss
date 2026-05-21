@@ -285,19 +285,20 @@
     overflow: hidden;
 }
 
-/* ── 바디 스크롤 ── */
+/* ── 우측 컬럼 스크롤 (right-col에 합성됨) ── */
 .char-detail__scroll {
-    flex-grow: 1;
+    /* flex 크기는 char-detail__right-col이 제공 */
 }
 
 .char-detail__scroll > .unity-scroll-view__content-container {
-    padding: 10px;
+    padding: 0;
 }
 
 /* ── 2단 레이아웃 ── */
 .char-detail__layout {
     flex-direction: row;
     flex-grow: 1;
+    padding: 10px;
 }
 
 .char-detail__left-col {

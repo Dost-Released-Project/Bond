@@ -139,7 +139,7 @@ namespace Bond.UI.Town
             }
 
             var equipRoot = root.Q("char-detail__equip-slots");
-            _equipSlots = new EquipSlotsPresenter(equipRoot, controller, transferService);
+            _equipSlots = new EquipSlotsPresenter(equipRoot, controller, transferService, _panel);
             _equipSlots.OnInventoryOpenRequested += () => _accessoryBagView.ToggleWindow();
             _equipSlots.OnUnequipRequested       += OnUnequipRequested;
 

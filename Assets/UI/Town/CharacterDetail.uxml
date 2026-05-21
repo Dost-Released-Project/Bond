@@ -12,10 +12,7 @@
 
         <!-- 바디 -->
         <ui:VisualElement name="character-detail__body" class="character-detail__body">
-            <ui:ScrollView class="char-detail__scroll"
-                           vertical-scroller-visibility="Auto"
-                           horizontal-scroller-visibility="Hidden">
-                <ui:VisualElement class="char-detail__layout">
+            <ui:VisualElement class="char-detail__layout">
 
                     <!-- ── 좌측 컬럼 ── -->
                     <ui:VisualElement class="char-detail__left-col">
@@ -113,8 +110,10 @@
 
                     </ui:VisualElement>
 
-                    <!-- ── 우측 컬럼 ── -->
-                    <ui:VisualElement class="char-detail__right-col">
+                    <!-- ── 우측 컬럼 (스크롤) ── -->
+                    <ui:ScrollView class="char-detail__right-col char-detail__scroll"
+                                   vertical-scroller-visibility="Auto"
+                                   horizontal-scroller-visibility="Hidden">
 
                         <!-- 역할 + 성향 (반반) -->
                         <ui:VisualElement class="char-detail__role-trait-row">
@@ -269,10 +268,9 @@
 
                         </ui:VisualElement>
 
-                    </ui:VisualElement>
+                    </ui:ScrollView>
 
                 </ui:VisualElement>
-            </ui:ScrollView>
         </ui:VisualElement>
 
     </ui:VisualElement>

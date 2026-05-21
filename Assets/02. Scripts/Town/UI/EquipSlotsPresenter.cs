@@ -8,6 +8,7 @@ namespace Bond.UI.Town
     {
         private readonly CharacterDetailController _controller;
         private readonly InventoryTransferService _transferService;
+        private readonly VisualElement _tooltipRoot;
 
         // 인벤토리 열기는 직접 처리하지 않고 상위에 위임한다
         public event Action OnInventoryOpenRequested;
@@ -19,13 +20,16 @@ namespace Bond.UI.Town
         private BaseCharacter _character;
         private bool _editable;
 
+        // tooltipRoot: 툴팁을 붙일 클리핑 없는 상위 컨테이너 (null이면 chip 자체에 붙임)
         public EquipSlotsPresenter(
             VisualElement root,
             CharacterDetailController controller,
-            InventoryTransferService transferService)
+            InventoryTransferService transferService,
+            VisualElement tooltipRoot = null)
         {
             _controller      = controller;
             _transferService = transferService;
+            _tooltipRoot     = tooltipRoot ?? root;
 
             _chipWeapon  = root.Q("equip-chip-weapon");
             _chipArmor   = root.Q("equip-chip-armor");
@@ -157,7 +161,25 @@ namespace Bond.UI.Town
                 if (_chipAcc[i] == null) continue;
                 var acc = _character?.Accessories?[i];
                 SetChipData(_chipAcc[i], acc?.itemName, acc != null);
+                SetChipIcon(_chipAcc[i], acc?.icon);
                 _chipAcc[i].RemoveFromClassList("equip-slots__chip--drop-target");
+            }
+        }
+
+        private static void SetChipIcon(VisualElement chip, Sprite icon)
+        {
+            var iconEl = chip.Q<Label>(className: "equip-slots__chip-icon");
+            if (iconEl == null) return;
+
+            if (icon != null)
+            {
+                iconEl.text = "";
+                iconEl.style.backgroundImage = new StyleBackground(icon);
+            }
+            else
+            {
+                iconEl.style.backgroundImage = new StyleBackground();
+                iconEl.text = "◆";
             }
         }
 
@@ -185,17 +207,21 @@ namespace Bond.UI.Town
         {
             var tooltip = new Label();
             tooltip.AddToClassList("equip-slots__tooltip");
-            tooltip.pickingMode = PickingMode.Ignore;
-            tooltip.style.display   = DisplayStyle.None;
-            tooltip.style.position  = Position.Absolute;
-            tooltip.style.top       = new StyleLength(new Length(100, LengthUnit.Percent));
-            tooltip.style.left      = 0;
-            chip.Add(tooltip);
+            tooltip.pickingMode    = PickingMode.Ignore;
+            tooltip.style.display  = DisplayStyle.None;
+            tooltip.style.position = Position.Absolute;
+            _tooltipRoot.Add(tooltip);
 
             chip.RegisterCallback<MouseEnterEvent>(evt =>
             {
                 tooltip.text = getText();
+                // chip의 월드 좌표를 _tooltipRoot 로컬 좌표로 변환하여 clip 없이 표시
+                var chipBounds = chip.worldBound;
+                var localPos   = _tooltipRoot.WorldToLocal(new Vector2(chipBounds.x, chipBounds.yMax + 4));
+                tooltip.style.left = localPos.x;
+                tooltip.style.top  = localPos.y;
                 tooltip.style.display = DisplayStyle.Flex;
+                tooltip.BringToFront();
             });
             chip.RegisterCallback<MouseLeaveEvent>(evt =>
             {
@@ -220,9 +246,35 @@ namespace Bond.UI.Town
         private string GetAccTooltip(int idx)
         {
             var acc = _character?.Accessories?[idx];
-            string hint = _editable ? "\n클릭하여 인벤토리 열기" : "";
-            if (acc == null) return $"부속품 {idx + 1}\n장착된 아이템 없음{hint}";
-            return $"부속품 {idx + 1}\n{acc.itemName}{hint}";
+
+            if (acc == null)
+            {
+                string hint = _editable ? "\n클릭하여 인벤토리 열기" : "";
+                return $"부속품 {idx + 1}\n장착된 아이템 없음{hint}";
+            }
+
+            string result = $"부속품 {idx + 1}\n{acc.itemName}";
+
+            if (!string.IsNullOrEmpty(acc.Description))
+                result += $"\n{acc.Description}";
+
+            if (acc.specialEffects != null && acc.specialEffects.Count > 0)
+            {
+                result += "\n[장착 효과]";
+                foreach (var effect in acc.specialEffects)
+                {
+                    string sign = effect.value >= 0 ? "+" : "";
+                    string val  = effect.mode == ModifierMode.Flat
+                        ? $"{sign}{effect.value:0.#}"
+                        : $"{sign}{effect.value:P0}";
+                    result += $"\n{effect.name}  {val}";
+                }
+            }
+
+            if (_editable)
+                result += "\n우클릭으로 해제";
+
+            return result;
         }
 
         private static string Truncate(string s, int max) =>

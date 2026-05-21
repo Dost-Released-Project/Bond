@@ -35,12 +35,13 @@
     -unity-font-style: bold;
 }
 
-/* 중앙 아이콘 심볼 */
+/* 중앙 아이콘 심볼 (텍스트 폴백 또는 backgroundImage 스프라이트) */
 .equip-slots__chip-icon {
     font-size: var(--font-size-button);
     color: var(--text-muted);
     -unity-text-align: middle-center;
     flex-grow: 1;
+    -unity-background-scale-mode: scale-to-fit;
 }
 
 /* 하단 장비명 약칭 */
