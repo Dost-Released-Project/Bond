@@ -19,7 +19,7 @@ MonoBehaviour:
     Profession:
       _classData: {fileID: 11400000, guid: be9027a2dfbfccb49969b49ccefe3230, type: 2}
     Level: 0
-    Insanity: 0
+    Insanity: 80
     RoleType: 2
     <battleType>k__BackingField:
       rid: 8081819941751750808
@@ -65,28 +65,34 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     RoleReactions:
-    - Trigger:
+    - SubjectCharacterId: 1d5f4aa9-0454-435f-8da4-0207a021d864
+      Trigger:
         rid: 8081819941751750747
       SkillIndex: 0
       ReactionSkillTarget: 1
-    - Trigger:
+    - SubjectCharacterId: 12c65b3a-efef-405e-b6fd-98e360b245ed
+      Trigger:
         rid: 8081819941751750746
       SkillIndex: 0
       ReactionSkillTarget: 2
     TraitReactions:
-    - Trigger:
+    - SubjectCharacterId: 
+      Trigger:
         rid: -2
       SkillIndex: 0
       ReactionSkillTarget: 0
-    - Trigger:
+    - SubjectCharacterId: 
+      Trigger:
         rid: -2
       SkillIndex: 0
       ReactionSkillTarget: 0
-    - Trigger:
+    - SubjectCharacterId: 
+      Trigger:
         rid: -2
       SkillIndex: 0
       ReactionSkillTarget: 0
-    - Trigger:
+    - SubjectCharacterId: 
+      Trigger:
         rid: -2
       SkillIndex: 0
       ReactionSkillTarget: 0
@@ -122,7 +128,6 @@ MonoBehaviour:
     - rid: 8081819941751750746
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
-        SubjectCharacterId: 12c65b3a-efef-405e-b6fd-98e360b245ed
         Conditions:
         - rid: 8081819941751750812
         - rid: 8081819941751750813
@@ -131,7 +136,6 @@ MonoBehaviour:
     - rid: 8081819941751750747
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
-        SubjectCharacterId: 1d5f4aa9-0454-435f-8da4-0207a021d864
         Conditions:
         - rid: 8081819941751750809
         - rid: 8081819941751750810
