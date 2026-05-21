@@ -186,8 +186,10 @@ namespace Bond.UI.Town
             var tooltip = new Label();
             tooltip.AddToClassList("equip-slots__tooltip");
             tooltip.pickingMode = PickingMode.Ignore;
-            tooltip.style.display = DisplayStyle.None;
-            tooltip.style.position = Position.Absolute;
+            tooltip.style.display   = DisplayStyle.None;
+            tooltip.style.position  = Position.Absolute;
+            tooltip.style.top       = new StyleLength(new Length(100, LengthUnit.Percent));
+            tooltip.style.left      = 0;
             chip.Add(tooltip);
 
             chip.RegisterCallback<MouseEnterEvent>(evt =>

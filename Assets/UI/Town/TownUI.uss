@@ -305,6 +305,7 @@
     flex-grow: 4;
     flex-basis: 0;
     margin-right: 8px;
+    padding-left: 8px;
 }
 
 .char-detail__right-col {
