@@ -14,6 +14,7 @@ public class MonsterDTO
     public int AGI             { get; set; }
     public int INT             { get; set; }
     public string ImageAddress { get; set; }
+    public string SkillIds     { get; set; }
 }
 
 public class MonsterParser : TSVParserBase<MonsterDTO, MonsterSO>
@@ -27,6 +28,15 @@ public class MonsterParser : TSVParserBase<MonsterDTO, MonsterSO>
 
     protected override void Populate(MonsterSO so, MonsterDTO dto)
     {
+        string[] skillIdsArray = string.IsNullOrEmpty(dto.SkillIds) 
+            ? new string[0] 
+            : dto.SkillIds.Split(new char[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries);
+            
+        for (int i = 0; i < skillIdsArray.Length; i++)
+        {
+            skillIdsArray[i] = skillIdsArray[i].Trim();
+        }
+
         so.SetData(
             id:           dto.Id,
             displayName:  dto.Name,
@@ -35,7 +45,8 @@ public class MonsterParser : TSVParserBase<MonsterDTO, MonsterSO>
             str:          dto.STR,
             agi:          dto.AGI,
             intel:        dto.INT,
-            imageAddress: dto.ImageAddress
+            imageAddress: dto.ImageAddress,
+            skillIds:     skillIdsArray
         );
     }
 
@@ -87,6 +98,7 @@ public class MonsterParser : TSVParserBase<MonsterDTO, MonsterSO>
             Map(m => m.AGI).Name("AGI").Default(0);
             Map(m => m.INT).Name("INT").Default(0);
             Map(m => m.ImageAddress).Name("ImageAddress").Default("");
+            Map(m => m.SkillIds).Name("SkillIds").Default("");
         }
     }
 }
