@@ -1,3 +1,4 @@
+using System;
 using Reactions;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -51,11 +52,10 @@ namespace Bond.UI.Town
         private readonly VisualElement[] _reactionTriggerParts  = new VisualElement[6];
         private readonly VisualElement[] _reactionSkillParts    = new VisualElement[6];
 
-        private readonly VisualElement _skillPicker;
-        private int _skillPickerTargetSlot = -1;
-
-        private readonly VisualElement _targetPicker;
-        private int _targetPickerTargetSlot = -1;
+        // 인라인 풀
+        private readonly VisualElement[] _reactionPools = new VisualElement[6];
+        private int    _openPoolSlot = -1;
+        private string _openPoolPart = null;
 
         private BaseCharacter _character;
         private CharacterDetailViewMode _viewMode;
@@ -147,7 +147,11 @@ namespace Bond.UI.Town
             _controller.OnReactionChanged  += RefreshReactionSlot;
             _controller.OnAccessoryChanged += () => _equipSlots.SetCharacter(_character);
 
-            // 스킬 파트 클릭 → 스킬 피커
+            // 리액션 인라인 풀 요소 쿼리
+            for (int i = 0; i < 6; i++)
+                _reactionPools[i] = root.Q($"reaction-pool-{i}");
+
+            // 스킬 파트 클릭 → 인라인 풀
             for (int i = 0; i < 6; i++)
             {
                 int idx = i;
@@ -155,36 +159,28 @@ namespace Bond.UI.Town
                 {
                     if (_viewMode == CharacterDetailViewMode.ReadOnly) return;
                     if (idx >= 2 && _viewMode == CharacterDetailViewMode.EquipOnly) return;
-                    OpenSkillPicker(idx);
+                    TogglePool(idx, "skill");
                     evt.StopPropagation();
                 });
             }
 
-            // 역할 슬롯(0~1) target 파트 클릭 → 대상 피커
+            // 역할 슬롯(0~1) target·trigger 파트 클릭 → 인라인 풀
             for (int i = 0; i < 2; i++)
             {
                 int idx = i;
                 _reactionTargetParts[idx]?.RegisterCallback<ClickEvent>(evt =>
                 {
                     if (_viewMode != CharacterDetailViewMode.FullEdit) return;
-                    OpenTargetPicker(idx);
+                    TogglePool(idx, "target");
+                    evt.StopPropagation();
+                });
+                _reactionTriggerParts[idx]?.RegisterCallback<ClickEvent>(evt =>
+                {
+                    if (_viewMode != CharacterDetailViewMode.FullEdit) return;
+                    TogglePool(idx, "trigger");
                     evt.StopPropagation();
                 });
             }
-
-            // 스킬 피커
-            _skillPicker = new VisualElement();
-            _skillPicker.AddToClassList("char-detail__skill-picker");
-            _skillPicker.style.display  = DisplayStyle.None;
-            _skillPicker.style.position = Position.Absolute;
-            _panel.Add(_skillPicker);
-
-            // 대상 피커
-            _targetPicker = new VisualElement();
-            _targetPicker.AddToClassList("char-detail__skill-picker");
-            _targetPicker.style.display  = DisplayStyle.None;
-            _targetPicker.style.position = Position.Absolute;
-            _panel.Add(_targetPicker);
 
             // 바깥 클릭 시 역할 드롭다운 닫기
             _panel.RegisterCallback<PointerDownEvent>(evt =>
@@ -216,8 +212,7 @@ namespace Bond.UI.Town
         {
             _panel.RemoveFromClassList("character-detail--visible");
             _panel.AddToClassList("character-detail--hidden");
-            CloseSkillPicker();
-            CloseTargetPicker();
+            CloseAllPools();
             CloseRolePicker();
         }
 
@@ -447,16 +442,17 @@ namespace Bond.UI.Town
 
             if (locked) return;
 
-            // target
+            // target (SubjectCharacterId)
             bool hasTarget = reaction.Trigger is Trigger t0 && !string.IsNullOrEmpty(t0.SubjectCharacterId);
-            _reactionTargetLabels[slotIndex].text = hasTarget
-                ? ((Trigger)reaction.Trigger).SubjectCharacterId
-                : "미설정";
+            string targetName = hasTarget && BaseCharacter.Dict.TryGetValue(((Trigger)reaction.Trigger).SubjectCharacterId, out var subj)
+                ? subj.Name
+                : hasTarget ? ((Trigger)reaction.Trigger).SubjectCharacterId : "미설정";
+            _reactionTargetLabels[slotIndex].text = targetName;
             _reactionTargetLabels[slotIndex].EnableInClassList(
                 "char-detail__reaction-part-val--placeholder", !hasTarget);
 
-            // trigger
-            bool hasTrigger = reaction.Trigger != null;
+            // trigger (조건)
+            bool hasTrigger = reaction.Trigger is Trigger tt && tt.Conditions.Count > 0;
             _reactionTriggerLabels[slotIndex].text = hasTrigger
                 ? GetTriggerDisplayText(reaction.Trigger)
                 : "미설정";
@@ -490,9 +486,14 @@ namespace Bond.UI.Town
 
         private string GetTriggerDisplayText(ITrigger trigger)
         {
-            if (trigger is Trigger t && !string.IsNullOrEmpty(t.SubjectCharacterId))
-                return $"대상: {t.SubjectCharacterId}";
-            return "트리거";
+            if (trigger == null) return "미설정";
+            if (trigger is Trigger t)
+            {
+                if (t.Conditions.Count > 0)
+                    return t.Conditions[0].Description ?? "트리거";
+                return "트리거";
+            }
+            return trigger.GetType().Name;
         }
 
         private string GetSkillDisplayText(int skillIndex)
@@ -518,96 +519,165 @@ namespace Bond.UI.Town
             _rolePicker.RemoveFromClassList("char-detail__role-picker--open");
         }
 
-        private void OpenSkillPicker(int slotIndex)
+        private void TogglePool(int slotIndex, string part)
         {
-            CloseTargetPicker();
-            _skillPickerTargetSlot = slotIndex;
-            _skillPicker.Clear();
-            _skillPicker.style.display = DisplayStyle.Flex;
-
-            var skills = _controller.GetAvailableSkills();
-            foreach (var skill in skills)
+            if (_openPoolSlot == slotIndex && _openPoolPart == part)
             {
-                var captured = skill;
-                var btn = new Button(() =>
-                {
-                    _controller.SetReactionSkill(_skillPickerTargetSlot, captured);
-                    CloseSkillPicker();
-                });
-                btn.AddToClassList("char-detail__skill-picker-item");
-                btn.text = captured.Data?.DisplayName ?? "?";
-                _skillPicker.Add(btn);
+                CloseAllPools();
+                return;
             }
+            CloseAllPools();
+            _openPoolSlot = slotIndex;
+            _openPoolPart = part;
 
-            if (skills.Count == 0)
+            var pool = _reactionPools[slotIndex];
+            if (pool == null) return;
+
+            // 헤더
+            var header = new VisualElement();
+            header.AddToClassList("char-detail__pool-header");
+
+            var title = new Label(part switch
             {
-                var empty = new Label("스킬 없음");
-                empty.AddToClassList("char-detail__skill-picker-empty");
-                _skillPicker.Add(empty);
+                "target"  => "관찰 대상",
+                "trigger" => "조건",
+                _         => "스킬",
+            });
+            title.AddToClassList("char-detail__pool-title");
+            header.Add(title);
+
+            var closeBtn = new Button(CloseAllPools);
+            closeBtn.AddToClassList("char-detail__pool-close-btn");
+            closeBtn.text = "닫기 ×";
+            header.Add(closeBtn);
+            pool.Add(header);
+
+            // 칩 컨테이너
+            var chips = new VisualElement();
+            chips.AddToClassList("char-detail__pool-chips");
+            switch (part)
+            {
+                case "target":  BuildTargetChips(slotIndex, chips);  break;
+                case "trigger": BuildTriggerChips(slotIndex, chips); break;
+                default:        BuildSkillChips(slotIndex, chips);   break;
             }
+            pool.Add(chips);
 
-            _panel.RegisterCallback<PointerDownEvent>(OnPanelPointerDownForPicker);
+            bool isRole = slotIndex < 2;
+            pool.AddToClassList(part switch
+            {
+                "target"  => "char-detail__reaction-pool--target",
+                "trigger" => "char-detail__reaction-pool--trigger",
+                _         => isRole ? "char-detail__reaction-pool--skill"
+                                    : "char-detail__reaction-pool--trait-skill",
+            });
         }
 
-        private void CloseSkillPicker()
+        private void CloseAllPools()
         {
-            _skillPicker.style.display = DisplayStyle.None;
-            _skillPicker.Clear();
-            _skillPickerTargetSlot = -1;
-            _panel.UnregisterCallback<PointerDownEvent>(OnPanelPointerDownForPicker);
+            for (int i = 0; i < 6; i++)
+            {
+                var pool = _reactionPools[i];
+                if (pool == null) continue;
+                pool.RemoveFromClassList("char-detail__reaction-pool--target");
+                pool.RemoveFromClassList("char-detail__reaction-pool--trigger");
+                pool.RemoveFromClassList("char-detail__reaction-pool--skill");
+                pool.RemoveFromClassList("char-detail__reaction-pool--trait-skill");
+                pool.Clear();
+            }
+            _openPoolSlot = -1;
+            _openPoolPart = null;
         }
 
-        private void OnPanelPointerDownForPicker(PointerDownEvent evt)
+        private void BuildTargetChips(int slotIndex, VisualElement container)
         {
-            if (_skillPicker.style.display == DisplayStyle.None) return;
-            if (!_skillPicker.worldBound.Contains(evt.position))
-                CloseSkillPicker();
-        }
-
-        private void OpenTargetPicker(int slotIndex)
-        {
-            CloseSkillPicker();
-            _targetPickerTargetSlot = slotIndex;
-            _targetPicker.Clear();
-            _targetPicker.style.display = DisplayStyle.Flex;
+            var reaction = GetReactionAt(slotIndex);
+            string currentId = reaction?.Trigger is Trigger t ? t.SubjectCharacterId : null;
 
             var members = _controller.GetPartyMembers();
+            if (members.Count == 0)
+            {
+                AddPoolEmpty(container, "파티원 없음");
+                return;
+            }
             foreach (var member in members)
             {
                 var captured = member;
-                var btn = new Button(() =>
-                {
-                    _controller.SetReactionTarget(_targetPickerTargetSlot, captured.Id);
-                    CloseTargetPicker();
-                });
-                btn.AddToClassList("char-detail__skill-picker-item");
-                btn.text = captured.Name;
-                _targetPicker.Add(btn);
+                var chip = new Button(() => { _controller.SetReactionTarget(slotIndex, captured.Id); CloseAllPools(); });
+                chip.AddToClassList("char-detail__pool-chip");
+                chip.AddToClassList("char-detail__pool-chip--target");
+                if (captured.Id == currentId)
+                    chip.AddToClassList("char-detail__pool-chip--selected");
+                var label = new Label(captured.Name);
+                label.AddToClassList("char-detail__pool-chip-name");
+                chip.Add(label);
+                container.Add(chip);
             }
+        }
 
-            if (members.Count == 0)
+        private void BuildTriggerChips(int slotIndex, VisualElement container)
+        {
+            var triggers = _controller.GetRoleTriggers(_character.RoleType);
+            if (triggers.Count == 0)
             {
-                var empty = new Label("파티원 없음");
-                empty.AddToClassList("char-detail__skill-picker-empty");
-                _targetPicker.Add(empty);
+                AddPoolEmpty(container, "설정 가능한 조건 없음");
+                return;
             }
-
-            _panel.RegisterCallback<PointerDownEvent>(OnPanelPointerDownForTargetPicker);
+            foreach (var trigger in triggers)
+            {
+                var captured = trigger;
+                string label = GetTriggerDisplayText(captured);
+                var chip = new Button(() => { _controller.SetReactionTrigger(slotIndex, captured); CloseAllPools(); });
+                chip.AddToClassList("char-detail__pool-chip");
+                chip.AddToClassList("char-detail__pool-chip--trigger");
+                var nameLabel = new Label(label);
+                nameLabel.AddToClassList("char-detail__pool-chip-name");
+                chip.Add(nameLabel);
+                container.Add(chip);
+            }
         }
 
-        private void CloseTargetPicker()
+        private void BuildSkillChips(int slotIndex, VisualElement container)
         {
-            _targetPicker.style.display = DisplayStyle.None;
-            _targetPicker.Clear();
-            _targetPickerTargetSlot = -1;
-            _panel.UnregisterCallback<PointerDownEvent>(OnPanelPointerDownForTargetPicker);
+            var reaction = GetReactionAt(slotIndex);
+            int currentSkillIndex = reaction?.SkillIndex ?? -1;
+
+            var skills = _controller.GetAvailableSkills();
+            if (skills.Count == 0)
+            {
+                AddPoolEmpty(container, "스킬 없음");
+                return;
+            }
+            foreach (var skill in skills)
+            {
+                var captured = skill;
+                int skillIdx = Array.IndexOf(_character.Skills, captured);
+                var chip = new Button(() => { _controller.SetReactionSkill(slotIndex, captured); CloseAllPools(); });
+                chip.AddToClassList("char-detail__pool-chip");
+                chip.AddToClassList("char-detail__pool-chip--skill");
+                if (skillIdx == currentSkillIndex)
+                    chip.AddToClassList("char-detail__pool-chip--selected");
+                var nameLabel = new Label(captured.Data?.DisplayName ?? "?");
+                nameLabel.AddToClassList("char-detail__pool-chip-name");
+                chip.Add(nameLabel);
+                container.Add(chip);
+            }
         }
 
-        private void OnPanelPointerDownForTargetPicker(PointerDownEvent evt)
+        private static void AddPoolEmpty(VisualElement container, string msg)
         {
-            if (_targetPicker.style.display == DisplayStyle.None) return;
-            if (!_targetPicker.worldBound.Contains(evt.position))
-                CloseTargetPicker();
+            var label = new Label(msg);
+            label.AddToClassList("char-detail__pool-empty");
+            container.Add(label);
+        }
+
+        private Reaction GetReactionAt(int slotIndex)
+        {
+            if (_character == null) return null;
+            if (slotIndex < 2)
+                return slotIndex < _character.RoleReactions.Length ? _character.RoleReactions[slotIndex] : null;
+            int ti = slotIndex - 2;
+            return ti < _character.TraitReactions.Length ? _character.TraitReactions[ti] : null;
         }
 
         private void OnUnequipRequested(int accIndex)

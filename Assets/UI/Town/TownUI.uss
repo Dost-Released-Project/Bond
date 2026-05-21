@@ -853,3 +853,89 @@
     letter-spacing: 2px;
     -unity-text-align: middle-left;
 }
+
+/* ════════════════════════════════════════
+   리액션 인라인 풀
+   ════════════════════════════════════════ */
+.char-detail__reaction-pool {
+    display: none;
+    flex-direction: column;
+    padding: 10px;
+    margin-top: -3px;
+    margin-bottom: 5px;
+    border-width: 1px;
+    border-radius: 0 0 3px 3px;
+}
+.char-detail__reaction-pool--target {
+    display: flex;
+    background-color: var(--bg-deep);
+    border-color: var(--slot-role-border);
+}
+.char-detail__reaction-pool--trigger {
+    display: flex;
+    background-color: var(--bg-deep);
+    border-color: var(--slot-trait-border);
+}
+.char-detail__reaction-pool--skill {
+    display: flex;
+    background-color: var(--bg-deep);
+    border-color: var(--border-highlight);
+}
+.char-detail__reaction-pool--trait-skill {
+    display: flex;
+    background-color: var(--bg-deep);
+    border-color: var(--slot-trait-border);
+}
+.char-detail__pool-header {
+    flex-direction: row;
+    align-items: center;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--border-default);
+    padding-bottom: 5px;
+    margin-bottom: 8px;
+}
+.char-detail__pool-title {
+    font-size: var(--font-size-system);
+    letter-spacing: 3px;
+    color: var(--text-label);
+    flex-grow: 1;
+}
+.char-detail__pool-close-btn {
+    font-size: var(--font-size-system);
+    color: var(--text-disabled);
+    background-color: transparent;
+    border-width: 1px;
+    border-color: var(--border-default);
+    padding: 2px 6px;
+}
+.char-detail__pool-close-btn:hover {
+    border-color: var(--border-highlight);
+    color: var(--text-secondary);
+}
+.char-detail__pool-chips {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.char-detail__pool-chip {
+    flex-direction: column;
+    padding: 6px 12px;
+    border-width: 1px;
+    border-radius: 2px;
+    margin-right: 6px;
+    margin-bottom: 4px;
+    background-color: transparent;
+}
+.char-detail__pool-chip--target  { border-color: var(--slot-role-border);  color: var(--slot-role-dot);  }
+.char-detail__pool-chip--trigger { border-color: var(--slot-trait-border); color: var(--slot-trait-dot); }
+.char-detail__pool-chip--skill   { border-color: var(--border-default);    color: var(--text-secondary); }
+.char-detail__pool-chip:hover    { border-color: var(--border-highlight);  color: var(--text-primary);   }
+.char-detail__pool-chip--selected { border-color: var(--border-active); color: var(--text-accent); }
+.char-detail__pool-chip-name {
+    font-size: var(--font-size-body);
+    -unity-text-align: middle-center;
+}
+.char-detail__pool-empty {
+    font-size: var(--font-size-system);
+    color: var(--text-disabled);
+    padding: 4px 8px;
+}

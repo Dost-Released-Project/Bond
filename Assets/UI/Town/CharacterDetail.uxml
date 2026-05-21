@@ -167,6 +167,7 @@
                                 </ui:VisualElement>
                                 <ui:Label name="reaction-slot-0__echo" class="char-detail__reaction-echo" text="○" />
                             </ui:VisualElement>
+                            <ui:VisualElement name="reaction-pool-0" class="char-detail__reaction-pool" />
 
                             <!-- 역할 슬롯 1 (slotIndex=1) -->
                             <ui:VisualElement name="reaction-slot-1" class="char-detail__reaction-slot char-detail__reaction-slot--role">
@@ -185,6 +186,7 @@
                                 </ui:VisualElement>
                                 <ui:Label name="reaction-slot-1__echo" class="char-detail__reaction-echo" text="○" />
                             </ui:VisualElement>
+                            <ui:VisualElement name="reaction-pool-1" class="char-detail__reaction-pool" />
 
                             <!-- 성향 슬롯 0 (slotIndex=2) -->
                             <ui:VisualElement name="reaction-slot-2" class="char-detail__reaction-slot char-detail__reaction-slot--trait">
@@ -203,6 +205,7 @@
                                 </ui:VisualElement>
                                 <ui:Label name="reaction-slot-2__echo" class="char-detail__reaction-echo" text="○" />
                             </ui:VisualElement>
+                            <ui:VisualElement name="reaction-pool-2" class="char-detail__reaction-pool" />
 
                             <!-- 성향 슬롯 1 (slotIndex=3) -->
                             <ui:VisualElement name="reaction-slot-3" class="char-detail__reaction-slot char-detail__reaction-slot--trait">
@@ -221,6 +224,7 @@
                                 </ui:VisualElement>
                                 <ui:Label name="reaction-slot-3__echo" class="char-detail__reaction-echo" text="○" />
                             </ui:VisualElement>
+                            <ui:VisualElement name="reaction-pool-3" class="char-detail__reaction-pool" />
 
                             <!-- 성향 슬롯 2 (slotIndex=4) -->
                             <ui:VisualElement name="reaction-slot-4" class="char-detail__reaction-slot char-detail__reaction-slot--trait">
@@ -239,6 +243,7 @@
                                 </ui:VisualElement>
                                 <ui:Label name="reaction-slot-4__echo" class="char-detail__reaction-echo" text="○" />
                             </ui:VisualElement>
+                            <ui:VisualElement name="reaction-pool-4" class="char-detail__reaction-pool" />
 
                             <!-- 성향 슬롯 3 (slotIndex=5) -->
                             <ui:VisualElement name="reaction-slot-5" class="char-detail__reaction-slot char-detail__reaction-slot--trait">
@@ -257,6 +262,7 @@
                                 </ui:VisualElement>
                                 <ui:Label name="reaction-slot-5__echo" class="char-detail__reaction-echo" text="○" />
                             </ui:VisualElement>
+                            <ui:VisualElement name="reaction-pool-5" class="char-detail__reaction-pool" />
 
                         </ui:VisualElement>
 
