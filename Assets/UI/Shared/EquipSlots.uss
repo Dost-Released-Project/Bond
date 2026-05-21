@@ -10,54 +10,69 @@
 
 .equip-slots__chip {
     width: 72px;
-    height: auto;
+    height: 90px;
     flex-direction: column;
     align-items: stretch;
-    padding: 4px;
-    margin: 2px;
+    padding-top: 8px;
+    padding-bottom: 8px;
     background-color: var(--bg-surface);
     border-width: 1px;
     border-color: var(--border-default);
     border-radius: 3px;
 }
 
-/* 아이콘 영역: 정사각형 칩 face — 슬롯 타입 라벨 + 아이콘 심볼 */
+/* 아이콘 영역: chip 공간의 4/5 차지. name 숨김 시 chip 전체를 채움. */
+/* flex-basis: 0px — Yoga에 명확한 기준 크기를 주어 내부 flex-grow가 동작하게 함 */
 .equip-slots__chip-icon-area {
     width: 100%;
-    height: 64px;
+    flex-basis: 0;
+    flex-grow: 4;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+    overflow: hidden;
 }
 
 .equip-slots__chip:hover {
     border-color: var(--border-highlight);
 }
 
-/* 슬롯 타입 레이블 */
+/* 슬롯 타입 레이블 — icon-area 공간의 1/4 */
 .equip-slots__chip-label {
+    flex-basis: 0;
+    flex-grow: 1;
+    margin: 0;
+    padding: 0;
     font-size: var(--font-size-system);
     color: var(--text-label);
     letter-spacing: 1px;
-    -unity-text-align: upper-center;
+    -unity-text-align: middle-center;
     -unity-font-style: bold;
+    overflow: hidden;
 }
 
-/* 중앙 아이콘 심볼 (텍스트 폴백 또는 backgroundImage 스프라이트) */
+/* 중앙 아이콘 심볼 — icon-area 공간의 3/4 */
 .equip-slots__chip-icon {
+    flex-basis: 0;
+    flex-grow: 3;
+    margin: 0;
+    padding: 0;
     font-size: var(--font-size-button);
     color: var(--text-muted);
     -unity-text-align: middle-center;
-    flex-grow: 1;
     width: 100%;
     -unity-background-scale-mode: scale-to-fit;
 }
 
 /* 하단 장비명 약칭 */
 .equip-slots__chip-name {
+    flex-basis: 0;
+    flex-grow: 1;
+    margin: 0;
+    padding: 0;
     font-size: var(--font-size-system);
     color: var(--text-secondary);
-    -unity-text-align: lower-center;
+    -unity-text-align: middle-center;
     overflow: hidden;
     white-space: nowrap;
     -unity-text-overflow-position: end;
@@ -74,7 +89,7 @@
 }
 
 .equip-slots__chip--equipped .equip-slots__chip-name {
-    color: var(--text-primary);
+    display: none;
 }
 
 /* 슬롯별 장착 강조선 (상단 1px) */
