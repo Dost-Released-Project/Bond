@@ -2,26 +2,34 @@
     <ui:VisualElement name="equip-slots-root" class="equip-slots__grid">
         <!-- 무기 칩 -->
         <ui:VisualElement name="equip-chip-weapon" class="equip-slots__chip equip-slots__chip--weapon">
-            <ui:Label name="equip-chip-weapon__label" class="equip-slots__chip-label" text="무기" />
-            <ui:Label name="equip-chip-weapon__icon"  class="equip-slots__chip-icon"  text="⚔" />
+            <ui:VisualElement class="equip-slots__chip-icon-area">
+                <ui:Label name="equip-chip-weapon__label" class="equip-slots__chip-label" text="무기" />
+                <ui:Label name="equip-chip-weapon__icon"  class="equip-slots__chip-icon"  text="⚔" />
+            </ui:VisualElement>
             <ui:Label name="equip-chip-weapon__name"  class="equip-slots__chip-name"  text="비어있음" />
         </ui:VisualElement>
         <!-- 방어구 칩 -->
         <ui:VisualElement name="equip-chip-armor" class="equip-slots__chip equip-slots__chip--armor">
-            <ui:Label name="equip-chip-armor__label" class="equip-slots__chip-label" text="방어구" />
-            <ui:Label name="equip-chip-armor__icon"  class="equip-slots__chip-icon"  text="🛡" />
+            <ui:VisualElement class="equip-slots__chip-icon-area">
+                <ui:Label name="equip-chip-armor__label" class="equip-slots__chip-label" text="방어구" />
+                <ui:Label name="equip-chip-armor__icon"  class="equip-slots__chip-icon"  text="🛡" />
+            </ui:VisualElement>
             <ui:Label name="equip-chip-armor__name"  class="equip-slots__chip-name"  text="비어있음" />
         </ui:VisualElement>
         <!-- 부속품 1 칩 (클릭 → AccessoryBagView 열기) -->
         <ui:VisualElement name="equip-chip-acc0" class="equip-slots__chip equip-slots__chip--acc">
-            <ui:Label name="equip-chip-acc0__label" class="equip-slots__chip-label" text="부속품" />
-            <ui:Label name="equip-chip-acc0__icon"  class="equip-slots__chip-icon"  text="◆" />
+            <ui:VisualElement class="equip-slots__chip-icon-area">
+                <ui:Label name="equip-chip-acc0__label" class="equip-slots__chip-label" text="부속품" />
+                <ui:Label name="equip-chip-acc0__icon"  class="equip-slots__chip-icon"  text="◆" />
+            </ui:VisualElement>
             <ui:Label name="equip-chip-acc0__name"  class="equip-slots__chip-name"  text="비어있음" />
         </ui:VisualElement>
         <!-- 부속품 2 칩 (클릭 → AccessoryBagView 열기) -->
         <ui:VisualElement name="equip-chip-acc1" class="equip-slots__chip equip-slots__chip--acc">
-            <ui:Label name="equip-chip-acc1__label" class="equip-slots__chip-label" text="부속품" />
-            <ui:Label name="equip-chip-acc1__icon"  class="equip-slots__chip-icon"  text="◆" />
+            <ui:VisualElement class="equip-slots__chip-icon-area">
+                <ui:Label name="equip-chip-acc1__label" class="equip-slots__chip-label" text="부속품" />
+                <ui:Label name="equip-chip-acc1__icon"  class="equip-slots__chip-icon"  text="◆" />
+            </ui:VisualElement>
             <ui:Label name="equip-chip-acc1__name"  class="equip-slots__chip-name"  text="비어있음" />
         </ui:VisualElement>
     </ui:VisualElement>

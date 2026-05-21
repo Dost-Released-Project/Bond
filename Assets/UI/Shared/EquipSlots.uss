@@ -10,16 +10,24 @@
 
 .equip-slots__chip {
     width: 72px;
-    height: 72px;
+    height: auto;
     flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
+    align-items: stretch;
     padding: 4px;
     margin: 2px;
     background-color: var(--bg-surface);
     border-width: 1px;
     border-color: var(--border-default);
     border-radius: 3px;
+}
+
+/* 아이콘 영역: 정사각형 칩 face — 슬롯 타입 라벨 + 아이콘 심볼 */
+.equip-slots__chip-icon-area {
+    width: 100%;
+    height: 64px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 .equip-slots__chip:hover {
@@ -41,6 +49,7 @@
     color: var(--text-muted);
     -unity-text-align: middle-center;
     flex-grow: 1;
+    width: 100%;
     -unity-background-scale-mode: scale-to-fit;
 }
 
@@ -56,6 +65,10 @@
 }
 
 /* 장착됨 공통 */
+.equip-slots__chip--equipped .equip-slots__chip-label {
+    display: none;
+}
+
 .equip-slots__chip--equipped .equip-slots__chip-icon {
     color: var(--text-primary);
 }
