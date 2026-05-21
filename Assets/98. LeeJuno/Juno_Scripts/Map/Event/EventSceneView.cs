@@ -20,6 +20,7 @@ public class EventSceneView : MonoBehaviour, IEventChoiceView
     [SerializeField] private VisualTreeAsset _choiceButtonTemplate;
 
     private VisualElement _choiceContainer;
+    private Label _descriptionLabel;
 
     /// <summary>플레이어가 선택지를 클릭했을 때 EventChoicePresenter 가 구독하는 핸들러.</summary>
     public Action<EventChoice> OnChoiceSelected { get; set; }
@@ -35,13 +36,35 @@ public class EventSceneView : MonoBehaviour, IEventChoiceView
             return;
         }
 
-        // UXML 에 정의된 Name(#)으로 선택지 컨테이너를 쿼리한다 (JournalUIView 패턴 동일)
-        _choiceContainer = root.Q<VisualElement>("ChoiceContainer");
+        // UXML 에 정의된 Name(#)으로 선택지 컨테이너와 설명 레이블을 쿼리한다 (JournalUIView 패턴 동일)
+        _choiceContainer  = root.Q<VisualElement>("ChoiceContainer");
+        _descriptionLabel = root.Q<Label>("DescriptionLabel");
 
         if (_choiceContainer == null)
         {
             Debug.LogError("[EventSceneView] UXML 에서 'ChoiceContainer' 를 찾을 수 없습니다.", this);
         }
+
+        if (_descriptionLabel == null)
+        {
+            Debug.LogError("[EventSceneView] UXML 에서 'DescriptionLabel' 을 찾을 수 없습니다.", this);
+        }
+    }
+
+    /// <summary>
+    /// 이벤트 설명 텍스트를 DescriptionLabel 에 표시한다.
+    /// description 이 null 이면 string.Empty 로 대체해 Inspector 미입력 케이스를 방어한다.
+    /// </summary>
+    /// <param name="description">표시할 이벤트 설명 텍스트.</param>
+    public void ShowDescription(string description)
+    {
+        if (_descriptionLabel == null)
+        {
+            Debug.LogError("[EventSceneView] _descriptionLabel 이 초기화되지 않았습니다.", this);
+            return;
+        }
+
+        _descriptionLabel.text = description ?? string.Empty;
     }
 
     /// <summary>

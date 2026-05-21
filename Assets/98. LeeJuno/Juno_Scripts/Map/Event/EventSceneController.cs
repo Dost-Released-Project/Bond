@@ -16,6 +16,7 @@ public class EventSceneController : MonoBehaviour
     private IEventChoiceView _choiceView;
 
     private List<EventChoice> _choices;
+    private string _description;
     private EventBattleConfig _battleConfig;
     private IEventEffectApplier _effectApplier;
     private IEventContext _eventContext;
@@ -48,12 +49,14 @@ public class EventSceneController : MonoBehaviour
         // 씬 로드 직후 컨텍스트를 읽고 즉시 Clear() 호출
         // 방어적 복사 — Clear() 이후에도 로컬 참조가 유효하도록
         _choices        = new List<EventChoice>(_eventContext.Choices);
+        _description    = _eventContext.Description;
         _battleConfig   = _eventContext.BattleConfig;
         _currentEventId = _eventContext.EventId; // Clear() 전에 EventId 저장 — OnChoiceSelectedFromView 에서 사용
         _eventContext.Clear();
 
         // EventChoicePresenter.Start() 가 먼저 실행되어 _choiceView 가 이미 주입된 경우 즉시 표시한다
-        // Presenter.Start() 가 아직 실행되지 않은 경우 BindView() 호출 시 ShowChoices() 가 실행된다
+        // Presenter.Start() 가 아직 실행되지 않은 경우 BindView() 호출 시 ShowDescription()/ShowChoices() 가 실행된다
+        _choiceView?.ShowDescription(_description);
         _choiceView?.ShowChoices(_choices);
     }
 
@@ -70,6 +73,7 @@ public class EventSceneController : MonoBehaviour
         // Controller.Start() 가 먼저 실행되어 _choices 가 이미 채워진 경우 즉시 표시한다
         if (_choices != null && _choices.Count > 0)
         {
+            _choiceView.ShowDescription(_description);
             _choiceView.ShowChoices(_choices);
         }
     }

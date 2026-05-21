@@ -14,7 +14,7 @@ public class MonsterDTO
     public int AGI             { get; set; }
     public int INT             { get; set; }
     public string ImageAddress { get; set; }
-    public string SkillIds     { get; set; }
+    public string SkillIdsRaw     { get; set; }
 }
 
 public class MonsterParser : TSVParserBase<MonsterDTO, MonsterSO>
@@ -28,13 +28,18 @@ public class MonsterParser : TSVParserBase<MonsterDTO, MonsterSO>
 
     protected override void Populate(MonsterSO so, MonsterDTO dto)
     {
-        string[] skillIdsArray = string.IsNullOrEmpty(dto.SkillIds) 
-            ? new string[0] 
-            : dto.SkillIds.Split(new char[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries);
-            
-        for (int i = 0; i < skillIdsArray.Length; i++)
+        List<string> skillIds = new List<string>();
+        if (string.IsNullOrWhiteSpace(dto.SkillIdsRaw) == false)
         {
-            skillIdsArray[i] = skillIdsArray[i].Trim();
+            string[] split = dto.SkillIdsRaw.Split(';');
+            foreach (string entry in split)
+            {
+                string trimmed = entry.Trim();
+                if (string.IsNullOrWhiteSpace(trimmed) == false)
+                {
+                    skillIds.Add(trimmed);
+                }
+            }
         }
 
         so.SetData(
@@ -46,7 +51,7 @@ public class MonsterParser : TSVParserBase<MonsterDTO, MonsterSO>
             agi:          dto.AGI,
             intel:        dto.INT,
             imageAddress: dto.ImageAddress,
-            skillIds:     skillIdsArray
+            skillIds:     skillIds
         );
     }
 
@@ -98,7 +103,7 @@ public class MonsterParser : TSVParserBase<MonsterDTO, MonsterSO>
             Map(m => m.AGI).Name("AGI").Default(0);
             Map(m => m.INT).Name("INT").Default(0);
             Map(m => m.ImageAddress).Name("ImageAddress").Default("");
-            Map(m => m.SkillIds).Name("SkillIds").Default("");
+            Map(m => m.SkillIdsRaw).Name("SkillIds").Default("");
         }
     }
 }

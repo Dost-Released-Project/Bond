@@ -8,6 +8,9 @@ using System.Collections.Generic;
 /// </summary>
 public interface IEventChoiceView
 {
+    /// <summary>이벤트 설명 텍스트를 표시한다.</summary>
+    void ShowDescription(string description);
+
     /// <summary>선택지 버튼들을 생성 및 표시한다.</summary>
     void ShowChoices(IReadOnlyList<EventChoice> choices);
 

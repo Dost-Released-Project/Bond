@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -18,7 +19,7 @@ public class MonsterSO : BaseSO
     public int INT;
 
     [Header("스킬")]
-    public string[] SkillIds;
+    public List<string> SkillIds;
 
     /// <summary>
     /// 파서에서 호출하는 데이터 초기화 메서드.
@@ -33,7 +34,7 @@ public class MonsterSO : BaseSO
         int agi,
         int intel,
         string imageAddress,
-        string[] skillIds)
+        List<string> skillIds)
     {
         base.Initialize(id, displayName, "");
         this.RoleType     = roleType;

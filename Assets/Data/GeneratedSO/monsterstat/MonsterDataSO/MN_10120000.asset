@@ -21,3 +21,4 @@ MonoBehaviour:
   STR: 35
   AGI: 10
   INT: 12
+  SkillIds: []

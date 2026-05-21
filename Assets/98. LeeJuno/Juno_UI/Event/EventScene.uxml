@@ -1,5 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="EventScene.uss"/>
     <ui:VisualElement name="RootPanel" class="event-root">
+        <ui:Label name="DescriptionLabel" class="event-description" text="" />
         <ui:VisualElement name="ChoiceContainer" class="event-choice-container" />
     </ui:VisualElement>
 </ui:UXML>
