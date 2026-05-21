@@ -89,9 +89,7 @@ namespace Bond.UI.Town
             var reaction = GetReaction(slotIndex);
             if (reaction == null) return;
 
-            reaction.Trigger ??= new Trigger();
-            if (reaction.Trigger is Trigger t)
-                t.SubjectCharacterId = characterId;
+            reaction.SubjectCharacterId = characterId;
 
             OnReactionChanged?.Invoke(slotIndex);
         }

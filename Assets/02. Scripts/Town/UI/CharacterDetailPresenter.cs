@@ -447,10 +447,10 @@ namespace Bond.UI.Town
             if (locked) return;
 
             // target (SubjectCharacterId)
-            bool hasTarget = reaction.Trigger is Trigger t0 && !string.IsNullOrEmpty(t0.SubjectCharacterId);
-            string targetName = hasTarget && BaseCharacter.Dict.TryGetValue(((Trigger)reaction.Trigger).SubjectCharacterId, out var subj)
+            bool hasTarget = string.IsNullOrEmpty(reaction.SubjectCharacterId) == false;
+            string targetName = hasTarget && BaseCharacter.Dict.TryGetValue(reaction.SubjectCharacterId, out var subj)
                 ? subj.Name
-                : hasTarget ? ((Trigger)reaction.Trigger).SubjectCharacterId : "미설정";
+                : hasTarget ? reaction.SubjectCharacterId : "미설정";
             _reactionTargetLabels[slotIndex].text = targetName;
             _reactionTargetLabels[slotIndex].EnableInClassList(
                 "char-detail__slot-part-val--placeholder", !hasTarget);
@@ -596,7 +596,7 @@ namespace Bond.UI.Town
         private void BuildTargetChips(int slotIndex, VisualElement container)
         {
             var reaction = GetReactionAt(slotIndex);
-            string currentId = reaction?.Trigger is Trigger t ? t.SubjectCharacterId : null;
+            string currentId = reaction.SubjectCharacterId;
 
             var members = _controller.GetPartyMembers();
             if (members.Count == 0)

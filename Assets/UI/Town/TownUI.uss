@@ -204,7 +204,7 @@
 .roster-card__bar-track {
     flex-grow: 1;
     height: 3px;
-    background-color: var(--bg-divider);
+    background-color: var(--border-active);
     border-radius: 2px;
     overflow: hidden;
 }
@@ -693,7 +693,7 @@
 }
 .char-detail__gauge-track {
     height: 3px;
-    background-color: var(--bg-divider);
+    background-color: var(--border-active);
     border-radius: 2px;
     overflow: hidden;
 }

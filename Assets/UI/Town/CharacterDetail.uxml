@@ -59,6 +59,19 @@
                                     <ui:VisualElement name="gauge-hp" class="char-detail__gauge-fill char-detail__gauge-fill--hp" />
                                 </ui:VisualElement>
                             </ui:VisualElement>
+                            <!-- 광기 게이지 블록 -->
+                            <ui:VisualElement class="char-detail__gauge-block">
+                                <ui:VisualElement class="char-detail__gauge-label-row">
+                                    <ui:Label class="char-detail__gauge-label char-detail__gauge-label--insanity" text="광기" />
+                                    <ui:Label name="gauge-insanity-warn" class="char-detail__gauge-warn" text="" />
+                                    <ui:Label name="gauge-insanity-val" class="char-detail__gauge-val" text="0 / 100" />
+                                </ui:VisualElement>
+                                <ui:VisualElement class="char-detail__gauge">
+                                    <ui:VisualElement class="char-detail__gauge-track">
+                                        <ui:VisualElement name="gauge-insanity" class="char-detail__gauge-fill" />
+                                    </ui:VisualElement>
+                                </ui:VisualElement>
+                            </ui:VisualElement>
                             <ui:VisualElement class="char-detail__stat-row">
                                 <ui:Label class="char-detail__stat-key" text="DEF" />
                                 <ui:Label name="stat-def" class="char-detail__stat-val" text="0" />
@@ -86,19 +99,6 @@
                             <ui:VisualElement class="char-detail__stat-row">
                                 <ui:Label class="char-detail__stat-key" text="반응제어" />
                                 <ui:Label name="stat-reaction-ctrl" class="char-detail__stat-val" text="—" />
-                            </ui:VisualElement>
-                            <!-- 광기 게이지 블록 -->
-                            <ui:VisualElement class="char-detail__gauge-block">
-                                <ui:VisualElement class="char-detail__gauge-label-row">
-                                    <ui:Label class="char-detail__gauge-label char-detail__gauge-label--insanity" text="광기" />
-                                    <ui:Label name="gauge-insanity-warn" class="char-detail__gauge-warn" text="" />
-                                    <ui:Label name="gauge-insanity-val" class="char-detail__gauge-val" text="0 / 100" />
-                                </ui:VisualElement>
-                                <ui:VisualElement class="char-detail__gauge">
-                                    <ui:VisualElement class="char-detail__gauge-track">
-                                        <ui:VisualElement name="gauge-insanity" class="char-detail__gauge-fill" />
-                                    </ui:VisualElement>
-                                </ui:VisualElement>
                             </ui:VisualElement>
                         </ui:VisualElement>
 

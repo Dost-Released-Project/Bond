@@ -25,30 +25,25 @@ namespace Reactions
     
     public interface ITrigger
     {
-        bool CheckCondition(BattleContext context);
+        bool CheckCondition(BaseCharacter subject, BattleContext context);
         string Description { get; }
     }
 
     [Serializable]
     public class Trigger : ITrigger
     {
-        public string SubjectCharacterId; // 캐릭터 ID
-
         [SerializeReference, SubclassSelector]
         public List<ICondition> Conditions = new List<ICondition>() { new SubjectCondition() };
 
         public Trigger() { }
 
-        public Trigger(BaseCharacter subject, params ICondition[] condition)
+        public Trigger(params ICondition[] condition)
         {
-            SubjectCharacterId = subject;
             Conditions = condition.ToList();
         }
 
-        public bool CheckCondition(BattleContext context)
+        public bool CheckCondition(BaseCharacter subject, BattleContext context)
         {
-            Debug.Assert(BaseCharacter.Dict.ContainsKey(SubjectCharacterId));
-            var subject = BaseCharacter.Dict[SubjectCharacterId];
             return Conditions.All(condition => condition.IsMet(new ReactionTriggerConditionArgs() { Subject = subject, BattleContext = context }));
         }
 
@@ -62,8 +57,7 @@ namespace Reactions
                 {
                     sb.AppendLine($" && {Conditions[i].Description}");
                 }
-                return $"관찰 대상: {BaseCharacter.Dict[SubjectCharacterId].Name}\n" +
-                       $"{sb.ToString()}";
+                return $"{sb.ToString()}";
             }
         }
     }
