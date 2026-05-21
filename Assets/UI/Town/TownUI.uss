@@ -389,6 +389,37 @@
     padding-bottom: 2px;
 }
 
+.char-detail__section-header-row {
+    flex-direction: row;
+    align-items: center;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--border-default);
+    margin-bottom: 4px;
+    padding-bottom: 2px;
+}
+.char-detail__section-header-row .char-detail__section-label {
+    flex-grow: 1;
+    border-bottom-width: 0;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.char-detail__lock-banner {
+    font-size: var(--font-size-system);
+    color: var(--text-disabled);
+    letter-spacing: 1px;
+    -unity-font-style: italic;
+    display: none;
+}
+.char-detail__lock-banner--equip-only {
+    display: flex;
+    color: var(--text-muted);
+}
+.char-detail__lock-banner--read-only {
+    display: flex;
+    color: var(--stress-warn);
+}
+
 /* ── 스탯 행 ── */
 .char-detail__stat-row {
     flex-direction: row;
@@ -648,9 +679,11 @@
     height: 100%;
     border-radius: 2px;
 }
-.char-detail__gauge-fill--hp       { background-color: var(--hp-safe);     }
-.char-detail__gauge-fill--hp-low   { background-color: var(--hp-low);      }
-.char-detail__gauge-fill--insanity { background-color: var(--stress-warn); }
+.char-detail__gauge-fill--hp              { background-color: var(--hp-safe);     }
+.char-detail__gauge-fill--hp-low          { background-color: var(--hp-low);      }
+.char-detail__gauge-fill--insanity-safe   { background-color: var(--stress-safe); }
+.char-detail__gauge-fill--insanity-warn   { background-color: var(--stress-warn); }
+.char-detail__gauge-fill--insanity-crit   { background-color: var(--stress-crit); }
 
 .char-detail__gauge-block {
     margin-bottom: 6px;
@@ -666,6 +699,13 @@
     letter-spacing: 1px;
 }
 .char-detail__gauge-label--insanity { color: var(--stress-crit); }
+.char-detail__gauge-warn {
+    font-size: var(--font-size-system);
+    color: var(--stress-warn);
+    margin-right: 4px;
+    display: none;
+}
+.char-detail__gauge-warn--visible { display: flex; }
 .char-detail__gauge-val {
     font-size: var(--font-size-system);
     color: var(--text-disabled);
@@ -684,14 +724,12 @@
     margin-bottom: 4px;
 }
 .char-detail__trait-tag--positive {
-    border-color: var(--slot-role-border);
-    color: var(--hp-safe);
-    background-color: var(--slot-role-bg);
+    border-color: var(--echo-ready-border);
+    color: var(--echo-ready-text);
 }
 .char-detail__trait-tag--negative {
-    border-color: var(--stress-crit);
-    color: var(--stress-warn);
-    background-color: var(--slot-trait-bg);
+    border-color: var(--slot-trait-border);
+    color: var(--slot-trait-dot);
 }
 .char-detail__trait-tag--neutral {
     border-color: var(--border-default);
@@ -724,6 +762,7 @@
 .char-detail__role-current--dealer    { border-color: var(--border-highlight);  color: var(--text-accent);    background-color: var(--bg-surface);    }
 .char-detail__role-current--supporter { border-color: var(--slot-trait-border); color: var(--slot-trait-dot); background-color: var(--slot-trait-bg); }
 .char-detail__role-current--none      { border-color: var(--border-default);    color: var(--text-disabled);  background-color: transparent;          }
+.char-detail__role-current--disabled  { opacity: 0.38; }
 
 .char-detail__role-picker {
     flex-direction: row;
@@ -802,6 +841,9 @@
 .char-detail__reaction-slot--locked {
     border-color: var(--border-default);
     opacity: 0.35;
+}
+.char-detail__reaction-slot--disabled {
+    opacity: 0.38;
 }
 .char-detail__reaction-locked-text {
     flex-grow: 1;

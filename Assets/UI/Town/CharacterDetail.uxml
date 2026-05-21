@@ -28,7 +28,10 @@
                             <ui:Label name="char-detail__class-level" class="char-detail__class-level" text="" />
                             <!-- Task 4: 역할 드롭다운 -->
                             <ui:VisualElement class="char-detail__role-section">
-                                <ui:Label class="char-detail__section-label" text="역할" />
+                                <ui:VisualElement class="char-detail__section-header-row">
+                                    <ui:Label class="char-detail__section-label" text="역할" />
+                                    <ui:Label name="lock-banner-role" class="char-detail__lock-banner" text="" />
+                                </ui:VisualElement>
                                 <ui:VisualElement name="char-detail__role-area" class="char-detail__role-area">
                                     <ui:Button name="role-btn-current" class="char-detail__role-current" text="—" />
                                     <ui:VisualElement name="char-detail__role-picker" class="char-detail__role-picker">
@@ -93,17 +96,22 @@
                             </ui:VisualElement>
                             <ui:VisualElement class="char-detail__stat-row">
                                 <ui:Label class="char-detail__stat-key" text="돌발억제" />
+                                <ui:Label name="stat-insanity-ctrl" class="char-detail__stat-val" text="—" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="char-detail__stat-row">
+                                <ui:Label class="char-detail__stat-key" text="반응제어" />
                                 <ui:Label name="stat-reaction-ctrl" class="char-detail__stat-val" text="—" />
                             </ui:VisualElement>
                             <!-- 광기 게이지 블록 -->
                             <ui:VisualElement class="char-detail__gauge-block">
                                 <ui:VisualElement class="char-detail__gauge-label-row">
                                     <ui:Label class="char-detail__gauge-label char-detail__gauge-label--insanity" text="광기" />
+                                    <ui:Label name="gauge-insanity-warn" class="char-detail__gauge-warn" text="" />
                                     <ui:Label name="gauge-insanity-val" class="char-detail__gauge-val" text="0 / 100" />
                                 </ui:VisualElement>
                                 <ui:VisualElement class="char-detail__gauge">
                                     <ui:VisualElement class="char-detail__gauge-track">
-                                        <ui:VisualElement name="gauge-insanity" class="char-detail__gauge-fill char-detail__gauge-fill--insanity" />
+                                        <ui:VisualElement name="gauge-insanity" class="char-detail__gauge-fill" />
                                     </ui:VisualElement>
                                 </ui:VisualElement>
                             </ui:VisualElement>
@@ -117,7 +125,10 @@
 
                         <!-- 장비 -->
                         <ui:VisualElement class="char-detail__equipment">
-                            <ui:Label class="char-detail__section-label" text="장비" />
+                            <ui:VisualElement class="char-detail__section-header-row">
+                                <ui:Label class="char-detail__section-label" text="장비" />
+                                <ui:Label name="lock-banner-equip" class="char-detail__lock-banner" text="" />
+                            </ui:VisualElement>
                             <ui:Instance template="EquipSlots" name="char-detail__equip-slots" />
                         </ui:VisualElement>
 
@@ -134,7 +145,10 @@
 
                         <!-- Task 5: 리액션 슬롯 3분할 -->
                         <ui:VisualElement class="char-detail__reaction-section">
-                            <ui:Label class="char-detail__section-label" text="리액션" />
+                            <ui:VisualElement class="char-detail__section-header-row">
+                                <ui:Label class="char-detail__section-label" text="리액션" />
+                                <ui:Label name="lock-banner-reaction" class="char-detail__lock-banner" text="" />
+                            </ui:VisualElement>
 
                             <!-- 역할 슬롯 0 (slotIndex=0) -->
                             <ui:VisualElement name="reaction-slot-0" class="char-detail__reaction-slot char-detail__reaction-slot--role">

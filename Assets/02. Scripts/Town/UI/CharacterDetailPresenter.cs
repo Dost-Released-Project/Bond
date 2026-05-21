@@ -26,11 +26,15 @@ namespace Bond.UI.Town
 
         // 전투 스탯
         private readonly Label _statHp, _statDef, _statAtk, _statSpd;
-        private readonly Label _statCrt, _statAcc, _statReactionCtrl;
+        private readonly Label _statCrt, _statAcc, _statInsanityCtrl, _statReactionCtrl;
 
         // Task 2: 게이지
         private readonly Label         _gaugeInsanityVal;
+        private readonly Label         _gaugeInsanityWarnLabel;
         private readonly VisualElement _gaugeHpFill, _gaugeInsanityFill;
+
+        // 잠금 배너
+        private readonly Label _lockBannerRole, _lockBannerEquip, _lockBannerReaction;
 
         // Task 3: 성향 태그
         private readonly VisualElement _traitList;
@@ -98,12 +102,18 @@ namespace Bond.UI.Town
             _statSpd = root.Q<Label>("stat-spd");
 
             // Task 2: 추가 스탯 + 게이지
-            _statCrt           = root.Q<Label>("stat-crt");
-            _statAcc           = root.Q<Label>("stat-acc");
-            _statReactionCtrl  = root.Q<Label>("stat-reaction-ctrl");
-            _gaugeInsanityVal  = root.Q<Label>("gauge-insanity-val");
-            _gaugeHpFill       = root.Q("gauge-hp");
-            _gaugeInsanityFill = root.Q("gauge-insanity");
+            _statCrt                = root.Q<Label>("stat-crt");
+            _statAcc                = root.Q<Label>("stat-acc");
+            _statInsanityCtrl       = root.Q<Label>("stat-insanity-ctrl");
+            _statReactionCtrl       = root.Q<Label>("stat-reaction-ctrl");
+            _gaugeInsanityVal       = root.Q<Label>("gauge-insanity-val");
+            _gaugeInsanityWarnLabel = root.Q<Label>("gauge-insanity-warn");
+            _gaugeHpFill            = root.Q("gauge-hp");
+            _gaugeInsanityFill      = root.Q("gauge-insanity");
+
+            _lockBannerRole     = root.Q<Label>("lock-banner-role");
+            _lockBannerEquip    = root.Q<Label>("lock-banner-equip");
+            _lockBannerReaction = root.Q<Label>("lock-banner-reaction");
 
             _traitList = root.Q("char-detail__trait-list");
             _skillGrid  = root.Q("char-detail__skill-grid");
@@ -222,7 +232,7 @@ namespace Bond.UI.Town
             bool fullEdit = _viewMode == CharacterDetailViewMode.FullEdit;
             bool canEquip = _viewMode != CharacterDetailViewMode.ReadOnly;
 
-            _roleBtnCurrent.SetEnabled(fullEdit);
+            _roleBtnCurrent.EnableInClassList("char-detail__role-current--disabled", !fullEdit);
             if (!fullEdit) CloseRolePicker();
 
             _equipSlots.SetEditable(canEquip);
@@ -230,11 +240,37 @@ namespace Bond.UI.Town
             for (int i = 0; i < 6; i++)
             {
                 bool editable = i < 2 && fullEdit;
-                if (editable)
-                    _reactionSlots[i].RemoveFromClassList("char-detail__reaction-slot--readonly");
-                else
-                    _reactionSlots[i].AddToClassList("char-detail__reaction-slot--readonly");
+                _reactionSlots[i].EnableInClassList("char-detail__reaction-slot--disabled", !editable);
             }
+
+            SetLockBanner(_lockBannerRole, _viewMode switch
+            {
+                CharacterDetailViewMode.EquipOnly => "장비 전용",
+                CharacterDetailViewMode.ReadOnly  => "읽기 전용",
+                _                                => "",
+            });
+            SetLockBanner(_lockBannerEquip, _viewMode switch
+            {
+                CharacterDetailViewMode.ReadOnly => "읽기 전용",
+                _                               => "",
+            });
+            SetLockBanner(_lockBannerReaction, _viewMode switch
+            {
+                CharacterDetailViewMode.EquipOnly => "장비 전용",
+                CharacterDetailViewMode.ReadOnly  => "읽기 전용",
+                _                                => "",
+            });
+        }
+
+        private void SetLockBanner(Label banner, string msg)
+        {
+            banner.RemoveFromClassList("char-detail__lock-banner--equip-only");
+            banner.RemoveFromClassList("char-detail__lock-banner--read-only");
+            banner.text = msg;
+            if (string.IsNullOrEmpty(msg)) return;
+            banner.AddToClassList(_viewMode == CharacterDetailViewMode.EquipOnly
+                ? "char-detail__lock-banner--equip-only"
+                : "char-detail__lock-banner--read-only");
         }
 
         private void RefreshAll()
@@ -296,6 +332,12 @@ namespace Bond.UI.Town
             _statSpd.text = s.speed.ToString();
             _statCrt.text = $"{s.crt:P0}";
             _statAcc.text = $"{s.acc:P0}";
+            _statInsanityCtrl.text = s.Insanity_Ctrl switch
+            {
+                < 0.3f => "낮음",
+                < 0.7f => "보통",
+                _      => "높음"
+            };
             _statReactionCtrl.text = s.Reaction_Ctrl switch
             {
                 < 0.3f => "낮음",
@@ -305,13 +347,24 @@ namespace Bond.UI.Town
 
             float hpRatio = s.max_Hp > 0 ? (float)s.current_Hp / s.max_Hp : 0f;
             _gaugeHpFill.style.width = new StyleLength(new Length(hpRatio * 100f, LengthUnit.Percent));
-            _gaugeHpFill.RemoveFromClassList("char-detail__gauge-fill--hp-low");
-            if (hpRatio < 0.3f)
-                _gaugeHpFill.AddToClassList("char-detail__gauge-fill--hp-low");
+            _gaugeHpFill.EnableInClassList("char-detail__gauge-fill--hp-low", hpRatio < 0.3f);
 
             float insanityRatio = _character.Insanity / 100f;
             _gaugeInsanityFill.style.width = new StyleLength(new Length(insanityRatio * 100f, LengthUnit.Percent));
+            _gaugeInsanityFill.RemoveFromClassList("char-detail__gauge-fill--insanity-safe");
+            _gaugeInsanityFill.RemoveFromClassList("char-detail__gauge-fill--insanity-warn");
+            _gaugeInsanityFill.RemoveFromClassList("char-detail__gauge-fill--insanity-crit");
+            _gaugeInsanityFill.AddToClassList(insanityRatio switch
+            {
+                < 0.4f => "char-detail__gauge-fill--insanity-safe",
+                < 0.7f => "char-detail__gauge-fill--insanity-warn",
+                _      => "char-detail__gauge-fill--insanity-crit",
+            });
             _gaugeInsanityVal.text = $"{_character.Insanity} / 100";
+
+            bool insanityWarn = insanityRatio >= 0.7f;
+            _gaugeInsanityWarnLabel.EnableInClassList("char-detail__gauge-warn--visible", insanityWarn);
+            _gaugeInsanityWarnLabel.text = insanityWarn ? "⚠" : "";
         }
 
         private void RefreshTraits()
