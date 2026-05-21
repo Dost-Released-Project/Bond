@@ -190,6 +190,25 @@ public partial class BaseCharacter : ITurnUseUnit
         
         _tcs = null;
     }
+    
+    public async UniTask ExecuteReaction(Reaction reaction, BattleContext context)
+    {
+        SkillBase skill = Skills[reaction.SkillIndex];
+        
+        BattleContext battleContext = CreateBattleContext(skill);
+        battleContext.isReaction = true;
+        var target = reaction.ReactionSkillTarget == E_TargetFilter.Caster ? context.caster : context.target;
+        battleContext.target = target;
+        
+        if (onBattleAction != null)
+        {
+            Debug.Log($"<color=lightblue>{Name} 리액션 시작!</color>");
+            await onBattleAction.Invoke(battleContext);
+            Debug.Log($"<color=lightblue>{Name} 리액션 완료!</color>");
+        }
+    
+        await UniTask.Delay(1000); // 턴 종료 딜레이
+    }
 
     private BattleContext CreateBattleContext(SkillBase skill)
     {

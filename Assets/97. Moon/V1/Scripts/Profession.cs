@@ -62,9 +62,9 @@ public class Profession
         // 최대 체력이 변동되면 변동 수치만큼 체력 증감. ApplyModifiers로 계산 예정
         // stat.current_Hp = Mathf.Clamp(stat.current_Hp, 0, stat.max_Hp);
         
-        Debug.Log($"STR: {finalSTR} AGI: {finalAGI} INT: {finalINT}" + 
-                  $"\nHP: {stat.max_Hp} DEF: {stat.def} ATK: {stat.atk}" + 
-                  $"\nSPD: {stat.speed} CRT: {stat.crt} ACC: {stat.acc}" + 
-                  $"\nInsanity_Ctrl: {stat.Insanity_Ctrl} Reaction_Ctrl: {stat.Reaction_Ctrl} Sp_Atk: {stat.Sp_Atk}");
+        // Debug.Log($"STR: {finalSTR} AGI: {finalAGI} INT: {finalINT}" + 
+        //           $"\nHP: {stat.max_Hp} DEF: {stat.def} ATK: {stat.atk}" + 
+        //           $"\nSPD: {stat.speed} CRT: {stat.crt} ACC: {stat.acc}" + 
+        //           $"\nInsanity_Ctrl: {stat.Insanity_Ctrl} Reaction_Ctrl: {stat.Reaction_Ctrl} Sp_Atk: {stat.Sp_Atk}");
     }
 }

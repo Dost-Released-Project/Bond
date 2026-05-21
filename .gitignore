@@ -11,6 +11,7 @@
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
 /Assets/[Ii][Gg]nore/
+/Assets/Data/[Ss]ave/
 .claude/
 CLAUDE.md
 *.log
@@ -101,3 +102,6 @@ InitTestScene*.unity*
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 ProjectSettings/EditorBuildSettings.asset
+Assets/Data/Save/exp_inv.json
+Assets/Data/Save/resource_data.json
+Assets/Data/Save/settlement_data.json

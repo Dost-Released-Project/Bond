@@ -27,7 +27,6 @@ namespace _90._HA.Temp.Test
         [Inject] public Roster roster;
         public DataBaseSO professionDb;
         
-        public List<TriggerPreset> TriggerPresets;
         public List<CharacterPreset> CharacterPresets;
 
         public void Start()
@@ -35,6 +34,7 @@ namespace _90._HA.Temp.Test
             professionDb = Addressables.LoadAssetAsync<DataBaseSO>("ClassDataBase").WaitForCompletion();
             
             payload.Clear();
+            FillRosterFromPreset();
         }
 
         public void CreateCharacterPresets()
@@ -69,6 +69,18 @@ namespace _90._HA.Temp.Test
 
         private void Update()
         {
+            if (Keyboard.current.numpad0Key.wasPressedThisFrame)
+                Depart();
+        }
+
+        public void Depart()
+        {
+            FillRosterFromPreset();
+            foreach (var rosterCharacter in roster.Characters)
+            {
+                _partyManager.TryAddMember(rosterCharacter);
+            }
+            _embarkManager.ConfirmEmbark();
         }
 
         public void FillRoster()
@@ -85,6 +97,7 @@ namespace _90._HA.Temp.Test
             {
                 var c = Instantiate(preset).BaseCharacter;
                 c.CalcStat();
+                BaseCharacter.Dict[c.Id] = c;
                 roster.Hire(c);
             }
         }

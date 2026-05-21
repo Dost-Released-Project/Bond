@@ -87,17 +87,24 @@ namespace BattleSystem
 
             List<BaseCharacter> targets = new List<BaseCharacter>();
 
-            switch (battleContext.runtimeSkill.Data.Target)
+            if (battleContext.target == null)
             {
-                case SkillTarget.Enemy:
-                    targets = GetTargets(enemySide, battleContext.runtimeSkill.Data.EnemyTargetMask);
-                    break;
-                case SkillTarget.Party:
-                    targets = GetTargets(casterSlot.side, battleContext.runtimeSkill.Data.AllyTargetMask);
-                    break;
-                case SkillTarget.Self:
-                    targets = GetTargets(casterSlot.side, (int)casterSlot.rank);
-                    break;
+                switch (battleContext.runtimeSkill.Data.Target)
+                {
+                    case SkillTarget.Enemy:
+                        targets = GetTargets(enemySide, battleContext.runtimeSkill.Data.EnemyTargetMask);
+                        break;
+                    case SkillTarget.Party:
+                        targets = GetTargets(casterSlot.side, battleContext.runtimeSkill.Data.AllyTargetMask);
+                        break;
+                    case SkillTarget.Self:
+                        targets = GetTargets(casterSlot.side, (int)casterSlot.rank);
+                        break;
+                }
+            }
+            else
+            {
+                targets.Add(battleContext.target);
             }
 
             // 4. 대상자 강조 (Click)
@@ -114,7 +121,7 @@ namespace BattleSystem
             foreach (var target in targets)
             {
                 BattleContext targetContext = new BattleContext(battleContext, target);
-                SkillApplyLogic(targetContext);
+                await SkillApplyLogic(targetContext);
             }
 
             // 7. 연출 초기화 (시각적 피드백 유지 후 해제)
@@ -142,12 +149,12 @@ namespace BattleSystem
             return targetList;
         }
         
-        private BattleContext SkillApplyLogic(BattleContext context)
+        private async UniTask<BattleContext> SkillApplyLogic(BattleContext context)
         {
             // [입구] 로직 파이프라인 실행
             if (m_skillApplyPipeline != null)
             {
-                return m_skillApplyPipeline.Run(context);
+                return await m_skillApplyPipeline.Run(context);
             }
 
             return context;
@@ -159,6 +166,7 @@ namespace BattleSystem
             foreach (var character in characters)
             {
                 character.onBattleAction += ApplyAct;
+                m_reactionSystem.Register(character);
             }
         }
 
@@ -167,6 +175,7 @@ namespace BattleSystem
             foreach (var character in characters)
             {
                 character.onBattleAction -= ApplyAct;
+                m_reactionSystem.Unregister(character);
             }
         }
         #endregion

@@ -19,6 +19,7 @@ namespace Reactions
     {
         bool IsMet(BaseCharacter subject, BattleContext context);
         ICondition Copy();
+        string Description { get; }
         
         // bool IsMet(E_CompareFilter coFilter, E_ObserveFilter obFilter, BaseCharacter observer, BattleContext context, BaseCharacter subject);
         // IEnumerable<BaseCharacter> GetTargets(E_CompareFilter coFilter, E_ObserveFilter obFilter, BaseCharacter observer, BattleContext context, BaseCharacter subject);
@@ -26,12 +27,12 @@ namespace Reactions
 
     public static class TriggerTargetComparer
     {
-        public static IEnumerable<BaseCharacter> Compare(E_CompareFilter coFilter, E_ObserveFilter obFilter, BaseCharacter observer, BattleContext context, BaseCharacter subject)
+        public static IEnumerable<BaseCharacter> Compare(E_TargetFilter coFilter, E_ObserveFilter obFilter, BaseCharacter observer, BattleContext context, BaseCharacter subject)
         {
             List<BaseCharacter> compareTarget = coFilter switch
             {
-                E_CompareFilter.Caster => new() { context.caster },
-                E_CompareFilter.Target => context.target != null ? new() { context.target } : new(),
+                E_TargetFilter.Caster => new() { context.caster },
+                E_TargetFilter.Target => context.target != null ? new() { context.target } : new(),
                 _ => new List<BaseCharacter>()
             };
 
@@ -45,7 +46,7 @@ namespace Reactions
             return compareTarget.Intersect(observeTarget);
         }
 
-        public static bool IsThere(E_CompareFilter target, E_ObserveFilter filter, BaseCharacter observer, BattleContext context, BaseCharacter subject)
+        public static bool IsThere(E_TargetFilter target, E_ObserveFilter filter, BaseCharacter observer, BattleContext context, BaseCharacter subject)
             => Compare(target, filter, observer, context, subject).Any();
     }
 
@@ -70,6 +71,8 @@ namespace Reactions
         {
             return new HpBelowCondition(Threshold);
         }
+
+        public string Description => $"Hp 비율이 {Threshold} 이하일 때";
     }
 
     [Serializable]
@@ -84,6 +87,8 @@ namespace Reactions
         {
             return new CritCondition();
         }
+
+        public string Description => $"크리 공격을 가했을 때";
     }
     
     [Serializable]
@@ -98,6 +103,7 @@ namespace Reactions
         {
             return new EvadeCondition();
         }
+        public string Description => $"공격을 회피했을 때";
     }
 
     [Serializable]
@@ -112,6 +118,7 @@ namespace Reactions
         {
             return new KillCondition();
         }
+        public string Description => $"죽였을 때";
     }
 
     [Serializable]
@@ -119,13 +126,14 @@ namespace Reactions
     {
         public bool IsMet(BaseCharacter subject, BattleContext context)
         {
-            return context.target == subject && context.isEvaded == false;
+            return context.target == subject && context.isEvaded == false && context.runtimeSkill.Data.Type == SkillType.OFFENSIVE;
         }
 
         public ICondition Copy()
         {
             return new HitCondition();
         }
+        public string Description => $"공격을 당했을 때";
     }
     
     [Serializable]
@@ -140,5 +148,6 @@ namespace Reactions
         {
             return new TargetCondition();
         }
+        public string Description => $"행동의 대상으로 지정 됐을 때";
     }
 }
