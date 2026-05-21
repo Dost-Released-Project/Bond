@@ -410,15 +410,21 @@
     color: var(--text-disabled);
     letter-spacing: 1px;
     -unity-font-style: italic;
+    padding-left: 6px;
     display: none;
 }
-.char-detail__lock-banner--equip-only {
+.char-detail__lock-banner--visible {
     display: flex;
-    color: var(--text-muted);
+}
+.char-detail__lock-banner--equip-only {
+    color: var(--text-label);
+    border-left-width: 1px;
+    border-left-color: var(--border-highlight);
 }
 .char-detail__lock-banner--read-only {
-    display: flex;
-    color: var(--stress-warn);
+    color: var(--text-muted);
+    border-left-width: 1px;
+    border-left-color: var(--border-danger);
 }
 
 /* ── 스탯 행 ── */
@@ -802,7 +808,7 @@
 /* ════════════════════════════════════════
    Task 5 — 리액션 슬롯 3분할
    ════════════════════════════════════════ */
-.char-detail__reaction-part {
+.char-detail__slot-part {
     flex-direction: column;
     justify-content: center;
     padding: 6px 10px;
@@ -810,39 +816,39 @@
     border-right-color: var(--border-default);
     flex-shrink: 0;
 }
-.char-detail__reaction-part--target  { width: 100px; }
-.char-detail__reaction-part--trigger { width: 100px; }
-.char-detail__reaction-part--skill   { flex-grow: 1; flex-shrink: 1; }
-.char-detail__reaction-part--fixed   { opacity: 0.6; }
+.char-detail__slot-part--target  { width: 100px; }
+.char-detail__slot-part--trigger { width: 100px; }
+.char-detail__slot-part--skill   { flex-grow: 1; flex-shrink: 1; }
+.char-detail__slot-part--fixed   { opacity: 0.6; }
 
-.char-detail__reaction-slot--role .char-detail__reaction-part:hover {
+.char-detail__reaction-slot--role .char-detail__slot-part:hover {
     background-color: var(--slot-role-bg);
 }
-.char-detail__reaction-slot--role .char-detail__reaction-part--fixed:hover {
+.char-detail__reaction-slot--role .char-detail__slot-part--fixed:hover {
     background-color: transparent;
 }
-.char-detail__reaction-slot--trait .char-detail__reaction-part--skill:hover {
+.char-detail__reaction-slot--trait .char-detail__slot-part--skill:hover {
     background-color: var(--slot-trait-bg);
 }
 
-.char-detail__reaction-part-label {
+.char-detail__slot-part-label {
     font-size: var(--font-size-system);
     letter-spacing: 2px;
     margin-bottom: 3px;
 }
-.char-detail__reaction-slot--role  .char-detail__reaction-part-label { color: var(--slot-role-dot);  }
-.char-detail__reaction-slot--trait .char-detail__reaction-part-label { color: var(--slot-trait-dot); }
+.char-detail__reaction-slot--role  .char-detail__slot-part-label { color: var(--slot-role-dot);  }
+.char-detail__reaction-slot--trait .char-detail__slot-part-label { color: var(--slot-trait-dot); }
 
-.char-detail__reaction-part-val {
+.char-detail__slot-part-val {
     font-size: var(--font-size-body);
     color: var(--text-secondary);
     white-space: nowrap;
     overflow: hidden;
     -unity-text-overflow-position: end;
 }
-.char-detail__reaction-part-val--placeholder { color: var(--text-disabled); }
+.char-detail__slot-part-val--placeholder { color: var(--text-disabled); }
 
-.char-detail__reaction-echo {
+.char-detail__slot-echo {
     width: 28px;
     flex-shrink: 0;
     -unity-text-align: middle-center;
@@ -850,9 +856,9 @@
     align-self: stretch;
     justify-content: center;
 }
-.char-detail__reaction-slot--role  .char-detail__reaction-echo { color: var(--slot-role-dot);  }
-.char-detail__reaction-slot--trait .char-detail__reaction-echo { color: var(--slot-trait-dot); }
-.char-detail__reaction-echo--empty { color: var(--text-disabled); }
+.char-detail__reaction-slot--role  .char-detail__slot-echo { color: var(--slot-role-dot);  }
+.char-detail__reaction-slot--trait .char-detail__slot-echo { color: var(--slot-trait-dot); }
+.char-detail__slot-echo--empty { color: var(--text-disabled); }
 
 .char-detail__reaction-slot--locked {
     border-color: var(--border-default);
@@ -873,7 +879,7 @@
 /* ════════════════════════════════════════
    리액션 인라인 풀
    ════════════════════════════════════════ */
-.char-detail__reaction-pool {
+.char-detail__inline-pool {
     display: none;
     flex-direction: column;
     padding: 10px;
@@ -882,22 +888,22 @@
     border-width: 1px;
     border-radius: 0 0 3px 3px;
 }
-.char-detail__reaction-pool--target {
+.char-detail__inline-pool--target {
     display: flex;
     background-color: var(--bg-deep);
     border-color: var(--slot-role-border);
 }
-.char-detail__reaction-pool--trigger {
+.char-detail__inline-pool--trigger {
     display: flex;
     background-color: var(--bg-deep);
     border-color: var(--slot-trait-border);
 }
-.char-detail__reaction-pool--skill {
+.char-detail__inline-pool--skill {
     display: flex;
     background-color: var(--bg-deep);
     border-color: var(--border-highlight);
 }
-.char-detail__reaction-pool--trait-skill {
+.char-detail__inline-pool--trait-skill {
     display: flex;
     background-color: var(--bg-deep);
     border-color: var(--slot-trait-border);

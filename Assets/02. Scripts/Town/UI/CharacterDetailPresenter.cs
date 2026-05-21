@@ -134,8 +134,8 @@ namespace Bond.UI.Town
             // 성향 슬롯(2~5) target·trigger는 편집 불가
             for (int i = 2; i < 6; i++)
             {
-                _reactionTargetParts[i]?.AddToClassList("char-detail__reaction-part--fixed");
-                _reactionTriggerParts[i]?.AddToClassList("char-detail__reaction-part--fixed");
+                _reactionTargetParts[i]?.AddToClassList("char-detail__slot-part--fixed");
+                _reactionTriggerParts[i]?.AddToClassList("char-detail__slot-part--fixed");
             }
 
             var equipRoot = root.Q("char-detail__equip-slots");
@@ -149,7 +149,7 @@ namespace Bond.UI.Town
 
             // 리액션 인라인 풀 요소 쿼리
             for (int i = 0; i < 6; i++)
-                _reactionPools[i] = root.Q($"reaction-pool-{i}");
+                _reactionPools[i] = root.Q($"inline-pool-{i}");
 
             // 스킬 파트 클릭 → 인라인 풀
             for (int i = 0; i < 6; i++)
@@ -228,6 +228,7 @@ namespace Bond.UI.Town
             bool canEquip = _viewMode != CharacterDetailViewMode.ReadOnly;
 
             _roleBtnCurrent.EnableInClassList("char-detail__role-current--disabled", !fullEdit);
+            _roleBtnCurrent.pickingMode = fullEdit ? PickingMode.Position : PickingMode.Ignore;
             if (!fullEdit) CloseRolePicker();
 
             _equipSlots.SetEditable(canEquip);
@@ -236,33 +237,36 @@ namespace Bond.UI.Town
             {
                 bool editable = i < 2 && fullEdit;
                 _reactionSlots[i].EnableInClassList("char-detail__reaction-slot--disabled", !editable);
+                _reactionSlots[i].pickingMode = editable ? PickingMode.Position : PickingMode.Ignore;
             }
 
             SetLockBanner(_lockBannerRole, _viewMode switch
             {
-                CharacterDetailViewMode.EquipOnly => "장비 전용",
-                CharacterDetailViewMode.ReadOnly  => "읽기 전용",
+                CharacterDetailViewMode.EquipOnly => "탐사 중 변경 불가",
+                CharacterDetailViewMode.ReadOnly  => "전투 중 변경 불가",
                 _                                => "",
             });
             SetLockBanner(_lockBannerEquip, _viewMode switch
             {
-                CharacterDetailViewMode.ReadOnly => "읽기 전용",
+                CharacterDetailViewMode.ReadOnly => "전투 중 변경 불가",
                 _                               => "",
             });
             SetLockBanner(_lockBannerReaction, _viewMode switch
             {
-                CharacterDetailViewMode.EquipOnly => "장비 전용",
-                CharacterDetailViewMode.ReadOnly  => "읽기 전용",
+                CharacterDetailViewMode.EquipOnly => "탐사 중 변경 불가",
+                CharacterDetailViewMode.ReadOnly  => "전투 중 변경 불가",
                 _                                => "",
             });
         }
 
         private void SetLockBanner(Label banner, string msg)
         {
+            banner.RemoveFromClassList("char-detail__lock-banner--visible");
             banner.RemoveFromClassList("char-detail__lock-banner--equip-only");
             banner.RemoveFromClassList("char-detail__lock-banner--read-only");
             banner.text = msg;
             if (string.IsNullOrEmpty(msg)) return;
+            banner.AddToClassList("char-detail__lock-banner--visible");
             banner.AddToClassList(_viewMode == CharacterDetailViewMode.EquipOnly
                 ? "char-detail__lock-banner--equip-only"
                 : "char-detail__lock-banner--read-only");
@@ -351,13 +355,13 @@ namespace Bond.UI.Town
             _gaugeInsanityFill.RemoveFromClassList("char-detail__gauge-fill--insanity-crit");
             _gaugeInsanityFill.AddToClassList(insanityRatio switch
             {
-                < 0.4f => "char-detail__gauge-fill--insanity-safe",
-                < 0.7f => "char-detail__gauge-fill--insanity-warn",
+                < 0.5f => "char-detail__gauge-fill--insanity-safe",
+                < 0.8f => "char-detail__gauge-fill--insanity-warn",
                 _      => "char-detail__gauge-fill--insanity-crit",
             });
             _gaugeInsanityVal.text = $"{_character.Insanity} / 100";
 
-            bool insanityWarn = insanityRatio >= 0.7f;
+            bool insanityWarn = insanityRatio >= 0.5f;
             _gaugeInsanityWarnLabel.EnableInClassList("char-detail__gauge-warn--visible", insanityWarn);
             _gaugeInsanityWarnLabel.text = insanityWarn ? "⚠" : "";
         }
@@ -449,7 +453,7 @@ namespace Bond.UI.Town
                 : hasTarget ? ((Trigger)reaction.Trigger).SubjectCharacterId : "미설정";
             _reactionTargetLabels[slotIndex].text = targetName;
             _reactionTargetLabels[slotIndex].EnableInClassList(
-                "char-detail__reaction-part-val--placeholder", !hasTarget);
+                "char-detail__slot-part-val--placeholder", !hasTarget);
 
             // trigger (조건)
             bool hasTrigger = reaction.Trigger is Trigger tt && tt.Conditions.Count > 0;
@@ -457,7 +461,7 @@ namespace Bond.UI.Town
                 ? GetTriggerDisplayText(reaction.Trigger)
                 : "미설정";
             _reactionTriggerLabels[slotIndex].EnableInClassList(
-                "char-detail__reaction-part-val--placeholder", !hasTrigger);
+                "char-detail__slot-part-val--placeholder", !hasTrigger);
 
             // skill
             bool hasSkill = reaction.SkillIndex >= 0
@@ -467,12 +471,12 @@ namespace Bond.UI.Town
                 ? GetSkillDisplayText(reaction.SkillIndex)
                 : "미설정";
             _reactionSkillLabels[slotIndex].EnableInClassList(
-                "char-detail__reaction-part-val--placeholder", !hasSkill);
+                "char-detail__slot-part-val--placeholder", !hasSkill);
 
             // echo
             bool complete = hasTarget && hasTrigger && hasSkill;
             _reactionEchoLabels[slotIndex].text = complete ? "◈" : "○";
-            _reactionEchoLabels[slotIndex].EnableInClassList("char-detail__reaction-echo--empty", !complete);
+            _reactionEchoLabels[slotIndex].EnableInClassList("char-detail__slot-echo--empty", !complete);
         }
 
         private void SetReactionPartsVisible(int i, bool visible)
@@ -566,10 +570,10 @@ namespace Bond.UI.Town
             bool isRole = slotIndex < 2;
             pool.AddToClassList(part switch
             {
-                "target"  => "char-detail__reaction-pool--target",
-                "trigger" => "char-detail__reaction-pool--trigger",
-                _         => isRole ? "char-detail__reaction-pool--skill"
-                                    : "char-detail__reaction-pool--trait-skill",
+                "target"  => "char-detail__inline-pool--target",
+                "trigger" => "char-detail__inline-pool--trigger",
+                _         => isRole ? "char-detail__inline-pool--skill"
+                                    : "char-detail__inline-pool--trait-skill",
             });
         }
 
@@ -579,10 +583,10 @@ namespace Bond.UI.Town
             {
                 var pool = _reactionPools[i];
                 if (pool == null) continue;
-                pool.RemoveFromClassList("char-detail__reaction-pool--target");
-                pool.RemoveFromClassList("char-detail__reaction-pool--trigger");
-                pool.RemoveFromClassList("char-detail__reaction-pool--skill");
-                pool.RemoveFromClassList("char-detail__reaction-pool--trait-skill");
+                pool.RemoveFromClassList("char-detail__inline-pool--target");
+                pool.RemoveFromClassList("char-detail__inline-pool--trigger");
+                pool.RemoveFromClassList("char-detail__inline-pool--skill");
+                pool.RemoveFromClassList("char-detail__inline-pool--trait-skill");
                 pool.Clear();
             }
             _openPoolSlot = -1;
