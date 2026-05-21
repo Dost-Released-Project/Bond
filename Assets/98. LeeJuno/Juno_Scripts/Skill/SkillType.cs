@@ -4,6 +4,7 @@
 /// </summary>
 public enum SkillType
 {
+    None = 0,       // 00 - 미지정
     OFFENSIVE = 1,  // 01 - 공격형
     DEFENSIVE = 2,  // 02 - 방어형
     SPELL = 3,      // 03 - 주문형

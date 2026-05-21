@@ -18,6 +18,7 @@ namespace Reactions
     
     public enum E_TargetFilter
     {
+        None,
         Caster,
         Target
     }
@@ -32,7 +33,9 @@ namespace Reactions
     public class Trigger : ITrigger
     {
         public string SubjectCharacterId; // 캐릭터 ID
-        [SerializeReference, SubclassSelector] public List<ICondition> Conditions = new List<ICondition>();
+
+        [SerializeReference, SubclassSelector]
+        public List<ICondition> Conditions = new List<ICondition>() { new TargetCondition() };
 
         public Trigger() { }
 
@@ -41,20 +44,20 @@ namespace Reactions
             SubjectCharacterId = subject;
             Conditions = condition.ToList();
         }
-        
+
         public bool CheckCondition(BattleContext context)
         {
             Debug.Assert(BaseCharacter.Dict.ContainsKey(SubjectCharacterId));
             var subject = BaseCharacter.Dict[SubjectCharacterId];
-            return Conditions.All(condition => condition.IsMet(subject, context));
-        }
+            return Conditions.All(condition => condition.IsMet(new ReactionTriggerConditionArgs() { Subject = subject, BattleContext = context }));
+    }
 
         public string Description
         {
             get
             {
                 StringBuilder sb = new StringBuilder();
-                sb.Append(Conditions[0].Description);
+                sb.AppendLine(Conditions[0].Description);
                 for (int i = 1; i < Conditions.Count; i++)
                 {
                     sb.Append($" && {Conditions[i].Description}");
