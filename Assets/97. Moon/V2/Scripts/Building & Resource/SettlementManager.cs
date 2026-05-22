@@ -167,7 +167,7 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         var col = buildingGo.AddComponent<BoxCollider>();
         if (sr.sprite != null)
         {
-            col.size = new Vector3(sr.bounds.size.x * 2f, sr.bounds.size.y * 2f, 2.0f);
+            col.size = new Vector3(sr.bounds.size.x, sr.bounds.size.y, 2.0f);
             col.center = new Vector3(0, 0, -0.5f);
         }
         else
