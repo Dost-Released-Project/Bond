@@ -16,7 +16,7 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     private ITotalInventory _totalInv;
     private IExpeditionInventory _expeditionInv;
     
-    [Inject] private SmithyUIController _smithyUI; // UI 컨트롤러 주입
+    [Inject] private SmithyUIController _smithyUI; 
     [Inject] private CharacterSelector _characterSelector;
 
     [Inject]
@@ -28,7 +28,6 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     
     private void Awake()
     {
-        // "ConstructionSlot" 태그가 붙은 모든 오브젝트를 찾아 이름순으로 정렬하여 배열에 할당
         constructionSlots = GameObject.FindGameObjectsWithTag("ConstructionSlot")
             .OrderBy(go => go.name)
             .Select(go => go.transform)
@@ -46,7 +45,6 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     {
         var levelData = building.Data.GetLevelData(building.CurrentLevel);
         
-        // 분기 처리: UI 오픈 vs 실제 기능 실행
         switch (building.Data.buildingType)
         {
             case BuildingType.Storage: _inventoryView.ToggleWindow(true); break;
@@ -57,10 +55,9 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
             case BuildingType.Inn: 
                 if (_characterSelector.Selected != null)
                     _buildingService.ExecuteInn(_characterSelector.Selected, levelData); break;
-            case BuildingType.Smithy: // 이제 직접 강화하지 않고 UI를 엽니다.
-                // 선택된 캐릭터와 현재 대장간 건물 레벨을 전달합니다.
+            case BuildingType.Smithy: 
                 if (_characterSelector.Selected != null)
-                    _smithyUI.Open(_characterSelector.Selected, building.CurrentLevel);; break;
+                    _smithyUI.Open(_characterSelector.Selected, building.CurrentLevel); break;
             case BuildingType.Guild: CollectGuildData(building); break;
         }
     }
@@ -77,31 +74,31 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
 
         Transform slotTransform = constructionSlots[slotIndex];
 
-        // 이미 건물이 있는지 체크
         if (slotTransform.childCount > 0)
         {
             Debug.LogWarning($"[건설 실패] 슬롯 {slotIndex}에 이미 건물이 존재합니다.");
             return;
         }
 
-        // 서비스에서 자원 소모 및 성공 여부 확인
         if (_buildingService.TryBuild(data))
         {
             Debug.Log($"<color=green>[건설 성공]</color> {data.DisplayName} 건설을 시작합니다.");
 
-            // [복구] 기존 슬롯 시각적 요소 및 기능 제거
-            // 슬롯 컴포넌트나 메쉬를 꺼서 더 이상 건설 창이 뜨지 않게 합니다.
             if (slotTransform.TryGetComponent<SpriteRenderer>(out var mr)) mr.enabled = false;
             if (slotTransform.TryGetComponent<BoxCollider>(out var bc)) bc.enabled = false;
             if (slotTransform.TryGetComponent<ConstructionSlot>(out var slotScript)) slotScript.enabled = false;
 
-            // 실제 건물 비주얼 생성
             CreateBuildingVisual(slotTransform, data);
 
-            // 최초 건설 시 1레벨 효과 적용
+            // 최초 건설 시에만 기분 좋게 한 번 통통 튑니다.
+            var bObj = slotTransform.GetComponentInChildren<BuildingObject>();
+            if (bObj != null)
+            {
+                bObj.TriggerConstructionPopping();
+            }
+
+            // 최초 배치 성공 시에만 버프 적용
             ApplyBuildingEffect(data, 1);
-            
-            // 데이터 세이브
             SaveSettlement();
             Debug.Log($"<color=cyan>[시스템]</color> {data.DisplayName} 배치가 완료되었습니다.");
         }
@@ -120,8 +117,6 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         {
             building.Upgrade();
             ApplyBuildingEffect(building.Data, nextLevel);
-            
-            //데이터 세이브
             SaveSettlement();
         }
     }
@@ -144,7 +139,6 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     
     private void CollectGuildData(BuildingObject guild)
     {
-        // 길드 레벨에 따른 effectValue만큼 개척 데이터 즉시 수급
         int reward = guild.Data.GetLevelData(guild.CurrentLevel).effectValue;
         _resourceManager.AddFrontierData(reward);
         _resourceManager.AddMaterials((int)(reward*0.05f), (int)(reward*0.05f));
@@ -163,42 +157,43 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         sr.sprite = data.buildingSprite; 
         sr.drawMode = SpriteDrawMode.Simple;
 
-        // 💥 원래 잘 되던 3D BoxCollider로 깔끔하게 복구합니다.
         var col = buildingGo.AddComponent<BoxCollider>();
         if (sr.sprite != null)
         {
             col.size = new Vector3(sr.bounds.size.x, sr.bounds.size.y, 2.0f);
             col.center = new Vector3(0, 0, -0.5f);
         }
-        else
-        {
-            col.size = new Vector3(2f, 2f, 2.0f);
-        }
 
         var bObj = buildingGo.AddComponent<BuildingObject>();
         bObj.Initialize(data, this);
     }
     
-    // 세이브 데이터 불러오기 전용 메소드
+    // =========================================================================
+    // 💾 [버그 원천 차단] 세이브 데이터 불러오기 전용 메소드
+    // =========================================================================
     public void LoadBuilding(int slotIndex, BuildingData data, int level)
     {
         if (slotIndex < 0 || slotIndex >= constructionSlots.Length) return;
         Transform slotTransform = constructionSlots[slotIndex];
 
-        // 1. 슬롯 비활성화 (겹침 방지)
         if (slotTransform.TryGetComponent<SpriteRenderer>(out var mr)) mr.enabled = false;
         if (slotTransform.TryGetComponent<BoxCollider>(out var bc)) bc.enabled = false;
         if (slotTransform.TryGetComponent<ConstructionSlot>(out var cs)) cs.enabled = false;
 
-        // 2. 비주얼 생성 및 초기화
         CreateBuildingVisual(slotTransform, data);
         var bObj = slotTransform.GetComponentInChildren<BuildingObject>();
     
-        // 3. 레벨 강제 설정 (Upgrade 메서드 반복 호출 혹은 직접 대입)
-        for (int i = 1; i < level; i++) bObj.Upgrade(); 
+        if (bObj != null)
+        {
+            // 💥 연출 없이 조용히 레벨만 셋업합니다.
+            bObj.LoadLevelForce(level);
+        }
+
+        // 💥 [해결] 중복으로 ApplyBuildingEffect를 때리던 위험한 무한 중첩 코드를 완전 철거했습니다.
+        // 이미 자원/인벤토리의 최대 수치는 데이터 세이브 매니저가 자체적으로 세이브/로드하고 있으므로
+        // 여기서는 순수하게 겉모습 건물 체급 데이터만 맞춰주면 됩니다.
     }
     
-    // 데이터 세이브
     private void SaveSettlement()
     {
         var settSave = new SettlementSaveData();
@@ -215,7 +210,6 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         SaveLoadSystem.Save(settSave);
     }
 
-    // 임시
     public void SelectCharacter(BaseCharacter testHero)
     {
         _characterSelector.Select(testHero);
