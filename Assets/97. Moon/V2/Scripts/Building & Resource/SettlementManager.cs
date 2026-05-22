@@ -39,72 +39,91 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     private void Update()
     {
         if (Keyboard.current.tKey.wasPressedThisFrame) _resourceManager.Admin_AddAllResources(1000);
+        if (Keyboard.current.pKey.wasPressedThisFrame) OnExpeditionReturned(); // 치트 테스트
     }
     
     public void OnBuildingClicked(BuildingObject building)
     {
+        // 💥 사용 횟수 검증 부품인 Counter에게 권한 위임하여 사전 체크
+        if (building.Counter != null && building.Counter.IsUseLimitReached())
+        {
+            Debug.LogWarning($"[이용 불가] {building.Data.DisplayName}의 이번 턴 이용 한도를 초과했습니다!");
+            return;
+        }
+
         var levelData = building.Data.GetLevelData(building.CurrentLevel);
         
         switch (building.Data.buildingType)
         {
-            case BuildingType.Storage: _inventoryView.ToggleWindow(true); break;
-            case BuildingType.Supply: _supplyView.Open(); break;
+            case BuildingType.Storage: 
+                _inventoryView.ToggleWindow(true); 
+                break;
+            case BuildingType.Supply: 
+                _supplyView.Open(); 
+                if (building.Counter != null) building.Counter.UseBuilding(); 
+                break;
             case BuildingType.Tavern: 
                 if (_characterSelector.Selected != null)
-                    _buildingService.ExecuteTavern(_characterSelector.Selected, levelData); break;
+                {
+                    _buildingService.ExecuteTavern(_characterSelector.Selected, levelData);
+                    if (building.Counter != null) building.Counter.UseBuilding();
+                }
+                break;
             case BuildingType.Inn: 
                 if (_characterSelector.Selected != null)
-                    _buildingService.ExecuteInn(_characterSelector.Selected, levelData); break;
+                {
+                    _buildingService.ExecuteInn(_characterSelector.Selected, levelData);
+                    if (building.Counter != null) building.Counter.UseBuilding();
+                }
+                break;
             case BuildingType.Smithy: 
                 if (_characterSelector.Selected != null)
-                    _smithyUI.Open(_characterSelector.Selected, building.CurrentLevel); break;
-            case BuildingType.Guild: CollectGuildData(building); break;
+                    _smithyUI.Open(_characterSelector.Selected, building.CurrentLevel);
+                break;
+            case BuildingType.Guild: 
+                CollectGuildData(building); 
+                if (building.Counter != null) building.Counter.UseBuilding();
+                break;
+        }
+    }
+
+    public void OnExpeditionReturned()
+    {
+        Debug.Log("<color=green>[원정대 복귀]</color> 모든 영지 건물의 이용 횟수가 리셋됩니다.");
+        foreach (var slot in constructionSlots)
+        {
+            var bObj = slot.GetComponentInChildren<BuildingObject>();
+            // 하위 Counter 부품만 콕 집어서 턴 리셋 진행
+            if (bObj != null && bObj.Counter != null)
+            {
+                bObj.Counter.ResetTurnUses();
+            }
         }
     }
 
     public void BuildInSlot(int slotIndex, BuildingData data)
     {
-        Debug.Log($"<color=white>[시스템]</color> 슬롯 {slotIndex}에 {data.DisplayName} 건설 시도 중...");
-
-        if (slotIndex < 0 || slotIndex >= constructionSlots.Length)
-        {
-            Debug.LogError($"[건설 실패] 유효하지 않은 슬롯 인덱스: {slotIndex}");
-            return;
-        }
-
+        if (slotIndex < 0 || slotIndex >= constructionSlots.Length) return;
         Transform slotTransform = constructionSlots[slotIndex];
-
-        if (slotTransform.childCount > 0)
-        {
-            Debug.LogWarning($"[건설 실패] 슬롯 {slotIndex}에 이미 건물이 존재합니다.");
-            return;
-        }
+        if (slotTransform.childCount > 0) return;
 
         if (_buildingService.TryBuild(data))
         {
-            Debug.Log($"<color=green>[건설 성공]</color> {data.DisplayName} 건설을 시작합니다.");
-
             if (slotTransform.TryGetComponent<SpriteRenderer>(out var mr)) mr.enabled = false;
             if (slotTransform.TryGetComponent<BoxCollider>(out var bc)) bc.enabled = false;
             if (slotTransform.TryGetComponent<ConstructionSlot>(out var slotScript)) slotScript.enabled = false;
 
-            CreateBuildingVisual(slotTransform, data);
-
-            // 최초 건설 시에만 기분 좋게 한 번 통통 튑니다.
-            var bObj = slotTransform.GetComponentInChildren<BuildingObject>();
-            if (bObj != null)
+            // 💥 팩토리를 통해 안전하게 부품화된 건물 생성
+            BuildingObject bObj = BuildingFactory.Create(slotTransform, data, this);
+            
+            // 생성 완료 시점에 시각 부품에게 두근 연출 수동 명령
+            if (bObj != null && bObj.Visuals != null)
             {
-                bObj.TriggerConstructionPopping();
+                bObj.Visuals.TriggerConstructionPopping(1);
             }
 
-            // 최초 배치 성공 시에만 버프 적용
             ApplyBuildingEffect(data, 1);
             SaveSettlement();
-            Debug.Log($"<color=cyan>[시스템]</color> {data.DisplayName} 배치가 완료되었습니다.");
-        }
-        else
-        {
-            Debug.LogWarning($"[자원 부족] {data.DisplayName}을 건설하기 위한 자원이 모자랍니다.");
         }
     }
 
@@ -142,35 +161,9 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         int reward = guild.Data.GetLevelData(guild.CurrentLevel).effectValue;
         _resourceManager.AddFrontierData(reward);
         _resourceManager.AddMaterials((int)(reward*0.05f), (int)(reward*0.05f));
-        Debug.Log($"길드에서 {reward}의 개척 데이터를 수급했습니다!");
+        Debug.Log($"길드에서 {reward}의 개척 데이터와 {reward*0.05f}의 재료를 수급했습니다!");
     }
     
-    private void CreateBuildingVisual(Transform parent, BuildingData data)
-    {
-        GameObject buildingGo = new GameObject($"Building_{data.DisplayName}");
-        buildingGo.transform.SetParent(parent);
-        buildingGo.transform.localPosition = new Vector3(0, 0.1f, 0); 
-        buildingGo.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-        buildingGo.transform.localRotation = Quaternion.Euler(0, 0, 0); 
-
-        var sr = buildingGo.AddComponent<SpriteRenderer>();
-        sr.sprite = data.buildingSprite; 
-        sr.drawMode = SpriteDrawMode.Simple;
-
-        var col = buildingGo.AddComponent<BoxCollider>();
-        if (sr.sprite != null)
-        {
-            col.size = new Vector3(sr.bounds.size.x, sr.bounds.size.y, 2.0f);
-            col.center = new Vector3(0, 0, -0.5f);
-        }
-
-        var bObj = buildingGo.AddComponent<BuildingObject>();
-        bObj.Initialize(data, this);
-    }
-    
-    // =========================================================================
-    // 💾 [버그 원천 차단] 세이브 데이터 불러오기 전용 메소드
-    // =========================================================================
     public void LoadBuilding(int slotIndex, BuildingData data, int level)
     {
         if (slotIndex < 0 || slotIndex >= constructionSlots.Length) return;
@@ -180,18 +173,13 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         if (slotTransform.TryGetComponent<BoxCollider>(out var bc)) bc.enabled = false;
         if (slotTransform.TryGetComponent<ConstructionSlot>(out var cs)) cs.enabled = false;
 
-        CreateBuildingVisual(slotTransform, data);
-        var bObj = slotTransform.GetComponentInChildren<BuildingObject>();
+        // 💥 팩토리로 조용히 조립 생산
+        BuildingObject bObj = BuildingFactory.Create(slotTransform, data, this);
     
         if (bObj != null)
         {
-            // 💥 연출 없이 조용히 레벨만 셋업합니다.
             bObj.LoadLevelForce(level);
         }
-
-        // 💥 [해결] 중복으로 ApplyBuildingEffect를 때리던 위험한 무한 중첩 코드를 완전 철거했습니다.
-        // 이미 자원/인벤토리의 최대 수치는 데이터 세이브 매니저가 자체적으로 세이브/로드하고 있으므로
-        // 여기서는 순수하게 겉모습 건물 체급 데이터만 맞춰주면 됩니다.
     }
     
     private void SaveSettlement()
