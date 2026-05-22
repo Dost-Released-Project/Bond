@@ -62,6 +62,11 @@ public class HpChangeEventEffectHandler : IEventEffectHandler
         }
     }
 
+    private void ApplyHpToChooseOne(int amount, int index)
+    {
+        
+    }
+
     private void ApplyHpToRandom(int amount)
     {
         IReadOnlyList<BaseCharacter> party = _expeditionPayload.Party;

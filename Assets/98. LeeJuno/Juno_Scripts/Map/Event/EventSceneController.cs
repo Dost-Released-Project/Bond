@@ -25,6 +25,8 @@ public class EventSceneController : MonoBehaviour
     private IReadOnlyList<IJournalActionHandler> _actionHandlers;
     private EventData _currentEventData; // _currentEventId 대신 EventData SO 를 직접 보관 — JournalDataSO 직접 참조용
     private EventSceneState _currentState = EventSceneState.Primary;
+    private EventChoice _selectedItemRewardChoice; // 2차 선택지 진입 시 선택된 ItemReward choice 보관
+    private string _resolvedItemId = string.Empty; // 1차 선택 시점에 확정된 아이템 ID
 
     /// <summary>
     /// VContainer 로부터 주입받는다.
@@ -92,7 +94,15 @@ public class EventSceneController : MonoBehaviour
     /// <param name="choice">선택된 EventChoice 데이터.</param>
     public void OnChoiceSelectedFromView(EventChoice choice)
     {
+        // 씬 재진입 등 예외적 상황을 대비해 진입 시 초기화한다
+        _selectedItemRewardChoice = null;
+        _resolvedItemId = string.Empty;
+
         // 중복 선택 방지 — 모든 버튼을 비활성화한다
+        // 이미 2차 선택지 표시 중이면 1차 선택을 무시한다 (중복 호출 방지)
+        if (_currentState == EventSceneState.Secondary)
+            return;
+
         _choiceView?.SetInteractable(false);
 
         // _choices 목록에서 선택된 choice 의 인덱스를 찾아 JournalDataSO.Options 매핑에 사용한다
@@ -116,8 +126,10 @@ public class EventSceneController : MonoBehaviour
             && _currentEventData != null
             && _currentEventData.JournalData != null)
         {
-            // 비동기 예외를 void 컨텍스트에서 명시적으로 기록하기 위해 람다를 사용한다
-            ShowSecondaryPhaseAsync(_currentEventData.JournalData).Forget(e => Debug.LogError(e));
+            // 사용자가 실제로 선택한 choice 를 저장한다 — BuildTempJournalReport 에서 우선 참조한다
+            _selectedItemRewardChoice = choice;
+            _resolvedItemId = ResolveItemId(choice.Effect); // 아이템 ID 를 1차 선택 시점에 확정한다
+            ShowSecondaryPhase(_currentEventData.JournalData);
             return;
         }
 
@@ -131,9 +143,14 @@ public class EventSceneController : MonoBehaviour
     /// View 의 ShowSecondaryPhase() 를 호출하고 OnSecondaryOptionSelected 핸들러를 연결한다.
     /// </summary>
     /// <param name="journalData">표시할 JournalDataSO.</param>
-    private async UniTask ShowSecondaryPhaseAsync(JournalDataSO journalData)
+    private void ShowSecondaryPhase(JournalDataSO journalData)
     {
         _currentState = EventSceneState.Secondary;
+
+        if (_choiceView == null)
+        {
+            return;
+        }
 
         // OnSecondaryOptionSelected 핸들러를 2차 선택지 처리 메서드에 연결한다
         // 람다식: journalData 를 클로저로 캡처해 OnSecondaryChoiceSelected 에 전달하기 위해 사용한다
@@ -143,8 +160,6 @@ public class EventSceneController : MonoBehaviour
 
         // View 를 다시 활성화해 2차 버튼 클릭을 허용한다
         _choiceView.SetInteractable(true);
-
-        await UniTask.CompletedTask;
     }
 
     /// <summary>
@@ -197,7 +212,7 @@ public class EventSceneController : MonoBehaviour
 
     /// <summary>
     /// IJournalActionHandler.ExecuteAction() 에 넘길 임시 JournalReport 를 조립한다.
-    /// Metadata["ItemId"] 와 ["Quantity"] 를 현재 EventChoice 의 효과 데이터에서 채운다.
+    /// Metadata["ItemId"] 와 ["Quantity"] 를 1차 선택 시점에 확정된 _resolvedItemId 에서 채운다.
     /// </summary>
     /// <param name="journalData">현재 JournalDataSO.</param>
     /// <returns>핸들러 실행에 필요한 최소 정보를 담은 JournalReport.</returns>
@@ -210,50 +225,48 @@ public class EventSceneController : MonoBehaviour
             IconId     = journalData != null ? journalData.EntryIconId : string.Empty,
         };
 
-        // _choices 에서 ItemReward 타입 선택지를 찾아 아이템 ID 를 추출한다
-        // _choiceView.SetInteractable(false) 이후이므로 _choices 는 유효하다
-        if (_choices != null)
+        if (string.IsNullOrEmpty(_resolvedItemId))
         {
-            foreach (EventChoice choice in _choices)
-            {
-                EventEffectData effect = choice.Effect;
-                if (effect == null || effect.EffectType != EffectType.ItemReward)
-                {
-                    continue;
-                }
-
-                // 획득 방식에 따라 ItemId 결정
-                string itemId = string.Empty;
-
-                switch (effect.ItemRewardType)
-                {
-                    case ItemRewardType.Guaranteed:
-                        itemId = effect.GuaranteedItemId;
-                        break;
-                    case ItemRewardType.Probability:
-                        float roll = UnityEngine.Random.value;
-                        itemId = roll <= effect.ItemProbability ? effect.ProbabilityItemId : string.Empty;
-                        break;
-                    case ItemRewardType.RandomFromPool:
-                        if (effect.ItemPool != null && effect.ItemPool.Count > 0)
-                        {
-                            int poolIndex = UnityEngine.Random.Range(0, effect.ItemPool.Count);
-                            itemId = effect.ItemPool[poolIndex];
-                        }
-                        break;
-                }
-
-                if (string.IsNullOrEmpty(itemId) == false)
-                {
-                    report.Metadata["ItemId"]   = itemId;
-                    report.Metadata["Quantity"] = "1";
-                }
-
-                break; // ItemReward 선택지는 하나만 처리한다
-            }
+            Debug.LogWarning("[EventSceneController] 확정된 아이템 ID 가 없습니다. 아이템을 지급하지 않습니다.");
+            return report;
         }
 
+        report.Metadata["ItemId"]   = _resolvedItemId;
+        report.Metadata["Quantity"] = "1";
+
         return report;
+    }
+
+    /// <summary>
+    /// ItemReward 효과 데이터에서 아이템 ID 를 결정한다.
+    /// 랜덤 요소가 있는 경우 이 시점에 확정해 이후 처리에서 일관성을 보장한다.
+    /// </summary>
+    /// <param name="effect">ItemReward 타입 효과 데이터.</param>
+    /// <returns>결정된 아이템 ID. 획득 실패(확률 미달, 풀 비어있음)이면 string.Empty.</returns>
+    private string ResolveItemId(EventEffectData effect)
+    {
+        if (effect == null)
+        {
+            return string.Empty;
+        }
+
+        switch (effect.ItemRewardType)
+        {
+            case ItemRewardType.Guaranteed:
+                return effect.GuaranteedItemId;
+            case ItemRewardType.Probability:
+                float roll = UnityEngine.Random.value;
+                return roll <= effect.ItemProbability ? effect.ProbabilityItemId : string.Empty;
+            case ItemRewardType.RandomFromPool:
+                if (effect.ItemPool != null && effect.ItemPool.Count > 0)
+                {
+                    int poolIndex = UnityEngine.Random.Range(0, effect.ItemPool.Count);
+                    return effect.ItemPool[poolIndex];
+                }
+                return string.Empty;
+            default:
+                return string.Empty;
+        }
     }
 
     /// <summary>
@@ -264,7 +277,7 @@ public class EventSceneController : MonoBehaviour
     {
         if (effect != null && _effectApplier != null)
         {
-            await _effectApplier.ApplyAsync(effect, null);
+            await _effectApplier.ApplyAsync(effect);
         }
 
         StageResult result = new StageResult

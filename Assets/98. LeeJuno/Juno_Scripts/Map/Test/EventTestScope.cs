@@ -1,3 +1,4 @@
+using Bond.Expedition;
 using Bond.WT.Journal;
 using UnityEngine;
 using VContainer;
@@ -40,6 +41,15 @@ public class EventTestScope : LifetimeScope
         // EventJournalProvider — NullJournalSystem 을 JournalSystem 으로 주입
         // AsSelf(): EventSceneController 가 구체 타입으로 직접 주입받아 RecordChoice() 를 호출하기 위해 노출
         builder.RegisterEntryPoint<EventJournalProvider>(Lifetime.Scoped).AsSelf();
+
+        // ExpeditionPayload — 테스트 씬에서 RootScope 없이 단독 실행 시 필요
+        // JournalInventoryActionHandler 가 생성자에서 주입받는다
+        builder.Register<ExpeditionPayload>(Lifetime.Singleton);
+
+        // 2차 선택지 actionKey 처리 핸들러 등록
+        // AsImplementedInterfaces(): IReadOnlyList<IJournalActionHandler> 로 자동 수집된다
+        builder.Register<JournalInventoryActionHandler>(Lifetime.Scoped)
+            .AsImplementedInterfaces();
 
         // EventSceneController (씬 히어라키에서 탐색)
         builder.RegisterComponentInHierarchy<EventSceneController>();

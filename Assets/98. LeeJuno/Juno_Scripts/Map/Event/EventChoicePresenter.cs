@@ -4,7 +4,6 @@ using VContainer.Unity;
 
 /// <summary>
 /// 이벤트 선택지의 View 이벤트와 Controller 로직을 연결하는 Presenter.
-/// JournalSystem 의 JournalBinder 패턴을 참고해 설계했다.
 ///
 /// 역할:
 ///   - IEventChoiceView.OnChoiceSelected → EventSceneController.OnChoiceSelectedFromView 연결
