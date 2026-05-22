@@ -16,7 +16,7 @@ MonoBehaviour:
   _displayName: Carriage
   _description: Item
   buildingType: 5
-  buildingSprite: {fileID: 21300000, guid: cf481bc28b2f89f45892e7b79412679a, type: 3}
+  buildingSprite: {fileID: 21300000, guid: ffc4884274d05c64d8ab4766b36c9687, type: 3}
   levels:
   - level: 1
     frontierCost: 100

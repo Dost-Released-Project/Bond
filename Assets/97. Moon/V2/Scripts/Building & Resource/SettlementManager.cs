@@ -41,7 +41,7 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     {
         if (Keyboard.current.tKey.wasPressedThisFrame) _resourceManager.Admin_AddAllResources(1000);
     }
-
+    
     public void OnBuildingClicked(BuildingObject building)
     {
         var levelData = building.Data.GetLevelData(building.CurrentLevel);
@@ -151,31 +151,30 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         Debug.Log($"길드에서 {reward}의 개척 데이터를 수급했습니다!");
     }
     
-    // 스프라이트로 건물 생성
     private void CreateBuildingVisual(Transform parent, BuildingData data)
     {
-        // 1. 빈 오브젝트 생성
         GameObject buildingGo = new GameObject($"Building_{data.DisplayName}");
         buildingGo.transform.SetParent(parent);
-        buildingGo.transform.localPosition = Vector3.zero; // 바닥에 붙임
-
-        // 2. 스프라이트 렌더러 추가 및 설정
-        var sr = buildingGo.AddComponent<SpriteRenderer>();
-        sr.sprite = data.buildingSprite; // BuildingData에 추가하신 스프라이트
-        sr.drawMode = SpriteDrawMode.Simple;
-    
-        // 건물이 땅 뚫고 들어가지 않게 위치 조정 (스프라이트 크기에 따라 pivot 조정 필요)
-        buildingGo.transform.localPosition = new Vector3(0, 0.1f, 0);
+        buildingGo.transform.localPosition = new Vector3(0, 0.1f, 0); 
         buildingGo.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-        // 쿼터뷰/탑다운일 경우 카메라를 바라보게 회전 (필요시)
-        buildingGo.transform.rotation = Quaternion.Euler(0, 0, 0); 
+        buildingGo.transform.localRotation = Quaternion.Euler(0, 0, 0); 
 
-        // 3. 클릭 감지를 위한 콜라이더 추가 (레이캐스트용)
+        var sr = buildingGo.AddComponent<SpriteRenderer>();
+        sr.sprite = data.buildingSprite; 
+        sr.drawMode = SpriteDrawMode.Simple;
+
+        // 💥 원래 잘 되던 3D BoxCollider로 깔끔하게 복구합니다.
         var col = buildingGo.AddComponent<BoxCollider>();
-        // 스프라이트 크기에 맞춰 콜라이더 사이즈 자동 조정
-        col.size = new Vector3(sr.bounds.size.x, sr.bounds.size.y, 0.1f);
+        if (sr.sprite != null)
+        {
+            col.size = new Vector3(sr.bounds.size.x * 2f, sr.bounds.size.y * 2f, 2.0f);
+            col.center = new Vector3(0, 0, -0.5f);
+        }
+        else
+        {
+            col.size = new Vector3(2f, 2f, 2.0f);
+        }
 
-        // 4. 기능 컴포넌트 부착
         var bObj = buildingGo.AddComponent<BuildingObject>();
         bObj.Initialize(data, this);
     }

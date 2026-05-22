@@ -16,7 +16,7 @@ MonoBehaviour:
   _displayName: Inn
   _description: Stress
   buildingType: 0
-  buildingSprite: {fileID: 21300000, guid: e977d528a346d0f44a208373ccdbc33c, type: 3}
+  buildingSprite: {fileID: 21300000, guid: 4cdb2b5e753d6bd43b20c180413b48d1, type: 3}
   levels:
   - level: 1
     frontierCost: 100

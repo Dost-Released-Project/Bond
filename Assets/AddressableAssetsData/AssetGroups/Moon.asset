@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Moon
   m_GUID: ac641a8448e02f14fb8f0aa796135860
   m_SerializeEntries:
+  - m_GUID: 152274382062a4a458f54817b404cb75
+    m_Address: SpriteOutlineMaterial
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3927827441b3eb04cb05038d1cde3a48
     m_Address: Town
     m_ReadOnly: 0
