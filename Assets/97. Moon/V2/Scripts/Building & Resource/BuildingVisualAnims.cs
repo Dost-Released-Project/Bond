@@ -120,4 +120,22 @@ public class BuildingVisualAnims : MonoBehaviour
             if (_tooltipView != null) _tooltipView.HideTooltip();
         }
     }
+    
+    // 💥 [추가] 마우스가 이 건물 위에 떠 있는 상태에서 수치가 변했을 때만 단발성으로 호출될 갱신 통로
+    public void ForceRefreshTooltip()
+    {
+        if (!_isHovered || Mouse.current == null || _owner == null) return;
+        
+        if (_spriteRenderer != null) _spriteRenderer.color = _originColor * 1.1f; 
+        if (_tooltipView == null) _tooltipView = FindFirstObjectByType<BuildingTooltipView>();
+        if (_tooltipView != null)
+        {
+            Vector2 mousePosition = Mouse.current.position.ReadValue();
+            Vector2 uiToolkitPos = mousePosition;
+            uiToolkitPos.y = Screen.height - uiToolkitPos.y;
+            
+            // 현재 마우스 위치 그대로 데이터 내용만 싹 새로고침
+            _tooltipView.ShowTooltip(_owner, uiToolkitPos);
+        }
+    }
 }

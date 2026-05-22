@@ -71,8 +71,16 @@ public class AccessoryBagView : MonoBehaviour
                 int actualInvIdx = _mappedIndices[uiIdx];
                 if (_totalInventory.GetSlot(actualInvIdx).IsEmpty) return;
 
-                if (e.button == 0) _transferService.StartDrag(_totalInventory, actualInvIdx);
-                else if (e.button == 1) _itemService.AutoEquip(_totalInventory, actualInvIdx);
+                if (e.button == 0)
+                {
+                    _transferService.StartDrag(_totalInventory, actualInvIdx);
+                }
+                else if (e.button == 1)
+                {
+                    // 우클릭 자동 장착 수행 후 이벤트 전파를 완벽히 격리 차단 (이중 교체 트리거 방어)
+                    _itemService.AutoEquip(_totalInventory, actualInvIdx);
+                    e.StopPropagation();
+                }
             });
 
             slot.RegisterCallback<PointerUpEvent>(e => {

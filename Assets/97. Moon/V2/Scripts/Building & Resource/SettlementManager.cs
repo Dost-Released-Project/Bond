@@ -52,28 +52,27 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         }
 
         var levelData = building.Data.GetLevelData(building.CurrentLevel);
+        bool isUsed = false; // 💥 성공적으로 건물을 소모했는지 추적할 플래그
         
         switch (building.Data.buildingType)
         {
-            case BuildingType.Storage: 
-                _inventoryView.ToggleWindow(true); 
-                break;
+            case BuildingType.Storage: _inventoryView.ToggleWindow(true); break;
             case BuildingType.Supply: 
                 _supplyView.Open(); 
-                if (building.Counter != null) building.Counter.UseBuilding(); 
+                if (building.Counter != null) { building.Counter.UseBuilding(); isUsed = true; }
                 break;
             case BuildingType.Tavern: 
                 if (_characterSelector.Selected != null)
                 {
                     _buildingService.ExecuteTavern(_characterSelector.Selected, levelData);
-                    if (building.Counter != null) building.Counter.UseBuilding();
+                    if (building.Counter != null) { building.Counter.UseBuilding(); isUsed = true; }
                 }
                 break;
             case BuildingType.Inn: 
                 if (_characterSelector.Selected != null)
                 {
                     _buildingService.ExecuteInn(_characterSelector.Selected, levelData);
-                    if (building.Counter != null) building.Counter.UseBuilding();
+                    if (building.Counter != null) { building.Counter.UseBuilding(); isUsed = true; }
                 }
                 break;
             case BuildingType.Smithy: 
@@ -82,8 +81,14 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
                 break;
             case BuildingType.Guild: 
                 CollectGuildData(building); 
-                if (building.Counter != null) building.Counter.UseBuilding();
+                if (building.Counter != null) { building.Counter.UseBuilding(); isUsed = true; }
                 break;
+        }
+        
+        // 💥 기능 사용에 성공했다면 그 순간 딱 1번 툴팁 숫자를 새로고침 지시!
+        if (isUsed && building.Visuals != null)
+        {
+            building.Visuals.ForceRefreshTooltip();
         }
     }
 
@@ -137,6 +142,12 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
             building.Upgrade();
             ApplyBuildingEffect(building.Data, nextLevel);
             SaveSettlement();
+            
+            // 💥 업그레이드가 성공한 바로 그 즉시 딱 1번 툴팁을 새 레벨 정보로 리프레시!
+            if (building.Visuals != null)
+            {
+                building.Visuals.ForceRefreshTooltip();
+            }
         }
     }
 
