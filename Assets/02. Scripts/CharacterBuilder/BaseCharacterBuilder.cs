@@ -59,6 +59,7 @@ public partial class BaseCharacter
         {
             chara.SetRole(RandomUtil.GetRandom(RoleType.None));
             chara.CalcStat();
+            chara.SetHpFull();
             chara.Id = System.Guid.NewGuid().ToString();
             Dict[chara.Id] = chara;
             return chara;

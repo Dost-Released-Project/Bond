@@ -21,4 +21,5 @@ MonoBehaviour:
   STR: 3
   AGI: 6
   INT: 12
-  SkillIds: []
+  SkillIds:
+  - 01010000;01020000

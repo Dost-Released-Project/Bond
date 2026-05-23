@@ -98,6 +98,7 @@ namespace _90._HA.Temp.Test
                 var c = Instantiate(preset).BaseCharacter;
                 c.CalcStat();
                 BaseCharacter.Dict[c.Id] = c;
+                c.SetHpFull();
                 roster.Hire(c);
             }
         }

@@ -21,12 +21,12 @@ MonoBehaviour:
   expeditionSlotMax: 1
   specialEffects:
   - id: 13010000
-    name: "\uBBFC\uCCA9 \uC99D\uAC00(\uC218\uCE58)"
+    name: "\uC7AC\uBE60\uB978 \uBC1C\uB180\uB9BC"
     type: 1
     mode: 0
     value: 3
   - id: 13160000
-    name: "\uBBFC\uCCA9 \uC99D\uAC00(\uBE44\uC728)"
+    name: "\uAC00\uBCBC\uC6B4 \uBAB8"
     type: 1
     mode: 1
     value: 0.1

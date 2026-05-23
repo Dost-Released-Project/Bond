@@ -99,6 +99,7 @@ public partial class BaseCharacter : ITurnUseUnit
 
     public float HpRatio => Stat.current_Hp / Stat.max_Hp;
     
+    public void SetHpFull() => Stat.current_Hp = Stat.max_Hp;
     public void ReduceHP(int amount) => Stat.current_Hp = Mathf.Max(Stat.current_Hp - amount, 0); // 체력 감소
     public void ReduceInsanity(int amount) => Insanity = Mathf.Min(Insanity + amount, 100); // 스트레스 증가
     
@@ -156,6 +157,7 @@ public partial class BaseCharacter : ITurnUseUnit
             
             for (int i = 0; i < Skills.Length; i++)
             {
+                Debug.Assert(Skills[i] != null, $"{Name}'s Skills[{i}] is null");
                 if (Skills[i] != null && usableFlags[i])
                 {
                     usableSkills.Add(Skills[i]);

@@ -26,6 +26,7 @@ public class BuildingLevelDTO
     public int SlotExpansion { get; set; }
     public int FrontierCapAdd { get; set; }
     public int MaterialCapAdd { get; set; }
+    public int MaxUses { get; set; }
 }
 
 public class BuildingParser : TSVParserBase<BuildingDTO, BuildingData>
@@ -85,7 +86,8 @@ public class BuildingParser : TSVParserBase<BuildingDTO, BuildingData>
                 effectValue = rec.EffectValue,
                 slotExpansion = rec.SlotExpansion,
                 frontierCapAdd = rec.FrontierCapAdd,
-                materialCapAdd = rec.MaterialCapAdd
+                materialCapAdd = rec.MaterialCapAdd,
+                maxUses = rec.MaxUses,
             });
         }
         Debug.Log($"[BuildingParser] 레벨 캐시 로드 완료. 총 {_levelCache.Count}개 건물의 데이터 저장됨.");
@@ -176,5 +178,6 @@ public sealed class BuildingLevelMap : ClassMap<BuildingLevelDTO>
         Map(m => m.SlotExpansion).Name("SlotExpansion");
         Map(m => m.FrontierCapAdd).Name("FrontierCapAdd");
         Map(m => m.MaterialCapAdd).Name("MaterialCapAdd");
+        Map(m => m.MaxUses).Name("MaxUses");
     }
 }
