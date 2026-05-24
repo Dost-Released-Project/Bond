@@ -134,31 +134,60 @@ namespace BattleSystem
             }
         }
 
+        #region 비트마스크 대칭(Symmetry) 처리
+        /// <summary>
+        /// 4비트 거울 반전 (예: 0001 -> 1000, 0100 -> 0010)
+        /// 아군 데이터 시점을 적군 시점으로 뒤집을 때 사용합니다.
+        /// </summary>
+        private int MirrorMask(int mask)
+        {
+            int mirrored = 0;
+            for (int i = 0; i < 4; i++)
+            {
+                if ((mask & (1 << i)) != 0)
+                    mirrored |= (1 << (3 - i));
+            }
+            return mirrored;
+        }
+
+        public int GetUseableMask(BaseCharacter caster, SkillData skill)
+        {
+            if (caster.CurrentSlot.side == E_BattleSide.Enemy)
+                return MirrorMask(skill.UseableSlots);
+            return skill.UseableSlots;
+        }
+
+        public int GetTargetMask(BaseCharacter caster, SkillData skill)
+        {
+            int baseMask = (skill.Target == SkillTarget.Enemy) ? skill.EnemyTargetMask : skill.AllyTargetMask;
+            
+            if (caster.CurrentSlot.side == E_BattleSide.Enemy)
+                return MirrorMask(baseMask);
+            return baseMask;
+        }
+        #endregion
+
         public bool HasAnyValidTarget(BaseCharacter caster, SkillData skillData)
         {
-            // 스킬의 대상 타입에 따라 달라지는 요소
             E_BattleSide sideToCheck;
-            int maskToCheck;
             
-            // 요소에 값을 넣음
             switch (skillData.Target)
             {
                 case SkillTarget.Enemy:
-                    sideToCheck = (caster.CurrentSlot.side == E_BattleSide.Player) ?
-                        E_BattleSide.Enemy : E_BattleSide.Player;
-                    maskToCheck = skillData.EnemyTargetMask;
+                    sideToCheck = (caster.CurrentSlot.side == E_BattleSide.Player) ? E_BattleSide.Enemy : E_BattleSide.Player;
                     break;
                 case SkillTarget.Party:
                     sideToCheck = caster.CurrentSlot.side;
-                    maskToCheck = skillData.AllyTargetMask;
                     break;
                 case SkillTarget.Self:
                     sideToCheck = caster.CurrentSlot.side;
-                    maskToCheck = (int)caster.CurrentSlot.rank;
                     break;
                 default:
                     return false;
             }
+
+            // Self면 현재 자기 랭크, 아니면 대칭이 적용된 타겟 마스크 획득
+            int maskToCheck = (skillData.Target == SkillTarget.Self) ? (int)caster.CurrentSlot.rank : GetTargetMask(caster, skillData);
 
             for (int i = 0; i < 4; i++)
             {

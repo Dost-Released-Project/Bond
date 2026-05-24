@@ -89,13 +89,16 @@ namespace BattleSystem
 
             if (battleContext.target == null)
             {
+                // FormationManager를 통해 시전자 진영에 맞춰 반전된 타겟 마스크 획득
+                int targetMask = m_formationManager.GetTargetMask(battleContext.caster, battleContext.runtimeSkill.Data);
+
                 switch (battleContext.runtimeSkill.Data.Target)
                 {
                     case SkillTarget.Enemy:
-                        targets = GetTargets(enemySide, battleContext.runtimeSkill.Data.EnemyTargetMask);
+                        targets = GetTargets(enemySide, targetMask);
                         break;
                     case SkillTarget.Party:
-                        targets = GetTargets(casterSlot.side, battleContext.runtimeSkill.Data.AllyTargetMask);
+                        targets = GetTargets(casterSlot.side, targetMask);
                         break;
                     case SkillTarget.Self:
                         targets = GetTargets(casterSlot.side, (int)casterSlot.rank);
@@ -166,6 +169,7 @@ namespace BattleSystem
             foreach (var character in characters)
             {
                 character.onBattleAction += ApplyAct;
+                character.OnDead += HandleCharacterDeath;
                 m_reactionSystem.Register(character);
             }
         }
@@ -174,9 +178,17 @@ namespace BattleSystem
         {
             foreach (var character in characters)
             {
+                if (character == null) continue;
                 character.onBattleAction -= ApplyAct;
+                character.OnDead -= HandleCharacterDeath;
                 m_reactionSystem.Unregister(character);
             }
+        }
+
+        private void HandleCharacterDeath(BaseCharacter deadCharacter)
+        {
+            Debug.Log($"<color=gray>[BattleManager] {deadCharacter.Name} 사망 처리: 진영에서 제거 및 타겟팅 제외</color>");
+            m_formationManager.ClearCharacter(deadCharacter);
         }
         #endregion
     }

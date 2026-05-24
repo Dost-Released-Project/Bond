@@ -17,6 +17,7 @@ MonoBehaviour:
   _description: 
   _type: 3
   _target: 0
+  _effectTypes: 01000000
   _value: 14
   _coolTime: 0
   _duration: 1

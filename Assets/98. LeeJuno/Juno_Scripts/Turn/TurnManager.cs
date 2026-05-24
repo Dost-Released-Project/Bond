@@ -96,10 +96,10 @@ public class TurnManager : ITurnManager, IStartable, IDisposable
         Debug.Log($"<b>--- {_turnCount} 라운드 시작 ---</b>");
         
         //2라운드 강제 종료 테스트
-        if (_turnCount >= 2)
-        {
-            _battleFlowManager.BattleSwitch();  
-        }
+        // if (_turnCount >= 2)
+        // {
+        //     _battleFlowManager.BattleSwitch();  
+        // }
 
         PrepareTurnQueue();
         OnTurnQueueUpdated?.Invoke();

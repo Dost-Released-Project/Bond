@@ -212,22 +212,17 @@ namespace PipeLine
     {
         public UniTask<BattleContext> Execute(BattleContext context)
         {
-            if (context.isEvaded || context.target == null || context.target.IsDead) return UniTask.FromResult(context);
+            if (context.isEvaded || context.target == null || context.target.IsDead) 
+                return UniTask.FromResult(context);
 
-            int finalAmount = Mathf.RoundToInt(context.value);
+            // 다형성을 이용한 스킬 실행 위임
+            context.runtimeSkill.UseSkill(context);
 
-            if (context.runtimeSkill.Data.Type == SkillType.SUPPORT)
-            {
-                context.target.RecoverHp(finalAmount);
-                Debug.Log($"[ApplyStep] 타겟 {context.target.Name}에게 {finalAmount}만큼 회복 적용");
-            }
-            else
-            {
-                context.target.ReduceHP(finalAmount);
-                Debug.Log($"[ApplyStep] 타겟 {context.target.Name}에게 {finalAmount} 데미지 적용");
-            }
-
-            //TODO 연출 로직 추가해야함
+            // [V] 연출 로직 (Rule 2 준수)
+            // 연출(Visual)은 여기서 직접 호출하지 않으며,
+            // context.target.ReduceHP() 등 내부에서 발생하는 데이터 변경 이벤트를 
+            // Visualizer나 UIView 레이어가 구독(Observer)하여 수동적으로 처리합니다.
+            
             return UniTask.FromResult(context);
         }
     }

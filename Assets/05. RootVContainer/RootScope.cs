@@ -9,6 +9,8 @@ namespace RootVContainer
     public partial class RootScope : LifetimeScope
     {
         [SerializeField] private MapConfigLoaderSettings _mapConfigLoaderSettings;
+        [Header("Global Databases")]
+        [SerializeField] private SkillDataBaseSO _skillDataBaseSO;
 
         // [SerializeField] private JournalUIView _journalUIView; // 동적 바인딩으로 변경
 
@@ -21,6 +23,18 @@ namespace RootVContainer
                 builder.RegisterInstance(_mapConfigLoaderSettings);
             else
                 Debug.LogError("[RootScope] _mapConfigLoaderSettings 가 연결되지 않았습니다.", this);
+
+            // 스킬 데이터베이스 전역 등록
+            if (_skillDataBaseSO != null)
+            {
+                builder.Register<SkillManager>(Lifetime.Singleton)
+                       .WithParameter(_skillDataBaseSO)
+                       .As<ISkillManager>();
+            }
+            else
+            {
+                Debug.LogError("[RootScope] _skillDataBaseSO 가 연결되지 않았습니다.", this);
+            }
 
             // IMapConfigLoader → MapConfigLoader (Singleton)
             // RootScope Singleton: 씬 전환 후에도 동일 인스턴스를 재사용해 핸들 누수를 방지한다.

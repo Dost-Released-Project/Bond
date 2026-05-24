@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using CsvHelper.Configuration;
 using UnityEditor;
 using UnityEngine;
+using Skills.Effects;
 
 /// <summary>
 /// TSV 데이터와 매핑될 DTO 클래스.
@@ -14,6 +16,7 @@ public class SkillDTO
     public string Description { get; set; }
     public SkillType Type { get; set; }
     public SkillTarget Target { get; set; }
+    public List<SkillEffectType> SkillEffectTypes { get; set; }
     public float Value { get; set; }
     public int CoolTime { get; set; }
     public int Duration { get; set; }
@@ -47,6 +50,7 @@ public class SkillDataParser : TSVParserBase<SkillDTO, SkillData>
             Description = dto.Description,
             Type = dto.Type,
             Target = dto.Target,
+            SkillEffectTypes = dto.SkillEffectTypes,
             Value = dto.Value,
             CoolTime = dto.CoolTime,
             Duration = dto.Duration,
@@ -109,6 +113,10 @@ public sealed class SkillDataMap : ClassMap<SkillDTO>
         Map(m => m.Description).Name("Description").Optional();
         Map(m => m.Type).Name("Type").Default(SkillType.OFFENSIVE);
         Map(m => m.Target).Name("Target").Default(SkillTarget.Enemy);
+        
+        // Effects 컬럼이 없으면 빈 리스트로 처리하도록 대응 (콤마 구분자 처리)
+        Map(m => m.SkillEffectTypes).Name("Effects", "Effect").Optional().TypeConverter<SkillEffectTypeListConverter>();
+
         Map(m => m.Value).Name("Value", " Value").Default(0f); // 공백 포함 헤더 대응
         Map(m => m.CoolTime).Name("CoolTime").Default(0);
         Map(m => m.Duration).Name("지속 시간").Default(0);
@@ -120,6 +128,32 @@ public sealed class SkillDataMap : ClassMap<SkillDTO>
         Map(m => m.AllyTargetMask).Name("아군 진영").Default(0).TypeConverter<BinaryMaskConverter>();
         
         Map(m => m.IconAddress).Name("아이콘 ID").Optional();
+    }
+
+    /// <summary>
+    /// TSV의 "1,2" 같은 문자열을 List<SkillEffectType>으로 변환하는 컨버터
+    /// </summary>
+    private class SkillEffectTypeListConverter : CsvHelper.TypeConversion.DefaultTypeConverter
+    {
+        public override object ConvertFromString(string text, CsvHelper.IReaderRow row, MemberMapData memberMapData)
+        {
+            var list = new List<SkillEffectType>();
+            if (string.IsNullOrWhiteSpace(text)) return list;
+            
+            var parts = text.Split(',');
+            foreach (var part in parts)
+            {
+                if (System.Enum.TryParse<SkillEffectType>(part.Trim(), true, out var result))
+                {
+                    list.Add(result);
+                }
+                else if (int.TryParse(part.Trim(), out int intVal) && System.Enum.IsDefined(typeof(SkillEffectType), intVal))
+                {
+                    list.Add((SkillEffectType)intVal);
+                }
+            }
+            return list;
+        }
     }
 
     /// <summary>

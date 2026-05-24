@@ -1,4 +1,6 @@
 using System;
+using UnityEngine;
+using PipeLine;
 
 [Serializable]
 public class HPChangeSkill : SkillBase
@@ -10,9 +12,9 @@ public class HPChangeSkill : SkillBase
         _skillData = skillData;
     }
     
-    public override void UseSkill()
+    public override void UseSkill(BattleContext context)
     {
-        
+        base.UseSkill(context);
     }
     
     public override string ToString()
