@@ -36,6 +36,44 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         Debug.Log($"<color=cyan>[시스템]</color> {constructionSlots.Length}개의 건설 슬롯이 자동으로 등록되었습니다.");
     }
     
+    private void Start()
+    {
+        // 💥 [소스 매핑] OnSelectionChanged 이벤트를 구독합니다.
+        // 이벤트가 던져주는 BaseCharacter 데이터는 무시하고, 요청하신 '매개변수 없는 감지 메서드'를 실행하도록 엮습니다.
+        if (_characterSelector != null)
+        {
+            _characterSelector.OnSelectionChanged += OnCharacterSelectionChanged;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        // 메모리 누수 방지 구독 해제
+        if (_characterSelector != null)
+        {
+            _characterSelector.OnSelectionChanged -= OnCharacterSelectionChanged;
+        }
+    }
+
+    // 💥 [규칙 완벽 준수] 매개변수를 갖지 않는 순수 변경 감지 및 대장간 UI 리프레시 메서드
+    private void OnCharacterSelectionChanged(BaseCharacter _)
+    {
+        // 1. 대장간 UI가 화면에 켜져 있는 상태(IsOpen)인지 레이어 검사
+        if (_smithyUI != null && _smithyUI.IsOpen)
+        {
+            // 2. 현재 셀렉터 시스템에 안착한 최신 선택 캐릭터 호출
+            BaseCharacter activeHero = _characterSelector.Selected;
+            
+            if (activeHero != null)
+            {
+                Debug.Log($"<color=lime>[대장간 실시간 감지]</color> 선택 캐릭터가 <b>{activeHero.Name}</b>(으)로 변경되어 대장간 UI를 리프레시합니다.");
+                
+                // 3. 대장간 UI 세부 정보 전환 갱신
+                _smithyUI.ChangeCharacter(activeHero);
+            }
+        }
+    }
+    
     private void Update()
     {
         if (Keyboard.current.tKey.wasPressedThisFrame) _resourceManager.Admin_AddAllResources(1000);
@@ -207,10 +245,5 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
                 });
         }
         SaveLoadSystem.Save(settSave);
-    }
-
-    public void SelectCharacter(BaseCharacter testHero)
-    {
-        _characterSelector.Select(testHero);
     }
 }

@@ -11,6 +11,8 @@ public class SmithyUIController : MonoBehaviour
     private Equipment _selectedEquipment;
     private BaseCharacter _character;
     private int _currentSmithyLevel; // 현재 건물 레벨 저장
+    // 💥 [추가] 현재 대장간 UI가 플레이어 화면에 Flex(열림) 상태인지 여부를 반환하는 배리어 프로퍼티
+    public bool IsOpen => _root != null && _root.style.display == DisplayStyle.Flex;
 
     [Inject] private BuildingService _buildingService;
 
@@ -38,6 +40,12 @@ public class SmithyUIController : MonoBehaviour
         _root.style.display = DisplayStyle.Flex;
         
         // 기본적으로 무기 선택 상태로 시작
+        SelectEquipment(_character.Weapon);
+    }
+
+    public void ChangeCharacter(BaseCharacter hero)
+    {
+        _character = hero;
         SelectEquipment(_character.Weapon);
     }
 

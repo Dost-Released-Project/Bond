@@ -67,11 +67,11 @@ public class AdminTestTool : MonoBehaviour
             Debug.Log($"테스트 캐릭터 스트레스 증가: {testHero.Insanity}");
         }
 
-        // 3. 캐릭터 선택 (SettlementManager에 전달)
-        if (Keyboard.current.f3Key.wasPressedThisFrame)
-        {
-            FindAnyObjectByType<SettlementManager>().SelectCharacter(testHero);
-            testHero.CalcStat();
-        }
+        // // 3. 캐릭터 선택 (SettlementManager에 전달)
+        // if (Keyboard.current.f3Key.wasPressedThisFrame)
+        // {
+        //     FindAnyObjectByType<SettlementManager>().SelectCharacter(testHero);
+        //     testHero.CalcStat();
+        // }
     }
 }
