@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6812611938743058197
+--- !u!1 &6932380086416251591
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,45 +8,39 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1257321423268158336}
-  - component: {fileID: 5115941051929461589}
+  - component: {fileID: 1217456782057380487}
+  - component: {fileID: 7606253101115767345}
   m_Layer: 0
-  m_Name: MapScope
+  m_Name: SceneControll
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1257321423268158336
+--- !u!4 &1217456782057380487
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6812611938743058197}
+  m_GameObject: {fileID: 6932380086416251591}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 360.43045, y: -0.00002, z: -1179.171}
+  m_LocalPosition: {x: 80, y: 15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5115941051929461589
+--- !u!114 &7606253101115767345
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6812611938743058197}
+  m_GameObject: {fileID: 6932380086416251591}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08d5b566d6ffd2540803e8dd9509a322, type: 3}
+  m_Script: {fileID: 11500000, guid: 883af360caa7d0b448ca4ee96d2b7a62, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MapLifetimeScope
-  parentReference:
-    TypeName: RootVContainer.RootScope
-  autoRun: 1
-  autoInjectGameObjects: []
-  _mapUIController: {fileID: 0}
-  _journalUIPrefab: {fileID: 2408579647488794321, guid: e972ad374caaa0443aa796b971b1ffc9, type: 3}
+  m_EditorClassIdentifier: Assembly-CSharp::EventSceneController

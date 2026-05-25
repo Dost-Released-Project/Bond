@@ -45,6 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EventSceneLifetimeScope
   parentReference:
-    TypeName: MapLifetimeScope
+    TypeName: 
   autoRun: 1
   autoInjectGameObjects: []

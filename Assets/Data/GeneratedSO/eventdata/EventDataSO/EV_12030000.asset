@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EV_12030000
   m_EditorClassIdentifier: Assembly-CSharp::EventData
   _id: 12030000
-  _displayName: "\uC218\uC0C1\uD55C \uC0C1\uC790\uC548"
+  _displayName: "\uC218\uC0C1\uD55C \uC0C1\uC790"
   _description: "\uC218\uC0C1\uD55C \uC0C1\uC790\uB97C \uBC1C\uACAC\uD588\uB2E4"
   _choices:
   - _label: "\uC5F4\uC5B4\uBCF8\uB2E4"
@@ -24,7 +24,7 @@ MonoBehaviour:
       _hpChangeAmount: 0
       _statusEffectId: 
       _itemRewardType: 0
-      _guaranteedItemId: 08000000
+      _guaranteedItemId: 
       _itemProbability: 0
       _probabilityItemId: 
       _itemPool: []

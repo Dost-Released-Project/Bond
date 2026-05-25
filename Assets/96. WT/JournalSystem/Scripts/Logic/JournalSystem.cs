@@ -72,11 +72,26 @@ namespace Bond.WT.Journal
         }
 
         /// <summary>
+        /// 외부에서 특정 리포트를 직접 주입하여 일지를 바로 시작합니다.
+        /// 전투 종료 등 특정 이벤트 직후에 단일 리포트를 보여줄 때 사용합니다.
+        /// </summary>
+        public void StartJournal(JournalReport report)
+        {
+            if (report == null) return;
+            
+            var reports = new List<JournalReport> { report };
+            _model.SetReports(reports);
+            _model.TryNextReport();
+        }
+
+        /// <summary>
         /// 다음 페이지(또는 다음 리포트)로 이동
         /// </summary>
         public void NextPage()
         {
             // 마지막 페이지에서 다음(또는 닫기)를 누른 경우, 그동안 저장된 모든 선택 결과를 일괄 실행
+            // 주의: ExecuteAllDeferredOptions 내부에서 _model.Reports를 참조하므로,
+            // _model.NextPage()가 리포트를 클리어하기 전에 실행해야 합니다.
             if (_model.IsLastPage.Value)
             {
                 ExecuteAllDeferredOptions().Forget();

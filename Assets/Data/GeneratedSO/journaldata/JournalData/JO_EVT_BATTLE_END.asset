@@ -18,5 +18,7 @@ MonoBehaviour:
   _paragraphs:
   - "{0}\uBA85\uC758 \uB3D9\uB8CC\uB4E4\uACFC \uD568\uAED8 {1}\uB9C8\uB9AC\uC758
     \uC801\uC744 \uCC98\uCE58\uD588\uB2E4."
-  _options: []
+  _options:
+  - text: "\uB9F5\uC73C\uB85C \uB3CC\uC544\uAC00\uAE30"
+    actionKey: ACTION_RETURN_MAP
   _entryIconId: 

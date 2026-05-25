@@ -3,19 +3,19 @@ using System.Linq;
 using BattleSystem.Interface;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using VContainer;
 
 namespace BattleStage
 {
     public class BattleFlowManager : MonoBehaviour, IBattleFlowManager
     {
         public event Action<BaseCharacter[], BaseCharacter[]> OnBattle;
+        public event Action<bool> OnBattleEnd;
         
         private BaseCharacter[] m_playerUnits;
         private BaseCharacter[] m_enemyUnits;
         
         private bool m_isBattleEnding = false;
-        
+
         public void PartySetting(BaseCharacter[] playerUnits)
         {
             if (m_playerUnits != null)
@@ -99,17 +99,23 @@ namespace BattleStage
             // 2. 승리/패배 연출 대기 시간
             await UniTask.Delay(2000);
 
-            // 3. 맵 복귀를 위한 결과 전달
-            StageResult result = new StageResult
+            // 3. Provider(일지 시스템) 등 외부 구독자에게 전투 종료 및 승패 결과 알림
+            if (OnBattleEnd != null)
             {
-                IsSuccess = isPlayerWin,
-                IsGameOver = !isPlayerWin,
-                IsBattleTriggered = false,
-                RewardIds = new System.Collections.Generic.List<string>() // 추후 기획에 따라 보상 ID 추가
-            };
-
-            // StageLoader에 직접 주입하는 방식 대신 기존의 정적 콜백 채널인 StageCompletionChannel 사용
-            StageCompletionChannel.Invoke(result);
+                OnBattleEnd.Invoke(isPlayerWin);
+            }
+            else
+            {
+                // 구독자가 없을 경우 즉시 맵 복귀 (안전 장치)
+                StageResult result = new StageResult
+                {
+                    IsSuccess = isPlayerWin,
+                    IsGameOver = !isPlayerWin,
+                    IsBattleTriggered = false,
+                    RewardIds = new System.Collections.Generic.List<string>()
+                };
+                StageCompletionChannel.Invoke(result);
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using Bond.WT.Journal;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
@@ -26,15 +27,17 @@ public class MapUIController : MonoBehaviour
     private IMapNavigator _navigator;
     private IStageLoader _stageLoader;
     private ISpriteLoader _spriteLoader;
+    private JournalSystem _journalSystem;
     private MapData _cachedMapData;
 
     /// <summary>VContainer가 의존성을 주입하는 메서드.</summary>
     [Inject]
-    public void Construct(IMapNavigator navigator, IStageLoader stageLoader, ISpriteLoader spriteLoader)
+    public void Construct(IMapNavigator navigator, IStageLoader stageLoader, ISpriteLoader spriteLoader, JournalSystem journalSystem)
     {
         _navigator = navigator;
         _stageLoader = stageLoader;
         _spriteLoader = spriteLoader;
+        _journalSystem = journalSystem;
         _navigator.OnNodeEntered += OnNodeEntered;
         _stageLoader.OnStageCompleted += HandleStageCompleted;
     }
@@ -98,8 +101,12 @@ public class MapUIController : MonoBehaviour
     private void HandleStageCompleted(StageResult result)
     {
         // 결과 연출 (승리/패배) 판단은 추후 FlowManager 혹은 상위 레벨에서 처리
-        
+
         _mapView.RefreshNodeStates();
+
+        // Provider가 씬 언로드(Dispose) 전에 이번 탐사의 일지를 수집한다.
+        _journalSystem?.CollectDailyLogs();
+
         UnloadAndShowMapAsync().Forget();
     }
 
