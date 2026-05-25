@@ -14,14 +14,7 @@ namespace BattleStage
         private BaseCharacter[] m_playerUnits;
         private BaseCharacter[] m_enemyUnits;
         
-        private IStageLoader m_stageLoader;
         private bool m_isBattleEnding = false;
-
-        [Inject]
-        public void Construct(IStageLoader stageLoader)
-        {
-            m_stageLoader = stageLoader;
-        }
         
         public void PartySetting(BaseCharacter[] playerUnits)
         {
@@ -115,14 +108,8 @@ namespace BattleStage
                 RewardIds = new System.Collections.Generic.List<string>() // 추후 기획에 따라 보상 ID 추가
             };
 
-            if (m_stageLoader != null)
-            {
-                m_stageLoader.NotifyStageCompleted(result);
-            }
-            else
-            {
-                Debug.LogError("[BattleFlowManager] IStageLoader가 주입되지 않아 맵으로 복귀할 수 없습니다.");
-            }
+            // StageLoader에 직접 주입하는 방식 대신 기존의 정적 콜백 채널인 StageCompletionChannel 사용
+            StageCompletionChannel.Invoke(result);
         }
     }
 }

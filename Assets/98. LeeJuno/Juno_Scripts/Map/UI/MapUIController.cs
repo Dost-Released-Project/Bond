@@ -92,18 +92,13 @@ public class MapUIController : MonoBehaviour
 
     /// <summary>
     /// StageLoader.OnStageCompleted 이벤트 핸들러.
-    /// 게임 오버 시 별도 처리, 정상 완료 시 씬 언로드 후 맵으로 복귀한다.
+    /// 정상 완료 및 게임 오버 시 씬 언로드 후 맵으로 복귀한다.
+    /// (게임 오버 시 최종 결과 화면 띄우는 로직은 추후 추가)
     /// </summary>
     private void HandleStageCompleted(StageResult result)
     {
-        if (result.IsGameOver)
-        {
-            // TODO: FlowManager 구현 전까지 임시 처리.
-            // StageLoader 가 맵 Camera/AudioListener/EventSystem 을 비활성화한 상태이므로
-            // FlowManager 가 반드시 StageLoader.UnloadCurrentStage() 를 호출해 복구해야 한다.
-            return;
-        }
-
+        // 결과 연출 (승리/패배) 판단은 추후 FlowManager 혹은 상위 레벨에서 처리
+        
         _mapView.RefreshNodeStates();
         UnloadAndShowMapAsync().Forget();
     }
