@@ -107,6 +107,7 @@ public partial class BaseCharacter : ITurnUseUnit
         if (IsDead) return;
 
         Stat.current_Hp = Mathf.Max(Stat.current_Hp - amount, 0);
+        Debug.Log($"<color=orange>[HP 차감] {Name}이(가) {amount}의 피해를 입었습니다. (잔여 HP: {Stat.current_Hp}/{Stat.max_Hp})</color>");
 
         if (Stat.current_Hp <= 0)
         {
@@ -119,7 +120,11 @@ public partial class BaseCharacter : ITurnUseUnit
     public void ReduceInsanity(int amount) => Insanity = Mathf.Min(Insanity + amount, 100); // 스트레스 증가
     
     // 회복 관련 메서드 추가
-    public void RecoverHp(int amount) => Stat.current_Hp = Mathf.Min(Stat.current_Hp + amount, Stat.max_Hp);
+    public void RecoverHp(int amount)
+    {
+        Stat.current_Hp = Mathf.Min(Stat.current_Hp + amount, Stat.max_Hp);
+        Debug.Log($"<color=lime>[HP 회복] {Name}이(가) {amount}의 체력을 회복했습니다. (현재 HP: {Stat.current_Hp}/{Stat.max_Hp})</color>");
+    }
     public void RecoverInsanity(int amount) => Insanity = Mathf.Max(Insanity - amount, 0);
 
     #region Formaiton
@@ -134,9 +139,8 @@ public partial class BaseCharacter : ITurnUseUnit
         {
             if (Skills[i] == null) continue;
             
-            // 시전자 진영에 따른 거울 반전이 적용된 사용 가능 마스크
-            int validSlots = m_formationManager.GetUseableMask(this, Skills[i].Data);
-            bool rankMatch = (validSlots & (int)CurrentSlot.rank) != 0;
+            // 시전자 진영과 관계없이 상대적 위치(Rank)를 기반으로 직접 비교
+            bool rankMatch = (Skills[i].Data.UseableSlots & (int)CurrentSlot.rank) != 0;
 
             bool targetMatch = m_formationManager.HasAnyValidTarget(this, Skills[i].Data);
             

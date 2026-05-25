@@ -23,6 +23,6 @@ MonoBehaviour:
   _duration: 0
   _useableClasses: 1
   _useableSlots: 6
-  _enemyTargetMask: 14
+  _enemyTargetMask: 7
   _allyTargetMask: 0
   _iconAddress: 0101

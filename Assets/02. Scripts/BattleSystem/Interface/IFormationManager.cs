@@ -49,15 +49,5 @@ namespace BattleSystem.Interface
         /// 특정 캐릭터를 진영 슬롯에서 비웁니다. (사망 시 호출)
         /// </summary>
         void ClearCharacter(BaseCharacter character);
-
-        /// <summary>
-        /// 시전자의 진영에 맞춰 올바르게 반전된 사용 가능 위치(UseableSlots) 마스크를 반환합니다.
-        /// </summary>
-        int GetUseableMask(BaseCharacter caster, SkillData skill);
-
-        /// <summary>
-        /// 시전자의 진영에 맞춰 올바르게 반전된 타겟 적용 범위(TargetMask) 마스크를 반환합니다.
-        /// </summary>
-        int GetTargetMask(BaseCharacter caster, SkillData skill);
     }
 }

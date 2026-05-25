@@ -89,16 +89,13 @@ namespace BattleSystem
 
             if (battleContext.target == null)
             {
-                // FormationManager를 통해 시전자 진영에 맞춰 반전된 타겟 마스크 획득
-                int targetMask = m_formationManager.GetTargetMask(battleContext.caster, battleContext.runtimeSkill.Data);
-
                 switch (battleContext.runtimeSkill.Data.Target)
                 {
                     case SkillTarget.Enemy:
-                        targets = GetTargets(enemySide, targetMask);
+                        targets = GetTargets(enemySide, battleContext.runtimeSkill.Data.EnemyTargetMask);
                         break;
                     case SkillTarget.Party:
-                        targets = GetTargets(casterSlot.side, targetMask);
+                        targets = GetTargets(casterSlot.side, battleContext.runtimeSkill.Data.AllyTargetMask);
                         break;
                     case SkillTarget.Self:
                         targets = GetTargets(casterSlot.side, (int)casterSlot.rank);
@@ -127,11 +124,11 @@ namespace BattleSystem
                 await SkillApplyLogic(targetContext);
             }
 
-            // 7. 연출 초기화 (시각적 피드백 유지 후 해제)
-            casterSlot.SetForceHover(false);
+            // 7. 연출 초기화 (시각적 피드백 유지 후 해제, 사망자 발생 대비 null 체크)
+            casterSlot?.SetForceHover(false);
             foreach (var target in targets)
             {
-                target.CurrentSlot.SetForceClick(false);
+                target.CurrentSlot?.SetForceClick(false);
             }
         }
 
