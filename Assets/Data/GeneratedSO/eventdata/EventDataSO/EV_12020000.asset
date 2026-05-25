@@ -40,3 +40,4 @@ MonoBehaviour:
       _itemProbability: 0
       _probabilityItemId: 
       _itemPool: []
+  _journalData: {fileID: 11400000, guid: 882c9a6a095033b4cbc0f6a76636911d, type: 2}

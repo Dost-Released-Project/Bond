@@ -412,7 +412,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7923d31000c4b16479a5c1526459d79b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FakeEventContext
-  _testEventData: {fileID: 11400000, guid: b30678fd126824443ba7a8db63e59690, type: 2}
+  _testEventData: {fileID: 11400000, guid: 121fcfa83ebb6b349990e92f76b23cb6, type: 2}
   _testBattleConfig: {fileID: 11400000, guid: 87fa9ee5570c7e445ac5df9d9fb746aa, type: 2}
 --- !u!4 &1750404523
 Transform:
