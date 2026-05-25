@@ -1,5 +1,6 @@
 using BattleStage;
 using BattleSystem.Interface;
+using Bond.UI;
 using Bond.WT.Journal;
 using UnityEngine;
 using VContainer;
@@ -38,6 +39,11 @@ namespace BattleSystem.VContainer
 
             // Journal UI 및 Binder 지역 스코프 등록
             builder.RegisterJournalUI(_journalUIPrefab);
+            
+            // 캐릭터 전투 UI
+            builder.Register<CharacterDetailController>(Lifetime.Scoped);
+            builder.RegisterComponentInHierarchy<CharacterDetailPresenter>();
+            builder.RegisterComponentInHierarchy<CharacterCombatPanelPresenter>();
         }
     }
 }
