@@ -128,9 +128,17 @@ namespace PipeLine
             }
 
             float hitRate = context.caster.Stat.acc - (context.target.Stat.AGI * 0.5f);
-            context.isEvaded = Random.Range(0f, 100f) > hitRate;
-            
-            Debug.Log($"[EvasionStep] 타겟: {context.target.Name}, 명중률: {hitRate}%, 회피 발생 여부: {context.isEvaded}");
+            //context.isEvaded = Random.Range(0f, 100f) > hitRate;
+            context.isEvaded = false;
+
+            if (context.isEvaded)
+            {
+                Debug.Log($"<color=white><b>[회피]</b></color> {context.target.Name}이(가) {context.caster.Name}의 공격을 피했습니다! (명중률: {hitRate}%)");
+            }
+            else
+            {
+                Debug.Log($"[EvasionStep] 타겟: {context.target.Name}, 명중률: {hitRate}%, 회피 발생 여부: {context.isEvaded}");
+            }
             return UniTask.FromResult(context);
         }
     }
@@ -151,7 +159,7 @@ namespace PipeLine
             {
                 float bonus = context.value * criticalBonus;
                 context.value += bonus;
-                Debug.Log($"[CriticalStep] 크리티컬 발생! 보너스: {bonus}, 타겟: {context.target.Name}");
+                Debug.Log($"<color=yellow><b>[치명타]</b></color> 크리티컬 발생! 보너스: {bonus}, 타겟: {context.target.Name}");
             }
             return UniTask.FromResult(context);
         }
@@ -172,7 +180,15 @@ namespace PipeLine
             {
                 int def = context.target.Stat.def;
                 context.value = Mathf.Max(0, context.value - def);
-                Debug.Log($"[DefenseStep] 방어력({def}) 차감 후 최종 수치: {context.value} (타겟: {context.target.Name})");
+
+                if (context.value <= 0)
+                {
+                    Debug.Log($"<color=gray><b>[무효]</b></color> {context.target.Name}의 방어력({def})에 막혀 데미지가 0이 되었습니다.");
+                }
+                else
+                {
+                    Debug.Log($"[DefenseStep] 방어력({def}) 차감 후 최종 수치: {context.value} (타겟: {context.target.Name})");
+                }
             }
             
             return UniTask.FromResult(context);
@@ -199,7 +215,8 @@ namespace PipeLine
                 var executions = reactionSystem.Resolve(context);
                 foreach (var execution in executions)
                 {
-                    Debug.Log($"<color=yellow>Reaction: {execution.ToString()}</color>");
+                    Debug.Log($"<color=yellow>Reaction:\n" +
+                              $"{execution.ToString()}</color>");
                     await execution.Agent.ExecuteReaction(execution.Reaction, context);
                 }
             }
@@ -212,22 +229,22 @@ namespace PipeLine
     {
         public UniTask<BattleContext> Execute(BattleContext context)
         {
-            if (context.isEvaded || context.target == null || context.target.IsDead) return UniTask.FromResult(context);
-
-            int finalAmount = Mathf.RoundToInt(context.value);
-
-            if (context.runtimeSkill.Data.Type == SkillType.SUPPORT)
+            if (context.isEvaded || context.target == null || context.target.IsDead) 
             {
-                context.target.RecoverHp(finalAmount);
-                Debug.Log($"[ApplyStep] 타겟 {context.target.Name}에게 {finalAmount}만큼 회복 적용");
-            }
-            else
-            {
-                context.target.ReduceHP(finalAmount);
-                Debug.Log($"[ApplyStep] 타겟 {context.target.Name}에게 {finalAmount} 데미지 적용");
+                Debug.Log($"[ApplyStep] 타겟이 유효하지 않아(사망 또는 회피) 스킬 적용을 취소합니다.");
+                return UniTask.FromResult(context);
             }
 
-            //TODO 연출 로직 추가해야함
+            Debug.Log($"<color=cyan><b>[스킬 적용]</b></color> {context.caster.Name} -> {context.target.Name} ({context.runtimeSkill.Data.DisplayName} 발동!)");
+
+            // 다형성을 이용한 스킬 실행 위임
+            context.runtimeSkill.UseSkill(context);
+
+            // [V] 연출 로직 (Rule 2 준수)
+            // 연출(Visual)은 여기서 직접 호출하지 않으며,
+            // context.target.ReduceHP() 등 내부에서 발생하는 데이터 변경 이벤트를 
+            // Visualizer나 UIView 레이어가 구독(Observer)하여 수동적으로 처리합니다.
+            
             return UniTask.FromResult(context);
         }
     }

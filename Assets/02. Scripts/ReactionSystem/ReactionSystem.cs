@@ -51,6 +51,7 @@ namespace Reactions
                 
                 foreach (var reaction in chara.Reactions)
                 {
+                    if (reaction == null) continue;
                     if (reaction.Check(context))
                     {
                         var result = IsSuccess(chara, reaction);
@@ -66,10 +67,21 @@ namespace Reactions
             var sb = new StringBuilder();
             foreach (var reaction in executions)
             {
-                sb.AppendLine($"Reaction | Speed: {reaction.Agent.Speed}");
+                sb.AppendLine($"{reaction.Agent.Name} | Speed: {reaction.Agent.Speed}");
             }
             Debug.Log($"<color=red>Reaction Count: {executions.Count}\n" +
                       $"{sb.ToString()}</color>");
+            if (executions.Count != 0)
+            {
+                Debug.Log($"<color=lightblue>BattleContext:\n" +
+                          $"Caster: {context.caster.Name}\n" +
+                          $"Target: {context.target.Name}\n" +
+                          $"Skill: {context.runtimeSkill.Data.DisplayName}\n" +
+                          $"SkillType: {context.runtimeSkill.Data.Type}\n" +
+                          $"IsCritical: {context.isCritical}\n" +
+                          $"IsEvaded: {context.isEvaded}\n" +
+                          $"</color>");
+            }
             
             return executions.AsReadOnly();
         }

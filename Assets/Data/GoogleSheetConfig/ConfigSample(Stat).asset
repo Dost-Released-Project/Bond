@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 802da45069c146b8883fe3a90d113b92, type: 3}
   m_Name: ConfigSample(Stat)
   m_EditorClassIdentifier: Assembly-CSharp-Editor::GoogleSheetConfig
-  SpreadsheetId: 
+  SpreadsheetId: 1df1V7NEohwTiojIu69NrKxxIFCgivuYLD8ZVuSeR_BQ
   Entries:
   - SheetName: StatModifier
     Gid: 1741562393

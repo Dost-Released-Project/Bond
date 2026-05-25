@@ -19,23 +19,27 @@ MonoBehaviour:
     Profession:
       _classData: {fileID: 11400000, guid: 7d1e93aef3c816642a94d515292cf2fd, type: 2}
     Level: 0
-    Insanity: 0
-    RoleType: 3
+    Insanity: 30
+    RoleType: 1
     <battleType>k__BackingField:
-      rid: 8081819941751750726
+      rid: 8081819941751750806
     Skills:
     - rid: 8081819941751750727
     - rid: 8081819941751750728
     - rid: 8081819941751750729
     - rid: 8081819941751750730
     Traits:
-    - Name: C
+    - Type: 0
+      Name: C
       Description: ccc
-    - Name: A
+    - Type: 0
+      Name: A
       Description: aaa
-    - Name: Missing
+    - Type: 0
+      Name: Missing
       Description: Missing
-    - Name: Missing
+    - Type: 0
+      Name: Missing
       Description: Missing
     Weapon:
       itemName: 
@@ -61,28 +65,33 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     RoleReactions:
-    - Source: 0
+    - SubjectCharacterId: 76efe732-631c-45fd-be5d-95ee3c0d7887
       Trigger:
         rid: 8081819941751750750
       SkillIndex: 0
-      ReactionSkillTarget: 0
+      ReactionSkillTarget: 1
+    - SubjectCharacterId: 
+      Trigger:
+        rid: -2
+      SkillIndex: 0
+      ReactionSkillTarget: 1
     TraitReactions:
-    - Source: 0
+    - SubjectCharacterId: 
       Trigger:
         rid: -2
       SkillIndex: 0
       ReactionSkillTarget: 0
-    - Source: 0
+    - SubjectCharacterId: 
       Trigger:
         rid: -2
       SkillIndex: 0
       ReactionSkillTarget: 0
-    - Source: 0
+    - SubjectCharacterId: 
       Trigger:
         rid: -2
       SkillIndex: 0
       ReactionSkillTarget: 0
-    - Source: 0
+    - SubjectCharacterId: 
       Trigger:
         rid: -2
       SkillIndex: 0
@@ -92,10 +101,6 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 8081819941751750726
-      type: {class: AutoBattle_Sup, ns: , asm: Assembly-CSharp}
-      data:
-        isPlayable: 0
     - rid: 8081819941751750727
       type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
       data:
@@ -123,14 +128,27 @@ MonoBehaviour:
     - rid: 8081819941751750750
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
-        SubjectCharacterId: 76efe732-631c-45fd-be5d-95ee3c0d7887
         Conditions:
-        - rid: 8081819941751750751
-        - rid: 8081819941751750752
-    - rid: 8081819941751750751
-      type: {class: HitCondition, ns: Reactions, asm: Assembly-CSharp}
-      data: 
-    - rid: 8081819941751750752
+        - rid: 8081819941751750797
+        - rid: 8081819941751750798
+        - rid: 8081819941751750799
+        - rid: 8081819941751750800
+    - rid: 8081819941751750797
+      type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Filter: 2
+    - rid: 8081819941751750798
+      type: {class: SkillTypeCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Type: 1
+    - rid: 8081819941751750799
       type: {class: HpBelowCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
         Threshold: 0.8
+    - rid: 8081819941751750800
+      type: {class: HitCondition, ns: Reactions, asm: Assembly-CSharp}
+      data: 
+    - rid: 8081819941751750806
+      type: {class: AutoBattle_Def, ns: , asm: Assembly-CSharp}
+      data:
+        isPlayable: 0

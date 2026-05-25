@@ -90,7 +90,7 @@ namespace Bond.Embark
         public void ConfirmEmbark()
         {
             SavePayload();
-            SceneLoader.Load("Map");
+            SceneLoader.Load("Test_3_Node");
         }
 
         public void SavePayload()

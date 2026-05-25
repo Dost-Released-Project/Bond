@@ -21,12 +21,12 @@ MonoBehaviour:
   expeditionSlotMax: 1
   specialEffects:
   - id: 13000000
-    name: "\uD798 \uC99D\uAC00(\uC218\uCE58)"
+    name: "\uC5C4\uCCAD\uB09C \uD798"
     type: 0
     mode: 0
     value: 3
   - id: 13150000
-    name: "\uD798 \uC99D\uAC00(\uBE44\uC728)"
+    name: "\uAC15\uD55C \uC2E0\uCCB4"
     type: 0
     mode: 1
     value: 0.1

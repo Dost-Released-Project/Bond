@@ -29,14 +29,16 @@ namespace Reactions
 
         public override string ToString()
         {
-            return $"Agent: {Agent.Name}, Trigger: {Reaction.Trigger.Description}";
+            return $"Agent: {Agent.Name}\n" +
+                   $"Trigger: {Reaction.Trigger.Description}";
         }
     }
     
     [Serializable]
     public class Reaction
     {
-        public ReactionSource Source;
+        //public ReactionSource Source;
+        public string SubjectCharacterId; // 캐릭터 ID
         [SerializeReference, SubclassSelector] public ITrigger Trigger;
         public int SkillIndex; // 반응으로 실행할 스킬의 인덱스
         public E_TargetFilter ReactionSkillTarget;
@@ -46,7 +48,15 @@ namespace Reactions
         {
             if (Trigger == null)
                 return false;
-            return Trigger.CheckCondition(context);
+            return Trigger.CheckCondition(BaseCharacter.Dict[SubjectCharacterId], context);
         }
+    }
+
+    [CreateAssetMenu(fileName = "ReactionPreset", menuName = "Bond/Reactions/Character Preset")]
+    public class ReactionPreset : ScriptableObject
+    {
+        public ITrigger Trigger;
+        public SkillBase Skill;
+        public E_TargetFilter SkillTarget;
     }
 }

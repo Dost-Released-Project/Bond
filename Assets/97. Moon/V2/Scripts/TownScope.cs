@@ -2,9 +2,11 @@ using System;
 using _90._HA.Temp.Test;
 using Bond.Embark;
 using Bond.Expedition;
+using Bond.UI;
 using Bond.UI.Town;
 using Bond.WT.Journal;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using VContainer;
 using VContainer.Unity;
 
@@ -17,6 +19,7 @@ public class TownScope : LifetimeScope
         // Manager & Service (싱글톤처럼 유지)
         // 인벤토리
         var payload = Parent.Container.Resolve<ExpeditionPayload>();
+        var skillDb = Addressables.LoadAssetAsync<DataBaseSO>("SkillDataBase").WaitForCompletion();
     
         builder.RegisterInstance(payload.Supplies).AsImplementedInterfaces().AsSelf();
         builder.Register<TotalInventory>(Lifetime.Scoped).WithParameter("capacity", 16).AsImplementedInterfaces().AsSelf();
@@ -28,15 +31,18 @@ public class TownScope : LifetimeScope
         builder.Register<ResourceManager>(Lifetime.Singleton);
         builder.Register<BuildingService>(Lifetime.Singleton);
 
-        //
+        // 캐릭터 & 출정
         builder.Register<EmbarkController>(Lifetime.Scoped);
         builder.Register<PartyController>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
         builder.Register<StageCoach>(Lifetime.Scoped);
         builder.Register<Roster>(Lifetime.Scoped);
         builder.Register<CharacterSelector>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
-
+        builder.Register<CharacterDetailController>(Lifetime.Scoped).WithParameter("skillDb", skillDb);
+        builder.RegisterComponentInHierarchy<CharacterDetailPresenter>();
+        builder.RegisterComponentInHierarchy<CharacterCombatPanelPresenter>();
 
         // 씬에 배치된 컴포넌트
+        builder.RegisterComponentInHierarchy<TownUIController>();
         builder.RegisterComponentInHierarchy<InventoryView>();
         builder.RegisterComponentInHierarchy<ResourceView>();
         builder.RegisterComponentInHierarchy<SupplyView>();
@@ -48,9 +54,6 @@ public class TownScope : LifetimeScope
         builder.RegisterComponentInHierarchy<EquipmentSlotUI>();
         builder.RegisterComponentInHierarchy<AccessoryBagView>();
         builder.RegisterComponentInHierarchy<SmithyUIController>();
-        
-        // 타운 UI
-        builder.RegisterComponentInHierarchy<TownUIController>();
 
 #if UNITY_EDITOR
         // 테스트용 스크립트

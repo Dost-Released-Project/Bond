@@ -16,6 +16,7 @@ public struct BuildingLevelData
     public int slotExpansion; // 창고 확장
     public int frontierCapAdd; // 개척 데이터 최대치 증가량
     public int materialCapAdd; // 목재/광물 최대치 증가량
+    public int maxUses;
 }
 
 [CreateAssetMenu(fileName = "NewBuildingData", menuName = "Settle/Building Data")]

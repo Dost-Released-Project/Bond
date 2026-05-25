@@ -1,0 +1,119 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="project://database/Assets/UI/Themes/EoB_Theme_DarkAmber.uss" />
+    <ui:Style src="CharacterCombatPanel.uss" />
+    <Style src="project://database/Assets/UI/Shared/EquipSlots.uss" />
+    <ui:Template name="EquipSlots" src="../Shared/EquipSlots.uxml" />
+
+    <ui:VisualElement class="character-combat-panel">
+
+        <!-- 좌측: 아이콘 + 이름 -->
+        <ui:VisualElement class="combat-panel__identity">
+            <ui:VisualElement name="combat-panel__char-icon" class="combat-panel__char-icon">
+                <!-- TODO: 캐릭터 초상화 에셋 연결 필요 -->
+                <ui:Label name="combat-panel__icon-text" class="combat-panel__icon-text" text="?" />
+            </ui:VisualElement>
+            <ui:Label name="combat-panel__char-name" class="combat-panel__char-name" text="이름" />
+            <ui:Label name="combat-panel__char-job"  class="combat-panel__char-job"  text="직업" />
+            <ui:Label name="combat-panel__char-role" class="combat-panel__char-role" text="역할" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="combat-panel__divider" />
+
+        <!-- 중앙: 상태 게이지 + 스탯 -->
+        <ui:VisualElement class="combat-panel__status">
+
+            <ui:VisualElement class="combat-panel__status-section">
+                <ui:Label class="combat-panel__section-label" text="상태" />
+
+                <ui:VisualElement class="combat-panel__hp-row">
+                    <ui:Label class="combat-panel__hp-label" text="HP" />
+                    <ui:VisualElement class="combat-panel__hp-track">
+                        <ui:VisualElement name="combat-panel__hp-fill" class="combat-panel__hp-fill" />
+                    </ui:VisualElement>
+                    <ui:Label name="combat-panel__hp-value" class="combat-panel__hp-value" text="0/0" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="combat-panel__insanity-row">
+                    <ui:Label class="combat-panel__insanity-label" text="광기" />
+                    <ui:VisualElement class="combat-panel__insanity-track">
+                        <ui:VisualElement name="combat-panel__insanity-fill" class="combat-panel__insanity-fill" />
+                    </ui:VisualElement>
+                    <ui:Label name="combat-panel__insanity-value" class="combat-panel__insanity-value" text="0/100" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:VisualElement class="combat-panel__stat-section">
+                <ui:Label class="combat-panel__section-label" text="스탯" />
+                <ui:VisualElement class="combat-panel__stat-grid">
+                    <ui:VisualElement class="combat-panel__stat-cell">
+                        <ui:Label class="combat-panel__stat-key" text="ATK" />
+                        <ui:Label name="stat-atk-value" class="combat-panel__stat-value" text="0" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="combat-panel__stat-cell">
+                        <ui:Label class="combat-panel__stat-key" text="DEF" />
+                        <ui:Label name="stat-def-value" class="combat-panel__stat-value" text="0" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="combat-panel__stat-cell">
+                        <ui:Label class="combat-panel__stat-key" text="SpAtk" />
+                        <ui:Label name="stat-spatk-value" class="combat-panel__stat-value combat-panel__stat-value--accent" text="0" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="combat-panel__stat-cell">
+                        <ui:Label class="combat-panel__stat-key" text="SPD" />
+                        <ui:Label name="stat-spd-value" class="combat-panel__stat-value" text="0" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="combat-panel__stat-cell">
+                        <ui:Label class="combat-panel__stat-key" text="CRT" />
+                        <ui:Label name="stat-crt-value" class="combat-panel__stat-value combat-panel__stat-value--accent" text="0%" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="combat-panel__stat-cell">
+                        <ui:Label class="combat-panel__stat-key" text="ACC" />
+                        <ui:Label name="stat-acc-value" class="combat-panel__stat-value" text="0%" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+        </ui:VisualElement>
+
+        <ui:VisualElement class="combat-panel__divider" />
+
+        <!-- 우측: 스킬 + 장비 -->
+        <ui:VisualElement class="combat-panel__right">
+
+            <ui:VisualElement class="combat-panel__skill-section">
+                <ui:Label class="combat-panel__section-label" text="스킬" />
+                <!-- TODO: 캠핑 진입 시 캠핑 스킬로 전환 — 정책 확정 후 수정 필요 -->
+                <ui:VisualElement class="combat-panel__skill-row">
+                    <ui:VisualElement name="skill-slot-0" class="combat-panel__skill-slot combat-panel__skill-slot--inactive">
+                        <ui:Label class="combat-panel__skill-num" text="1" />
+                        <ui:VisualElement class="combat-panel__skill-icon" />
+                        <ui:Label class="combat-panel__skill-name" text="-" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="skill-slot-1" class="combat-panel__skill-slot combat-panel__skill-slot--inactive">
+                        <ui:Label class="combat-panel__skill-num" text="2" />
+                        <ui:VisualElement class="combat-panel__skill-icon" />
+                        <ui:Label class="combat-panel__skill-name" text="-" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="skill-slot-2" class="combat-panel__skill-slot combat-panel__skill-slot--inactive">
+                        <ui:Label class="combat-panel__skill-num" text="3" />
+                        <ui:VisualElement class="combat-panel__skill-icon" />
+                        <ui:Label class="combat-panel__skill-name" text="-" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="skill-slot-3" class="combat-panel__skill-slot combat-panel__skill-slot--inactive">
+                        <ui:Label class="combat-panel__skill-num" text="4" />
+                        <ui:VisualElement class="combat-panel__skill-icon" />
+                        <ui:Label class="combat-panel__skill-name" text="-" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:VisualElement class="combat-panel__equip-section">
+                <ui:Label class="combat-panel__section-label" text="장비" />
+                <ui:VisualElement name="combat-panel__equip-mount" class="combat-panel__equip-mount">
+                    <ui:Instance template="EquipSlots" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

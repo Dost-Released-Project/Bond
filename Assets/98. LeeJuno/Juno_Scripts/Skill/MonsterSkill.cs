@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using BattleSystem;
+using PipeLine;
 
 [Serializable]
 public class MonsterSkill : SkillBase
@@ -27,8 +28,10 @@ public class MonsterSkill : SkillBase
         damage = baseValue + bonus;
     }
 
-    public override void UseSkill()
+    public override void UseSkill(BattleContext context)
     {
+        base.UseSkill(context);
+
         // Rule 2 – Blind Logic: 상태 변화(로직)만 처리.
         // 비주얼 연출과 타격 효과 적용의 메인 루프는 BaseCharacter의 onBattleAction을 통해 
         // BattleManager와 Target에 위임되므로, 여기서는 특수한 전처리/후처리 데이터 변경만 담당한다.

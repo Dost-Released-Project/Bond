@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using PipeLine;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Reactions
@@ -17,8 +18,7 @@ namespace Reactions
     
     public interface ICondition
     {
-        bool IsMet(BaseCharacter subject, BattleContext context);
-        ICondition Copy();
+        bool IsMet(object args);
         string Description { get; }
         
         // bool IsMet(E_CompareFilter coFilter, E_ObserveFilter obFilter, BaseCharacter observer, BattleContext context, BaseCharacter subject);
@@ -50,104 +50,152 @@ namespace Reactions
             => Compare(target, filter, observer, context, subject).Any();
     }
 
-    [Serializable]
-    public class HpBelowCondition : ICondition
+    public abstract class ReactionTriggerCondition : ICondition
     {
-        public float Threshold;
-        
-        public HpBelowCondition() { }
-
-        public HpBelowCondition(float threshold)
+        public bool IsMet(object args)
         {
-            Threshold = threshold;
+            return IsMet((ReactionTriggerConditionArgs)args);
         }
 
-        public bool IsMet(BaseCharacter subject, BattleContext context)
+        public abstract bool IsMet(ReactionTriggerConditionArgs args);
+        public abstract ReactionTriggerCondition Copy();
+        public abstract string Description { get; }
+    }
+
+    public class ReactionTriggerConditionArgs
+    {
+        public BattleContext BattleContext;
+        public BaseCharacter Subject;
+    }
+    
+    [Serializable][AddTypeMenu("SubjectIs", -1000)]
+    public class SubjectCondition: ReactionTriggerCondition
+    {
+        public E_TargetFilter Filter = E_TargetFilter.None;
+        public override bool IsMet(ReactionTriggerConditionArgs args)
         {
-            return context.target == subject && subject.HpRatio <= Threshold;
+            var context = args.BattleContext;
+            var subject = args.Subject;
+            return Filter switch
+            {
+                E_TargetFilter.Caster => context.caster == subject,
+                E_TargetFilter.Target => context.target == subject,
+                _ => false
+            };
         }
 
-        public ICondition Copy()
+        public override ReactionTriggerCondition Copy()
         {
-            return new HpBelowCondition(Threshold);
+            return new SubjectCondition() { Filter = Filter };
         }
 
-        public string Description => $"Hp 비율이 {Threshold} 이하일 때";
+        public override string Description
+        {
+            get
+            {
+                return Filter switch
+                {
+                    E_TargetFilter.Caster => "관찰 대상이 스킬의 주체일 때",
+                    E_TargetFilter.Target => "관찰 대상이 스킬의 대상일 때",
+                    _ => ""
+                };
+            }
+        }
+    }
+    
+    [Serializable][AddTypeMenu("SkillTypeIs", -100)]
+    public class SkillTypeCondition: ReactionTriggerCondition
+    {
+        public SkillType Type = SkillType.None;
+        public override bool IsMet(ReactionTriggerConditionArgs args)
+        {
+            return args.BattleContext.runtimeSkill.Data.Type == Type;
+        }
+
+        public override ReactionTriggerCondition Copy()
+        {
+            return new SkillTypeCondition() { Type = Type };
+        }
+
+        public override string Description => $"스킬 타입이 {Type}일 때";
     }
 
     [Serializable]
-    public class CritCondition : ICondition
+    public class HpBelowCondition: ReactionTriggerCondition
     {
-        public bool IsMet(BaseCharacter subject, BattleContext context)
+        public float Threshold;
+
+        public override bool IsMet(ReactionTriggerConditionArgs args)
         {
-            return context.caster == subject && context.isCritical;
+            return args.Subject.HpRatio <= Threshold;
         }
 
-        public ICondition Copy()
+        public override ReactionTriggerCondition Copy()
+        {
+            return new HpBelowCondition() { Threshold = Threshold };
+        }
+
+        public override string Description => $"관찰 대상의 Hp 비율이 {Threshold} 이하일 때";
+    }
+
+    [Serializable]
+    public class CritCondition: ReactionTriggerCondition
+    {
+        public override bool IsMet(ReactionTriggerConditionArgs args)
+        {
+            return args.BattleContext.isCritical;
+        }
+
+        public override ReactionTriggerCondition Copy()
         {
             return new CritCondition();
         }
 
-        public string Description => $"크리 공격을 가했을 때";
+        public override string Description => $"스킬에 크리티컬이 발생할 때";
     }
     
     [Serializable]
-    public class EvadeCondition : ICondition
+    public class EvadeCondition: ReactionTriggerCondition
     {
-        public bool IsMet(BaseCharacter subject, BattleContext context)
+        public override bool IsMet(ReactionTriggerConditionArgs args)
         {
-            return context.target == subject && context.isEvaded;
+            return args.BattleContext.isEvaded;
         }
 
-        public ICondition Copy()
+        public override ReactionTriggerCondition Copy()
         {
             return new EvadeCondition();
         }
-        public string Description => $"공격을 회피했을 때";
+        public override string Description => $"스킬에 회피가 발생했을 때";
     }
 
     [Serializable]
-    public class KillCondition : ICondition
+    public class KillCondition: ReactionTriggerCondition
     {
-        public bool IsMet(BaseCharacter subject, BattleContext context)
+        public override bool IsMet(ReactionTriggerConditionArgs args)
         {
-            return context.caster == subject && context.target != null && context.target.IsDead;
+            return args.BattleContext.target.IsDead;
         }
 
-        public ICondition Copy()
+        public override ReactionTriggerCondition Copy()
         {
             return new KillCondition();
         }
-        public string Description => $"죽였을 때";
+        public override string Description => $"스킬의 대상이 사망 상태일 때";
     }
 
     [Serializable]
-    public class HitCondition : ICondition
+    public class HitCondition: ReactionTriggerCondition
     {
-        public bool IsMet(BaseCharacter subject, BattleContext context)
+        public override bool IsMet(ReactionTriggerConditionArgs args)
         {
-            return context.target == subject && context.isEvaded == false && context.runtimeSkill.Data.Type == SkillType.OFFENSIVE;
+            return args.BattleContext.isEvaded == false;
         }
 
-        public ICondition Copy()
+        public override ReactionTriggerCondition Copy()
         {
             return new HitCondition();
         }
-        public string Description => $"공격을 당했을 때";
-    }
-    
-    [Serializable]
-    public class TargetCondition : ICondition
-    {
-        public bool IsMet(BaseCharacter subject, BattleContext context)
-        {
-            return context.target == subject;
-        }
-
-        public ICondition Copy()
-        {
-            return new TargetCondition();
-        }
-        public string Description => $"행동의 대상으로 지정 됐을 때";
+        public override string Description => $"스킬에 회피가 발생하지 않았을 때";
     }
 }

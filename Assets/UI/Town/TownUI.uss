@@ -1,5 +1,6 @@
 /* ── TownUI.uss ── */
 /* 모든 색상·폰트는 EoB 테마 변수만 사용. 하드코딩 금지. */
+/* 캐릭터 상세창 스타일은 CharacterDetail.uss 로 분리됨  */
 
 /* ════════════════════════════════════════
    토글 버튼
@@ -204,7 +205,7 @@
 .roster-card__bar-track {
     flex-grow: 1;
     height: 3px;
-    background-color: var(--bg-divider);
+    background-color: var(--border-active);
     border-radius: 2px;
     overflow: hidden;
 }
@@ -228,59 +229,4 @@
     position: absolute;
     top: 8px;
     right: 8px;
-}
-
-/* ════════════════════════════════════════
-   캐릭터 상세 뷰
-   ════════════════════════════════════════ */
-.character-detail {
-    position: absolute;
-    right: 220px;
-    top: 0;
-    width: 340px;
-    min-height: 200px;
-    flex-direction: column;
-    background-color: var(--bg-deep);
-    border-width: 1px;
-    border-color: var(--border-default);
-}
-
-.character-detail--hidden {
-    display: none;
-}
-
-.character-detail--visible {
-    display: flex;
-}
-
-.character-detail__header {
-    flex-direction: row;
-    align-items: center;
-    padding: 8px 12px;
-    border-bottom-width: 1px;
-    border-bottom-color: var(--border-default);
-}
-
-.character-detail__title {
-    font-size: var(--font-size-name);
-    color: var(--text-primary);
-    letter-spacing: 2px;
-    flex-grow: 1;
-}
-
-.character-detail__close-btn {
-    font-size: var(--font-size-system);
-    color: var(--text-secondary);
-    background-color: transparent;
-    border-width: 0;
-    padding: 2px 4px;
-}
-
-.character-detail__close-btn:hover {
-    color: var(--text-accent);
-}
-
-.character-detail__body {
-    flex-grow: 1;
-    padding: 12px;
 }

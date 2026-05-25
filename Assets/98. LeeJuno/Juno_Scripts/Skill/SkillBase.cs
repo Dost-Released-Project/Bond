@@ -1,4 +1,6 @@
 using System;
+using PipeLine;
+using Skills;
 using UnityEngine;
 
 [Serializable]
@@ -11,6 +13,9 @@ public abstract class SkillBase
 
     // Init 이후 참조할 데이터
     [SerializeField] protected SkillData _skillData;
+    
+    // 로직 그룹: 효과 관리자 (정적 인스턴스로 간단히 접근하거나 주입 가능)
+    protected static readonly SkillEffectManager _effectManager = new SkillEffectManager();
 
     /// <summary>
     /// 스킬 ID로 SkillData를 바인딩한다.
@@ -26,5 +31,9 @@ public abstract class SkillBase
 
     public SkillData Data => _skillData;
 
-    public abstract void UseSkill();
+    public virtual void UseSkill(BattleContext context)
+    {
+        if (_skillData == null) return;
+        _effectManager.ApplyEffects(context, this);
+    }
 }

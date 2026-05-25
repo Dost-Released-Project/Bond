@@ -124,11 +124,11 @@ namespace BattleSystem
                 await SkillApplyLogic(targetContext);
             }
 
-            // 7. 연출 초기화 (시각적 피드백 유지 후 해제)
-            casterSlot.SetForceHover(false);
+            // 7. 연출 초기화 (시각적 피드백 유지 후 해제, 사망자 발생 대비 null 체크)
+            casterSlot?.SetForceHover(false);
             foreach (var target in targets)
             {
-                target.CurrentSlot.SetForceClick(false);
+                target.CurrentSlot?.SetForceClick(false);
             }
         }
 
@@ -166,6 +166,7 @@ namespace BattleSystem
             foreach (var character in characters)
             {
                 character.onBattleAction += ApplyAct;
+                character.OnDead += HandleCharacterDeath;
                 m_reactionSystem.Register(character);
             }
         }
@@ -174,9 +175,17 @@ namespace BattleSystem
         {
             foreach (var character in characters)
             {
+                if (character == null) continue;
                 character.onBattleAction -= ApplyAct;
+                character.OnDead -= HandleCharacterDeath;
                 m_reactionSystem.Unregister(character);
             }
+        }
+
+        private void HandleCharacterDeath(BaseCharacter deadCharacter)
+        {
+            Debug.Log($"<color=gray>[BattleManager] {deadCharacter.Name} 사망 처리: 진영에서 제거 및 타겟팅 제외</color>");
+            m_formationManager.ClearCharacter(deadCharacter);
         }
         #endregion
     }
