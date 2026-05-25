@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class EquipmentSlotUI : MonoBehaviour
 {
@@ -39,6 +41,14 @@ public class EquipmentSlotUI : MonoBehaviour
         _selector.OnSelectionChanged += HandleSelectionChanged; // [추가] 캐릭터 선택 변경 이벤트 구독
         
         RefreshUI();
+    }
+    
+    void Update()
+    {
+        var kb = Keyboard.current;
+        if (kb == null) return;
+        
+        if (kb.uKey.wasPressedThisFrame) ToggleWindow();
     }
 
     // [추가] 캐릭터가 변경되었을 때 실행될 콜백 함수

@@ -50,8 +50,8 @@ public class TownScope : LifetimeScope
         builder.RegisterComponentInHierarchy<ConstructionUI>();
         builder.RegisterComponentInHierarchy<InteractionManager>();
         builder.RegisterComponentInHierarchy<SupplyManager>();
-        builder.RegisterComponentInHierarchy<ExpeditionInventoryView>();
-        builder.RegisterComponentInHierarchy<EquipmentSlotUI>();
+        //builder.RegisterComponentInHierarchy<ExpeditionInventoryView>();
+        //builder.RegisterComponentInHierarchy<EquipmentSlotUI>();
         builder.RegisterComponentInHierarchy<AccessoryBagView>();
         builder.RegisterComponentInHierarchy<SmithyUIController>();
 
