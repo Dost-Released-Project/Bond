@@ -38,7 +38,7 @@ namespace Bond.UI
 
             RegisterEvents();
 
-            _controller.OnAccessoryChanged += () => RefreshAccessories();
+            _controller.OnAccessoryChanged += RefreshAccessories;
         }
 
         public void SetCharacter(BaseCharacter character)

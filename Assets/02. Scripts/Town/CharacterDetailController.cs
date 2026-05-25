@@ -25,7 +25,7 @@ namespace Bond.UI
         {
             _itemService = itemService;
 
-            // CharacterItemService 경유 장착/해제(우클릭·드래그) 시에도 칩을 갱신한다
+            // CharacterItemService 경유 장착/해제(우클릭) 시에 칩을 갱신한다
             _itemService.OnEquipmentChanged += () => OnAccessoryChanged?.Invoke();
         }
 
@@ -79,7 +79,6 @@ namespace Bond.UI
         {
             if (_character == null) return;
             _itemService.UnequipToInventory(_character, index, targetInventory);
-            // OnAccessoryChanged는 _itemService.OnEquipmentChanged → 생성자 구독을 통해 발생한다
         }
 
         public void SetReactionTarget(int slotIndex, string characterId)
