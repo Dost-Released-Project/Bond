@@ -473,7 +473,7 @@ GameObject:
   - component: {fileID: 1883643907}
   - component: {fileID: 1883643906}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: MapScope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -1,3 +1,4 @@
+using Bond.WT.Journal;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -25,6 +26,7 @@ using VContainer.Unity;
 public class MapLifetimeScope : LifetimeScope
 {
     [SerializeField] private MapUIController _mapUIController;
+    [SerializeField] private JournalUIView _journalUIPrefab;
 
     protected override void Configure(IContainerBuilder builder)
     {
@@ -49,5 +51,10 @@ public class MapLifetimeScope : LifetimeScope
         
         // Config 로드 + 맵 생성 담당 EntryPoint
         builder.RegisterEntryPoint<MapInitializer>();
+
+        // 탐사 일지 팝업 UI 등록 — 맵 씬에서 탐사 종료 후 일지를 표시한다
+        // Inspector에서 _journalUIPrefab 슬롯에 JournalUIView 프리팹 연결 필요
+        // 프리팹이 null이면 JournalScopeExtensions 내부에서 씬 내 인스턴스를 자동 탐색
+        builder.RegisterJournalUI(_journalUIPrefab);
     }
 }

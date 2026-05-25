@@ -8,6 +8,9 @@ namespace Bond.WT.Journal
 {
     /// <summary>
     /// [Test Logic] 런타임에 키보드 입력을 통해 일지 시스템의 전체 파이프라인을 테스트하는 진입점
+    ///
+    /// H 키: LocationEventProvider 경유 데이터 세팅 + 수집 (SetDiscovery → CollectDailyLogs)
+    /// J 키: 현재 Provider 버퍼 기반 즉시 수집 — 결과창 즉시 호출 테스트
     /// </summary>
     public class JournalTestRunner : ITickable
     {
@@ -33,6 +36,15 @@ namespace Bond.WT.Journal
                 _locationProvider.SetDiscovery("EVT_FIND_ITEM", "버려진 야영지", "부러진 화살", "08000000");
 
                 // 2. 일지 수집 및 송출
+                _journalSystem.CollectDailyLogs();
+            }
+
+            // J 키를 누르면 현재 Provider 버퍼에 쌓인 데이터로 결과창을 즉시 호출한다
+            // 주의: Provider 버퍼가 비어 있으면 결과창이 열리지 않는다 (CollectDailyLogs 내부에서 count == 0 조기 반환)
+            // 사용 순서 예시: H 키로 데이터를 쌓은 후 J 키를 눌러 결과창 확인
+            if (Keyboard.current.jKey.wasPressedThisFrame)
+            {
+                Debug.Log("[JournalTestRunner] 'J' 키 입력 감지: 현재 Provider 버퍼 기반 즉시 결과창 호출");
                 _journalSystem.CollectDailyLogs();
             }
         }
