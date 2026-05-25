@@ -152,8 +152,8 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
             {
                 _skillIcons[i].style.backgroundImage = new StyleBackground();
                 string iconAddr = skill?.Data?.IconAddress;
-                //if (!string.IsNullOrEmpty(iconAddr))
-                    //LoadSkillIconAsync(_skillIcons[i], iconAddr).Forget();
+                if (!string.IsNullOrEmpty(iconAddr))
+                    LoadSkillIconAsync(_skillIcons[i], iconAddr).Forget();
             }
         }
     }
@@ -288,6 +288,9 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
 
     private async UniTaskVoid LoadSkillIconAsync(VisualElement iconEl, string address)
     {
+        iconEl.style.backgroundImage = new StyleBackground(Texture2D.whiteTexture);
+        return;
+        
         var sprite = await Addressables.LoadAssetAsync<Sprite>(address).ToUniTask();
         if (sprite == null || iconEl == null) return;
         iconEl.style.backgroundImage = new StyleBackground(sprite);
