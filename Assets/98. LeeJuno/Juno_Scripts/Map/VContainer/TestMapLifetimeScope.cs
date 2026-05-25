@@ -26,7 +26,6 @@ public class TestMapLifetimeScope : LifetimeScope
         // 이하 MapLifetimeScope 와 동일
         builder.Register<IMapRepository, MapRepository>(Lifetime.Singleton);
         builder.Register<IMapNavigator, MapNavigator>(Lifetime.Singleton);
-        builder.Register<IStageLoader, StageLoader>(Lifetime.Singleton);
         builder.Register<IEventEffectApplier, EventEffectApplier>(Lifetime.Singleton);
 
         // IEventEffectHandler 구현체 등록 -- AsImplementedInterfaces() 로 IReadOnlyList<IEventEffectHandler> 자동 주입
@@ -34,9 +33,6 @@ public class TestMapLifetimeScope : LifetimeScope
         builder.Register<ItemRewardEventEffectHandler>(Lifetime.Singleton).AsImplementedInterfaces();
         builder.Register<StatusEffectEventEffectHandler>(Lifetime.Singleton).AsImplementedInterfaces();
         builder.Register<BattleEventEffectHandler>(Lifetime.Singleton).AsImplementedInterfaces();
-
-        // IEventContext -> EventContextService (Singleton)
-        builder.Register<IEventContext, EventContextService>(Lifetime.Singleton);
 
         // 씬에 배치된 MonoBehaviour 를 DI 대상으로 등록
         if (_mapUIController != null)
