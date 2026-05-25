@@ -286,15 +286,17 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
         if (_iconText != null) _iconText.style.display = DisplayStyle.None;
     }
 
+    #pragma warning disable CS1998
     private async UniTaskVoid LoadSkillIconAsync(VisualElement iconEl, string address)
     {
+        // TODO: 실제 이미지 로드로 변경
         iconEl.style.backgroundImage = new StyleBackground(Texture2D.whiteTexture);
-        return;
         
-        var sprite = await Addressables.LoadAssetAsync<Sprite>(address).ToUniTask();
-        if (sprite == null || iconEl == null) return;
-        iconEl.style.backgroundImage = new StyleBackground(sprite);
+        // var sprite = await Addressables.LoadAssetAsync<Sprite>(address).ToUniTask();
+        // if (sprite == null || iconEl == null) return;
+        // iconEl.style.backgroundImage = new StyleBackground(sprite);
     }
+    #pragma warning restore CS1998
 
     // ── 유틸 ────────────────────────────────────────────────────────────
 
