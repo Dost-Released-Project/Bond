@@ -12,7 +12,6 @@ namespace Bond.UI
         [SerializeField] private UIDocument _document;
 
         private CharacterDetailController _controller;
-        private InventoryTransferService _transferService;
         private EquipSlotsPresenter _equipSlots;
 
         // 씬별 연결 이벤트 — 구독 여부는 각 씬 코디네이터가 결정
@@ -58,10 +57,9 @@ namespace Bond.UI
         private IInventory _currentInventory;
 
         [Inject]
-        public void Construct(CharacterDetailController controller, InventoryTransferService transferService)
+        public void Construct(CharacterDetailController controller)
         {
             _controller      = controller;
-            _transferService = transferService;
         }
 
         private void Start()
@@ -133,7 +131,7 @@ namespace Bond.UI
             }
 
             var equipRoot = root.Q("char-detail__equip-slots");
-            _equipSlots = new EquipSlotsPresenter(equipRoot, _controller, _transferService, _panel);
+            _equipSlots = new EquipSlotsPresenter(equipRoot, _controller, null, _panel);
             _equipSlots.OnInventoryOpenRequested += () => OnInventoryOpenRequested?.Invoke();
             _equipSlots.OnUnequipRequested       += OnUnequipRequested;
 
