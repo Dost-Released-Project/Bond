@@ -148,9 +148,12 @@ public partial class BaseCharacter : ITurnUseUnit
     public int RandomSpeed { get; set; }
     
     private AutoResetUniTaskCompletionSource<bool> _tcs;
+    private AutoResetUniTaskCompletionSource<bool> _targetTcs;
     private SkillBase _selectedSkill;
+    private BaseCharacter _selectedTarget;
 
     public event Action<BaseCharacter> onPlayerTurnStarted;
+    public event Action<BaseCharacter, SkillBase> onTargetSelectionStarted;
 
     public void ConfirmSkillSelection(SkillBase skill)
     {
@@ -158,60 +161,129 @@ public partial class BaseCharacter : ITurnUseUnit
         _tcs?.TrySetResult(true);
     }
 
+    public void ConfirmTargetSelection(CharacterSlot slot)
+    {
+        _selectedTarget = slot?.Occupant;
+        _targetTcs?.TrySetResult(true);
+    }
+
     public async UniTask TakeTurnAsync()
     {
         SkillBase skill = null;
         Debug.Log($"<color=green>{Name} 차례</color>");
 
-        if (isPlayable)
+        try
         {
-            _selectedSkill = null;
-            _tcs = AutoResetUniTaskCompletionSource<bool>.Create();
-            onPlayerTurnStarted?.Invoke(this);
-            await _tcs.Task;
-            skill = _selectedSkill;
-        }
-        else
-        {
-            // GetUsableSkills()를 통해 현재 사용할 수 있는 스킬 판별
-            bool[] usableFlags = GetUsableSkills();
-            var usableSkills = new System.Collections.Generic.List<SkillBase>();
-            
-            for (int i = 0; i < Skills.Length; i++)
+            if (isPlayable)
             {
-                if (Skills[i] != null && usableFlags[i])
-                {
-                    usableSkills.Add(Skills[i]);
-                }
-            }
+                _selectedSkill = null;
+                _tcs = AutoResetUniTaskCompletionSource<bool>.Create();
+                onPlayerTurnStarted?.Invoke(this);
+                await _tcs.Task;
+                skill = _selectedSkill;
 
-            // 사용 가능한 스킬이 하나라도 있으면 AI에게 넘겨 판단하게 함
-            if (usableSkills.Count > 0)
-            {
-                skill = battleType.BattleAction(usableSkills.ToArray());
+                if (skill != null)
+                {
+                    _selectedTarget = null;
+                    _targetTcs = AutoResetUniTaskCompletionSource<bool>.Create();
+                    // UI에서 타겟 선택 모드로 전환 (단일/광역 무관하게 슬롯 클릭 대기)
+                    onTargetSelectionStarted?.Invoke(this, skill);
+                    await _targetTcs.Task;
+                }
             }
             else
             {
-                // TODO: 스킬을 사용할 수 없는 경우 (턴 패스 또는 대기) 예외 처리
-                Debug.LogWarning($"<color=yellow>{Name}은(는) 현재 타겟이 없어 스킬을 사용할 수 없습니다.</color>");
-            }
-        }
-        
-        // 사용 가능한 스킬이 없어 skill이 null이면 턴 액션을 발생시키지 않음
-        if (skill != null)
-        {
-            BattleContext battleContext = CreateBattleContext(skill);
-            if (onBattleAction != null)
-            {
-                await onBattleAction.Invoke(battleContext);
-            }
-        }
-    
-        await UniTask.Delay(1000); // 턴 종료 딜레이
+                // GetUsableSkills()를 통해 현재 사용할 수 있는 스킬 판별
+                bool[] usableFlags = GetUsableSkills();
+                var usableSkills = new System.Collections.Generic.List<SkillBase>();
+                
+                for (int i = 0; i < Skills.Length; i++)
+                {
+                    if (Skills[i] != null && usableFlags[i])
+                    {
+                        usableSkills.Add(Skills[i]);
+                    }
+                }
 
-        Debug.Log($"<color=lightblue>{Name} 행동 완료!</color>");
-        
-        _tcs = null;
+                // 사용 가능한 스킬이 하나라도 있으면 AI에게 넘겨 판단하게 함
+                if (usableSkills.Count > 0)
+                {
+                    skill = battleType.BattleAction(usableSkills.ToArray());
+                    
+                    // AI 타겟 결정 로직
+                    if (skill.Data.TargetingType == TargetingType.Single)
+                    {
+                        // 단일 스킬: 사거리 내 유효 타겟 중 무작위 선택
+                        var validSlots = m_formationManager.GetValidSlots(this, skill.Data);
+                        var validTargets = validSlots
+                            .Where(s => !s.IsEmpty && !s.Occupant.IsDead)
+                            .Select(s => s.Occupant)
+                            .ToList();
+                        
+                        if (validTargets.Count > 0)
+                        {
+                            _selectedTarget = validTargets[UnityEngine.Random.Range(0, validTargets.Count)];
+                        }
+                        else
+                        {
+                            _selectedTarget = null;
+                        }
+                    }
+                    else
+                    {
+                        // 광역(AOE) 스킬: 타겟을 비워두어 BattleManager가 범위 내 전원을 타격하게 함
+                        _selectedTarget = null;
+                    }
+                }
+                else
+                {
+                    // [진단 로그] 스킬을 하나도 사용하지 못하는 상황 분석
+                    System.Text.StringBuilder debugMsg = new System.Text.StringBuilder();
+                    debugMsg.AppendLine($"<color=red>[정밀 진단] {Name} 스킬 사용 불가 상태 분석</color>");
+                    debugMsg.AppendLine($"- 시전자 진영(Side): {(CurrentSlot != null ? CurrentSlot.side.ToString() : "Slot Null")}");
+                    debugMsg.AppendLine($"- 현재 슬롯 위치(Rank): {(CurrentSlot != null ? CurrentSlot.rank.ToString() : "Slot Null")}");
+                    debugMsg.AppendLine("\n[스킬별 가용성 판단 결과]");
+                    
+                    for (int i = 0; i < Skills.Length; i++)
+                    {
+                        if (Skills[i] == null) continue;
+                        
+                        bool rankMatch = (CurrentSlot != null) && ((Skills[i].Data.UseableSlots & (int)CurrentSlot.rank) != 0);
+                        bool targetMatch = m_formationManager.HasAnyValidTarget(this, Skills[i].Data);
+                        
+                        debugMsg.AppendLine($"- 스킬 [{Skills[i].Data.name}]: 위치(Rank) 조건 = {rankMatch}, 타겟 조건 = {targetMatch}");
+                    }
+                    
+                    debugMsg.AppendLine("\n[진영 및 슬롯 상태 확인 완료]");
+                    Debug.LogError(debugMsg.ToString());
+
+                    // TODO: 스킬을 사용할 수 없는 경우 (턴 패스 또는 대기) 예외 처리
+                    Debug.LogWarning($"<color=yellow>{Name}은(는) 현재 타겟이 없어 스킬을 사용할 수 없습니다.</color>");
+                }
+            }
+            
+            // 사용 가능한 스킬이 없어 skill이 null이면 턴 액션을 발생시키지 않음
+            if (skill != null)
+            {
+                BattleContext battleContext = CreateBattleContext(skill);
+                if (onBattleAction != null)
+                {
+                    await onBattleAction.Invoke(battleContext);
+                }
+            }
+        }
+        finally
+        {
+            await UniTask.Delay(1000); // 턴 종료 딜레이
+
+            Debug.Log($"<color=lightblue>{Name} 행동 완료!</color>");
+            
+            // 상태 초기화 및 클린업
+            _selectedSkill = null;
+            _selectedTarget = null;
+            _tcs = null;
+            _targetTcs = null;
+        }
     }
     
     public async UniTask ExecuteReaction(Reaction reaction, BattleContext context)
@@ -239,6 +311,11 @@ public partial class BaseCharacter : ITurnUseUnit
             this, 
             skill, 
             true);
+        // 플레이어가 직접 선택한 타겟이 있다면 초기 설정 (없다면 AI용으로 BattleManager에서 처리)
+        if (_selectedTarget != null)
+        {
+            battleContext.target = _selectedTarget;
+        }
         // 크리티컬 판단 로직은 따로 추가할 예정)
         return battleContext;
     }

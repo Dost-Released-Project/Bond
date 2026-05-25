@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using BattleSystem;
 using PipeLine;
 
@@ -49,5 +50,10 @@ namespace BattleSystem.Interface
         /// 특정 캐릭터를 진영 슬롯에서 비웁니다. (사망 시 호출)
         /// </summary>
         void ClearCharacter(BaseCharacter character);
+
+        /// <summary>
+        /// 스킬 데이터와 시전자를 기반으로 유효한 타겟 슬롯 리스트를 반환합니다.
+        /// </summary>
+        List<CharacterSlot> GetValidSlots(BaseCharacter caster, SkillData skillData);
     }
 }
