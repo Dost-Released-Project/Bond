@@ -61,7 +61,10 @@ namespace Bond.UI.Town
                 if (character != null)
                     _characterDetail.Show(character, CharacterDetailEditMode.FullEdit, _townInventory);
                 else
+                {
                     _characterDetail.Hide();
+                    _accessoryBagView.Close();
+                }
             };
         }
 

@@ -172,4 +172,6 @@ public class AccessoryBagView : MonoBehaviour
     private void AddTooltipLabel(string text) { var l = new Label(text); l.AddToClassList("tooltip-text"); _tooltip.Add(l); }
     private void HideTooltip() => _tooltip.style.visibility = Visibility.Hidden;
     public void ToggleWindow() { var r = GetComponent<UIDocument>().rootVisualElement; r.style.display = (r.style.display == DisplayStyle.None) ? DisplayStyle.Flex : DisplayStyle.None; }
+
+    public void Close() { GetComponent<UIDocument>().rootVisualElement.style.display = DisplayStyle.None; }
 }
