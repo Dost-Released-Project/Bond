@@ -528,7 +528,8 @@ namespace Bond.UI
             {
                 "target"  => "관찰 대상",
                 "trigger" => "조건",
-                _         => "스킬",
+                "skill"   => "스킬",
+                _ => ""
             });
             title.AddToClassList("char-detail__pool-title");
             header.Add(title);
@@ -545,7 +546,8 @@ namespace Bond.UI
             {
                 case "target":  BuildTargetChips(slotIndex, chips);  break;
                 case "trigger": BuildTriggerChips(slotIndex, chips); break;
-                default:        BuildSkillChips(slotIndex, chips);   break;
+                case "skill":   BuildSkillChips(slotIndex, chips);   break;
+                default: break;
             }
             pool.Add(chips);
 
@@ -554,8 +556,9 @@ namespace Bond.UI
             {
                 "target"  => "char-detail__inline-pool--target",
                 "trigger" => "char-detail__inline-pool--trigger",
-                _         => isRole ? "char-detail__inline-pool--skill"
+                "skill"   => isRole ? "char-detail__inline-pool--skill"
                                     : "char-detail__inline-pool--trait-skill",
+                _ => ""
             });
         }
 
@@ -580,15 +583,15 @@ namespace Bond.UI
             var reaction = GetReactionAt(slotIndex);
             string currentId = reaction.SubjectCharacterId;
 
-            var members = _controller.GetPartyMembers();
-            if (members.Count == 0)
+            var candidates = _controller.GetObserveCandidates();
+            if (candidates.Count == 0)
             {
                 AddPoolEmpty(container, "파티원 없음");
                 return;
             }
-            foreach (var member in members)
+            foreach (var candidate in candidates)
             {
-                var captured = member;
+                var captured = candidate;
                 var chip = new Button(() => { _controller.SetReactionTarget(slotIndex, captured.Id); CloseAllPools(); });
                 chip.AddToClassList("char-detail__pool-chip");
                 chip.AddToClassList("char-detail__pool-chip--target");
