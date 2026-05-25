@@ -16,10 +16,12 @@ public class TurnManager : ITurnManager, IStartable, IDisposable
     
     
     private readonly IBattleFlowManager _battleFlowManager;
+    private readonly CharacterSelector _selector;
     private CancellationTokenSource m_cts;
     
-    public TurnManager(IBattleFlowManager expeditionFlowManager) {
+    public TurnManager(IBattleFlowManager expeditionFlowManager, CharacterSelector selector) {
         _battleFlowManager = expeditionFlowManager;
+        _selector = selector;
     }
     
     void IStartable.Start()
@@ -113,6 +115,10 @@ public class TurnManager : ITurnManager, IStartable, IDisposable
                 if (token.IsCancellationRequested) break;
 
                 await UniTask.Delay(150, cancellationToken: token);
+                if (unit is BaseCharacter chara && chara.isPlayable)
+                {
+                    _selector.Select(chara);
+                }
                 await unit.TakeTurnAsync();
             }
             if (_turnQueue.Count > 0 && _turnQueue[0] == unit)

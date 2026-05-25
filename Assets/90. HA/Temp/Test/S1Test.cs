@@ -100,6 +100,7 @@ namespace _90._HA.Temp.Test
                 BaseCharacter.Dict[c.Id] = c;
                 c.SetHpFull();
                 roster.Hire(c);
+                c.isPlayable = true;
             }
         }
 
