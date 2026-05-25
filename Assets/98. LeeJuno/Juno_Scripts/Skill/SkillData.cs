@@ -19,6 +19,8 @@ public class SkillData : BaseSO
     [Tooltip("스탯 계산에 쓰일 카테고리(OFFENSIVE 등)")]
     [SerializeField] private SkillType   _type;
     [SerializeField] private SkillTarget _target;
+    [Tooltip("단일 대상 또는 광역 대상 여부")]
+    [SerializeField] private TargetingType _targetingType;
     
     [Tooltip("적용할 효과들 (1=Damage, 2=Heal, 3=Stun)")]
     [SerializeField] private List<SkillEffectType> _effectTypes = new List<SkillEffectType>();
@@ -56,6 +58,7 @@ public class SkillData : BaseSO
     // SkillId / SkillName 별칭 제거 — 호출부를 Id / DisplayName 으로 통일.
     public SkillType   Type           => _type;
     public SkillTarget Target         => _target;
+    public TargetingType TargetingType => _targetingType;
     public IReadOnlyList<SkillEffectType> SkillEffectTypes => _effectTypes;
     public float       Value          => _value;
     public int         CoolTime       => _coolTime;
@@ -76,6 +79,7 @@ public class SkillData : BaseSO
 
         _type            = raw.Type;
         _target          = raw.Target;
+        _targetingType   = raw.TargetingType;
         
         _effectTypes.Clear();
         if (raw.SkillEffectTypes != null)
@@ -105,6 +109,7 @@ public struct SkillRawData
     public string     Description;
     public SkillType  Type;
     public SkillTarget Target;
+    public TargetingType TargetingType;
     public List<SkillEffectType> SkillEffectTypes;
     public float      Value;
     public int        CoolTime;

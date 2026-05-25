@@ -16,6 +16,7 @@ public class SkillDTO
     public string Description { get; set; }
     public SkillType Type { get; set; }
     public SkillTarget Target { get; set; }
+    public TargetingType TargetingType { get; set; }
     public List<SkillEffectType> SkillEffectTypes { get; set; }
     public float Value { get; set; }
     public int CoolTime { get; set; }
@@ -113,6 +114,7 @@ public sealed class SkillDataMap : ClassMap<SkillDTO>
         Map(m => m.Description).Name("Description").Optional();
         Map(m => m.Type).Name("Type").Default(SkillType.OFFENSIVE);
         Map(m => m.Target).Name("Target").Default(SkillTarget.Enemy);
+        Map(m => m.TargetingType).Name("TargetingType").Default(TargetingType.Single);
         
         // Effects 컬럼이 없으면 빈 리스트로 처리하도록 대응 (콤마 구분자 처리)
         Map(m => m.SkillEffectTypes).Name("Effects", "Effect").Optional().TypeConverter<SkillEffectTypeListConverter>();

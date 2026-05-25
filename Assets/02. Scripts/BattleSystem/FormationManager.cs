@@ -134,6 +134,44 @@ namespace BattleSystem
             }
         }
 
+        public List<CharacterSlot> GetValidSlots(BaseCharacter caster, SkillData skillData)
+        {
+            List<CharacterSlot> validSlots = new List<CharacterSlot>();
+            E_BattleSide sideToCheck;
+            int maskToCheck;
+
+            switch (skillData.Target)
+            {
+                case SkillTarget.Enemy:
+                    sideToCheck = (caster.CurrentSlot.side == E_BattleSide.Player) ?
+                        E_BattleSide.Enemy : E_BattleSide.Player;
+                    maskToCheck = skillData.EnemyTargetMask;
+                    break;
+                case SkillTarget.Party:
+                    sideToCheck = caster.CurrentSlot.side;
+                    maskToCheck = skillData.AllyTargetMask;
+                    break;
+                case SkillTarget.Self:
+                    sideToCheck = caster.CurrentSlot.side;
+                    maskToCheck = (int)caster.CurrentSlot.rank;
+                    break;
+                default:
+                    return validSlots;
+            }
+
+            var targetData = GetData(sideToCheck);
+            foreach (var slot in targetData.Slots)
+            {
+                if (slot == null) continue;
+                if ((maskToCheck & (int)slot.rank) != 0)
+                {
+                    validSlots.Add(slot);
+                }
+            }
+
+            return validSlots;
+        }
+
         public bool HasAnyValidTarget(BaseCharacter caster, SkillData skillData)
         {
             // 스킬의 대상 타입에 따라 달라지는 요소
