@@ -209,8 +209,36 @@ public class BuildingTooltipView : MonoBehaviour
             _lblUpgradeInfo.style.display = DisplayStyle.Flex;
         }
 
-        _tooltipContainer.style.left = new StyleLength(new Length(mousePosition.x + 15, LengthUnit.Pixel));
-        _tooltipContainer.style.top = new StyleLength(new Length(mousePosition.y + 15, LengthUnit.Pixel));
+        // =========================================================================
+        // 🖥️ [스크린 이탈 방지] 화면 밖으로 탈출하지 않도록 가두는 경해선 Clamping 연산
+        // =========================================================================
+        float tooltipWidth = 300f;  // 안전 마진을 고려한 툴팁 예측 가로 크기
+        float tooltipHeight = 220f; // 안전 마진을 고려한 툴팁 예측 세로 크기
+
+        // 1. 가로축(X) 검사: 마우스 우측에 띄웠을 때 화면 우측 벽을 뚫고 나간다면?
+        float finalX = mousePosition.x + 15f;
+        if (finalX + tooltipWidth > Screen.width)
+        {
+            // 마우스 왼쪽 공간으로 툴팁을 반전 배치하여 탈출 방지
+            finalX = mousePosition.x - tooltipWidth - 15f;
+        }
+
+        // 2. 세로축(Y) 검사: 마우스 하단에 띄웠을 때 화면 바닥 벽을 뚫고 나간다면?
+        // UI Toolkit 기준 Y는 상단이 0이므로, 값이 커질수록 화면 아래로 내려갑니다.
+        float finalY = mousePosition.y + 15f;
+        if (finalY + tooltipHeight > Screen.height)
+        {
+            // 마우스 위쪽 공간으로 툴팁을 반전 배치하여 탈출 방지
+            finalY = mousePosition.y - tooltipHeight - 15f;
+        }
+
+        // 3. 화면 최소값 안전장치 (좌측 벽이나 상단 벽을 뚫고 나가는 음수 값 차단)
+        if (finalX < 5f) finalX = 5f;
+        if (finalY < 5f) finalY = 5f;
+
+        // 최종 계산된 무결성 좌표로 툴팁 배치 및 출력
+        _tooltipContainer.style.left = new StyleLength(new Length(finalX, LengthUnit.Pixel));
+        _tooltipContainer.style.top = new StyleLength(new Length(finalY, LengthUnit.Pixel));
         _tooltipContainer.style.visibility = Visibility.Visible;
         _tooltipContainer.BringToFront();
     }

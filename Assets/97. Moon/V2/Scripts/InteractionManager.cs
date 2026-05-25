@@ -46,7 +46,7 @@ public class InteractionManager : MonoBehaviour
             }
 
             var slot = hit.collider.GetComponent<ConstructionSlot>();
-            if (slot != null && !isRightClick) _constructionUI.Open(slot.slotIndex);
+            if (slot != null && !isRightClick) _constructionUI.Open(slot.slotIndex, slot.AllowableType);
         }
     }
 }

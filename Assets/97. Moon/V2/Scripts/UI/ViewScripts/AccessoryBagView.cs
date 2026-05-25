@@ -32,6 +32,7 @@ public class AccessoryBagView : MonoBehaviour
         _tooltip.AddToClassList("inventory-tooltip");
         _tooltip.pickingMode = PickingMode.Ignore;
         root.Add(_tooltip);
+        HideTooltip();
         
         // [정밀 튜닝] 가방 컨테이너 전체에 Drop 이벤트 배치 및 타겟 검증 분기
         _grid.RegisterCallback<PointerUpEvent>(e => {
@@ -165,8 +166,34 @@ public class AccessoryBagView : MonoBehaviour
             }
         }
 
-        _tooltip.style.left = position.x + 20; _tooltip.style.top = position.y + 20;
-        _tooltip.style.visibility = Visibility.Visible; _tooltip.BringToFront();
+        // =========================================================================
+        // 🖥️ [툴팁 스크린 이탈 방지] 
+        // =========================================================================
+        float tooltipWidth = 250f;  
+        float tooltipHeight = 150f; 
+
+        // 가로 제한 연산
+        float finalX = position.x + 20f;
+        if (finalX + tooltipWidth > Screen.width)
+        {
+            finalX = position.x - tooltipWidth - 20f;
+        }
+
+        // 세로 제한 연산
+        float finalY = position.y + 20f;
+        if (finalY + tooltipHeight > Screen.height)
+        {
+            finalY = position.y - tooltipHeight - 20f;
+        }
+
+        // 벽 뚫기 방어 최소값 보정
+        if (finalX < 5f) finalX = 5f;
+        if (finalY < 5f) finalY = 5f;
+
+        _tooltip.style.left = finalX; 
+        _tooltip.style.top = finalY;
+        _tooltip.style.visibility = Visibility.Visible; 
+        _tooltip.BringToFront();
     }
 
     private void AddTooltipLabel(string text) { var l = new Label(text); l.AddToClassList("tooltip-text"); _tooltip.Add(l); }

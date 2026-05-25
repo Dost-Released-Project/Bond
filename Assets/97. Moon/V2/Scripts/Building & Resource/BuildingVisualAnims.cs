@@ -15,7 +15,7 @@ public class BuildingVisualAnims : MonoBehaviour
     [Header("레벨별 건물 색상")]
     [SerializeField] private Color[] _levelColors = new Color[] 
     {
-        new Color(0.8f, 0.8f, 0.85f, 1f), 
+        new Color(0.8f, 0.8f, 0.8f, 1f), 
         new Color(0.9f, 0.9f, 0.9f, 1f), 
         new Color(1.0f, 1.0f, 1.0f, 1f)    
     };
@@ -32,7 +32,11 @@ public class BuildingVisualAnims : MonoBehaviour
 
     public void RefreshVisual(int level)
     {
-        float scaleMultiplier = 0.6f + (level - 1) * 0.1f;
+        float scaleMultiplier = 0.8f;
+        if (GetComponent<BuildingObject>().Data.buildingType != BuildingType.Supply)
+        {
+            scaleMultiplier = 0.6f + (level - 1) * 0.1f;
+        }
         transform.localScale = new Vector3(scaleMultiplier, scaleMultiplier, scaleMultiplier);
 
         if (_spriteRenderer != null && _levelColors != null && _levelColors.Length > 0)
