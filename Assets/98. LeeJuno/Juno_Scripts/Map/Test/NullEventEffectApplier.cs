@@ -1,4 +1,3 @@
-using System;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -8,10 +7,9 @@ using UnityEngine;
 /// </summary>
 public class NullEventEffectApplier : IEventEffectApplier
 {
-    public UniTask ApplyAsync(EventEffectData effect, Action onCompleted)
+    public UniTask ApplyAsync(EventEffectData effect)
     {
         Debug.Log($"[NullEventEffectApplier] ApplyAsync 호출됨 — EffectType: {effect?.EffectType}");
-        onCompleted?.Invoke();
         return UniTask.CompletedTask;
     }
 }

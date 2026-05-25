@@ -1,4 +1,3 @@
-using System;
 using Cysharp.Threading.Tasks;
 
 /// <summary>
@@ -13,6 +12,5 @@ public interface IEventEffectApplier
     /// ChooseOne 타입이면 UI 로 대상 선택을 기다린 뒤 적용한다.
     /// </summary>
     /// <param name="effect">적용할 효과 데이터.</param>
-    /// <param name="onCompleted">효과 적용 완료 후 실행할 콜백. null 허용.</param>
-    UniTask ApplyAsync(EventEffectData effect, Action onCompleted);
+    UniTask ApplyAsync(EventEffectData effect);
 }

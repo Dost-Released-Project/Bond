@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -19,11 +18,10 @@ public class EventEffectApplier : IEventEffectApplier
         _handlers = handlers;
     }
 
-    public async UniTask ApplyAsync(EventEffectData effect, Action onCompleted)
+    public async UniTask ApplyAsync(EventEffectData effect)
     {
         if (effect == null)
         {
-            onCompleted?.Invoke();
             return;
         }
 
@@ -43,7 +41,5 @@ public class EventEffectApplier : IEventEffectApplier
         {
             Debug.LogWarning($"[EventEffectApplier] 처리되지 않은 EffectType: {effect.EffectType}");
         }
-
-        onCompleted?.Invoke();
     }
 }

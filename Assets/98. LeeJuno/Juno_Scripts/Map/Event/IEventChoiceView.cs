@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Bond.WT.Journal;
 
 /// <summary>
 /// 이벤트 선택지 UI의 시각적 표현을 추상화하는 인터페이스.
@@ -22,4 +23,15 @@ public interface IEventChoiceView
 
     /// <summary>플레이어가 선택지를 클릭했을 때 발생하는 이벤트 핸들러.</summary>
     Action<EventChoice> OnChoiceSelected { get; set; }
+
+    /// <summary>
+    /// 2차 선택지 화면으로 전환한다.
+    /// DescriptionLabel 에 paragraphs 를 표시하고 ChoiceContainer 에 JournalOption 버튼을 생성한다.
+    /// </summary>
+    /// <param name="paragraphs">표시할 문단 목록. 개행으로 연결해 DescriptionLabel 에 표시한다.</param>
+    /// <param name="options">2차 선택지 목록.</param>
+    void ShowSecondaryPhase(IReadOnlyList<string> paragraphs, IReadOnlyList<JournalOption> options);
+
+    /// <summary>2차 선택지 클릭 이벤트 핸들러.</summary>
+    Action<JournalOption> OnSecondaryOptionSelected { get; set; }
 }
