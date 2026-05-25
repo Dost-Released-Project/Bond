@@ -258,7 +258,7 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
         _charIcon?.RegisterCallback<PointerDownEvent>(evt =>
         {
             if (evt.button != 1 || _character == null) return;
-            _detailPresenter?.Show(_character, CharacterDetailViewMode.ReadOnly, null);
+            _detailPresenter?.Show(_character, CharacterDetailEditMode.ReadOnly, null);
             evt.StopPropagation();
         });
     }

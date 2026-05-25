@@ -59,7 +59,7 @@ namespace Bond.UI.Town
             _selector.OnSelectionChanged += character =>
             {
                 if (character != null)
-                    _characterDetail.Show(character, CharacterDetailViewMode.FullEdit, _townInventory);
+                    _characterDetail.Show(character, CharacterDetailEditMode.FullEdit, _townInventory);
                 else
                     _characterDetail.Hide();
             };

@@ -13,6 +13,7 @@ namespace Bond.UI
 
         private CharacterDetailController _controller;
         private EquipSlotsPresenter _equipSlots;
+        private ICharacterSelector _selector;
 
         // 씬별 연결 이벤트 — 구독 여부는 각 씬 코디네이터가 결정
         public event Action OnCloseRequested;
@@ -53,13 +54,17 @@ namespace Bond.UI
         private string _openPoolPart = null;
 
         private BaseCharacter _character;
-        private CharacterDetailViewMode _viewMode;
+        private CharacterDetailEditMode _editMode;
         private IInventory _currentInventory;
 
         [Inject]
-        public void Construct(CharacterDetailController controller)
+        public void Construct(CharacterDetailController controller, ICharacterSelector selector)
         {
             _controller      = controller;
+            _selector        = selector;
+
+            _controller.OnCharacterSet += RefreshCharacter;
+            _selector.OnSelectionChanged += _controller.SetCharacter;
         }
 
         private void Start()
@@ -147,8 +152,8 @@ namespace Bond.UI
                 int idx = i;
                 _reactionSkillParts[idx]?.RegisterCallback<ClickEvent>(evt =>
                 {
-                    if (_viewMode == CharacterDetailViewMode.ReadOnly) return;
-                    if (idx >= 2 && _viewMode == CharacterDetailViewMode.EquipOnly) return;
+                    if (_editMode == CharacterDetailEditMode.ReadOnly) return;
+                    if (idx >= 2 && _editMode == CharacterDetailEditMode.EquipOnly) return;
                     TogglePool(idx, "skill");
                     evt.StopPropagation();
                 });
@@ -159,13 +164,13 @@ namespace Bond.UI
                 int idx = i;
                 _reactionTargetParts[idx]?.RegisterCallback<ClickEvent>(evt =>
                 {
-                    if (_viewMode != CharacterDetailViewMode.FullEdit) return;
+                    if (_editMode != CharacterDetailEditMode.FullEdit) return;
                     TogglePool(idx, "target");
                     evt.StopPropagation();
                 });
                 _reactionTriggerParts[idx]?.RegisterCallback<ClickEvent>(evt =>
                 {
-                    if (_viewMode != CharacterDetailViewMode.FullEdit) return;
+                    if (_editMode != CharacterDetailEditMode.FullEdit) return;
                     TogglePool(idx, "trigger");
                     evt.StopPropagation();
                 });
@@ -177,21 +182,25 @@ namespace Bond.UI
                     CloseRolePicker();
             });
         }
-
-        public void Show(BaseCharacter character, CharacterDetailViewMode mode, IInventory inventory)
+        
+        public void Show(BaseCharacter character, CharacterDetailEditMode mode, IInventory inventory)
         {
             _character        = character;
-            _viewMode         = mode;
+            _editMode         = mode;
             _currentInventory = inventory;
-
-            _controller.SetCharacter(character);
-            _titleLabel.text = character.Name;
-
+            
             RefreshAll();
             ApplyViewMode();
 
             _panel.RemoveFromClassList("character-detail--hidden");
             _panel.AddToClassList("character-detail--visible");
+        }
+
+        private void RefreshCharacter(BaseCharacter character)
+        {
+            _character        = character;
+            
+            RefreshAll();
         }
 
         public void Hide()
@@ -202,16 +211,16 @@ namespace Bond.UI
             CloseRolePicker();
         }
 
-        public void SetViewMode(CharacterDetailViewMode mode)
+        public void SetViewMode(CharacterDetailEditMode mode)
         {
-            _viewMode = mode;
+            _editMode = mode;
             ApplyViewMode();
         }
 
         private void ApplyViewMode()
         {
-            bool fullEdit = _viewMode == CharacterDetailViewMode.FullEdit;
-            bool canEquip = _viewMode != CharacterDetailViewMode.ReadOnly;
+            bool fullEdit = _editMode == CharacterDetailEditMode.FullEdit;
+            bool canEquip = _editMode != CharacterDetailEditMode.ReadOnly;
 
             _roleBtnCurrent.EnableInClassList("char-detail__role-current--disabled", !fullEdit);
             _roleBtnCurrent.pickingMode = fullEdit ? PickingMode.Position : PickingMode.Ignore;
@@ -226,21 +235,21 @@ namespace Bond.UI
                 _reactionSlots[i].pickingMode = editable ? PickingMode.Position : PickingMode.Ignore;
             }
 
-            SetLockBanner(_lockBannerRole, _viewMode switch
+            SetLockBanner(_lockBannerRole, _editMode switch
             {
-                CharacterDetailViewMode.EquipOnly => "탐사 중 변경 불가",
-                CharacterDetailViewMode.ReadOnly  => "전투 중 변경 불가",
+                CharacterDetailEditMode.EquipOnly => "탐사 중 변경 불가",
+                CharacterDetailEditMode.ReadOnly  => "전투 중 변경 불가",
                 _                                => "",
             });
-            SetLockBanner(_lockBannerEquip, _viewMode switch
+            SetLockBanner(_lockBannerEquip, _editMode switch
             {
-                CharacterDetailViewMode.ReadOnly => "전투 중 변경 불가",
+                CharacterDetailEditMode.ReadOnly => "전투 중 변경 불가",
                 _                               => "",
             });
-            SetLockBanner(_lockBannerReaction, _viewMode switch
+            SetLockBanner(_lockBannerReaction, _editMode switch
             {
-                CharacterDetailViewMode.EquipOnly => "탐사 중 변경 불가",
-                CharacterDetailViewMode.ReadOnly  => "전투 중 변경 불가",
+                CharacterDetailEditMode.EquipOnly => "탐사 중 변경 불가",
+                CharacterDetailEditMode.ReadOnly  => "전투 중 변경 불가",
                 _                                => "",
             });
         }
@@ -253,7 +262,7 @@ namespace Bond.UI
             banner.text = msg;
             if (string.IsNullOrEmpty(msg)) return;
             banner.AddToClassList("char-detail__lock-banner--visible");
-            banner.AddToClassList(_viewMode == CharacterDetailViewMode.EquipOnly
+            banner.AddToClassList(_editMode == CharacterDetailEditMode.EquipOnly
                 ? "char-detail__lock-banner--equip-only"
                 : "char-detail__lock-banner--read-only");
         }
@@ -273,6 +282,8 @@ namespace Bond.UI
         {
             if (_character == null) return;
 
+            _titleLabel.text = _character.Name;
+            
             string profName = _character.Profession?.Name ?? "—";
             _classLevelLabel.text = $"{profName}  Lv.{_character.Level}";
 
@@ -491,7 +502,7 @@ namespace Bond.UI
 
         private void ToggleRolePicker()
         {
-            if (_viewMode != CharacterDetailViewMode.FullEdit) return;
+            if (_editMode != CharacterDetailEditMode.FullEdit) return;
             _rolePickerOpen = !_rolePickerOpen;
             if (_rolePickerOpen)
                 _rolePicker.AddToClassList("char-detail__role-picker--open");
