@@ -8,8 +8,6 @@ namespace Bond.UI
     public class CharacterDetailController
     {
         private readonly CharacterItemService _itemService;
-        private readonly DataBaseSO _skillDb;
-        private readonly Roster _roster;
 
         private BaseCharacter _character;
 
@@ -22,13 +20,10 @@ namespace Bond.UI
         public event Action<int>           OnReactionChanged;
 
         public CharacterDetailController(
-            CharacterItemService itemService,
-            DataBaseSO skillDb,
-            Roster roster)
+            CharacterItemService itemService
+            )
         {
             _itemService = itemService;
-            _skillDb     = skillDb;
-            _roster      = roster;
 
             // CharacterItemService 경유 장착/해제(우클릭·드래그) 시에도 칩을 갱신한다
             _itemService.OnEquipmentChanged += () => OnAccessoryChanged?.Invoke();
@@ -51,7 +46,7 @@ namespace Bond.UI
             {
                 var reaction = _character.RoleReactions[i];
                 if (reaction?.Trigger == null) continue;
-                if (!validTriggers.Any(t => t.GetType() == reaction.Trigger.GetType()))
+                if (validTriggers.All(t => t.GetType() != reaction.Trigger.GetType()))
                 {
                     reaction.Trigger = null;
                     OnReactionChanged?.Invoke(i);
@@ -61,7 +56,6 @@ namespace Bond.UI
             OnRoleChanged?.Invoke(role);
         }
 
-        // AccessoryItem은 인벤토리에서 관리되므로 목적지 IInventory를 Presenter에서 전달받는다
         public void EquipAccessory(AccessoryItem item)
         {
             if (_character == null || item == null) return;
@@ -80,6 +74,7 @@ namespace Bond.UI
             // 빈 슬롯 없음 — 호출 전 슬롯 여유 확인 필요
         }
 
+        // AccessoryItem은 인벤토리에서 관리되므로 목적지 IInventory를 Presenter에서 전달받는다
         public void UnequipAccessory(int index, IInventory targetInventory)
         {
             if (_character == null) return;
@@ -128,12 +123,13 @@ namespace Bond.UI
         }
 
         // 직업이 보유 가능한 전체 스킬 목록 반환 (스킬 그리드용)
-        public List<SkillData> GetAllProfessionSkills()
-        {
-            if (_character?.Profession == null) return new List<SkillData>();
-            int profId = _character.Profession.Id;
-            return _skillDb.Query<SkillData>(s => s.UseableClasses == profId).ToList();
-        }
+        // TODO: 스태틱하게 db 접근 후에 그걸 기반으로 반환하도록 구현
+        // public List<SkillData> GetAllProfessionSkills()
+        // {
+        //     if (_character?.Profession == null) return new List<SkillData>();
+        //     int profId = _character.Profession.Id;
+        //     return _skillDb.Query<SkillData>(s => s.UseableClasses == profId).ToList();
+        // }
 
         // 역할별 유효 트리거 목록 반환
         // 역할 코멘트 기준: Tanker(피격·아군위기), Dealer(처치·치명타), Supporter(턴종료·상태이상)
@@ -150,7 +146,8 @@ namespace Bond.UI
             // 현재는 모든 역할에 빈 Trigger를 반환하여 UI 구조만 유지
         }
 
-        public List<BaseCharacter> GetPartyMembers() => _roster.Characters;
+        // TODO: 파티 혹은 로스터 멤버 반환
+        public List<BaseCharacter> GetObserveCandidates() => new List<BaseCharacter>();
 
         public BaseCharacter CurrentCharacter => _character;
 

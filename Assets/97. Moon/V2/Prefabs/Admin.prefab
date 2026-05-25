@@ -44,3 +44,177 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8547f025610ef8b4eb3ffe90fc4396cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AdminTestTool
+  id: 02000000
+  hero:
+    Id: 
+    ImageAddress: 
+    Name: 
+    Profession:
+      _classData: {fileID: 0}
+    Level: 0
+    Insanity: 0
+    RoleType: 0
+    <battleType>k__BackingField:
+      rid: -2
+    Skills:
+    - rid: -2
+    - rid: -2
+    - rid: -2
+    - rid: -2
+    Traits:
+    - Type: 0
+      Name: Missing
+      Description: Missing
+    - Type: 0
+      Name: Missing
+      Description: Missing
+    - Type: 0
+      Name: Missing
+      Description: Missing
+    - Type: 0
+      Name: Missing
+      Description: Missing
+    Weapon:
+      itemName: 
+      type: 0
+      upgradeLevel: 0
+      baseSTR: 0
+      baseAGI: 0
+      baseINT: 0
+      upSTR: 0
+      upAGI: 0
+      upINT: 0
+    Armor:
+      itemName: 
+      type: 0
+      upgradeLevel: 0
+      baseSTR: 0
+      baseAGI: 0
+      baseINT: 0
+      upSTR: 0
+      upAGI: 0
+      upINT: 0
+    Accessories:
+    - {fileID: 0}
+    - {fileID: 0}
+    RoleReactions:
+    - SubjectCharacterId: 
+      Trigger:
+        rid: -2
+      SkillIndex: 0
+      ReactionSkillTarget: 0
+    - SubjectCharacterId: 
+      Trigger:
+        rid: -2
+      SkillIndex: 0
+      ReactionSkillTarget: 0
+    TraitReactions:
+    - SubjectCharacterId: 
+      Trigger:
+        rid: -2
+      SkillIndex: 0
+      ReactionSkillTarget: 0
+    - SubjectCharacterId: 
+      Trigger:
+        rid: -2
+      SkillIndex: 0
+      ReactionSkillTarget: 0
+    - SubjectCharacterId: 
+      Trigger:
+        rid: -2
+      SkillIndex: 0
+      ReactionSkillTarget: 0
+    - SubjectCharacterId: 
+      Trigger:
+        rid: -2
+      SkillIndex: 0
+      ReactionSkillTarget: 0
+  testHero:
+    Id: 
+    ImageAddress: 
+    Name: 
+    Profession:
+      _classData: {fileID: 0}
+    Level: 0
+    Insanity: 0
+    RoleType: 0
+    <battleType>k__BackingField:
+      rid: -2
+    Skills:
+    - rid: -2
+    - rid: -2
+    - rid: -2
+    - rid: -2
+    Traits:
+    - Type: 0
+      Name: Missing
+      Description: Missing
+    - Type: 0
+      Name: Missing
+      Description: Missing
+    - Type: 0
+      Name: Missing
+      Description: Missing
+    - Type: 0
+      Name: Missing
+      Description: Missing
+    Weapon:
+      itemName: 
+      type: 0
+      upgradeLevel: 0
+      baseSTR: 0
+      baseAGI: 0
+      baseINT: 0
+      upSTR: 0
+      upAGI: 0
+      upINT: 0
+    Armor:
+      itemName: 
+      type: 0
+      upgradeLevel: 0
+      baseSTR: 0
+      baseAGI: 0
+      baseINT: 0
+      upSTR: 0
+      upAGI: 0
+      upINT: 0
+    Accessories:
+    - {fileID: 0}
+    - {fileID: 0}
+    RoleReactions:
+    - SubjectCharacterId: 
+      Trigger:
+        rid: -2
+      SkillIndex: 0
+      ReactionSkillTarget: 0
+    - SubjectCharacterId: 
+      Trigger:
+        rid: -2
+      SkillIndex: 0
+      ReactionSkillTarget: 0
+    TraitReactions:
+    - SubjectCharacterId: 
+      Trigger:
+        rid: -2
+      SkillIndex: 0
+      ReactionSkillTarget: 0
+    - SubjectCharacterId: 
+      Trigger:
+        rid: -2
+      SkillIndex: 0
+      ReactionSkillTarget: 0
+    - SubjectCharacterId: 
+      Trigger:
+        rid: -2
+      SkillIndex: 0
+      ReactionSkillTarget: 0
+    - SubjectCharacterId: 
+      Trigger:
+        rid: -2
+      SkillIndex: 0
+      ReactionSkillTarget: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }

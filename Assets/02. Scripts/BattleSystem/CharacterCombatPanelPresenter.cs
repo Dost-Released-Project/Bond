@@ -152,8 +152,8 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
             {
                 _skillIcons[i].style.backgroundImage = new StyleBackground();
                 string iconAddr = skill?.Data?.IconAddress;
-                //if (!string.IsNullOrEmpty(iconAddr))
-                    //LoadSkillIconAsync(_skillIcons[i], iconAddr).Forget();
+                if (!string.IsNullOrEmpty(iconAddr))
+                    LoadSkillIconAsync(_skillIcons[i], iconAddr).Forget();
             }
         }
     }
@@ -258,7 +258,7 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
         _charIcon?.RegisterCallback<PointerDownEvent>(evt =>
         {
             if (evt.button != 1 || _character == null) return;
-            _detailPresenter?.Show(_character, CharacterDetailViewMode.ReadOnly, null);
+            _detailPresenter?.Show(_character, CharacterDetailEditMode.ReadOnly, null);
             evt.StopPropagation();
         });
     }
@@ -286,12 +286,17 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
         if (_iconText != null) _iconText.style.display = DisplayStyle.None;
     }
 
+    #pragma warning disable CS1998
     private async UniTaskVoid LoadSkillIconAsync(VisualElement iconEl, string address)
     {
-        var sprite = await Addressables.LoadAssetAsync<Sprite>(address).ToUniTask();
-        if (sprite == null || iconEl == null) return;
-        iconEl.style.backgroundImage = new StyleBackground(sprite);
+        // TODO: 실제 이미지 로드로 변경
+        iconEl.style.backgroundImage = new StyleBackground(Texture2D.whiteTexture);
+        
+        // var sprite = await Addressables.LoadAssetAsync<Sprite>(address).ToUniTask();
+        // if (sprite == null || iconEl == null) return;
+        // iconEl.style.backgroundImage = new StyleBackground(sprite);
     }
+    #pragma warning restore CS1998
 
     // ── 유틸 ────────────────────────────────────────────────────────────
 
