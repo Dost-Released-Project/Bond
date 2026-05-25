@@ -1,14 +1,15 @@
-using Bond.Expedition;
 using Bond.WT.Journal;
+using Bond.WT.Journal.Handlers;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
 namespace RootVContainer
 {
+    // KWT 파트 전용 RootScope 확장
     public partial class RootScope : LifetimeScope
     {
-        protected void ConfigureJournal(IContainerBuilder builder)
+        private void ConfigureJournal(IContainerBuilder builder)
         {
             #region 일지
             // DataBaseSO 로드 및 등록 (Addressables 동기 로드 방식)
@@ -24,8 +25,9 @@ namespace RootVContainer
             builder.Register<LocationEventProvider>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<MockJournalActionHandler>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<JournalInventoryActionHandler>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<BattleResultJournalHandler>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.RegisterEntryPoint<JournalSystem>(Lifetime.Singleton).AsSelf();
-            
+
             // [Test] 런타임 테스트 러너
             builder.RegisterEntryPoint<JournalTestRunner>(Lifetime.Singleton).AsSelf();
             #endregion

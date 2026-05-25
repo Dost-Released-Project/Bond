@@ -40,3 +40,4 @@ MonoBehaviour:
       _itemProbability: 0
       _probabilityItemId: 
       _itemPool: []
+  _journalData: {fileID: 0}
