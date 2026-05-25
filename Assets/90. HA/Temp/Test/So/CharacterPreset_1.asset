@@ -19,7 +19,7 @@ MonoBehaviour:
     Profession:
       _classData: {fileID: 11400000, guid: b8de67576ddb60c4eb3dcccb2e641b32, type: 2}
     Level: 0
-    Insanity: 0
+    Insanity: 50
     RoleType: 2
     <battleType>k__BackingField:
       rid: 8081819941751750731
@@ -29,13 +29,17 @@ MonoBehaviour:
     - rid: 8081819941751750734
     - rid: 8081819941751750735
     Traits:
-    - Name: A
+    - Type: 0
+      Name: A
       Description: aaa
-    - Name: C
+    - Type: 0
+      Name: C
       Description: ccc
-    - Name: Missing
+    - Type: 0
+      Name: Missing
       Description: Missing
-    - Name: Missing
+    - Type: 0
+      Name: Missing
       Description: Missing
     Weapon:
       itemName: 
@@ -61,33 +65,33 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     RoleReactions:
-    - Source: 0
+    - SubjectCharacterId: 12c65b3a-efef-405e-b6fd-98e360b245ed
       Trigger:
         rid: 8081819941751750753
       SkillIndex: 1
-      ReactionSkillTarget: 0
-    - Source: 0
+      ReactionSkillTarget: 1
+    - SubjectCharacterId: 12c65b3a-efef-405e-b6fd-98e360b245ed
       Trigger:
         rid: 8081819941751750754
       SkillIndex: 1
-      ReactionSkillTarget: 1
+      ReactionSkillTarget: 2
     TraitReactions:
-    - Source: 0
+    - SubjectCharacterId: 
       Trigger:
         rid: -2
       SkillIndex: 0
       ReactionSkillTarget: 0
-    - Source: 0
+    - SubjectCharacterId: 
       Trigger:
         rid: -2
       SkillIndex: 0
       ReactionSkillTarget: 0
-    - Source: 0
+    - SubjectCharacterId: 
       Trigger:
         rid: -2
       SkillIndex: 0
       ReactionSkillTarget: 0
-    - Source: 0
+    - SubjectCharacterId: 
       Trigger:
         rid: -2
       SkillIndex: 0
@@ -128,18 +132,40 @@ MonoBehaviour:
     - rid: 8081819941751750753
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
-        SubjectCharacterId: 12c65b3a-efef-405e-b6fd-98e360b245ed
         Conditions:
+        - rid: 8081819941751750801
+        - rid: 8081819941751750802
         - rid: 8081819941751750755
     - rid: 8081819941751750754
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
-        SubjectCharacterId: 12c65b3a-efef-405e-b6fd-98e360b245ed
         Conditions:
-        - rid: 8081819941751750756
+        - rid: 8081819941751750803
+        - rid: 8081819941751750804
+        - rid: 8081819941751750805
+        - rid: 8081819941751750820
     - rid: 8081819941751750755
       type: {class: EvadeCondition, ns: Reactions, asm: Assembly-CSharp}
       data: 
-    - rid: 8081819941751750756
+    - rid: 8081819941751750801
+      type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Filter: 2
+    - rid: 8081819941751750802
+      type: {class: SkillTypeCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Type: 1
+    - rid: 8081819941751750803
+      type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Filter: 1
+    - rid: 8081819941751750804
+      type: {class: SkillTypeCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Type: 1
+    - rid: 8081819941751750805
       type: {class: CritCondition, ns: Reactions, asm: Assembly-CSharp}
+      data: 
+    - rid: 8081819941751750820
+      type: {class: HitCondition, ns: Reactions, asm: Assembly-CSharp}
       data: 

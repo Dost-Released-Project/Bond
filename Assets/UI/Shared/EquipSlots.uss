@@ -1,0 +1,140 @@
+/* ── EquipSlots.uss ── */
+/* 모든 색상·폰트는 EoB 테마 변수만 사용. 하드코딩 금지. */
+
+.equip-slots__grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 6px;
+}
+
+.equip-slots__chip {
+    width: 72px;
+    height: 90px;
+    flex-direction: column;
+    align-items: stretch;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background-color: var(--bg-surface);
+    border-width: 1px;
+    border-color: var(--border-default);
+    border-radius: 3px;
+}
+
+/* 아이콘 영역: chip 공간의 4/5 차지. name 숨김 시 chip 전체를 채움. */
+/* flex-basis: 0px — Yoga에 명확한 기준 크기를 주어 내부 flex-grow가 동작하게 함 */
+.equip-slots__chip-icon-area {
+    width: 100%;
+    flex-basis: 0;
+    flex-grow: 4;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: hidden;
+}
+
+.equip-slots__chip:hover {
+    border-color: var(--border-highlight);
+}
+
+/* 슬롯 타입 레이블 — icon-area 공간의 1/4 */
+.equip-slots__chip-label {
+    flex-basis: 0;
+    flex-grow: 1;
+    margin: 0;
+    padding: 0;
+    font-size: var(--font-size-system);
+    color: var(--text-label);
+    letter-spacing: 1px;
+    -unity-text-align: middle-center;
+    -unity-font-style: bold;
+    overflow: hidden;
+}
+
+/* 중앙 아이콘 심볼 — icon-area 공간의 3/4 */
+.equip-slots__chip-icon {
+    flex-basis: 0;
+    flex-grow: 3;
+    margin: 0;
+    padding: 0;
+    font-size: var(--font-size-button);
+    color: var(--text-muted);
+    -unity-text-align: middle-center;
+    width: 100%;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+/* 하단 장비명 약칭 */
+.equip-slots__chip-name {
+    flex-basis: 0;
+    flex-grow: 1;
+    margin: 0;
+    padding: 0;
+    font-size: var(--font-size-system);
+    color: var(--text-secondary);
+    -unity-text-align: middle-center;
+    overflow: hidden;
+    white-space: nowrap;
+    -unity-text-overflow-position: end;
+    width: 100%;
+}
+
+/* 장착됨 공통 */
+.equip-slots__chip--equipped .equip-slots__chip-label {
+    display: none;
+}
+
+.equip-slots__chip--equipped .equip-slots__chip-icon {
+    color: var(--text-primary);
+}
+
+.equip-slots__chip--equipped .equip-slots__chip-name {
+    display: none;
+}
+
+/* 슬롯별 장착 강조선 (상단 1px) */
+.equip-slots__chip--weapon.equip-slots__chip--equipped {
+    border-top-width: 1px;
+    border-top-color: var(--border-highlight);  /* 황갈 */
+}
+
+.equip-slots__chip--armor.equip-slots__chip--equipped {
+    border-top-width: 1px;
+    border-top-color: var(--slot-role-border);  /* 청색계 */
+}
+
+.equip-slots__chip--acc.equip-slots__chip--equipped {
+    border-top-width: 1px;
+    border-top-color: var(--slot-trait-border);  /* 자주계 */
+}
+
+/* 비어있음 */
+.equip-slots__chip--empty .equip-slots__chip-icon,
+.equip-slots__chip--empty .equip-slots__chip-name {
+    color: var(--text-disabled);
+}
+
+/* 드래그 수신 대기 강조 */
+.equip-slots__chip--drop-target {
+    border-color: var(--border-active);
+    background-color: var(--bg-raised);
+}
+
+/* 편집 불가 */
+.equip-slots__chip--disabled {
+    opacity: 0.38;
+}
+
+/* 툴팁 */
+.equip-slots__tooltip {
+    background-color: var(--bg-deep);
+    border-width: 1px;
+    border-color: var(--border-highlight);
+    border-radius: 2px;
+    padding: 8px 10px;
+    min-width: 120px;
+    font-size: var(--font-size-system);
+    color: var(--text-secondary);
+    white-space: normal;
+    -unity-text-align: upper-left;
+}

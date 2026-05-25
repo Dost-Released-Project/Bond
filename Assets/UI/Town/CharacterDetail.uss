@@ -1,0 +1,735 @@
+/* ── CharacterDetail.uss ── */
+/* 모든 색상·폰트는 EoB 테마 변수만 사용. 하드코딩 금지. */
+
+/* ════════════════════════════════════════
+   캐릭터 상세 뷰
+   ════════════════════════════════════════ */
+.character-detail {
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    top: 6%;
+    bottom: 6%;
+    flex-direction: column;
+    background-color: var(--bg-deep);
+    border-width: 1px;
+    border-color: var(--border-default);
+}
+
+.character-detail--hidden {
+    display: none;
+}
+
+.character-detail--visible {
+    display: flex;
+}
+
+.character-detail__header {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--border-default);
+}
+
+.character-detail__title {
+    font-size: var(--font-size-name);
+    color: var(--text-primary);
+    letter-spacing: 2px;
+    flex-grow: 1;
+}
+
+.character-detail__close-btn {
+    font-size: var(--font-size-system);
+    color: var(--text-secondary);
+    background-color: transparent;
+    border-width: 0;
+    padding: 2px 4px;
+}
+
+.character-detail__close-btn:hover {
+    color: var(--text-accent);
+}
+
+.character-detail__body {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+/* ── 우측 컬럼 스크롤 (right-col에 합성됨) ── */
+.char-detail__scroll {
+    /* flex 크기는 char-detail__right-col이 제공 */
+}
+
+.char-detail__scroll > .unity-scroll-view__content-container {
+    padding: 0;
+}
+
+/* ── 2단 레이아웃 ── */
+.char-detail__layout {
+    flex-direction: row;
+    flex-grow: 1;
+    padding: 10px;
+}
+
+.char-detail__left-col {
+    flex-direction: column;
+    flex-grow: 4;
+    flex-basis: 0;
+    margin-right: 8px;
+    padding-left: 8px;
+}
+
+.char-detail__right-col {
+    flex-direction: column;
+    flex-grow: 6;
+    flex-basis: 0;
+}
+
+/* ── 초상화 ── */
+.char-detail__portrait {
+    width: 100%;
+    height: 120px;
+    background-color: var(--bg-raised);
+    border-width: 1px;
+    border-color: var(--border-default);
+    border-radius: 3px;
+    margin-bottom: 8px;
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+/* ── 정체성 ── */
+.char-detail__identity {
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.char-detail__class-level {
+    font-size: var(--font-size-class);
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    -unity-font-style: bold;
+    margin-bottom: 2px;
+}
+
+.char-detail__insanity {
+    font-size: var(--font-size-system);
+    color: var(--stress-warn);
+    margin-bottom: 6px;
+}
+
+.char-detail__role-section {
+    flex-direction: column;
+}
+
+.char-detail__role-btns {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 3px;
+}
+
+.char-detail__role-btn {
+    font-size: var(--font-size-system);
+    color: var(--btn-secondary-text);
+    background-color: transparent;
+    border-width: 1px;
+    border-color: var(--btn-secondary-border);
+    border-radius: 2px;
+    padding: 2px 5px;
+    margin-right: 3px;
+    margin-bottom: 3px;
+}
+
+.char-detail__role-btn:hover {
+    border-color: var(--border-highlight);
+    color: var(--text-primary);
+}
+
+.char-detail__role-btn--active {
+    border-color: var(--border-active);
+    color: var(--text-accent);
+}
+
+/* ── 공통 섹션 레이블 ── */
+.char-detail__section-label {
+    font-size: var(--font-size-system);
+    color: var(--text-label);
+    letter-spacing: 3px;
+    -unity-font-style: bold;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--border-default);
+    margin-bottom: 4px;
+    padding-bottom: 2px;
+}
+
+.char-detail__section-header-row {
+    flex-direction: row;
+    align-items: center;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--border-default);
+    margin-bottom: 4px;
+    padding-bottom: 2px;
+}
+.char-detail__section-header-row .char-detail__section-label {
+    flex-grow: 1;
+    border-bottom-width: 0;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.char-detail__lock-banner {
+    font-size: var(--font-size-system);
+    color: var(--text-disabled);
+    letter-spacing: 1px;
+    -unity-font-style: italic;
+    padding-left: 6px;
+    display: none;
+}
+.char-detail__lock-banner--visible {
+    display: flex;
+}
+.char-detail__lock-banner--equip-only {
+    color: var(--text-label);
+    border-left-width: 1px;
+    border-left-color: var(--border-highlight);
+}
+.char-detail__lock-banner--read-only {
+    color: var(--text-muted);
+    border-left-width: 1px;
+    border-left-color: var(--border-danger);
+}
+
+/* ── 스탯 행 ── */
+.char-detail__stat-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 2px;
+}
+
+.char-detail__stat-key {
+    font-size: var(--font-size-system);
+    color: var(--text-muted);
+    width: 52px;
+    -unity-text-align: middle-left;
+}
+
+.char-detail__stat-val {
+    font-size: var(--font-size-system);
+    color: var(--text-primary);
+    -unity-text-align: middle-right;
+    flex-grow: 1;
+}
+
+/* ── 능력치·전투 섹션 ── */
+.char-detail__base-stats,
+.char-detail__combat-stats {
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+/* ── 성향 ── */
+.char-detail__traits {
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.char-detail__trait-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.char-detail__trait-chip {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 2px;
+}
+
+.char-detail__trait-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 3px;
+    margin-right: 5px;
+    flex-shrink: 0;
+}
+
+.char-detail__trait-dot--positive { background-color: var(--hp-safe); }
+.char-detail__trait-dot--neutral  { background-color: var(--text-muted); }
+.char-detail__trait-dot--negative { background-color: var(--stress-crit); }
+
+.char-detail__trait-name {
+    font-size: var(--font-size-system);
+    color: var(--text-secondary);
+    overflow: hidden;
+    white-space: nowrap;
+    -unity-text-overflow-position: end;
+}
+
+/* ── 장비 ── */
+.char-detail__equipment {
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+/* ── 역할·성향 반반 행 ── */
+.char-detail__role-trait-row {
+    flex-direction: row;
+    margin-bottom: 10px;
+}
+.char-detail__role-trait-half {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    margin-bottom: 0;
+}
+.char-detail__role-trait-row > .char-detail__role-section {
+    margin-right: 8px;
+}
+
+/* ── 스킬 그리드 ── */
+.char-detail__skill-section {
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.char-detail__skill-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.char-detail__skill-chip {
+    width: 64px;
+    height: 64px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-surface);
+    border-width: 1px;
+    border-color: var(--border-default);
+    border-radius: 3px;
+    padding: 3px;
+    margin: 2px;
+}
+
+.char-detail__skill-chip:hover {
+    border-color: var(--border-highlight);
+}
+
+.char-detail__skill-chip--empty {
+    opacity: 0.3;
+}
+
+.char-detail__skill-name {
+    font-size: var(--font-size-system);
+    color: var(--text-secondary);
+    -unity-text-align: middle-center;
+    white-space: normal;
+    overflow: hidden;
+}
+
+/* ── 리액션 슬롯 ── */
+.char-detail__reaction-section {
+    flex-direction: column;
+}
+
+.char-detail__reaction-slot {
+    flex-direction: row;
+    align-items: stretch;
+    background-color: var(--bg-surface);
+    border-width: 1px;
+    border-color: var(--border-default);
+    border-radius: 3px;
+    margin-bottom: 3px;
+    min-height: 38px;
+    overflow: hidden;
+}
+
+.char-detail__reaction-slot:hover {
+    border-color: var(--border-highlight);
+}
+
+.char-detail__reaction-slot__indicator {
+    width: 3px;
+    flex-shrink: 0;
+}
+
+.char-detail__reaction-slot__indicator--role  { background-color: var(--slot-role-border); }
+.char-detail__reaction-slot__indicator--trait { background-color: var(--slot-trait-border); }
+
+.char-detail__reaction-slot__body {
+    flex-direction: column;
+    justify-content: center;
+    padding: 4px 6px;
+    flex-grow: 1;
+}
+
+.char-detail__reaction-trigger {
+    font-size: var(--font-size-system);
+    color: var(--text-muted);
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    -unity-text-overflow-position: end;
+}
+
+.char-detail__reaction-skill {
+    font-size: var(--font-size-system);
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    -unity-text-overflow-position: end;
+}
+
+.char-detail__reaction-slot--role .char-detail__reaction-trigger {
+    color: var(--slot-role-dot);
+}
+
+.char-detail__reaction-slot--trait .char-detail__reaction-trigger {
+    color: var(--slot-trait-dot);
+}
+
+/* 편집 불가 오버레이 */
+.char-detail__reaction-slot--readonly {
+    opacity: 0.55;
+}
+
+/* ── 스킬 피커 드롭다운 ── */
+.char-detail__skill-picker {
+    background-color: var(--bg-deep);
+    border-width: 1px;
+    border-color: var(--border-active);
+    border-radius: 3px;
+    min-width: 120px;
+    max-height: 160px;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.char-detail__skill-picker-item {
+    font-size: var(--font-size-system);
+    color: var(--text-secondary);
+    background-color: transparent;
+    border-width: 0;
+    border-radius: 0;
+    padding: 5px 8px;
+    -unity-text-align: middle-left;
+}
+
+.char-detail__skill-picker-item:hover {
+    background-color: var(--bg-raised);
+    color: var(--text-primary);
+}
+
+.char-detail__skill-picker-empty {
+    font-size: var(--font-size-system);
+    color: var(--text-disabled);
+    padding: 6px 8px;
+}
+
+/* ════════════════════════════════════════
+   Task 1 — STR/AGI/INT 박스형
+   ════════════════════════════════════════ */
+.char-detail__base-stat-boxes {
+    flex-direction: row;
+    margin-bottom: 10px;
+    border-width: 1px;
+    border-color: var(--border-default);
+}
+.char-detail__base-stat-box {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    background-color: var(--bg-surface);
+    border-right-width: 1px;
+    border-right-color: var(--border-default);
+    padding: 6px 4px;
+    align-items: center;
+}
+.char-detail__base-stat-key {
+    font-size: var(--font-size-system);
+    color: var(--text-label);
+    letter-spacing: 2px;
+    -unity-text-align: upper-center;
+    margin-bottom: 2px;
+}
+.char-detail__base-stat-val {
+    font-size: var(--font-size-name);
+    color: var(--text-secondary);
+    -unity-text-align: middle-center;
+}
+
+/* ════════════════════════════════════════
+   Task 2 — HP/광기 게이지
+   ════════════════════════════════════════ */
+.char-detail__gauge {
+    margin-bottom: 6px;
+}
+.char-detail__gauge-track {
+    height: 3px;
+    background-color: var(--border-active);
+    border-radius: 2px;
+    overflow: hidden;
+}
+.char-detail__gauge-fill {
+    height: 100%;
+    border-radius: 2px;
+}
+.char-detail__gauge-fill--hp              { background-color: var(--hp-safe);     }
+.char-detail__gauge-fill--hp-low          { background-color: var(--hp-low);      }
+.char-detail__gauge-fill--insanity-safe   { background-color: var(--stress-safe); }
+.char-detail__gauge-fill--insanity-warn   { background-color: var(--stress-warn); }
+.char-detail__gauge-fill--insanity-crit   { background-color: var(--stress-crit); }
+
+.char-detail__gauge-block {
+    margin-bottom: 6px;
+}
+.char-detail__gauge-label-row {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 3px;
+}
+.char-detail__gauge-label {
+    font-size: var(--font-size-system);
+    color: var(--text-muted);
+    letter-spacing: 1px;
+}
+.char-detail__gauge-label--insanity { color: var(--stress-crit); }
+.char-detail__gauge-warn {
+    font-size: var(--font-size-system);
+    color: var(--stress-warn);
+    margin-right: 4px;
+    display: none;
+}
+.char-detail__gauge-warn--visible { display: flex; }
+.char-detail__gauge-val {
+    font-size: var(--font-size-system);
+    color: var(--text-disabled);
+}
+
+/* ════════════════════════════════════════
+   Task 3 — 성향 태그 칩형
+   ════════════════════════════════════════ */
+.char-detail__trait-tag {
+    font-size: var(--font-size-system);
+    letter-spacing: 1px;
+    padding: 2px 7px;
+    border-width: 1px;
+    border-radius: 1px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+.char-detail__trait-tag--positive {
+    border-color: var(--echo-ready-border);
+    color: var(--echo-ready-text);
+}
+.char-detail__trait-tag--negative {
+    border-color: var(--slot-trait-border);
+    color: var(--slot-trait-dot);
+}
+.char-detail__trait-tag--neutral {
+    border-color: var(--border-default);
+    color: var(--text-muted);
+}
+.char-detail__trait-tag--locked {
+    border-color: var(--border-default);
+    color: var(--text-disabled);
+    opacity: 0.4;
+}
+
+/* ════════════════════════════════════════
+   Task 4 — 역할 드롭다운
+   ════════════════════════════════════════ */
+.char-detail__role-area {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+.char-detail__role-current {
+    font-size: var(--font-size-system);
+    letter-spacing: 1px;
+    padding: 5px 10px;
+    border-width: 1px;
+    border-radius: 2px;
+    margin-right: 4px;
+    flex-shrink: 0;
+}
+.char-detail__role-current--tanker    { border-color: var(--slot-role-border);  color: var(--slot-role-dot);  background-color: var(--slot-role-bg);  }
+.char-detail__role-current--dealer    { border-color: var(--border-highlight);  color: var(--text-accent);    background-color: var(--bg-surface);    }
+.char-detail__role-current--supporter { border-color: var(--slot-trait-border); color: var(--slot-trait-dot); background-color: var(--slot-trait-bg); }
+.char-detail__role-current--none      { border-color: var(--border-default);    color: var(--text-disabled);  background-color: transparent;          }
+.char-detail__role-current--disabled  { opacity: 0.38; }
+
+.char-detail__role-picker {
+    flex-direction: row;
+    display: none;
+}
+.char-detail__role-picker--open { display: flex; }
+
+.char-detail__role-option {
+    font-size: var(--font-size-system);
+    letter-spacing: 1px;
+    padding: 5px 10px;
+    border-width: 1px;
+    border-radius: 2px;
+    background-color: transparent;
+    margin-right: 4px;
+}
+.char-detail__role-option--tanker    { border-color: var(--slot-role-border);  color: var(--slot-role-dot);  }
+.char-detail__role-option--dealer    { border-color: var(--border-highlight);  color: var(--text-accent);    }
+.char-detail__role-option--supporter { border-color: var(--slot-trait-border); color: var(--slot-trait-dot); }
+
+/* ════════════════════════════════════════
+   Task 5 — 리액션 슬롯 3분할
+   ════════════════════════════════════════ */
+.char-detail__slot-part {
+    flex-direction: column;
+    justify-content: center;
+    padding: 6px 10px;
+    border-right-width: 1px;
+    border-right-color: var(--border-default);
+    flex-shrink: 0;
+}
+.char-detail__slot-part--target  { width: 100px; }
+.char-detail__slot-part--trigger { width: 100px; }
+.char-detail__slot-part--skill   { flex-grow: 1; flex-shrink: 1; }
+.char-detail__slot-part--fixed   { opacity: 0.6; }
+
+.char-detail__reaction-slot--role .char-detail__slot-part:hover {
+    background-color: var(--slot-role-bg);
+}
+.char-detail__reaction-slot--role .char-detail__slot-part--fixed:hover {
+    background-color: transparent;
+}
+.char-detail__reaction-slot--trait .char-detail__slot-part--skill:hover {
+    background-color: var(--slot-trait-bg);
+}
+
+.char-detail__slot-part-label {
+    font-size: var(--font-size-system);
+    letter-spacing: 2px;
+    margin-bottom: 3px;
+}
+.char-detail__reaction-slot--role  .char-detail__slot-part-label { color: var(--slot-role-dot);  }
+.char-detail__reaction-slot--trait .char-detail__slot-part-label { color: var(--slot-trait-dot); }
+
+.char-detail__slot-part-val {
+    font-size: var(--font-size-body);
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    -unity-text-overflow-position: end;
+}
+.char-detail__slot-part-val--placeholder { color: var(--text-disabled); }
+
+.char-detail__slot-echo {
+    width: 28px;
+    flex-shrink: 0;
+    -unity-text-align: middle-center;
+    font-size: var(--font-size-body);
+    align-self: stretch;
+    justify-content: center;
+}
+.char-detail__reaction-slot--role  .char-detail__slot-echo { color: var(--slot-role-dot);  }
+.char-detail__reaction-slot--trait .char-detail__slot-echo { color: var(--slot-trait-dot); }
+.char-detail__slot-echo--empty { color: var(--text-disabled); }
+
+.char-detail__reaction-slot--locked {
+    border-color: var(--border-default);
+    opacity: 0.35;
+}
+.char-detail__reaction-slot--disabled {
+    opacity: 0.38;
+}
+.char-detail__reaction-locked-text {
+    flex-grow: 1;
+    padding: 8px 14px;
+    font-size: var(--font-size-system);
+    color: var(--text-disabled);
+    letter-spacing: 2px;
+    -unity-text-align: middle-left;
+}
+
+/* ════════════════════════════════════════
+   리액션 인라인 풀
+   ════════════════════════════════════════ */
+.char-detail__inline-pool {
+    display: none;
+    flex-direction: column;
+    padding: 10px;
+    margin-top: -3px;
+    margin-bottom: 5px;
+    border-width: 1px;
+    border-radius: 0 0 3px 3px;
+}
+.char-detail__inline-pool--target {
+    display: flex;
+    background-color: var(--bg-deep);
+    border-color: var(--slot-role-border);
+}
+.char-detail__inline-pool--trigger {
+    display: flex;
+    background-color: var(--bg-deep);
+    border-color: var(--slot-trait-border);
+}
+.char-detail__inline-pool--skill {
+    display: flex;
+    background-color: var(--bg-deep);
+    border-color: var(--border-highlight);
+}
+.char-detail__inline-pool--trait-skill {
+    display: flex;
+    background-color: var(--bg-deep);
+    border-color: var(--slot-trait-border);
+}
+.char-detail__pool-header {
+    flex-direction: row;
+    align-items: center;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--border-default);
+    padding-bottom: 5px;
+    margin-bottom: 8px;
+}
+.char-detail__pool-title {
+    font-size: var(--font-size-system);
+    letter-spacing: 3px;
+    color: var(--text-label);
+    flex-grow: 1;
+}
+.char-detail__pool-close-btn {
+    font-size: var(--font-size-system);
+    color: var(--text-disabled);
+    background-color: transparent;
+    border-width: 1px;
+    border-color: var(--border-default);
+    padding: 2px 6px;
+}
+.char-detail__pool-close-btn:hover {
+    border-color: var(--border-highlight);
+    color: var(--text-secondary);
+}
+.char-detail__pool-chips {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.char-detail__pool-chip {
+    flex-direction: column;
+    padding: 6px 12px;
+    border-width: 1px;
+    border-radius: 2px;
+    margin-right: 6px;
+    margin-bottom: 4px;
+    background-color: transparent;
+}
+.char-detail__pool-chip--target  { border-color: var(--slot-role-border);  color: var(--slot-role-dot);  }
+.char-detail__pool-chip--trigger { border-color: var(--slot-trait-border); color: var(--slot-trait-dot); }
+.char-detail__pool-chip--skill   { border-color: var(--border-default);    color: var(--text-secondary); }
+.char-detail__pool-chip:hover    { border-color: var(--border-highlight);  color: var(--text-primary);   }
+.char-detail__pool-chip--selected { border-color: var(--border-active); color: var(--text-accent); }
+.char-detail__pool-chip-name {
+    font-size: var(--font-size-body);
+    -unity-text-align: middle-center;
+}
+.char-detail__pool-empty {
+    font-size: var(--font-size-system);
+    color: var(--text-disabled);
+    padding: 4px 8px;
+}

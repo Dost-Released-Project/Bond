@@ -1,4 +1,6 @@
 using Bond.Embark;
+using Bond.UI;
+using Bond.UI.Town;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer;
@@ -12,17 +14,29 @@ namespace Bond.UI.Town
         private CharacterSelector _selector;
         private Roster _roster;
         private EmbarkController _embarkController;
+        private CharacterDetailPresenter _characterDetail;
+        private AccessoryBagView _accessoryBagView;
+        private ITotalInventory _townInventory;
+
         private TownRosterPanelPresenter _rosterPresenter;
-        private CharacterDetailPresenter _detailPresenter;
         private EmbarkPresenter _embarkPresenter;
         private Button _toggleBtn;
 
         [Inject]
-        public void Construct(CharacterSelector selector, Roster roster, EmbarkController embarkController)
+        public void Construct(
+            CharacterSelector selector,
+            Roster roster,
+            EmbarkController embarkController,
+            CharacterDetailPresenter characterDetail,
+            AccessoryBagView accessoryBagView,
+            ITotalInventory townInventory)
         {
-            _selector = selector;
-            _roster   = roster;
+            _selector       = selector;
+            _roster         = roster;
             _embarkController = embarkController;
+            _characterDetail  = characterDetail;
+            _accessoryBagView = accessoryBagView;
+            _townInventory    = townInventory;
         }
 
         private void Start()
@@ -30,7 +44,6 @@ namespace Bond.UI.Town
             var root = townUIDocument.rootVisualElement;
 
             _rosterPresenter = new TownRosterPanelPresenter(root, _roster, _selector);
-            _detailPresenter = new CharacterDetailPresenter(root, _selector);
             _embarkPresenter = new EmbarkPresenter(root, _embarkController, _roster);
 
             foreach (var tc in root.Query<TemplateContainer>().ToList())
@@ -38,8 +51,18 @@ namespace Bond.UI.Town
 
             _toggleBtn = root.Q<Button>("roster-toggle-btn");
             _toggleBtn.clicked += ToggleRoster;
-
             root.Q<Button>("embark-btn").clicked += _embarkController.Open;
+
+            _characterDetail.OnCloseRequested       += _selector.Deselect;
+            _characterDetail.OnInventoryOpenRequested += _accessoryBagView.ToggleWindow;
+
+            _selector.OnSelectionChanged += character =>
+            {
+                if (character != null)
+                    _characterDetail.Show(character, CharacterDetailViewMode.FullEdit, _townInventory);
+                else
+                    _characterDetail.Hide();
+            };
         }
 
         private void ToggleRoster()

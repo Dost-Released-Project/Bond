@@ -67,18 +67,7 @@ public partial class BaseCharacter : ITurnUseUnit
         m_formationManager = formationManager;
     }
 
-    private BaseCharacter()
-    {
-        for(int i = 0; i < RoleReactions.Length; i++)
-        {
-            RoleReactions[i] = new Reaction();
-        }
-
-        for (int i = 0; i < TraitReactions.Length; i++)
-        {
-            TraitReactions[i] = new Reaction();
-        }
-    }
+    private BaseCharacter() { }
 
     public void SetRole(RoleType role)
     {
@@ -159,17 +148,28 @@ public partial class BaseCharacter : ITurnUseUnit
     public int RandomSpeed { get; set; }
     
     private AutoResetUniTaskCompletionSource<bool> _tcs;
-    
+    private SkillBase _selectedSkill;
+
+    public event Action<BaseCharacter> onPlayerTurnStarted;
+
+    public void ConfirmSkillSelection(SkillBase skill)
+    {
+        _selectedSkill = skill;
+        _tcs?.TrySetResult(true);
+    }
+
     public async UniTask TakeTurnAsync()
     {
         SkillBase skill = null;
         Debug.Log($"<color=green>{Name} 차례</color>");
-        
+
         if (isPlayable)
         {
+            _selectedSkill = null;
             _tcs = AutoResetUniTaskCompletionSource<bool>.Create();
-            // 플레이어 입력으로 스킬을 결정하고
+            onPlayerTurnStarted?.Invoke(this);
             await _tcs.Task;
+            skill = _selectedSkill;
         }
         else
         {
