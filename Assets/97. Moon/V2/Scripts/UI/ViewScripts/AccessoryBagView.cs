@@ -23,6 +23,7 @@ public class AccessoryBagView : MonoBehaviour
 
     private void Start()
     {
+        ToggleWindow();
         var root = GetComponent<UIDocument>().rootVisualElement;
         _grid = root.Q<VisualElement>("accessory-grid");
 
