@@ -153,7 +153,7 @@ public class BuildingTooltipView : MonoBehaviour
                 totalMaterialCap += levelData.materialCapAdd;
                 totalFrontierCap += levelData.frontierCapAdd;
                 totalSlotExpansion += levelData.slotExpansion;
-                totalEffectValue += levelData.effectValue;
+                totalEffectValue = levelData.effectValue;
             }
         }
 
@@ -178,7 +178,7 @@ public class BuildingTooltipView : MonoBehaviour
             int nextMaterialCap = totalMaterialCap + nextLevelData.materialCapAdd;
             int nextFrontierCap = totalFrontierCap + nextLevelData.frontierCapAdd;
             int nextSlotExpansion = totalSlotExpansion + nextLevelData.slotExpansion;
-            int nextEffectValue = totalEffectValue + nextLevelData.effectValue;
+            int nextEffectValue = nextLevelData.effectValue;
 
             string upText = "[업그레이드 시 최종 변경값]\n";
             bool hasChanges = false;

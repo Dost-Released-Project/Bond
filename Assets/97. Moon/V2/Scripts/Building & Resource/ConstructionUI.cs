@@ -83,7 +83,7 @@ public class ConstructionUI : MonoBehaviour
     }
     
     // =========================================================================
-    // 📈 2. [업그레이드 팝업 모드] (우클릭 시 발동 - 툴팁 누적 공식 이식 완료)
+    // 📈 2. [업그레이드 팝업 모드] (유니티 6 전용 Rich Text 행간 보정판)
     // =========================================================================
     public void OpenUpgrade(BuildingObject building)
     {
@@ -95,8 +95,7 @@ public class ConstructionUI : MonoBehaviour
 
         int curLevel = building.CurrentLevel;
         int nextLevel = curLevel + 1;
-        
-        // 만렙 예외 차단
+
         if (nextLevel > _targetBuildingData.levels.Count)
         {
             Debug.LogWarning("이미 최고 레벨인 건물입니다.");
@@ -104,12 +103,11 @@ public class ConstructionUI : MonoBehaviour
         }
 
         _lblBuildingName.text = $"{_targetBuildingData.DisplayName} 업그레이드 (Lv.{curLevel} ➔ Lv.{nextLevel})";
-        
-        // 1. 1레벨부터 현재 레벨까지의 고유 효과 누적 합산 연산
+
+        // 1. [누적형 데이터] 합산 연산
         int totalMaterialCap = 0;
         int totalFrontierCap = 0;
         int totalSlotExpansion = 0;
-        int totalEffectValue = 0;
 
         for (int i = 1; i <= curLevel; i++)
         {
@@ -119,48 +117,58 @@ public class ConstructionUI : MonoBehaviour
                 totalMaterialCap += levelData.materialCapAdd;
                 totalFrontierCap += levelData.frontierCapAdd;
                 totalSlotExpansion += levelData.slotExpansion;
-                totalEffectValue += levelData.effectValue;
             }
         }
 
-        // 2. 다음 레벨 데이터 기반 최종 수치 누적 계산
+        // 2. [단발성 데이터] 파싱
+        var curLvData = _targetBuildingData.GetLevelData(curLevel);
         var nextLvData = _targetBuildingData.GetLevelData(nextLevel);
-        
+
         int nextMaterialCap = totalMaterialCap + nextLvData.materialCapAdd;
         int nextFrontierCap = totalFrontierCap + nextLvData.frontierCapAdd;
         int nextSlotExpansion = totalSlotExpansion + nextLvData.slotExpansion;
-        int nextEffectValue = totalEffectValue + nextLvData.effectValue;
-        int curMaxUses = _targetBuildingData.GetLevelData(curLevel).maxUses;
 
-        // 3. 툴팁 스펙 가이드라인 1대1 맵핑 텍스트 조립
-        string upText = "[업그레이드 완료 시 최종 변경값]\n";
-        
+        int curEffectValue = curLvData.effectValue;
+        int nextEffectValue = nextLvData.effectValue;
+        int curMaxUses = curLvData.maxUses;
+
+        // =========================================================================
+        // 🎯 [유니티 6 핵심 해결책] Rich Text 태그로 강제 줄간격 확보 규칙 주입
+        // 문자열 전체를 <line-height=110%> 태그로 감싸주면 40px 글자 크기 버그를 무시하고 
+        // 줄바꿈 시 글자가 서로 겹치지 않게 물리적 공간을 완벽히 확보합니다.
+        // =========================================================================
+        string upText = "<line-height=120%>[업그레이드 완료 시 최종 변경값]\n";
+
         if (nextLvData.materialCapAdd > 0) upText += $"- 자원 보관 한도: {totalMaterialCap} ➔ {nextMaterialCap} 증가\n";
         if (nextLvData.frontierCapAdd > 0) upText += $"- 개척 가능 한도: {totalFrontierCap} ➔ {nextFrontierCap} 증가\n";
-        if (nextLvData.slotExpansion > 0)  upText += $"- 인벤토리 슬롯: {totalSlotExpansion}칸 ➔ {nextSlotExpansion}칸 증가\n";
-        if (nextLvData.effectValue > 0)   upText += $"- 효과 고유 수치: {totalEffectValue} ➔ {nextEffectValue} 증가\n";
-        
+        if (nextLvData.slotExpansion > 0) upText += $"- 인벤토리 슬롯: {totalSlotExpansion}칸 ➔ {nextSlotExpansion}칸 증가\n";
+        if (nextLvData.effectValue > 0) upText += $"- 효과 고유 수치: {curEffectValue} ➔ {nextEffectValue} 변경\n";
+
         if (_targetBuildingData.buildingType == BuildingType.Smithy || _targetBuildingData.name.Contains("Smithy"))
         {
             upText += $"- 장비 최고 강화 한도: {curLevel}단계 ➔ {nextLevel}단계 제한 확장\n";
         }
-        
-        // 이용 제한 횟수 (합산이 아닌 테이블 단발성 상태 수치 추적 규칙 적용)
+
         if (curMaxUses > 0 && nextLvData.maxUses != curMaxUses)
         {
             upText += $"- 이용 제한 횟수: {curMaxUses}회 ➔ {nextLvData.maxUses}회로 제한 변경\n";
         }
 
+        // 태그 닫기
+        upText += "</line-height>";
+
+        // 3. 콤팩트한 단발 대입 (레이블 분할 코드 다 철거하여 단순화)
         _lblBuildingDescription.text = upText;
 
-        // 4. 다음 레벨 진입 비용 파싱 기입
-        _lblBuildingCost.text = $"[업그레이드 비용]\n개척 데이터: {nextLvData.frontierCost} | 목재: {nextLvData.woodCost} | 광물: {nextLvData.oreCost}";
+        // 4. 비용 기입 부위도 동일하게 겹침 방지 태그 주입
+        _lblBuildingCost.text =
+            $"<line-height=120%>[업그레이드 비용]\n개척 데이터: {nextLvData.frontierCost} | 목재: {nextLvData.woodCost} | 광물: {nextLvData.oreCost}</line-height>";
 
         Show(true);
     }
 
     // =========================================================================
-    // 🍹 3. [상호작용 효과 사용 팝업 모드] (주점, 여관, 길드 전용 검증 레이어)
+    // 🍹 3. [상호작용 효과 사용 팝업 모드] (주점, 여관, 길드 전용 - 유니티 6 행간 보정 완료)
     // =========================================================================
     public void OpenInteraction(BuildingObject building)
     {
@@ -173,11 +181,17 @@ public class ConstructionUI : MonoBehaviour
         var lvData = _targetBuildingData.GetLevelData(building.CurrentLevel);
         _lblBuildingName.text = $"{_targetBuildingData.DisplayName} 기능 이용";
 
+        // 💥 [유니티 6 핵심 방어] 모든 텍스트의 시작과 끝을 <line-height=120%> 태그로 감싸서 겹침을 원천 차단합니다.
+        string descText = "<line-height=120%>";
+
         // 분기 A: 길드 데이터 즉시 즉각 정산 안내
         if (_targetBuildingData.buildingType == BuildingType.Guild)
         {
-            _lblBuildingDescription.text = "길드에 축적된 개척 보고서를 분석하여 영지 데이터를 수집합니다.";
-            _lblBuildingCost.text = $"[수령 보상] 개척 데이터: +{lvData.effectValue} 수급 완료 가능";
+            descText += "길드에 축적된 개척 보고서를 분석하여\n영지 데이터를 수집합니다.";
+            descText += "</line-height>";
+
+            _lblBuildingDescription.text = descText;
+            _lblBuildingCost.text = $"<line-height=120%>[수령 보상]\n개척 데이터: +{lvData.effectValue} 수급 가능</line-height>";
         }
         // 분기 B: 주점(Tavern), 여관(Inn) 영웅 상태 기반 조건부 회복 안내
         else
@@ -185,34 +199,46 @@ public class ConstructionUI : MonoBehaviour
             BaseCharacter selectedHero = _characterSelector?.Selected;
             if (selectedHero == null)
             {
-                _lblBuildingDescription.text = "<color=red>선택된 영웅이 없습니다. 이용할 영웅을 먼저 선택해 주세요.</color>";
-                _lblBuildingCost.text = "이용 불가";
+                descText += "<color=red>선택된 영웅이 없습니다.\n이용할 영웅을 먼저 선택해 주세요.</color>";
+                descText += "</line-height>";
+
+                _lblBuildingDescription.text = descText;
+                _lblBuildingCost.text = "<line-height=120%>이용 불가</line-height>";
             }
             else
             {
                 int preValue;
-                // (※ 프로젝트의 실제 정신력 변수명 규격에 맞게 매핑)
+
+                // 🏡 여관 (Inn) : 체력 회복 분기
                 if (_targetBuildingData.buildingType == BuildingType.Inn)
                 {
-                    // 기획안 반영: 이름, 현재 HP, 정신력, 건물 회복량 및 회복 이후 변경값 가이드 연산
                     preValue = Mathf.Min(selectedHero.Stat.current_Hp + lvData.effectValue, selectedHero.Stat.max_Hp);
-                    
-                    _lblBuildingDescription.text = $"이용 영웅: <b>{selectedHero.Name}</b>\n" +
-                                                   $"현재 상태 ➔ 체력: {selectedHero.Stat.current_Hp}/{selectedHero.Stat.max_Hp}\n\n" +
-                                                   $"[회복 피드백]\n효과 적용 시 체력이 {lvData.effectValue}만큼 회복됩니다.\n" +
-                                                   $"(예상 변경치 ➔ 체력: {selectedHero.Stat.current_Hp} ➔ {preValue})\n";
+
+                    descText += $"이용 영웅: <b>{selectedHero.Name}</b> " +
+                                $"현재 상태 ➔ 체력: {selectedHero.Stat.current_Hp} / {selectedHero.Stat.max_Hp}\n\n" +
+                                "[회복 피드백]\n" +
+                                $"효과 적용 시 체력이 {lvData.effectValue}만큼 회복됩니다. " +
+                                $"(예상 변경치 ➔ 체력: {selectedHero.Stat.current_Hp} ➔ {preValue})";
                 }
+                // 🍹 주점 (Tavern) : 광기 감소 분기
                 else
                 {
                     preValue = Mathf.Max(selectedHero.Insanity - lvData.effectValue, 0);
-                    _lblBuildingDescription.text = $"이용 영웅: <b>{selectedHero.Name}</b>\n" +
-                                                   $"현재 상태 ➔ 광기: {selectedHero.Insanity}\n\n" +
-                                                   $"[회복 피드백]\n효과 적용 시 광기가 {lvData.effectValue}만큼 감소합니다.\n" +
-                                                   $"(예상 변경치 ➔ 광기: {selectedHero.Insanity} ➔ {preValue})";
+
+                    descText += $"이용 영웅: <b>{selectedHero.Name}</b> " +
+                                $"현재 상태 ➔ 광기: {selectedHero.Insanity}\n\n" +
+                                "[회복 피드백]\n" +
+                                $"효과 적용 시 광기가 {lvData.effectValue}만큼 감소합니다. " +
+                                $"(예상 변경치 ➔ 광기: {selectedHero.Insanity} ➔ {preValue})";
                 }
 
+                descText += "</line-height>";
+                _lblBuildingDescription.text = descText;
+
+                // 하단 비용 및 이용 횟수 레이블 겹침 예방
                 int remainUses = lvData.maxUses - (building.Counter != null ? building.Counter.CurrentTurnUses : 0);
-                _lblBuildingCost.text = $"이번 턴 남은 이용 가능 횟수: {remainUses} / {lvData.maxUses}회";
+                _lblBuildingCost.text =
+                    $"<line-height=120%>[이용 제한]\n이번 턴 남은 횟수: {remainUses} / {lvData.maxUses}회</line-height>";
             }
         }
 

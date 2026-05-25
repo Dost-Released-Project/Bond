@@ -1,9 +1,9 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <ui:VisualElement style="flex-grow: 1; background-color: rgb(154, 145, 145); width: 960px; height: 540px; position: absolute; top: 270px; left: 480px;">
         <ui:Label text="Label" name="construction-name" style="position: absolute; left: 0; right: 0; top: 30px; font-size: 60px; -unity-text-align: middle-center; height: 70px; bottom: auto;"/>
-        <ui:Label text="Label" name="construction-desc" style="position: absolute; -unity-text-align: middle-center; left: 0; right: 0; top: 130px; height: 170px; font-size: 40px; bottom: auto;"/>
+        <ui:Label text="Label" name="construction-desc" style="position: absolute; -unity-text-align: middle-center; left: 0; right: 0; top: 130px; height: 170px; font-size: 40px; bottom: auto; -unity-text-auto-size: best-fit 10px 40px; -unity-text-generator: advanced;"/>
         <ui:Label text="Label" name="construction-cost" style="position: absolute; left: 0; right: 0; top: auto; height: 60px; -unity-text-align: middle-center; font-size: 40px; bottom: 140px;"/>
         <ui:Button text="확인" name="btn-confirm" style="align-self: flex-start; justify-content: flex-start; align-items: stretch; background-size: 100px 100px; width: 200px; height: 80px; font-size: 60px; top: auto; position: absolute; left: 180px; bottom: 30px;"/>
-        <ui:Button text="취소" name="btn-cancel" style="align-self: flex-start; justify-content: flex-start; align-items: stretch; background-size: 100px 100px; width: 200px; height: 80px; font-size: 60px; top: auto; position: absolute; left: auto; bottom: 30px; right: 180px;"/>
+        <ui:Button text="취소" name="btn-cancel" style="align-self: flex-start; justify-content: flex-start; align-items: best-fit; background-size: 100px 100px; width: 200px; height: 80px; font-size: 60px; top: auto; position: absolute; left: auto; bottom: 30px; right: 180px;"/>
     </ui:VisualElement>
 </ui:UXML>
