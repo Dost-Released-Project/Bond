@@ -76,6 +76,12 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
                 _smithyUI.ChangeCharacter(activeHero);
             }
         }
+        
+        // 캐릭터가 바뀔 때 대장간뿐만 아니라, 주점/여관 기능 창도 실시간으로 가이드 수치를 갱신합니다!
+        if (_constructionUI != null)
+        {
+            _constructionUI.RefreshCurrentInteraction();
+        }
     }
     
     private void Update()
@@ -100,6 +106,7 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
             case BuildingType.Inn:
             case BuildingType.Guild:
                 _smithyUI.Close(); // 대장간 열려있으면 안전하게 닫기
+                _supplyView.Close();
                 _constructionUI.OpenInteraction(building); // 팝업창 토스!
                 break;
 
@@ -108,11 +115,17 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
                 _inventoryView.ToggleWindow(true); 
                 break;
             case BuildingType.Supply: 
-                _supplyView.Open(); 
+                _smithyUI.Close();
+                _constructionUI.Show(false);
+                _supplyView.Open();
                 break;
-            case BuildingType.Smithy: 
+            case BuildingType.Smithy:
                 if (_characterSelector.Selected != null)
+                {
+                    _constructionUI.Show(false);
+                    _supplyView.Close();
                     _smithyUI.Open(_characterSelector.Selected, building.CurrentLevel);
+                }
                 break;
         }
     }

@@ -270,8 +270,25 @@ public class ConstructionUI : MonoBehaviour
         }
         Show(false);
     }
+    
+    // =========================================================================
+    // 🔄 상호작용 UI 전용 실시간 리프레시 라인
+    // 캐릭터 셀렉터 변경 시 대장간 갱신 플로우와 함께 동적 연동됩니다.
+    // =========================================================================
+    public void RefreshCurrentInteraction()
+    {
+        // 💥 현재 UI가 열려있지 않거나, 상호작용 모드가 아니라면 연산을 완전히 스킵합니다!
+        if (!IsAnyPopupOpen || _currentMode != PopupMode.Interaction) return;
 
-    private void Show(bool isShow) => _root.style.display = isShow ? DisplayStyle.Flex : DisplayStyle.None;
+        // 타겟 건물 데이터가 날아갔다면 방어 처리
+        if (_targetBuildingObject == null) return;
+        
+        // 기존에 정밀하게 설계해 둔 상호작용 오픈 로직을 그대로 재호출하여 
+        // 바뀐 영웅(SelectedHero) 데이터로 텍스트만 깔끔하게 새로고침합니다.
+        OpenInteraction(_targetBuildingObject);
+    }
+
+    public void Show(bool isShow) => _root.style.display = isShow ? DisplayStyle.Flex : DisplayStyle.None;
     public bool IsAnyPopupOpen => _root != null && _root.style.display == DisplayStyle.Flex;
 
     private void LoadSettlement()
