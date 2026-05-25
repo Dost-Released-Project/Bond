@@ -11,6 +11,7 @@ public class BuildingVisualAnims : MonoBehaviour
     
     private bool _isHovered = false;
     private Color _originColor;
+    
 
     [Header("레벨별 건물 색상")]
     [SerializeField] private Color[] _levelColors = new Color[] 
@@ -19,24 +20,19 @@ public class BuildingVisualAnims : MonoBehaviour
         new Color(0.9f, 0.9f, 0.9f, 1f), 
         new Color(1.0f, 1.0f, 1.0f, 1f)    
     };
-
+    
     public void OnInitialize(BuildingObject owner)
     {
         _owner = owner;
         _spriteRenderer = GetComponent<SpriteRenderer>();
-        _collider = GetComponent<BoxCollider>();
-        _mainCam = Camera.main;
+        _tooltipView = FindFirstObjectByType<BuildingTooltipView>();
 
         RefreshVisual(_owner.CurrentLevel);
     }
 
     public void RefreshVisual(int level)
     {
-        float scaleMultiplier = 0.8f;
-        if (GetComponent<BuildingObject>().Data.buildingType != BuildingType.Supply)
-        {
-            scaleMultiplier = 0.6f + (level - 1) * 0.1f;
-        }
+        float scaleMultiplier = 0.6f + (level - 1) * 0.1f;
         transform.localScale = new Vector3(scaleMultiplier, scaleMultiplier, scaleMultiplier);
 
         if (_spriteRenderer != null && _levelColors != null && _levelColors.Length > 0)
@@ -49,6 +45,51 @@ public class BuildingVisualAnims : MonoBehaviour
         }
     }
 
+    // =========================================================================
+    // 🎯 [중앙 집중화 전환] Update()를 삭제하고 호출당하는 인터페이스로 격상
+    // =========================================================================
+    public void TriggerHoverState(Vector2 mousePosition)
+    {
+        if (_isHovered) return;
+        _isHovered = true;
+
+        if (_spriteRenderer != null) _spriteRenderer.color = _originColor * 1.1f; 
+
+        if (_tooltipView == null) _tooltipView = FindFirstObjectByType<BuildingTooltipView>();
+        if (_tooltipView != null && _owner != null)
+        {
+            Vector2 uiToolkitPos = mousePosition;
+            uiToolkitPos.y = Screen.height - uiToolkitPos.y; 
+            _tooltipView.ShowTooltip(_owner, uiToolkitPos);
+        }
+    }
+
+    public void ResetHoverState()
+    {
+        if (!_isHovered) return;
+        _isHovered = false;
+
+        if (_spriteRenderer != null) _spriteRenderer.color = _originColor; 
+        if (_tooltipView == null) _tooltipView = FindFirstObjectByType<BuildingTooltipView>();
+        if (_tooltipView != null) _tooltipView.HideTooltip();
+    }
+
+    // 외부 외부 충격(업그레이드 등) 시 단발성 갱신 기능 슬롯 유지
+    public void ForceRefreshTooltip()
+    {
+        if (!_isHovered || _owner == null) return;
+
+        if (_tooltipView == null) _tooltipView = FindFirstObjectByType<BuildingTooltipView>();
+        if (_tooltipView != null)
+        {
+            Vector2 mousePosition = Mouse.current.position.ReadValue();
+            Vector2 uiToolkitPos = mousePosition;
+            uiToolkitPos.y = Screen.height - uiToolkitPos.y;
+            _tooltipView.ShowTooltip(_owner, uiToolkitPos);
+        }
+    }
+
+    // 건설 이펙트(팝핑)
     public void TriggerConstructionPopping(int level)
     {
         if (!gameObject.activeInHierarchy) return;
@@ -77,69 +118,5 @@ public class BuildingVisualAnims : MonoBehaviour
             yield return null;
         }
         transform.localScale = baseScale;
-    }
-
-    private void Update()
-    {
-        if (_collider == null || _mainCam == null || Mouse.current == null || _owner == null) return;
-
-        if (UnityEngine.EventSystems.EventSystem.current != null && 
-            UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
-        {
-            ResetHoverState();
-            return;
-        }
-
-        Vector2 mousePosition = Mouse.current.position.ReadValue();
-        Ray ray = _mainCam.ScreenPointToRay(mousePosition);
-        
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f) && hit.collider.gameObject == this.gameObject)
-        {
-            if (_isHovered) return; 
-            _isHovered = true;
-
-            if (_spriteRenderer != null) _spriteRenderer.color = _originColor * 1.1f; 
-
-            if (_tooltipView == null) _tooltipView = FindFirstObjectByType<BuildingTooltipView>();
-            if (_tooltipView != null)
-            {
-                Vector2 uiToolkitPos = mousePosition;
-                uiToolkitPos.y = Screen.height - uiToolkitPos.y; 
-                _tooltipView.ShowTooltip(_owner, uiToolkitPos);
-            }
-        }
-        else
-        {
-            ResetHoverState();
-        }
-    }
-
-    private void ResetHoverState()
-    {
-        if (_isHovered)
-        {
-            _isHovered = false;
-            if (_spriteRenderer != null) _spriteRenderer.color = _originColor; 
-            if (_tooltipView == null) _tooltipView = FindFirstObjectByType<BuildingTooltipView>();
-            if (_tooltipView != null) _tooltipView.HideTooltip();
-        }
-    }
-    
-    // 💥 [추가] 마우스가 이 건물 위에 떠 있는 상태에서 수치가 변했을 때만 단발성으로 호출될 갱신 통로
-    public void ForceRefreshTooltip()
-    {
-        if (!_isHovered || Mouse.current == null || _owner == null) return;
-        
-        if (_spriteRenderer != null) _spriteRenderer.color = _originColor * 1.1f; 
-        if (_tooltipView == null) _tooltipView = FindFirstObjectByType<BuildingTooltipView>();
-        if (_tooltipView != null)
-        {
-            Vector2 mousePosition = Mouse.current.position.ReadValue();
-            Vector2 uiToolkitPos = mousePosition;
-            uiToolkitPos.y = Screen.height - uiToolkitPos.y;
-            
-            // 현재 마우스 위치 그대로 데이터 내용만 싹 새로고침
-            _tooltipView.ShowTooltip(_owner, uiToolkitPos);
-        }
     }
 }

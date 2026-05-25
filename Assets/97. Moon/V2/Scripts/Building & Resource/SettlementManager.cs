@@ -15,9 +15,11 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     private SupplyView _supplyView;
     private ITotalInventory _totalInv;
     private IExpeditionInventory _expeditionInv;
+    private ConstructionUI _constructionUI;
     
     [Inject] private SmithyUIController _smithyUI; 
     [Inject] private CharacterSelector _characterSelector;
+
 
     [Inject]
     public void Construct(BuildingService bs, ResourceManager rm, InventoryView iv, SupplyView supply, ITotalInventory total, IExpeditionInventory exp)
@@ -44,6 +46,8 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         {
             _characterSelector.OnSelectionChanged += OnCharacterSelectionChanged;
         }
+
+        _constructionUI = FindAnyObjectByType<ConstructionUI>();
     }
 
     private void OnDestroy()
@@ -82,48 +86,70 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     
     public void OnBuildingClicked(BuildingObject building)
     {
-        // 💥 사용 횟수 검증 부품인 Counter에게 권한 위임하여 사전 체크
         if (building.Counter != null && building.Counter.IsUseLimitReached())
         {
             Debug.LogWarning($"[이용 불가] {building.Data.DisplayName}의 이번 턴 이용 한도를 초과했습니다!");
             return;
         }
 
-        var levelData = building.Data.GetLevelData(building.CurrentLevel);
-        bool isUsed = false; // 💥 성공적으로 건물을 소모했는지 추적할 플래그
-        
+        // 💥 [핵심 기획 교정 분기]
+        // 주점, 여관, 길드는 클릭 즉시 실행하지 않고, 리더님 기획대로 상세 확인 팝업창을 먼저 띄웁니다.
         switch (building.Data.buildingType)
         {
-            case BuildingType.Storage: _inventoryView.ToggleWindow(true); break;
+            case BuildingType.Tavern:
+            case BuildingType.Inn:
+            case BuildingType.Guild:
+                _smithyUI.Close(); // 대장간 열려있으면 안전하게 닫기
+                _constructionUI.OpenInteraction(building); // 팝업창 토스!
+                break;
+
+            // 창고나 보급소, 대장간 등 전용 UI가 별개로 존재하는 기물들은 기존 규칙 유지
+            case BuildingType.Storage: 
+                _inventoryView.ToggleWindow(true); 
+                break;
             case BuildingType.Supply: 
                 _supplyView.Open(); 
-                if (building.Counter != null) { building.Counter.UseBuilding(); isUsed = true; }
                 break;
-            case BuildingType.Tavern: 
+            case BuildingType.Smithy: 
+                if (_characterSelector.Selected != null)
+                    _smithyUI.Open(_characterSelector.Selected, building.CurrentLevel);
+                break;
+        }
+    }
+
+    // =========================================================================
+    // 🍹 [신규 추가] 팝업창 확인 버튼(Confirm)을 눌렀을 때 비로소 실행되는 진짜 기능 수용소
+    // =========================================================================
+    public void ExecuteInteractionDirect(BuildingObject building)
+    {
+        var levelData = building.Data.GetLevelData(building.CurrentLevel);
+        bool isUsed = false;
+
+        switch (building.Data.buildingType)
+        {
+            case BuildingType.Tavern:
                 if (_characterSelector.Selected != null)
                 {
                     _buildingService.ExecuteTavern(_characterSelector.Selected, levelData);
                     if (building.Counter != null) { building.Counter.UseBuilding(); isUsed = true; }
                 }
                 break;
-            case BuildingType.Inn: 
+
+            case BuildingType.Inn:
                 if (_characterSelector.Selected != null)
                 {
                     _buildingService.ExecuteInn(_characterSelector.Selected, levelData);
                     if (building.Counter != null) { building.Counter.UseBuilding(); isUsed = true; }
                 }
                 break;
-            case BuildingType.Smithy: 
-                if (_characterSelector.Selected != null)
-                    _smithyUI.Open(_characterSelector.Selected, building.CurrentLevel);
-                break;
-            case BuildingType.Guild: 
-                CollectGuildData(building); 
+
+            case BuildingType.Guild:
+                CollectGuildData(building);
                 if (building.Counter != null) { building.Counter.UseBuilding(); isUsed = true; }
                 break;
         }
-        
-        // 💥 기능 사용에 성공했다면 그 순간 딱 1번 툴팁 숫자를 새로고침 지시!
+
+        // 팝업이 닫힌 뒤 시각 부품에게 강제 툴팁 리프레시 신호 송출
         if (isUsed && building.Visuals != null)
         {
             building.Visuals.ForceRefreshTooltip();
