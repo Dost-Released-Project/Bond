@@ -52,7 +52,6 @@ namespace RootVContainer
             builder.Register<IStageMonsterContext,StageMonsterContextService>(Lifetime.Singleton);
 
             // 맵과 스테이지 공용 서비스 전역 등록 (DI 해소)
-            builder.Register<IStageLoader, StageLoader>(Lifetime.Singleton);
             builder.Register<IEventContext, EventContextService>(Lifetime.Singleton);
 
             ConfigureJournal(builder);

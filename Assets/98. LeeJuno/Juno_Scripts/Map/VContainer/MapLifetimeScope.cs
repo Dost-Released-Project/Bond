@@ -49,6 +49,12 @@ public class MapLifetimeScope : LifetimeScope
         else
             Debug.LogError("[MapLifetimeScope] _mapUIController 가 연결되지 않았습니다.", this);
         
+        // StageLoader: 맵 스코프에서 등록해야 LifetimeScope 주입 시 맵 스코프가 전달된다
+        // EnqueueParent 패턴으로 이벤트/전투 씬 로드 시 올바른 부모 스코프를 지정하기 위해 필요하다
+        // WithParameter: LifetimeScope는 VContainer가 자동 주입을 보장하지 않으므로 this(현재 맵 스코프)를 직접 전달한다
+        builder.Register<IStageLoader, StageLoader>(Lifetime.Singleton)
+            .WithParameter<LifetimeScope>(this);
+
         // Config 로드 + 맵 생성 담당 EntryPoint
         builder.RegisterEntryPoint<MapInitializer>();
 

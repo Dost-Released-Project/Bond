@@ -8,6 +8,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 using VContainer;
+using VContainer.Unity;
 using Object = UnityEngine.Object;
 
 /// <summary>
@@ -31,6 +32,7 @@ public class StageLoader : IStageLoader
     private readonly MapConfigCache _mapConfigCache;
     private readonly IEventContext _eventContext;
     private readonly IStageMonsterContext _stageMonsterContext;
+    private readonly LifetimeScope _currentScope;
     private readonly Dictionary<StageType, StageConfig> _stageConfigMap;
 
     private SceneInstance _currentScene;         // 현재 로드된 씬 인스턴스
@@ -43,11 +45,12 @@ public class StageLoader : IStageLoader
     private EventSystem _mapEventSystem;
 
     [Inject]
-    public StageLoader(MapConfigCache mapConfigCache, IEventContext eventContext, IStageMonsterContext stageMonsterContext)
+    public StageLoader(MapConfigCache mapConfigCache, IEventContext eventContext, IStageMonsterContext stageMonsterContext, LifetimeScope currentScope)
     {
         _mapConfigCache = mapConfigCache;
         _eventContext = eventContext;
         _stageMonsterContext = stageMonsterContext;
+        _currentScope = currentScope;
         _hasLoadedScene = false;
         _stageConfigMap = new Dictionary<StageType, StageConfig>();
     }
@@ -149,20 +152,25 @@ public class StageLoader : IStageLoader
             // 씬 로드 직전 콜백을 채널에 등록한다
             StageCompletionChannel.Register(NotifyStageCompleted);
 
-            AsyncOperationHandle<SceneInstance> handle = Addressables.LoadSceneAsync(config.SceneAddress, LoadSceneMode.Additive);
+            // 현재 활성 스코프를 EventSceneLifetimeScope 의 부모로 지정한다.
+            // MapLifetimeScope 또는 TestMapLifetimeScope 등 어떤 맵 스코프에서 실행해도 자동 대응된다.
+            using (LifetimeScope.EnqueueParent(_currentScope))
+            {
+                AsyncOperationHandle<SceneInstance> handle = Addressables.LoadSceneAsync(config.SceneAddress, LoadSceneMode.Additive);
 
-            try
-            {
-                _currentScene = await handle.ToUniTask();
-                _hasLoadedScene = true;
-            }
-            catch (Exception e)
-            {
-                // 로드 실패 시 맵 컴포넌트 복구
-                RestoreMapComponents();
-                Debug.LogError($"[StageLoader] 씬 로드 실패: {e.Message}");
-                _hasLoadedScene = false;
-                throw;
+                try
+                {
+                    _currentScene = await handle.ToUniTask();
+                    _hasLoadedScene = true;
+                }
+                catch (Exception e)
+                {
+                    // 로드 실패 시 맵 컴포넌트 복구
+                    RestoreMapComponents();
+                    Debug.LogError($"[StageLoader] 씬 로드 실패: {e.Message}");
+                    _hasLoadedScene = false;
+                    throw;
+                }
             }
         }
         finally
@@ -309,20 +317,25 @@ public class StageLoader : IStageLoader
             // 전투 씬 완료 콜백 재등록 후 씬 로드
             StageCompletionChannel.Register(NotifyStageCompleted);
 
-            AsyncOperationHandle<SceneInstance> handle =
-                Addressables.LoadSceneAsync(battleConfig.EventBattleSceneAddress, LoadSceneMode.Additive);
+            // 현재 활성 스코프를 전투 씬 LifetimeScope 의 부모로 지정한다.
+            // MapLifetimeScope 또는 TestMapLifetimeScope 등 어떤 맵 스코프에서 실행해도 자동 대응된다.
+            using (LifetimeScope.EnqueueParent(_currentScope))
+            {
+                AsyncOperationHandle<SceneInstance> handle =
+                    Addressables.LoadSceneAsync(battleConfig.EventBattleSceneAddress, LoadSceneMode.Additive);
 
-            try
-            {
-                _currentScene = await handle.ToUniTask();
-                _hasLoadedScene = true;
-            }
-            catch (Exception e)
-            {
-                RestoreMapComponents();
-                Debug.LogError($"[StageLoader] 이벤트 전투 씬 로드 실패: {e.Message}");
-                _hasLoadedScene = false;
-                throw;
+                try
+                {
+                    _currentScene = await handle.ToUniTask();
+                    _hasLoadedScene = true;
+                }
+                catch (Exception e)
+                {
+                    RestoreMapComponents();
+                    Debug.LogError($"[StageLoader] 이벤트 전투 씬 로드 실패: {e.Message}");
+                    _hasLoadedScene = false;
+                    throw;
+                }
             }
         }
         finally

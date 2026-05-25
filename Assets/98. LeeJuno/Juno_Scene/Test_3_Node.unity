@@ -492,10 +492,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestMapLifetimeScope
   parentReference:
-    TypeName: 
+    TypeName: RootVContainer.RootScope
   autoRun: 1
   autoInjectGameObjects: []
   _mapUIController: {fileID: 1979411112}
+  _journalUIPrefab: {fileID: 2408579647488794321, guid: e972ad374caaa0443aa796b971b1ffc9, type: 3}
 --- !u!4 &1883643907
 Transform:
   m_ObjectHideFlags: 0
