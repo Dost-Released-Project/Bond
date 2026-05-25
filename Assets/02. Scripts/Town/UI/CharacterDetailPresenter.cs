@@ -136,7 +136,7 @@ namespace Bond.UI
             }
 
             var equipRoot = root.Q("char-detail__equip-slots");
-            _equipSlots = new EquipSlotsPresenter(equipRoot, _controller, null, _panel);
+            _equipSlots = new EquipSlotsPresenter(equipRoot, _panel);
             _equipSlots.OnInventoryOpenRequested += () => OnInventoryOpenRequested?.Invoke();
             _equipSlots.OnUnequipRequested       += OnUnequipRequested;
 

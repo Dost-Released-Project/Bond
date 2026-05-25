@@ -6,39 +6,30 @@ namespace Bond.UI
 {
     public class EquipSlotsPresenter
     {
-        private readonly CharacterDetailController _controller;
-        private readonly InventoryTransferService _transferService;
         private readonly VisualElement _tooltipRoot;
 
-        // 인벤토리 열기는 직접 처리하지 않고 상위에 위임한다
+        // 인벤토리 열기 / 부속품 해제 요청은 상위 Presenter가 처리한다
         public event Action OnInventoryOpenRequested;
+        public event Action<int> OnUnequipRequested;
 
         private VisualElement _chipWeapon;
         private VisualElement _chipArmor;
-        private VisualElement[] _chipAcc = new VisualElement[2];
+        private readonly VisualElement[] _chipAcc = new VisualElement[2];
 
         private BaseCharacter _character;
         private bool _editable;
 
         // tooltipRoot: 툴팁을 붙일 클리핑 없는 상위 컨테이너 (null이면 chip 자체에 붙임)
-        public EquipSlotsPresenter(
-            VisualElement root,
-            CharacterDetailController controller,
-            InventoryTransferService transferService = null,
-            VisualElement tooltipRoot = null)
+        public EquipSlotsPresenter(VisualElement root, VisualElement tooltipRoot = null)
         {
-            _controller      = controller;
-            _transferService = transferService;
-            _tooltipRoot     = tooltipRoot ?? root;
+            _tooltipRoot = tooltipRoot ?? root;
 
-            _chipWeapon  = root.Q("equip-chip-weapon");
-            _chipArmor   = root.Q("equip-chip-armor");
-            _chipAcc[0]  = root.Q("equip-chip-acc0");
-            _chipAcc[1]  = root.Q("equip-chip-acc1");
+            _chipWeapon = root.Q("equip-chip-weapon");
+            _chipArmor  = root.Q("equip-chip-armor");
+            _chipAcc[0] = root.Q("equip-chip-acc0");
+            _chipAcc[1] = root.Q("equip-chip-acc1");
 
             RegisterEvents();
-
-            _controller.OnAccessoryChanged += RefreshAccessories;
         }
 
         public void SetCharacter(BaseCharacter character)
@@ -67,19 +58,13 @@ namespace Bond.UI
             }
         }
 
-        // 드롭 이벤트 수신 (AccessoryBagView 드래그 → 이 칩에 드롭)
-        public void OnItemDropped(int accIndex, AccessoryItem item)
-        {
-            _controller.EquipAccessory(item);
-        }
-
         private void RegisterEvents()
         {
             // 무기·방어구: 툴팁만 (클릭 이벤트 없음)
             RegisterTooltip(_chipWeapon, GetWeaponTooltip);
             RegisterTooltip(_chipArmor, GetArmorTooltip);
 
-            // 부속품: 클릭 → 인벤토리 열기, 우클릭 → 즉시 해제
+            // 부속품: 클릭 → 인벤토리 열기, 우클릭 → 해제 요청
             for (int i = 0; i < _chipAcc.Length; i++)
             {
                 int idx = i;
@@ -91,34 +76,6 @@ namespace Bond.UI
                     OnInventoryOpenRequested?.Invoke();
                 });
 
-                _chipAcc[idx].RegisterCallback<PointerUpEvent>(evt =>
-                {
-                    // AccessoryBagView에서 드래그 중인 아이템을 이 칩에 드롭
-                    if (_transferService != null && _transferService.IsDragging && _editable)
-                    {
-                        var slot = _transferService.CurrentSourceInventory.GetSlot(_transferService.CurrentDraggingIndex);
-                        if (slot.item is AccessoryItem acc)
-                        {
-                            OnItemDropped(idx, acc);
-                            _transferService.ResetDrag();
-                        }
-                    }
-                    evt.StopPropagation();
-                });
-
-                _chipAcc[idx].RegisterCallback<PointerEnterEvent>(evt =>
-                {
-                    if (_editable && _transferService != null && _transferService.IsDragging)
-                        _chipAcc[idx].AddToClassList("equip-slots__chip--drop-target");
-                });
-
-                _chipAcc[idx].RegisterCallback<PointerLeaveEvent>(evt =>
-                {
-                    _chipAcc[idx].RemoveFromClassList("equip-slots__chip--drop-target");
-                });
-
-                // 우클릭 즉시 해제 — 목적지 인벤토리는 CharacterDetailPresenter가 _currentInventory로 관리
-                // EquipSlotsPresenter는 해제 요청 이벤트를 발행하고 상위가 처리한다
                 _chipAcc[idx].RegisterCallback<PointerDownEvent>(evt =>
                 {
                     if (evt.button == 1 && _editable)
@@ -129,9 +86,6 @@ namespace Bond.UI
                 });
             }
         }
-
-        // 해제 요청 이벤트: 상위(CharacterDetailPresenter)가 IInventory 선택 후 Controller 호출
-        public event Action<int> OnUnequipRequested;
 
         private void RefreshAll()
         {
@@ -162,7 +116,6 @@ namespace Bond.UI
                 var acc = _character?.Accessories?[i];
                 SetChipData(_chipAcc[i], acc?.itemName, acc != null);
                 SetChipIcon(_chipAcc[i], acc?.icon);
-                _chipAcc[i].RemoveFromClassList("equip-slots__chip--drop-target");
             }
         }
 

@@ -11,7 +11,9 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
 
     private CharacterCombatPanelController _controller;
     private CharacterDetailPresenter _detailPresenter;
+    private CharacterDetailController _detailController;
     private ICharacterSelector _selector;
+    private EquipSlotsPresenter _equipSlots;
 
     private VisualElement _root;
     private VisualElement _charIcon;
@@ -36,17 +38,17 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
     private readonly Label[]         _skillNames = new Label[4];
     private readonly VisualElement[] _skillIcons = new VisualElement[4];
 
-    private VisualElement _chipWeapon;
-    private VisualElement _chipArmor;
-    private readonly VisualElement[] _chipAcc = new VisualElement[2];
-
     private BaseCharacter _character;
 
     [Inject]
-    public void Construct(CharacterDetailPresenter detailPresenter, ICharacterSelector selector)
+    public void Construct(
+        CharacterDetailPresenter detailPresenter,
+        CharacterDetailController detailController,
+        ICharacterSelector selector)
     {
-        _detailPresenter = detailPresenter;
-        _selector        = selector;
+        _detailPresenter  = detailPresenter;
+        _detailController = detailController;
+        _selector         = selector;
     }
 
     private void Start()
@@ -86,15 +88,14 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
         var equipMount = _root.Q("combat-panel__equip-mount");
         if (equipMount != null)
         {
-            _chipWeapon = equipMount.Q("equip-chip-weapon");
-            _chipArmor  = equipMount.Q("equip-chip-armor");
-            _chipAcc[0] = equipMount.Q("equip-chip-acc0");
-            _chipAcc[1] = equipMount.Q("equip-chip-acc1");
+            _equipSlots = new EquipSlotsPresenter(equipMount, _root);
+            _equipSlots.SetEditable(false);
         }
 
         _controller.OnCharacterUpdated += BindCharacter;
         _controller.OnTurnStateChanged += RefreshSkillSlots;
         _controller.OnSkillSelected    += RefreshSkillSelection;
+        _detailController.OnAccessoryChanged += HandleAccessoryChanged;
 
         _selector.OnSelectionChanged += character =>
         {
@@ -137,7 +138,12 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
         if (_statAcc   != null) _statAcc.text    = $"{stat.acc:0.#}%";
 
         BindSkillSlots(character);
-        RefreshEquipSlots(character);
+        _equipSlots?.SetCharacter(character);
+    }
+
+    private void HandleAccessoryChanged()
+    {
+        if (_character != null) _equipSlots?.SetCharacter(_character);
     }
 
     private void BindSkillSlots(BaseCharacter character)
@@ -155,17 +161,6 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
                 if (!string.IsNullOrEmpty(iconAddr))
                     LoadSkillIconAsync(_skillIcons[i], iconAddr).Forget();
             }
-        }
-    }
-
-    private void RefreshEquipSlots(BaseCharacter character)
-    {
-        SetChipData(_chipWeapon, character.Weapon?.itemName, character.Weapon != null);
-        SetChipData(_chipArmor,  character.Armor?.itemName,  character.Armor  != null);
-        for (int i = 0; i < 2; i++)
-        {
-            var acc = character.Accessories?[i];
-            SetChipData(_chipAcc[i], acc?.itemName, acc != null);
         }
     }
 
@@ -302,18 +297,4 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
 
     private static string FirstChar(string s) =>
         !string.IsNullOrEmpty(s) ? s[0].ToString() : "?";
-
-    private static string Truncate(string s, int max) =>
-        s != null && s.Length > max ? s[..max] + "…" : s ?? "";
-
-    private static void SetChipData(VisualElement chip, string itemName, bool equipped)
-    {
-        if (chip == null) return;
-        var nameLabel = chip.Q<Label>(className: "equip-slots__chip-name");
-        if (nameLabel != null)
-            nameLabel.text = equipped ? Truncate(itemName, 8) : "비어있음";
-
-        chip.EnableInClassList("equip-slots__chip--equipped", equipped);
-        chip.EnableInClassList("equip-slots__chip--empty",    !equipped);
-    }
 }

@@ -56,24 +56,6 @@ namespace Bond.UI
             OnRoleChanged?.Invoke(role);
         }
 
-        public void EquipAccessory(AccessoryItem item)
-        {
-            if (_character == null || item == null) return;
-            // AutoEquip 패턴: 빈 슬롯 탐색 후 장착
-            for (int i = 0; i < _character.Accessories.Length; i++)
-            {
-                if (_character.Accessories[i] == null)
-                {
-                    _character.Accessories[i] = item;
-                    item.OnEquip(_character);
-                    _character.CalcStat();
-                    OnAccessoryChanged?.Invoke();
-                    return;
-                }
-            }
-            // 빈 슬롯 없음 — 호출 전 슬롯 여유 확인 필요
-        }
-
         // AccessoryItem은 인벤토리에서 관리되므로 목적지 IInventory를 Presenter에서 전달받는다
         public void UnequipAccessory(int index, IInventory targetInventory)
         {
