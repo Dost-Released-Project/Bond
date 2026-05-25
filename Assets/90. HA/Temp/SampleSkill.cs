@@ -1,5 +1,6 @@
 
 using System;
+using PipeLine;
 using UnityEngine;
 
 [Serializable]
@@ -29,9 +30,9 @@ public class SampleSkill : SkillBase
         _skillData = skillData;
     }
     
-    public override void UseSkill()
+    public override void UseSkill(BattleContext context)
     {
-        
+        base.UseSkill(context);
     }
     
     public override string ToString()

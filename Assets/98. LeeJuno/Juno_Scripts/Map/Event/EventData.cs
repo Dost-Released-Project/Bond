@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Bond.WT.Journal;
 using UnityEngine;
 
 /// <summary>
@@ -11,11 +12,24 @@ using UnityEngine;
 public class EventData : BaseSO
 {
     [SerializeField] private List<EventChoice> _choices; // 플레이어가 선택할 수 있는 선택지 목록
+
+    /// <summary>
+    /// 인스펙터에서 직접 연결하는 JournalDataSO 참조.
+    /// null 이면 EventJournalProvider 에서 Fallback(EventChoice 필드 직접 사용) 처리된다.
+    /// </summary>
+    [SerializeField] private JournalDataSO _journalData;
+
     public List<EventChoice> Choices => _choices;
+
+    /// <summary>
+    /// 인스펙터에서 연결된 JournalDataSO. null 이면 Fallback 처리된다.
+    /// </summary>
+    public JournalDataSO JournalData => _journalData;
 
     /// <summary>
     /// 파서 등 외부에서 프로그래밍 방식으로 데이터를 초기화하는 메서드.
     /// _choices 는 private 이므로 EventData 내부에서 직접 대입한다.
+    /// _journalData 는 인스펙터 연결 전용이므로 SetData 에 포함하지 않는다.
     /// </summary>
     public void SetData(string id, string displayName, string description, List<EventChoice> choices)
     {

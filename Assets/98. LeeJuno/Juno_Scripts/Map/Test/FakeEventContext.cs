@@ -15,12 +15,20 @@ public class FakeEventContext : MonoBehaviour, IEventContext
     [SerializeField] private EventBattleConfig _testBattleConfig;
 
     private string _eventId = "TEST_EVENT_001";
+    private string _description = string.Empty;
     private List<EventChoice> _choices = new List<EventChoice>();
     private EventBattleConfig _battleConfig;
 
     public string EventId => _eventId;
+    public string Description => _description;
     public IReadOnlyList<EventChoice> Choices => _choices;
     public EventBattleConfig BattleConfig => _battleConfig;
+
+    /// <summary>
+    /// 인스펙터에서 연결된 _testEventData 를 반환한다.
+    /// Set() 호출 시 전달된 eventData 는 무시하고 인스펙터 연결 값을 우선한다.
+    /// </summary>
+    public EventData EventData => _testEventData;
 
     private void Awake()
     {
@@ -33,20 +41,24 @@ public class FakeEventContext : MonoBehaviour, IEventContext
         }
 
         _eventId      = _testEventData.Id;
+        _description  = _testEventData.Description;
         _choices      = new List<EventChoice>(_testEventData.Choices);
         _battleConfig = _testBattleConfig;
     }
 
-    public void Set(string eventId, List<EventChoice> choices, EventBattleConfig battleConfig)
+    public void Set(string eventId, string description, List<EventChoice> choices, EventBattleConfig battleConfig, EventData eventData)
     {
         _eventId      = eventId;
+        _description  = description;
         _choices      = new List<EventChoice>(choices);
         _battleConfig = battleConfig;
+        // eventData 는 무시 — 인스펙터 연결된 _testEventData 를 EventData 프로퍼티로 노출
     }
 
     public void Clear()
     {
-        _eventId = string.Empty;
+        _eventId      = string.Empty;
+        _description  = string.Empty;
         _choices.Clear();
         _battleConfig = null;
     }

@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Button name="ChoiceButton" class="event-choice-button">
+        <ui:Label name="ChoiceLabel" class="event-choice-label" />
+    </ui:Button>
+</ui:UXML>

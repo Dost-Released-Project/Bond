@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Skills.Effects;
 using UnityEngine;
 
 // <summary>
@@ -13,9 +15,13 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Bond/SkillSystem/SkillData", fileName = "SK_00000000")]
 public class SkillData : BaseSO
 {
-    [Header("타입")]
+    [Header("타입 및 효과")]
+    [Tooltip("스탯 계산에 쓰일 카테고리(OFFENSIVE 등)")]
     [SerializeField] private SkillType   _type;
     [SerializeField] private SkillTarget _target;
+    
+    [Tooltip("적용할 효과들 (1=Damage, 2=Heal, 3=Stun)")]
+    [SerializeField] private List<SkillEffectType> _effectTypes = new List<SkillEffectType>();
 
     [Header("수치")]
     [Tooltip("기본 효과 수치 (데미지 / 힐 / 버프량)")]
@@ -50,6 +56,7 @@ public class SkillData : BaseSO
     // SkillId / SkillName 별칭 제거 — 호출부를 Id / DisplayName 으로 통일.
     public SkillType   Type           => _type;
     public SkillTarget Target         => _target;
+    public IReadOnlyList<SkillEffectType> SkillEffectTypes => _effectTypes;
     public float       Value          => _value;
     public int         CoolTime       => _coolTime;
     public int         Duration       => _duration;
@@ -69,6 +76,13 @@ public class SkillData : BaseSO
 
         _type            = raw.Type;
         _target          = raw.Target;
+        
+        _effectTypes.Clear();
+        if (raw.SkillEffectTypes != null)
+        {
+            _effectTypes.AddRange(raw.SkillEffectTypes);
+        }
+
         _value           = raw.Value;
         _coolTime        = raw.CoolTime;
         _duration        = raw.Duration;
@@ -91,6 +105,7 @@ public struct SkillRawData
     public string     Description;
     public SkillType  Type;
     public SkillTarget Target;
+    public List<SkillEffectType> SkillEffectTypes;
     public float      Value;
     public int        CoolTime;
     public int        Duration;

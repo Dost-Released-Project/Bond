@@ -10,6 +10,9 @@ public interface IEventContext
     /// <summary>현재 배정된 이벤트 ID.</summary>
     string EventId { get; }
 
+    /// <summary>현재 이벤트의 설명 텍스트.</summary>
+    string Description { get; }
+
     /// <summary>현재 이벤트의 선택지 목록 (읽기 전용).</summary>
     IReadOnlyList<EventChoice> Choices { get; }
 
@@ -20,12 +23,21 @@ public interface IEventContext
     EventBattleConfig BattleConfig { get; }
 
     /// <summary>
+    /// 현재 이벤트의 EventData SO 참조.
+    /// JournalDataSO 직접 참조를 위해 추가되었다.
+    /// null 이면 EventJournalProvider 에서 Fallback 처리된다.
+    /// </summary>
+    EventData EventData { get; }
+
+    /// <summary>
     /// StageLoader 가 Event 스테이지 씬 로드 직전에 호출한다.
     /// </summary>
     /// <param name="eventId">배정된 이벤트 ID.</param>
+    /// <param name="description">이벤트 설명 텍스트.</param>
     /// <param name="choices">이벤트의 선택지 목록.</param>
     /// <param name="battleConfig">이벤트 전투 Config. Battle 선택지가 없으면 null.</param>
-    void Set(string eventId, List<EventChoice> choices, EventBattleConfig battleConfig);
+    /// <param name="eventData">현재 이벤트 EventData SO. JournalDataSO 직접 참조용.</param>
+    void Set(string eventId, string description, List<EventChoice> choices, EventBattleConfig battleConfig, EventData eventData);
 
     /// <summary>
     /// 이벤트 씬의 진입점(EventSceneController)에서 데이터를 읽은 뒤 호출한다.
