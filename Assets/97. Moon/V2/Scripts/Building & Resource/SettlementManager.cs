@@ -16,7 +16,7 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     private ITotalInventory _totalInv;
     private IExpeditionInventory _expeditionInv;
     
-    [Inject] private SmithyUIController _smithyUI; // UI 컨트롤러 주입
+    [Inject] private SmithyUIController _smithyUI; 
     [Inject] private CharacterSelector _characterSelector;
 
     [Inject]
@@ -28,7 +28,6 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     
     private void Awake()
     {
-        // "ConstructionSlot" 태그가 붙은 모든 오브젝트를 찾아 이름순으로 정렬하여 배열에 할당
         constructionSlots = GameObject.FindGameObjectsWithTag("ConstructionSlot")
             .OrderBy(go => go.name)
             .Select(go => go.transform)
@@ -37,77 +36,137 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         Debug.Log($"<color=cyan>[시스템]</color> {constructionSlots.Length}개의 건설 슬롯이 자동으로 등록되었습니다.");
     }
     
+    private void Start()
+    {
+        // 💥 [소스 매핑] OnSelectionChanged 이벤트를 구독합니다.
+        // 이벤트가 던져주는 BaseCharacter 데이터는 무시하고, 요청하신 '매개변수 없는 감지 메서드'를 실행하도록 엮습니다.
+        if (_characterSelector != null)
+        {
+            _characterSelector.OnSelectionChanged += OnCharacterSelectionChanged;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        // 메모리 누수 방지 구독 해제
+        if (_characterSelector != null)
+        {
+            _characterSelector.OnSelectionChanged -= OnCharacterSelectionChanged;
+        }
+    }
+
+    // 💥 [규칙 완벽 준수] 매개변수를 갖지 않는 순수 변경 감지 및 대장간 UI 리프레시 메서드
+    private void OnCharacterSelectionChanged(BaseCharacter _)
+    {
+        // 1. 대장간 UI가 화면에 켜져 있는 상태(IsOpen)인지 레이어 검사
+        if (_smithyUI != null && _smithyUI.IsOpen)
+        {
+            // 2. 현재 셀렉터 시스템에 안착한 최신 선택 캐릭터 호출
+            BaseCharacter activeHero = _characterSelector.Selected;
+            
+            if (activeHero != null)
+            {
+                Debug.Log($"<color=lime>[대장간 실시간 감지]</color> 선택 캐릭터가 <b>{activeHero.Name}</b>(으)로 변경되어 대장간 UI를 리프레시합니다.");
+                
+                // 3. 대장간 UI 세부 정보 전환 갱신
+                _smithyUI.ChangeCharacter(activeHero);
+            }
+        }
+    }
+    
     private void Update()
     {
         if (Keyboard.current.tKey.wasPressedThisFrame) _resourceManager.Admin_AddAllResources(1000);
+        if (Keyboard.current.pKey.wasPressedThisFrame) OnExpeditionReturned(); // 치트 테스트
     }
-
+    
     public void OnBuildingClicked(BuildingObject building)
     {
+        // 💥 사용 횟수 검증 부품인 Counter에게 권한 위임하여 사전 체크
+        if (building.Counter != null && building.Counter.IsUseLimitReached())
+        {
+            Debug.LogWarning($"[이용 불가] {building.Data.DisplayName}의 이번 턴 이용 한도를 초과했습니다!");
+            return;
+        }
+
         var levelData = building.Data.GetLevelData(building.CurrentLevel);
+        bool isUsed = false; // 💥 성공적으로 건물을 소모했는지 추적할 플래그
         
-        // 분기 처리: UI 오픈 vs 실제 기능 실행
         switch (building.Data.buildingType)
         {
             case BuildingType.Storage: _inventoryView.ToggleWindow(true); break;
-            case BuildingType.Supply: _supplyView.Open(); break;
+            case BuildingType.Supply: 
+                _supplyView.Open(); 
+                if (building.Counter != null) { building.Counter.UseBuilding(); isUsed = true; }
+                break;
             case BuildingType.Tavern: 
                 if (_characterSelector.Selected != null)
-                    _buildingService.ExecuteTavern(_characterSelector.Selected, levelData); break;
+                {
+                    _buildingService.ExecuteTavern(_characterSelector.Selected, levelData);
+                    if (building.Counter != null) { building.Counter.UseBuilding(); isUsed = true; }
+                }
+                break;
             case BuildingType.Inn: 
                 if (_characterSelector.Selected != null)
-                    _buildingService.ExecuteInn(_characterSelector.Selected, levelData); break;
-            case BuildingType.Smithy: // 이제 직접 강화하지 않고 UI를 엽니다.
-                // 선택된 캐릭터와 현재 대장간 건물 레벨을 전달합니다.
+                {
+                    _buildingService.ExecuteInn(_characterSelector.Selected, levelData);
+                    if (building.Counter != null) { building.Counter.UseBuilding(); isUsed = true; }
+                }
+                break;
+            case BuildingType.Smithy: 
                 if (_characterSelector.Selected != null)
-                    _smithyUI.Open(_characterSelector.Selected, building.CurrentLevel);; break;
-            case BuildingType.Guild: CollectGuildData(building); break;
+                    _smithyUI.Open(_characterSelector.Selected, building.CurrentLevel);
+                break;
+            case BuildingType.Guild: 
+                CollectGuildData(building); 
+                if (building.Counter != null) { building.Counter.UseBuilding(); isUsed = true; }
+                break;
+        }
+        
+        // 💥 기능 사용에 성공했다면 그 순간 딱 1번 툴팁 숫자를 새로고침 지시!
+        if (isUsed && building.Visuals != null)
+        {
+            building.Visuals.ForceRefreshTooltip();
+        }
+    }
+
+    public void OnExpeditionReturned()
+    {
+        Debug.Log("<color=green>[원정대 복귀]</color> 모든 영지 건물의 이용 횟수가 리셋됩니다.");
+        foreach (var slot in constructionSlots)
+        {
+            var bObj = slot.GetComponentInChildren<BuildingObject>();
+            // 하위 Counter 부품만 콕 집어서 턴 리셋 진행
+            if (bObj != null && bObj.Counter != null)
+            {
+                bObj.Counter.ResetTurnUses();
+            }
         }
     }
 
     public void BuildInSlot(int slotIndex, BuildingData data)
     {
-        Debug.Log($"<color=white>[시스템]</color> 슬롯 {slotIndex}에 {data.DisplayName} 건설 시도 중...");
-
-        if (slotIndex < 0 || slotIndex >= constructionSlots.Length)
-        {
-            Debug.LogError($"[건설 실패] 유효하지 않은 슬롯 인덱스: {slotIndex}");
-            return;
-        }
-
+        if (slotIndex < 0 || slotIndex >= constructionSlots.Length) return;
         Transform slotTransform = constructionSlots[slotIndex];
+        if (slotTransform.childCount > 0) return;
 
-        // 이미 건물이 있는지 체크
-        if (slotTransform.childCount > 0)
-        {
-            Debug.LogWarning($"[건설 실패] 슬롯 {slotIndex}에 이미 건물이 존재합니다.");
-            return;
-        }
-
-        // 서비스에서 자원 소모 및 성공 여부 확인
         if (_buildingService.TryBuild(data))
         {
-            Debug.Log($"<color=green>[건설 성공]</color> {data.DisplayName} 건설을 시작합니다.");
-
-            // [복구] 기존 슬롯 시각적 요소 및 기능 제거
-            // 슬롯 컴포넌트나 메쉬를 꺼서 더 이상 건설 창이 뜨지 않게 합니다.
-            if (slotTransform.TryGetComponent<MeshRenderer>(out var mr)) mr.enabled = false;
+            if (slotTransform.TryGetComponent<SpriteRenderer>(out var mr)) mr.enabled = false;
             if (slotTransform.TryGetComponent<BoxCollider>(out var bc)) bc.enabled = false;
             if (slotTransform.TryGetComponent<ConstructionSlot>(out var slotScript)) slotScript.enabled = false;
 
-            // 실제 건물 비주얼 생성
-            CreateBuildingVisual(slotTransform, data);
-
-            // 최초 건설 시 1레벨 효과 적용
-            ApplyBuildingEffect(data, 1);
+            // 💥 팩토리를 통해 안전하게 부품화된 건물 생성
+            BuildingObject bObj = BuildingFactory.Create(slotTransform, data, this);
             
-            // 데이터 세이브
+            // 생성 완료 시점에 시각 부품에게 두근 연출 수동 명령
+            if (bObj != null && bObj.Visuals != null)
+            {
+                bObj.Visuals.TriggerConstructionPopping(1);
+            }
+
+            ApplyBuildingEffect(data, 1);
             SaveSettlement();
-            Debug.Log($"<color=cyan>[시스템]</color> {data.DisplayName} 배치가 완료되었습니다.");
-        }
-        else
-        {
-            Debug.LogWarning($"[자원 부족] {data.DisplayName}을 건설하기 위한 자원이 모자랍니다.");
         }
     }
 
@@ -120,9 +179,13 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         {
             building.Upgrade();
             ApplyBuildingEffect(building.Data, nextLevel);
-            
-            //데이터 세이브
             SaveSettlement();
+            
+            // 💥 업그레이드가 성공한 바로 그 즉시 딱 1번 툴팁을 새 레벨 정보로 리프레시!
+            if (building.Visuals != null)
+            {
+                building.Visuals.ForceRefreshTooltip();
+            }
         }
     }
 
@@ -144,62 +207,30 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     
     private void CollectGuildData(BuildingObject guild)
     {
-        // 길드 레벨에 따른 effectValue만큼 개척 데이터 즉시 수급
         int reward = guild.Data.GetLevelData(guild.CurrentLevel).effectValue;
         _resourceManager.AddFrontierData(reward);
         _resourceManager.AddMaterials((int)(reward*0.05f), (int)(reward*0.05f));
-        Debug.Log($"길드에서 {reward}의 개척 데이터를 수급했습니다!");
+        Debug.Log($"길드에서 {reward}의 개척 데이터와 {reward*0.05f}의 재료를 수급했습니다!");
     }
     
-    // 스프라이트로 건물 생성
-    private void CreateBuildingVisual(Transform parent, BuildingData data)
-    {
-        // 1. 빈 오브젝트 생성
-        GameObject buildingGo = new GameObject($"Building_{data.DisplayName}");
-        buildingGo.transform.SetParent(parent);
-        buildingGo.transform.localPosition = Vector3.zero; // 바닥에 붙임
-
-        // 2. 스프라이트 렌더러 추가 및 설정
-        var sr = buildingGo.AddComponent<SpriteRenderer>();
-        sr.sprite = data.buildingSprite; // BuildingData에 추가하신 스프라이트
-        sr.drawMode = SpriteDrawMode.Simple;
-    
-        // 건물이 땅 뚫고 들어가지 않게 위치 조정 (스프라이트 크기에 따라 pivot 조정 필요)
-        buildingGo.transform.localPosition = new Vector3(0, 0.1f, 0);
-        buildingGo.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-        // 쿼터뷰/탑다운일 경우 카메라를 바라보게 회전 (필요시)
-        buildingGo.transform.rotation = Quaternion.Euler(0, 0, 0); 
-
-        // 3. 클릭 감지를 위한 콜라이더 추가 (레이캐스트용)
-        var col = buildingGo.AddComponent<BoxCollider>();
-        // 스프라이트 크기에 맞춰 콜라이더 사이즈 자동 조정
-        col.size = new Vector3(sr.bounds.size.x, sr.bounds.size.y, 0.1f);
-
-        // 4. 기능 컴포넌트 부착
-        var bObj = buildingGo.AddComponent<BuildingObject>();
-        bObj.Initialize(data, this);
-    }
-    
-    // 세이브 데이터 불러오기 전용 메소드
     public void LoadBuilding(int slotIndex, BuildingData data, int level)
     {
         if (slotIndex < 0 || slotIndex >= constructionSlots.Length) return;
         Transform slotTransform = constructionSlots[slotIndex];
 
-        // 1. 슬롯 비활성화 (겹침 방지)
-        if (slotTransform.TryGetComponent<MeshRenderer>(out var mr)) mr.enabled = false;
+        if (slotTransform.TryGetComponent<SpriteRenderer>(out var mr)) mr.enabled = false;
         if (slotTransform.TryGetComponent<BoxCollider>(out var bc)) bc.enabled = false;
         if (slotTransform.TryGetComponent<ConstructionSlot>(out var cs)) cs.enabled = false;
 
-        // 2. 비주얼 생성 및 초기화
-        CreateBuildingVisual(slotTransform, data);
-        var bObj = slotTransform.GetComponentInChildren<BuildingObject>();
+        // 💥 팩토리로 조용히 조립 생산
+        BuildingObject bObj = BuildingFactory.Create(slotTransform, data, this);
     
-        // 3. 레벨 강제 설정 (Upgrade 메서드 반복 호출 혹은 직접 대입)
-        for (int i = 1; i < level; i++) bObj.Upgrade(); 
+        if (bObj != null)
+        {
+            bObj.LoadLevelForce(level);
+        }
     }
     
-    // 데이터 세이브
     private void SaveSettlement()
     {
         var settSave = new SettlementSaveData();
@@ -214,11 +245,5 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
                 });
         }
         SaveLoadSystem.Save(settSave);
-    }
-
-    // 임시
-    public void SelectCharacter(BaseCharacter testHero)
-    {
-        _characterSelector.Select(testHero);
     }
 }

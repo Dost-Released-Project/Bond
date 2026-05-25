@@ -18,9 +18,13 @@ MonoBehaviour:
   - rid: 2186371856142172229
   - rid: 2186371856142172230
   - rid: 8081819915636179173
+  - rid: 945659713847558214
   references:
     version: 2
     RefIds:
+    - rid: 945659713847558214
+      type: {class: ApplyStep, ns: PipeLine, asm: Assembly-CSharp}
+      data: 
     - rid: 2186371856142172227
       type: {class: EntryStep, ns: PipeLine, asm: Assembly-CSharp}
       data: 

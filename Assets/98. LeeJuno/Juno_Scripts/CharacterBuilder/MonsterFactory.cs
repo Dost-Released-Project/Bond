@@ -11,6 +11,12 @@ using UnityEngine.AddressableAssets;
 public class MonsterFactory
 {
     private MonsterDataBaseSO m_monsterDb;
+    private readonly ISkillManager m_skillManager;
+
+    public MonsterFactory(ISkillManager skillManager)
+    {
+        m_skillManager = skillManager;
+    }
 
     /// <summary>
     /// IStageMonsterContext.MonsterIds를 받아 BaseCharacter 배열을 생성한다.
@@ -69,6 +75,35 @@ public class MonsterFactory
         if (so.RoleType == RoleType.None == false)
         {
             monster.SetRole(so.RoleType);
+        }
+
+        // 스킬 장착 로직
+        if (so.SkillIds != null && so.SkillIds.Count > 0)
+        {
+            int maxSkills = Mathf.Min(so.SkillIds.Count, 4);
+            for (int i = 0; i < maxSkills; i++)
+            {
+                if (string.IsNullOrEmpty(so.SkillIds[i]) == false)
+                {
+                    SkillData skillData = m_skillManager.GetSkill(so.SkillIds[i]);
+                    if (skillData != null)
+                    {
+                        MonsterSkill mSkill = new MonsterSkill();
+                        // 1. SkillBase의 기존 Init 호출을 통해 _skillData 및 Cooldown 셋팅
+                        mSkill.Init(skillData.Id, m_skillManager);
+                        // 2. 몬스터 스탯을 기반으로 데미지 보정 적용
+                        mSkill.ApplyStat(monster.Stat);
+                        
+                        monster.Skills[i] = mSkill;
+                        
+                        Debug.Log($"[MonsterFactory] {monster.Name}에 '{skillData.DisplayName}'(ID:{skillData.Id}) 장착. 사용가능슬롯(Mask): {skillData.UseableSlots}");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[MonsterFactory] SkillData를 찾을 수 없습니다. ID={so.SkillIds[i]}");
+                    }
+                }
+            }
         }
 
         // ── 테스트 로그 ─────────────────────────────────────────────────

@@ -21,32 +21,32 @@ MonoBehaviour:
   expeditionSlotMax: 1
   specialEffects:
   - id: 13000000
-    name: "\uD798 \uC99D\uAC00(\uC218\uCE58)"
+    name: "\uC5C4\uCCAD\uB09C \uD798"
     type: 0
     mode: 0
     value: 3
   - id: 13010000
-    name: "\uBBFC\uCCA9 \uC99D\uAC00(\uC218\uCE58)"
+    name: "\uC7AC\uBE60\uB978 \uBC1C\uB180\uB9BC"
     type: 1
     mode: 0
     value: 3
   - id: 13020000
-    name: "\uC9C0\uB2A5 \uC99D\uAC00(\uC218\uCE58)"
+    name: "\uBA85\uC0C1"
     type: 2
     mode: 0
     value: 3
   - id: 13150000
-    name: "\uD798 \uC99D\uAC00(\uBE44\uC728)"
+    name: "\uAC15\uD55C \uC2E0\uCCB4"
     type: 0
     mode: 1
     value: 0.1
   - id: 13160000
-    name: "\uBBFC\uCCA9 \uC99D\uAC00(\uBE44\uC728)"
+    name: "\uAC00\uBCBC\uC6B4 \uBAB8"
     type: 1
     mode: 1
     value: 0.1
   - id: 13170000
-    name: "\uC9C0\uB2A5 \uC99D\uAC00(\uBE44\uC728)"
+    name: "\uCD1D\uBA85\uD55C \uB450\uB1CC"
     type: 2
     mode: 1
     value: 0.1

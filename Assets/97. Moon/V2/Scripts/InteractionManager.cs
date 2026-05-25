@@ -8,35 +8,23 @@ public class InteractionManager : MonoBehaviour
 {
     private SettlementManager _settlementManager;
     private ConstructionUI _constructionUI;
-    private AccessoryBagView _accessoryBagView;
-    private EquipmentSlotUI _equipSlots; // 여러 슬롯을 리스트로 받음
 
     private Camera _mainCam;
 
     [Inject]
     public void Construct(
         SettlementManager sm, 
-        ConstructionUI ui,
-        AccessoryBagView av,
-        EquipmentSlotUI slots) // VContainer가 모든 인스턴스를 찾아 넣어줌
+        ConstructionUI ui
+        ) // VContainer가 모든 인스턴스를 찾아 넣어줌
     {
         _settlementManager = sm;
         _constructionUI = ui;
-        _accessoryBagView = av;
-        _equipSlots = slots;
     }
 
     private void Awake() => _mainCam = Camera.main;
 
     void Update()
     {
-        var kb = Keyboard.current;
-        if (kb == null) return;
-
-        // UI 3종 토글 (각 뷰의 ToggleWindow 호출)
-        if (kb.bKey.wasPressedThisFrame) _accessoryBagView.ToggleWindow();
-        if (kb.uKey.wasPressedThisFrame) _equipSlots.ToggleWindow();
-
         // 마우스 상호작용
         if (Mouse.current.leftButton.wasPressedThisFrame && !EventSystem.current.IsPointerOverGameObject())
             ExecuteRaycast(false);

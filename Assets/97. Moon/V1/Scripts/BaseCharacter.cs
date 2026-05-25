@@ -59,6 +59,7 @@ public partial class BaseCharacter : ITurnUseUnit
     
     // BattleManager가 구독할 이벤트. BattleContext는 공격자, 방어자, 스킬 정보 등을 담는 클래스. BattleManager는 이 이벤트를 구독하여 BattleContext를 받아 처리.
     [JsonIgnore] public Func<BattleContext, UniTask> onBattleAction;
+    [JsonIgnore] public Action<BaseCharacter> OnDead; // 사망 시 발송될 이벤트
     private IFormationManager m_formationManager;
 
     public void SetFormationManager(IFormationManager formationManager)
@@ -89,11 +90,30 @@ public partial class BaseCharacter : ITurnUseUnit
     public float HpRatio => Stat.current_Hp / Stat.max_Hp;
     
     public void SetHpFull() => Stat.current_Hp = Stat.max_Hp;
-    public void ReduceHP(int amount) => Stat.current_Hp = Mathf.Max(Stat.current_Hp - amount, 0); // 체력 감소
+
+    public void ReduceHP(int amount)
+    {
+        if (IsDead) return;
+
+        Stat.current_Hp = Mathf.Max(Stat.current_Hp - amount, 0);
+        Debug.Log($"<color=orange>[HP 차감] {Name}이(가) {amount}의 피해를 입었습니다. (잔여 HP: {Stat.current_Hp}/{Stat.max_Hp})</color>");
+
+        if (Stat.current_Hp <= 0)
+        {
+            IsDead = true;
+            OnDead?.Invoke(this);
+            Debug.Log($"<color=red>[사망] {Name}이(가) 쓰러졌습니다.</color>");
+        }
+    }
+
     public void ReduceInsanity(int amount) => Insanity = Mathf.Min(Insanity + amount, 100); // 스트레스 증가
     
     // 회복 관련 메서드 추가
-    public void RecoverHp(int amount) => Stat.current_Hp = Mathf.Min(Stat.current_Hp + amount, Stat.max_Hp);
+    public void RecoverHp(int amount)
+    {
+        Stat.current_Hp = Mathf.Min(Stat.current_Hp + amount, Stat.max_Hp);
+        Debug.Log($"<color=lime>[HP 회복] {Name}이(가) {amount}의 체력을 회복했습니다. (현재 HP: {Stat.current_Hp}/{Stat.max_Hp})</color>");
+    }
     public void RecoverInsanity(int amount) => Insanity = Mathf.Max(Insanity - amount, 0);
 
     #region Formaiton
@@ -107,6 +127,8 @@ public partial class BaseCharacter : ITurnUseUnit
         for (int i = 0; i < Skills.Length; i++)
         {
             if (Skills[i] == null) continue;
+            
+            // 시전자 진영과 관계없이 상대적 위치(Rank)를 기반으로 직접 비교
             bool rankMatch = (Skills[i].Data.UseableSlots & (int)CurrentSlot.rank) != 0;
 
             bool targetMatch = m_formationManager.HasAnyValidTarget(this, Skills[i].Data);
@@ -157,7 +179,6 @@ public partial class BaseCharacter : ITurnUseUnit
             
             for (int i = 0; i < Skills.Length; i++)
             {
-                Debug.Assert(Skills[i] != null, $"{Name}'s Skills[{i}] is null");
                 if (Skills[i] != null && usableFlags[i])
                 {
                     usableSkills.Add(Skills[i]);

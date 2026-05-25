@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using VContainer;
 
@@ -6,7 +7,7 @@ using VContainer;
 /// ISkillManager 구현체.
 /// SkillData Dictionary 관리 + 캐릭터별 쿨타임 추적을 담당한다.
 /// 비트마스크 해석(슬롯 매핑 등)은 담당하지 않는다.
-/// VContainer의 SkillScope에서 Singleton으로 등록된다.
+/// VContainer의 RootScope에서 Singleton으로 등록된다.
 /// </summary>
 public class SkillManager : ISkillManager
 {
@@ -25,9 +26,10 @@ public class SkillManager : ISkillManager
     // TickCoolTimes 내부에서 키를 임시 보관하는 재사용 버퍼
     private readonly List<string> _keyBuffer = new List<string>();
 
-    // ── 생성자: VContainer가 SkillData[] 주입 ──────
-    public SkillManager(SkillData[] allSkills)
+    // ── 생성자: VContainer가 SkillDataBaseSO 주입 ──────
+    public SkillManager(SkillDataBaseSO skillDataBase)
     {
+        var allSkills = skillDataBase.Query<SkillData>(x => true).ToArray();
         _skillDict       = new Dictionary<string, SkillData>(allSkills.Length);
         _skillsByType    = new Dictionary<SkillType, List<SkillData>>();
         _allSkillsList   = new List<SkillData>(allSkills.Length);

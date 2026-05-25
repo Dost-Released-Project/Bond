@@ -16,7 +16,6 @@ using VContainer.Unity;
 ///   - IMapGenerator   → MapGenerator  (Singleton)
 ///   - IMapRepository  → MapRepository (Singleton)
 ///   - IMapNavigator   → MapNavigator  (Singleton)
-///   - IStageLoader    → StageLoader   (Singleton)
 ///   - MapUIController : MonoBehaviour 컴포넌트 등록
 ///   - MapInitializer  : EntryPoint (Config 로드 + 맵 생성)
 ///
@@ -33,12 +32,14 @@ public class MapLifetimeScope : LifetimeScope
         builder.Register<IMapGenerator, MapGenerator>(Lifetime.Singleton);
         builder.Register<IMapRepository, MapRepository>(Lifetime.Singleton);
         builder.Register<IMapNavigator, MapNavigator>(Lifetime.Singleton);
-        builder.Register<IStageLoader, StageLoader>(Lifetime.Singleton);
         builder.Register<IEventEffectApplier, EventEffectApplier>(Lifetime.Singleton);
-        // IEventContext → EventContextService (Singleton)
-        // StageLoader 가 씬 로드 직전에 기록하고, EventSceneController 가 씬 진입 시 읽는 단방향 채널.
-        // MapLifetimeScope Singleton: 맵 씬 생명주기 동안 유지. EventSceneLifetimeScope 가 부모를 통해 상속 접근.
-        builder.Register<IEventContext, EventContextService>(Lifetime.Singleton);
+
+        // IEventEffectHandler 구현체 등록 — AsImplementedInterfaces() 로 IReadOnlyList<IEventEffectHandler> 자동 주입
+        // EffectType 은 배타적이므로 각 Handler 는 Singleton 으로 등록한다
+        builder.Register<HpChangeEventEffectHandler>(Lifetime.Singleton).AsImplementedInterfaces();
+        builder.Register<ItemRewardEventEffectHandler>(Lifetime.Singleton).AsImplementedInterfaces();
+        builder.Register<StatusEffectEventEffectHandler>(Lifetime.Singleton).AsImplementedInterfaces();
+        builder.Register<BattleEventEffectHandler>(Lifetime.Singleton).AsImplementedInterfaces();
 
         // 씬에 배치된 MonoBehaviour 를 DI 대상으로 등록
         if (_mapUIController != null)
