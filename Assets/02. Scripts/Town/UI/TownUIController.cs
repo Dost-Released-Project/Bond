@@ -63,7 +63,7 @@ namespace Bond.UI.Town
                 else
                 {
                     _characterDetail.Hide();
-                    _accessoryBagView.Close();
+                    _accessoryBagView.CloseWindow();
                 }
             };
         }
