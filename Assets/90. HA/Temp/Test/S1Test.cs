@@ -29,9 +29,10 @@ namespace _90._HA.Temp.Test
         
         public List<CharacterPreset> CharacterPresets;
 
-        public void Start()
+        public async void Start()
         {
-            professionDb = Addressables.LoadAssetAsync<DataBaseSO>("ClassDataBase").WaitForCompletion();
+            await DBSORegistry.PreloadAsync("ClassDataBase", "SkillDataBase", "DefaultEquipDataBase");
+            professionDb = DBSORegistry.GetDb<DataBaseSO>("ClassDataBase");
             
             payload.Clear();
             FillRosterFromPreset();
