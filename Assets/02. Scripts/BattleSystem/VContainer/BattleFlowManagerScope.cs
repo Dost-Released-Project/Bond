@@ -40,7 +40,7 @@ namespace BattleSystem.VContainer
             // Journal UI 및 Binder 지역 스코프 등록
             builder.RegisterJournalUI(_journalUIPrefab);
             
-            // 캐릭터 전투 UI
+            // 캐릭터 UI
             builder.Register<CharacterDetailController>(Lifetime.Scoped);
             builder.RegisterComponentInHierarchy<CharacterDetailPresenter>();
             builder.RegisterComponentInHierarchy<CharacterCombatPanelPresenter>();
