@@ -52,7 +52,7 @@ namespace Reactions
         }
     }
 
-    [CreateAssetMenu(fileName = "ReactionPreset", menuName = "Bond/Reactions/Character Preset")]
+    [CreateAssetMenu(fileName = "ReactionPreset", menuName = "Bond/Reactions/Reaction Preset")]
     public class ReactionPreset : ScriptableObject
     {
         public ITrigger Trigger;

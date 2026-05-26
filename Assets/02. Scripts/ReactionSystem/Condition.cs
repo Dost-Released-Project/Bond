@@ -83,6 +83,13 @@ namespace Reactions
                 _ => false
             };
         }
+        
+        public SubjectCondition() { }
+
+        public SubjectCondition(E_TargetFilter filter)
+        {
+            Filter = filter;
+        }
 
         public override ReactionTriggerCondition Copy()
         {
@@ -106,10 +113,17 @@ namespace Reactions
     [Serializable][AddTypeMenu("SkillTypeIs", -100)]
     public class SkillTypeCondition: ReactionTriggerCondition
     {
-        public SkillType Type = SkillType.None;
+        public List<SkillType> Type = new List<SkillType>();
         public override bool IsMet(ReactionTriggerConditionArgs args)
         {
-            return args.BattleContext.runtimeSkill.Data.Type == Type;
+            return Type.Contains(args.BattleContext.runtimeSkill.Data.Type);
+        }
+        
+        public SkillTypeCondition() { }
+
+        public SkillTypeCondition(params SkillType[] type)
+        {
+            Type.AddRange(type);
         }
 
         public override ReactionTriggerCondition Copy()
@@ -197,5 +211,52 @@ namespace Reactions
             return new HitCondition();
         }
         public override string Description => $"스킬에 회피가 발생하지 않았을 때";
+    }
+
+    [Serializable]
+    public class DamageCondition : ReactionTriggerCondition
+    {
+        public abstract class ThresholdValue
+        {
+            public abstract float Resolve(ReactionTriggerConditionArgs args);
+            public abstract string Description { get; }
+        }
+
+        public class AbsoluteThreshold : ThresholdValue
+        {
+            public float Value;
+            public override float Resolve(ReactionTriggerConditionArgs args) => Value;
+            public override string Description => $"피해량이 {Value} 이상일 때";
+        }
+
+        public class PercentOfMaxHpThreshold : ThresholdValue
+        {
+            public float Ratio; // 0~1
+            public override float Resolve(ReactionTriggerConditionArgs args)
+                => args.Subject.Stat.max_Hp * Ratio;
+            public override string Description => $"피해량이 대상 최대 체력의 {Ratio * 100}% 이상일 때";
+        }
+
+        public class PercentOfCurrentHpThreshold : ThresholdValue
+        {
+            public float Ratio; // 0~1
+            public override float Resolve(ReactionTriggerConditionArgs args)
+                => args.Subject.Stat.current_Hp * Ratio;
+            public override string Description => $"피해량이 대상 현재 체력의 {Ratio * 100}% 이상일 때";
+        }
+        
+        [SerializeReference, SubclassSelector]
+        public ThresholdValue Threshold;
+        public override bool IsMet(ReactionTriggerConditionArgs args)
+        {
+            return args.BattleContext.value >= Threshold.Resolve(args);
+        }
+
+        public override ReactionTriggerCondition Copy()
+        {
+            return new DamageCondition();
+        }
+
+        public override string Description => Threshold.Description;
     }
 }
