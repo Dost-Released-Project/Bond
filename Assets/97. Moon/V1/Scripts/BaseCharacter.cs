@@ -158,13 +158,24 @@ public partial class BaseCharacter : ITurnUseUnit
     public void ConfirmSkillSelection(SkillBase skill)
     {
         _selectedSkill = skill;
-        _tcs?.TrySetResult(true);
+
+        // 취소(null) 시 프리젠터에게 알려 타겟팅 모드 해제 유도
+        if (skill == null)
+        {
+            onTargetSelectionStarted?.Invoke(this, null);
+        }
+
+        // 스킬 선택 대기 중이면 해제
+        if (_tcs != null) _tcs.TrySetResult(true);
+        
+        // 타겟 선택 대기 중이면 '실패'로 해제하여 루프를 처음으로 되돌림
+        if (_targetTcs != null) _targetTcs.TrySetResult(false);
     }
 
     public void ConfirmTargetSelection(CharacterSlot slot)
     {
         _selectedTarget = slot?.Occupant;
-        _targetTcs?.TrySetResult(true);
+        if (_targetTcs != null) _targetTcs.TrySetResult(true);
     }
 
     public async UniTask TakeTurnAsync()
@@ -177,18 +188,40 @@ public partial class BaseCharacter : ITurnUseUnit
             if (isPlayable)
             {
                 _selectedSkill = null;
-                _tcs = AutoResetUniTaskCompletionSource<bool>.Create();
-                onPlayerTurnStarted?.Invoke(this);
-                await _tcs.Task;
-                skill = _selectedSkill;
+                _selectedTarget = null;
 
-                if (skill != null)
+                while (true)
                 {
+                    // 1. 스킬 선택 대기 (이미 스킬이 선택되어 있지 않은 경우에만)
+                    if (_selectedSkill == null)
+                    {
+                        _tcs = AutoResetUniTaskCompletionSource<bool>.Create();
+                        onPlayerTurnStarted?.Invoke(this);
+                        await _tcs.Task;
+                        _tcs = null;
+                    }
+
+                    skill = _selectedSkill;
+                    
+                    // [취소 대응] 스킬이 null이면(취소됨) 다시 루프 처음(스킬 대기)으로 돌아감
+                    if (skill == null) continue;
+
+                    // 2. 타겟 선택 대기
                     _selectedTarget = null;
                     _targetTcs = AutoResetUniTaskCompletionSource<bool>.Create();
-                    // UI에서 타겟 선택 모드로 전환 (단일/광역 무관하게 슬롯 클릭 대기)
                     onTargetSelectionStarted?.Invoke(this, skill);
-                    await _targetTcs.Task;
+                    
+                    // _targetTcs.Task는 ConfirmTargetSelection 시 true, ConfirmSkillSelection 시 false를 반환
+                    bool targetConfirmed = await _targetTcs.Task;
+                    _targetTcs = null;
+
+                    // 타겟이 정상적으로 선택되었다면 루프 탈출
+                    if (targetConfirmed && _selectedTarget != null)
+                    {
+                        break;
+                    }
+                    
+                    // targetConfirmed가 false이거나 타겟이 없다면 (새 스킬 클릭 또는 취소), 다시 루프 처음으로 이동
                 }
             }
             else

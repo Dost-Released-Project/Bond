@@ -16,6 +16,7 @@ namespace BattleSystem
         private IFormationManager m_FormationManager;
 
         private BaseCharacter m_currentActor;
+        private BaseCharacter m_TargetingCaster; // 현재 타겟팅을 주도하는 캐릭터
         private SkillBase m_currentSkill;
         private List<CharacterSlot> m_validSlots = new List<CharacterSlot>();
         private bool m_isTargetingMode;
@@ -95,13 +96,15 @@ namespace BattleSystem
 
         private void HandleSlotClicked(CharacterSlot clickedSlot)
         {
-            if (m_isTargetingMode)
+            if (m_isTargetingMode && m_TargetingCaster != null)
             {
-                // 타겟팅 모드: 유효한 슬롯인지 확인 후 타겟 확정 (비동기 Hang 해제)
+                // [방어막] 타겟팅 모드: 유효한 슬롯인 경우에만 확정. 
+                // 무효 슬롯 클릭 시 Deselect()를 타지 않도록 하여 데드락 방지.
                 if (m_validSlots.Contains(clickedSlot))
                 {
+                    var caster = m_TargetingCaster;
                     ExitTargetingMode();
-                    m_currentActor.ConfirmTargetSelection(clickedSlot);
+                    caster.ConfirmTargetSelection(clickedSlot);
                 }
                 return;
             }
@@ -140,6 +143,13 @@ namespace BattleSystem
 
         private void HandleTargetSelectionStarted(BaseCharacter actor, SkillBase skill)
         {
+            if (skill == null)
+            {
+                ExitTargetingMode();
+                return;
+            }
+
+            m_TargetingCaster = actor;
             m_currentSkill = skill;
             m_isTargetingMode = true;
 
@@ -159,6 +169,7 @@ namespace BattleSystem
         private void ExitTargetingMode()
         {
             m_isTargetingMode = false;
+            m_TargetingCaster = null;
             ResetAllHighlights();
             // 마지막 배우 강조 다시 켬
             HandleSelectionChanged(m_currentActor);
