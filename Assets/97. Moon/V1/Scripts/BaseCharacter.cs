@@ -60,6 +60,21 @@ public partial class BaseCharacter : ITurnUseUnit
     // BattleManager가 구독할 이벤트. BattleContext는 공격자, 방어자, 스킬 정보 등을 담는 클래스. BattleManager는 이 이벤트를 구독하여 BattleContext를 받아 처리.
     [JsonIgnore] public Func<BattleContext, UniTask> onBattleAction;
     [JsonIgnore] public Action<BaseCharacter> OnDead; // 사망 시 발송될 이벤트
+
+    // UI 갱신용 상태 변경 이벤트. 데이터 변경 메서드에서 발사된다.
+    public event Action<BaseCharacter> OnHpChanged;
+    public event Action<BaseCharacter> OnInsanityChanged;
+    public event Action<BaseCharacter> OnStatRecalculated;
+    public event Action<BaseCharacter> OnRoleChanged;
+    public event Action<BaseCharacter> OnAccessoriesChanged;
+
+    public void SetAccessory(int index, AccessoryItem item)
+    {
+        if (index < 0 || index >= Accessories.Length) return;
+        Accessories[index] = item;
+        OnAccessoriesChanged?.Invoke(this);
+    }
+
     private IFormationManager m_formationManager;
 
     public void SetFormationManager(IFormationManager formationManager)
@@ -79,17 +94,23 @@ public partial class BaseCharacter : ITurnUseUnit
             RoleType.Supporter => new AutoBattle_Sup(Name),
             _ => new AutoBattle_Atk(Name)
         };
+        OnRoleChanged?.Invoke(this);
     }
 
     public void CalcStat()
     {
         // Profession에게 "데이터와 모디파이어를 전달한 뒤 스탯 계산 요청
         Profession.CalculateStat(this, StatController);
+        OnStatRecalculated?.Invoke(this);
     }
 
     public float HpRatio => Stat.current_Hp / Stat.max_Hp;
-    
-    public void SetHpFull() => Stat.current_Hp = Stat.max_Hp;
+
+    public void SetHpFull()
+    {
+        Stat.current_Hp = Stat.max_Hp;
+        OnHpChanged?.Invoke(this);
+    }
 
     public void ReduceHP(int amount)
     {
@@ -97,6 +118,7 @@ public partial class BaseCharacter : ITurnUseUnit
 
         Stat.current_Hp = Mathf.Max(Stat.current_Hp - amount, 0);
         Debug.Log($"<color=orange>[HP 차감] {Name}이(가) {amount}의 피해를 입었습니다. (잔여 HP: {Stat.current_Hp}/{Stat.max_Hp})</color>");
+        OnHpChanged?.Invoke(this);
 
         if (Stat.current_Hp <= 0)
         {
@@ -106,15 +128,24 @@ public partial class BaseCharacter : ITurnUseUnit
         }
     }
 
-    public void ReduceInsanity(int amount) => Insanity = Mathf.Min(Insanity + amount, 100); // 스트레스 증가
-    
+    public void ReduceInsanity(int amount)
+    {
+        Insanity = Mathf.Min(Insanity + amount, 100); // 스트레스 증가
+        OnInsanityChanged?.Invoke(this);
+    }
+
     // 회복 관련 메서드 추가
     public void RecoverHp(int amount)
     {
         Stat.current_Hp = Mathf.Min(Stat.current_Hp + amount, Stat.max_Hp);
         Debug.Log($"<color=lime>[HP 회복] {Name}이(가) {amount}의 체력을 회복했습니다. (현재 HP: {Stat.current_Hp}/{Stat.max_Hp})</color>");
+        OnHpChanged?.Invoke(this);
     }
-    public void RecoverInsanity(int amount) => Insanity = Mathf.Max(Insanity - amount, 0);
+    public void RecoverInsanity(int amount)
+    {
+        Insanity = Mathf.Max(Insanity - amount, 0);
+        OnInsanityChanged?.Invoke(this);
+    }
 
     #region Formaiton
 

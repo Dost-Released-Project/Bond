@@ -1,11 +1,8 @@
-using System;
 using UnityEngine;
 using VContainer;
 
 public class CharacterItemService
 {
-    public event Action OnEquipmentChanged;
-    
     [Inject] private CharacterSelector _characterSeletor;
 
     public void UseItem(BaseCharacter hero, IInventory sourceInv, int index)
@@ -37,7 +34,7 @@ public class CharacterItemService
 
         // 3. 성공적으로 들어갔을 때만 해제 효과 적용 및 슬롯 비우기
         acc.OnUnequip(target);
-        target.Accessories[slotIdx] = null;
+        target.SetAccessory(slotIdx, null);
         UpdateHeroStats(target);
         return true;
     }
@@ -56,7 +53,7 @@ public class CharacterItemService
         {
             targetInv.AddItemAt(targetSlotIdx, oldAcc, 1);
             oldAcc.OnUnequip(target);
-            target.Accessories[slotIdx] = null;
+            target.SetAccessory(slotIdx, null);
             UpdateHeroStats(target);
             return true;
         }
@@ -70,7 +67,7 @@ public class CharacterItemService
             oldAcc.OnUnequip(target);
             accItem.OnEquip(target);
 
-            target.Accessories[slotIdx] = accItem;
+            target.SetAccessory(slotIdx, accItem);
             targetInv.AddItemAt(targetSlotIdx, oldAcc, 1);
             UpdateHeroStats(target);
             return true;
@@ -89,7 +86,7 @@ public class CharacterItemService
 
         Debug.Log($"[장비 파괴] 영역 밖에 드롭하여 장착 중인 {acc.itemName}을(를) 버렸습니다.");
         acc.OnUnequip(target);
-        target.Accessories[slotIdx] = null;
+        target.SetAccessory(slotIdx, null);
         UpdateHeroStats(target);
     }
 
@@ -111,8 +108,8 @@ public class CharacterItemService
         }
 
         // 기존 장비가 장착되어 있지 않았던 빈 슬롯일 때만 아래 장착 로직 수행
-        hero.Accessories[charSlotIndex] = accItem;
-        
+        hero.SetAccessory(charSlotIndex, accItem);
+
         // 장착 효과 발동
         accItem.OnEquip(hero);
 
@@ -131,11 +128,11 @@ public class CharacterItemService
         {
             if (hero.Accessories[i] == null)
             {
-                hero.Accessories[i] = accItem;
-                
+                hero.SetAccessory(i, accItem);
+
                 // 장착 효과 발동
                 accItem.OnEquip(hero);
-                
+
                 sourceInv.RemoveFromSlot(invIndex, 1);
                 UpdateHeroStats(hero);
                 return true;
@@ -147,6 +144,5 @@ public class CharacterItemService
     private void UpdateHeroStats(BaseCharacter hero)
     {
         hero.CalcStat();
-        OnEquipmentChanged?.Invoke();
     }
 }

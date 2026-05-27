@@ -11,7 +11,6 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
 
     private CharacterCombatPanelController _controller;
     private CharacterDetailPresenter _detailPresenter;
-    private CharacterDetailController _detailController;
     private ICharacterSelector _selector;
     private EquipSlotsPresenter _equipSlots;
 
@@ -43,11 +42,9 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
     [Inject]
     public void Construct(
         CharacterDetailPresenter detailPresenter,
-        CharacterDetailController detailController,
         ICharacterSelector selector)
     {
         _detailPresenter  = detailPresenter;
-        _detailController = detailController;
         _selector         = selector;
     }
 
@@ -95,7 +92,6 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
         _controller.OnCharacterUpdated += BindCharacter;
         _controller.OnTurnStateChanged += RefreshSkillSlots;
         _controller.OnSkillSelected    += RefreshSkillSelection;
-        _detailController.OnAccessoryChanged += HandleAccessoryChanged;
 
         _selector.OnSelectionChanged += character =>
         {
@@ -115,35 +111,77 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
 
     private void BindCharacter(BaseCharacter character)
     {
+        DetachCharacterEvents(_character);
         _character = character;
+        AttachCharacterEvents(_character);
 
-        if (_charName != null) _charName.text = character.Name ?? "";
-        if (_charJob  != null) _charJob.text  = character.Profession?.Name ?? "";
-        if (_charRole != null) _charRole.text = character.RoleType.ToString();
-
-        if (_iconText != null)
-            _iconText.text = FirstChar(character.Profession?.Name);
-        if (!string.IsNullOrEmpty(character.ImageAddress))
-            LoadPortraitAsync(character.ImageAddress).Forget();
-
+        RefreshIdentity();
         RefreshHpBar(character.Stat.current_Hp, character.Stat.max_Hp);
         RefreshInsanityBar(character.Insanity, 100);
+        RefreshStats();
+        BindSkillSlots(character);
+        _equipSlots?.SetCharacter(character);
+    }
 
-        var stat = character.Stat;
+    private void RefreshIdentity()
+    {
+        if (_character == null) return;
+
+        if (_charName != null) _charName.text = _character.Name ?? "";
+        if (_charJob  != null) _charJob.text  = _character.Profession?.Name ?? "";
+        if (_charRole != null) _charRole.text = _character.RoleType.ToString();
+
+        if (_iconText != null)
+            _iconText.text = FirstChar(_character.Profession?.Name);
+        if (!string.IsNullOrEmpty(_character.ImageAddress))
+            LoadPortraitAsync(_character.ImageAddress).Forget();
+    }
+
+    private void RefreshStats()
+    {
+        if (_character == null) return;
+        var stat = _character.Stat;
         if (_statAtk   != null) _statAtk.text   = stat.atk.ToString();
         if (_statDef   != null) _statDef.text    = stat.def.ToString();
         if (_statSpAtk != null) _statSpAtk.text  = stat.Sp_Atk.ToString();
         if (_statSpd   != null) _statSpd.text    = stat.speed.ToString();
         if (_statCrt   != null) _statCrt.text    = $"{stat.crt:0.#}%";
         if (_statAcc   != null) _statAcc.text    = $"{stat.acc:0.#}%";
-
-        BindSkillSlots(character);
-        _equipSlots?.SetCharacter(character);
     }
 
-    private void HandleAccessoryChanged()
+    private void AttachCharacterEvents(BaseCharacter character)
     {
-        if (_character != null) _equipSlots?.SetCharacter(_character);
+        if (character == null) return;
+        character.OnHpChanged          += HandleHpChanged;
+        character.OnInsanityChanged    += HandleInsanityChanged;
+        character.OnStatRecalculated   += HandleStatRecalculated;
+        character.OnRoleChanged        += HandleRoleChanged;
+        character.OnAccessoriesChanged += HandleAccessoriesChanged;
+    }
+
+    private void DetachCharacterEvents(BaseCharacter character)
+    {
+        if (character == null) return;
+        character.OnHpChanged          -= HandleHpChanged;
+        character.OnInsanityChanged    -= HandleInsanityChanged;
+        character.OnStatRecalculated   -= HandleStatRecalculated;
+        character.OnRoleChanged        -= HandleRoleChanged;
+        character.OnAccessoriesChanged -= HandleAccessoriesChanged;
+    }
+
+    private void HandleHpChanged(BaseCharacter c)        => RefreshHpBar(c.Stat.current_Hp, c.Stat.max_Hp);
+    private void HandleInsanityChanged(BaseCharacter c)  => RefreshInsanityBar(c.Insanity, 100);
+    private void HandleStatRecalculated(BaseCharacter c)
+    {
+        RefreshStats();
+        RefreshHpBar(c.Stat.current_Hp, c.Stat.max_Hp);
+    }
+    private void HandleRoleChanged(BaseCharacter c)        => RefreshIdentity();
+    private void HandleAccessoriesChanged(BaseCharacter c) => _equipSlots?.SetCharacter(c);
+
+    private void OnDestroy()
+    {
+        DetachCharacterEvents(_character);
     }
 
     private void BindSkillSlots(BaseCharacter character)
