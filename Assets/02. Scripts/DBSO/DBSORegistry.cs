@@ -25,12 +25,13 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 ///<para/>
 /// 사용 예
 /// <code>
-///   // [1] 부트스트랩 — 한 번만 (Addressable 키 직접 지정)
-///   await DBSORegistry.PreloadAsync(
-///       "SkillDataBase",
-///       "ClassDataBase",
-///       "ConsumableDataBase",
-///       "AccessoryDataBase");
+///   // [1] 부트스트랩 — 한 번만. 3가지 진입점이 있다.
+///   //   (a) 라벨 — 에셋에 라벨만 붙여 두면 새 DBSO 추가 시 코드 수정 0회 (권장)
+///   await DBSORegistry.PreloadByLabelAsync("DBSO");
+///   //   (b) 타입 — 컴파일 시간 안전, 명시적
+///   await DBSORegistry.PreloadAsync(typeof(SkillDataBaseSO), typeof(ClassDataBaseSO));
+///   //   (c) 키 문자열 — raw DataBaseSO나 같은 타입 다수 케이스용 에스케이프 해치
+///   await DBSORegistry.PreloadAsync("HeroClassDB", "VillainClassDB");
 ///
 ///   // [2] SO 조회 — 어느 DB인지 신경 쓸 필요 없음
 ///   SkillData skill = DBSORegistry.GetSO&lt;SkillData&gt;(skillId);
@@ -209,6 +210,104 @@ public static class DBSORegistry
         }
     }
 
+    /// <summary>
+    /// 타입 배열로 사전 로드(비동기). 컨벤션 키 매핑으로 문자열 없이 컴파일 시간 안전.
+    ///   await DBSORegistry.PreloadAsync(typeof(SkillDataBaseSO), typeof(ClassDataBaseSO));
+    /// </summary>
+    public static Task PreloadAsync(params Type[] dbTypes)
+        => PreloadAsync(TypesToKeys(dbTypes));
+
+    /// <summary>타입 배열로 사전 로드(동기). 컨벤션 키 매핑.</summary>
+    public static void PreloadSync(params Type[] dbTypes)
+        => PreloadSync(TypesToKeys(dbTypes));
+
+    private static string[] TypesToKeys(Type[] dbTypes)
+    {
+        if (dbTypes == null || dbTypes.Length == 0) return Array.Empty<string>();
+        var keys = new string[dbTypes.Length];
+        for (int i = 0; i < dbTypes.Length; i++)
+        {
+            var t = dbTypes[i];
+            if (t == null || !typeof(DataBaseSO).IsAssignableFrom(t) || t.IsAbstract)
+            {
+                Debug.LogError($"[DBSORegistry] Preload 대상이 DataBaseSO 구체 타입이 아니다: {t?.Name}");
+                keys[i] = null;
+                continue;
+            }
+            keys[i] = ResolveKey(t);
+        }
+        return keys;
+    }
+
+    /// <summary>
+    /// Addressables 라벨로 사전 로드(비동기). 라벨이 붙은 모든 DataBaseSO를 한 번에 로드한다.
+    /// 에셋 측에 라벨만 붙여 두면 새 DBSO 추가 시 코드 수정이 필요 없다.
+    ///   await DBSORegistry.PreloadByLabelAsync("DBSO");
+    /// </summary>
+    public static async Task PreloadByLabelAsync(string label)
+    {
+        if (string.IsNullOrEmpty(label))
+        {
+            Debug.LogError("[DBSORegistry] PreloadByLabelAsync: 라벨이 비어 있다.");
+            return;
+        }
+
+        var locHandle = Addressables.LoadResourceLocationsAsync(label, typeof(DataBaseSO));
+        var locations = await locHandle.Task;
+
+        if (locations == null || locations.Count == 0)
+        {
+            Debug.LogWarning($"[DBSORegistry] 라벨 '{label}'에 매치되는 DataBaseSO가 없다. Addressables Groups에서 라벨이 붙어 있는지 확인.");
+            Addressables.Release(locHandle);
+            return;
+        }
+
+        var tasks = new List<Task>(locations.Count);
+        foreach (var loc in locations)
+        {
+            if (_databases.ContainsKey(loc.PrimaryKey)) continue;
+            tasks.Add(LoadAsync<DataBaseSO>(loc.PrimaryKey));
+        }
+        if (tasks.Count > 0)
+            await Task.WhenAll(tasks);
+
+        Addressables.Release(locHandle);
+    }
+
+    /// <summary>Addressables 라벨로 사전 로드(동기). 메인 스레드를 잠시 블록한다.</summary>
+    public static void PreloadByLabelSync(string label)
+    {
+        if (string.IsNullOrEmpty(label))
+        {
+            Debug.LogError("[DBSORegistry] PreloadByLabelSync: 라벨이 비어 있다.");
+            return;
+        }
+
+        var locHandle = Addressables.LoadResourceLocationsAsync(label, typeof(DataBaseSO));
+        var locations = locHandle.WaitForCompletion();
+
+        if (locations == null || locations.Count == 0)
+        {
+            Debug.LogWarning($"[DBSORegistry] 라벨 '{label}'에 매치되는 DataBaseSO가 없다. Addressables Groups에서 라벨이 붙어 있는지 확인.");
+            Addressables.Release(locHandle);
+            return;
+        }
+
+        var inFlight = new List<(string key, AsyncOperationHandle<DataBaseSO> handle)>(locations.Count);
+        foreach (var loc in locations)
+        {
+            if (_databases.ContainsKey(loc.PrimaryKey)) continue;
+            inFlight.Add((loc.PrimaryKey, Addressables.LoadAssetAsync<DataBaseSO>(loc.PrimaryKey)));
+        }
+        foreach (var (key, handle) in inFlight)
+        {
+            var asset = handle.WaitForCompletion();
+            Store(key, asset, handle);
+        }
+
+        Addressables.Release(locHandle);
+    }
+
     // ── (5) 외부 주입 — RootScope에서 Inspector 참조 SO를 등록 ─────────────
 
     /// <summary>외부에서 미리 확보한 SO를 키와 함께 등록한다.</summary>
@@ -274,9 +373,11 @@ public static class DBSORegistry
         _handles[key]   = handle;
     }
 
-    private static string ResolveKey<T>() where T : DataBaseSO
+    private static string ResolveKey<T>() where T : DataBaseSO => ResolveKey(typeof(T));
+
+    private static string ResolveKey(Type t)
     {
-        var name = typeof(T).Name;
+        var name = t.Name;
         return name.EndsWith("SO") ? name.Substring(0, name.Length - 2) : name;
     }
 

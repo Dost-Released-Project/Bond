@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 
 namespace Bond.UI
 {
-    public class EquipSlotsPresenter
+    public class EquipSlotsPresenter : IDisposable
     {
         private readonly VisualElement _tooltipRoot;
 
@@ -34,9 +34,31 @@ namespace Bond.UI
 
         public void SetCharacter(BaseCharacter character)
         {
+            DetachCharacterEvents(_character);
             _character = character;
+            AttachCharacterEvents(_character);
             RefreshAll();
         }
+
+        public void Dispose()
+        {
+            DetachCharacterEvents(_character);
+            _character = null;
+        }
+
+        private void AttachCharacterEvents(BaseCharacter character)
+        {
+            if (character == null) return;
+            character.OnAccessoriesChanged += HandleAccessoriesChanged;
+        }
+
+        private void DetachCharacterEvents(BaseCharacter character)
+        {
+            if (character == null) return;
+            character.OnAccessoriesChanged -= HandleAccessoriesChanged;
+        }
+
+        private void HandleAccessoriesChanged(BaseCharacter c) => RefreshAccessories();
 
         public void SetEditable(bool editable)
         {

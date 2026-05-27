@@ -57,13 +57,15 @@ namespace Reactions
         public bool CheckCondition(BaseCharacter subject, BattleContext context)
         {
             Debug.Log($"Checking condition {Conditions.Count}");
-            return Conditions.All(condition => condition.IsMet(new ReactionTriggerConditionArgs() { Subject = subject, BattleContext = context }));
+            return Conditions.Any() && Conditions.All(condition => condition.IsMet(new ReactionTriggerConditionArgs() { Subject = subject, BattleContext = context }));
         }
 
         public string Description
         {
             get
             {
+                if (Conditions.Count <= 0) return "Conditions are empty";
+                
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(Conditions[0].Description);
                 for (int i = 1; i < Conditions.Count; i++)

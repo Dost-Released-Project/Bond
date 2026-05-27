@@ -18,9 +18,9 @@ public class Stat
     private ClassType classType;
 
     [Header("Base Stats (Growth)")]
-    public int STR;
-    public int AGI;
-    public int INT;
+    public float STR;
+    public float AGI;
+    public float INT;
 
     [Header("Calculated Results")]
     public int max_Hp;
