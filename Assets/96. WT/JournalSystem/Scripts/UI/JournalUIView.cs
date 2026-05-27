@@ -166,6 +166,7 @@ namespace Bond.WT.Journal
                 if (btn != null)
                 {
                     btn.text = option.text;
+                    btn.SetEnabled(option.isEnabled);
                     btn.clicked += () => OnOptionSelected?.Invoke(option);
                 }
 

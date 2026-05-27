@@ -47,7 +47,8 @@ public class JournalParser : TSVParserBase<JournalDTO, JournalDataSO>
                     options.Add(new JournalOption
                     {
                         actionKey = split[0].Trim(),
-                        text = split[1].Trim()
+                        text = split[1].Trim(),
+                        isEnabled = true
                     });
                 }
             }

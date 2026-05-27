@@ -163,6 +163,8 @@ public class ExpeditionInventoryView : MonoBehaviour
     
     private void LoadExpeditionInventory(params DataBaseSO[] dbs)
     {
+        if (_payload == null || _payload.Supplies == null) return;
+        
         var save = new InventorySaveData("exp_inv");
         // SaveLoadSystem의 GetPath와 Key를 조합하여 경로 생성 (시스템 수정 없이 대응)
         string saveKey = save.Key;
