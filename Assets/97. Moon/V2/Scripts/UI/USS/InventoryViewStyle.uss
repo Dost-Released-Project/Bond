@@ -1,0 +1,102 @@
+/* =========================================================================
+   🎒 영지 통합 인벤토리 전용 다크 판타지 오버라이드 USS
+   ========================================================================= */
+
+/* 1. 인벤토리 전체 메인 바디 컨테이너 (#inventory-container) */
+#inventory-container {
+    background-color: rgba(14, 16, 22, 0.96); /* 한층 더 깊고 어두운 백드롭 */
+    padding: 24px;
+    border-left-width: 2px; border-right-width: 2px; border-top-width: 2px; border-bottom-width: 2px;
+    border-color: #8e7045; /* 건설창과 통일된 은은한 황금빛 골드 테두리 */
+    border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;
+}
+
+/* 2. 상단 버튼 탭 영역 컨테이너 (정돈된 레이아웃 격리) */
+.inventory-tab-bar {
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(142, 112, 69, 0.25); /* 상단 구역 완벽 분리선 */
+}
+
+/* 3. 공용 필터 탭 버튼 스타일 개혁 (All, Equip, Consume 버튼들) */
+#btn-filter-all, #btn-filter-accessory, #btn-filter-consumable {
+    background-color: #1e222d;
+    color: #94a3b8;
+    border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px;
+    border-color: rgba(142, 112, 69, 0.4);
+    border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px;
+    margin-right: 8px;
+    padding: 6px 16px;
+    font-size: 14px;
+    -unity-font-style: bold;
+    transition-property: background-color, color;
+    transition-duration: 0.15s;
+}
+
+#btn-filter-all:hover, #btn-filter-accessory:hover, #btn-filter-consumable:hover {
+    background-color: #2a303f;
+    color: #e5c185; /* 호버 시 황금색 플레이트로 변화 */
+}
+
+/* 🎯 [리더님 핵심 기획] 현재 눌려있는 활성화 탭 비활성화 락(Lock) 연출 */
+#btn-filter-all:disabled, #btn-filter-accessory:disabled, #btn-filter-consumable:disabled {
+    background-color: #111319; /* 깊게 가라앉는 암전 처리 */
+    color: #e5c185; /* 글씨는 황금색으로 고정하여 "선택됨"을 명시 */
+    border-color: #8e7045; /* 테두리를 진한 골드로 락 */
+    opacity: 1; /* 유니티 기본 반투명 비활성화 씹기 */
+}
+
+/* 4. 중앙 아이템 스크롤 뷰 구역 (#total-inventory-grid) */
+#total-inventory-grid {
+    background-color: rgba(10, 11, 15, 0.5); /* 뷰어 구역 뒤쪽에 음영을 주어 깊이감 분리 */
+    padding: 8px;
+    border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px;
+    margin-bottom: 16px;
+}
+
+/* 5. ⚠️ [UXML 새하얀 버그 강제 감화] 하드코딩된 하얀 텍스트 필드 정밀 저격 */
+#inventory-search {
+    margin-top: 12px;
+    background-color: #161922;
+    border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px;
+    border-color: rgba(142, 112, 69, 0.3);
+    border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px;
+    padding: 4px;
+}
+
+/* 유니티 내장 텍스트 인풋 필드 하얀 배경 강제 박멸 클래스 */
+#inventory-search .unity-text-field__input {
+    background-color: #111319 !important; /* 새하얀 배경을 묵직한 밤하늘색으로 덮어씀 */
+    color: #cbd5e1 !important; /* 글씨는 가독성 좋은 크림 화이트 */
+    border-width: 0;
+    padding-left: 10px;
+}
+
+/* 6. 우측 상단 거대 X 닫기 버튼 (#btn-close) */
+#btn-close {
+    background-color: transparent;
+    -unity-background-image-tint-color: #94a3b8; /* 조잡한 검은색 X를 앤티크한 실버로 틴트 */
+    border-width: 0;
+    transition-property: -unity-background-image-tint-color;
+    transition-duration: 0.15s;
+}
+
+#btn-close:hover {
+    -unity-background-image-tint-color: #df4a4a; /* 마우스 올리면 경고 레드로 변경 */
+}
+
+/* 7. 정렬 버튼 (#btn-sort) */
+#btn-sort {
+    background-color: #232836;
+    color: #cbd5e1;
+    border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px;
+    border-color: rgba(142, 112, 69, 0.3);
+}
+#btn-sort:hover {
+    background-color: #2f364a;
+    color: #ffffff;
+}

@@ -307,7 +307,16 @@ public class InventoryView : MonoBehaviour
         SaveTotalInventory();
     }
 
-    private void SetFilter(ItemCategory? cat) { _currentFilter = cat; RefreshUI(); }
+    private void SetFilter(ItemCategory? cat) 
+    { 
+        _currentFilter = cat; 
+        RefreshUI(); 
+
+        // 💥 현재 누른 탭 버튼은 비활성화하고, 나머지 탭은 활성화하여 락 연출 수용
+        _root.Q<Button>("btn-filter-all")?.SetEnabled(cat != null);
+        _root.Q<Button>("btn-filter-consumable")?.SetEnabled(cat != ItemCategory.Consume);
+        _root.Q<Button>("btn-filter-accessory")?.SetEnabled(cat != ItemCategory.Accessories);
+    }
 
     private void HideTooltip() => _tooltip.style.visibility = Visibility.Hidden;
 }
