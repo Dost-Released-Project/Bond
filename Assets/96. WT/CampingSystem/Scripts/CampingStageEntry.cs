@@ -29,8 +29,6 @@ namespace Bond.WT.Camping
             
             // 탐사 인벤토리 UI
             builder.RegisterComponentInHierarchy<ExpeditionInventoryView>();
-            // 장신구 슬롯 UI
-            builder.RegisterComponentInHierarchy<EquipmentSlotUI>();
             // 캐릭터 슬롯과 캐릭터 셀렉터 연결용
             builder.RegisterComponentInHierarchy<BattleFormationPresenter>();
             // 캠핑 시스템 및 핸들러 등록
