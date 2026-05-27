@@ -1,0 +1,123 @@
+/* =========================================================================
+   ⚔️ 보급소(SupplyView) 전용 다크 판타지 통합 USS 스타일시트
+   ========================================================================= */
+
+/* 1. 루트 배경 배리어 */
+.supply-root {
+    width: 100%; height: 100%;
+    justify-content: center; align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* 2. 메인 보급 팝업 바디 (가로로 긴 안정적인 장부 형태 연출) */
+.supply-window {
+    width: 680px;
+    height: 380px;
+    padding: 32px;
+    background-color: rgba(18, 20, 28, 0.98);
+    border-left-width: 2px; border-right-width: 2px; border-top-width: 2px; border-bottom-width: 2px;
+    border-color: #8e7045;
+    border-top-left-radius: 8px; border-top-right-radius: 8px;
+    border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;
+    position: relative;
+}
+
+/* 3. 콘텐츠 가로 분할 정렬 레이아웃 */
+.supply-main-content {
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100%; height: 100%;
+    margin-top: 20px;
+}
+
+/* 4. 좌측 버튼 배치 그리드 리스트 */
+.supply-button-list {
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    width: 320px; height: 100%;
+}
+
+/* 개별 보급품 버튼 공용 앤티크 프레임화 (기존 아이콘을 액자처럼 래핑) */
+#btn-reinforce, #btn-normal, #btn-special {
+    width: 85px !important;
+    height: 85px !important;
+    margin-right: 16px !important;
+    background-color: #1e222d !important;
+    border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px;
+    border-color: rgba(142, 112, 69, 0.4) !important;
+    border-top-left-radius: 6px; border-top-right-radius: 6px;
+    border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;
+
+    /* [수정] 유니티 안전지원 속성인 'all'로 애니메이션을 걸거나 분리합니다 */
+    transition-property: all;
+    transition-duration: 0.1s;
+    padding: 12px !important;
+}
+
+#btn-reinforce:hover, #btn-normal:hover, #btn-special:hover {
+    background-color: #2a303f !important;
+    border-color: #e5c185 !important;
+
+    /* [수정] 유니티 전용 스케일 문법으로 변경하여 에러 유발을 방지합니다 */
+    -unity-transform-scale: 1.05 1.05;
+}
+
+/* 5. 우측 실시간 정보 브리핑 패널 가이드 */
+#supply-info-panel {
+    width: 260px;
+    height: 100%;
+    background-color: rgba(10, 11, 15, 0.6);
+    border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px;
+    border-color: rgba(142, 112, 69, 0.15);
+    border-top-left-radius: 4px; border-top-right-radius: 4px;
+    border-bottom-left-radius: 4px; border-bottom-right-radius: 4px;
+    padding: 20px;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+/* 설명창 텍스트 세부 튜닝 */
+#supply-info-title {
+    font-size: 20px;
+    color: #e5c185;
+    -unity-font-style: bold;
+    margin-bottom: 12px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(142, 112, 69, 0.2);
+    padding-bottom: 6px;
+}
+
+#supply-info-desc {
+    font-size: 14px;
+    color: #cbd5e1;
+    white-space: normal;
+    flex-grow: 1;
+}
+
+#supply-info-cost {
+    font-size: 14px;
+    color: #a7f3d0; /* 비용은 편안한 녹색 계열 화폐 톤 */
+    -unity-font-style: bold;
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 6px;
+
+    /* [수정] unity-text-align 오타 수정 (UI Toolkit 스펙에 맞춰 수정) */
+    text-align: center;
+    border-top-left-radius: 4px; border-top-right-radius: 4px;
+    border-bottom-left-radius: 4px; border-bottom-right-radius: 4px;
+}
+
+/* 6. 우측 상단 닫기 버튼 */
+#btn-close-supply {
+    position: absolute !important;
+    right: 16px !important;
+    top: 16px !important;
+    background-color: transparent !important;
+    border-width: 0 !important;
+    -unity-background-image-tint-color: #94a3b8 !important;
+}
+#btn-close-supply:hover {
+    -unity-background-image-tint-color: #df4a4a !important;
+}
