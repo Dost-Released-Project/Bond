@@ -32,6 +32,8 @@ public class ExpeditionInventoryView : MonoBehaviour
         var accHandle = Addressables.LoadAssetAsync<AccessoryDataBaseSO>("AccessoryDataBase");
         await System.Threading.Tasks.Task.WhenAll(conHandle.Task, accHandle.Task);
 
+        SaveExpeditionInventory();
+        
         // 2. "exp_inv" 파일만 로드
         LoadExpeditionInventory(conHandle.Result, accHandle.Result);
 
