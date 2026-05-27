@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using PipeLine;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
+using Random = UnityEngine.Random;
 
 namespace Reactions
 {
@@ -44,20 +45,18 @@ namespace Reactions
         {
             List<ReactionExecution> executions = new List<ReactionExecution>();
 
-            // 조건에 맞는 리액션 색출
-            foreach (var chara in Characters)
+            // 조건에 맞는 리액션 색출 — 한 리액션이 N명을 매치하면 N개의 execution 발생
+            foreach (var owner in Characters)
             {
-                if (chara.IsDead) continue;
-                
-                foreach (var reaction in chara.Reactions)
+                if (owner.IsDead) continue;
+
+                foreach (var reaction in owner.Reactions)
                 {
                     if (reaction == null) continue;
-                    if (reaction.Check(context))
+                    foreach (var matched in reaction.Match(owner, context, Characters))
                     {
-                        var result = IsSuccess(chara, reaction);
-                        var execution = new ReactionExecution(chara, reaction, result);
-                        
-                        executions.Add(execution);
+                        var result = IsSuccess(owner, matched, reaction);
+                        executions.Add(new ReactionExecution(owner, reaction, result, matched));
                     }
                 }
             }
@@ -67,7 +66,7 @@ namespace Reactions
             var sb = new StringBuilder();
             foreach (var reaction in executions)
             {
-                sb.AppendLine($"{reaction.Agent.Name} | Speed: {reaction.Agent.Speed}");
+                sb.AppendLine($"{reaction.Agent.Name} | Speed: {reaction.Agent.Speed} | Matched: {reaction.MatchedSubject?.Name ?? "-"}");
             }
             Debug.Log($"<color=red>Reaction Count: {executions.Count}\n" +
                       $"{sb.ToString()}</color>");
@@ -90,13 +89,14 @@ namespace Reactions
         /// 리액션의 성공 확률을 계산해 반환합니다.
         /// </summary>
         /// <returns></returns>
-        private static ReactionResult IsSuccess(BaseCharacter agent, Reaction reaction) // TODO: 구현
+        private static ReactionResult IsSuccess(BaseCharacter agent, BaseCharacter matched, Reaction reaction) // TODO: 구현
         {
             // 계산을 위한 데이터를 담은 구조체를 정의해야 될 수도 있음.
             // 아니면 배틀 컨텍스트랑 리액션 정보로만 계산하던가
-            
+
             // 계산식: [기본 확률 + 스트레스 가산치] - (지능 × 계수 + 파티 관계 보너스)
-            
+            // 파티 관계 보너스는 agent와 matched 사이의 Relation 값을 사용 예정
+
             return (ReactionResult)Random.Range(0,3); // 임시 처리임
         }
     }

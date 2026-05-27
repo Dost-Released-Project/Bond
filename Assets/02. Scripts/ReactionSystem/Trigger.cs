@@ -11,16 +11,18 @@ namespace Reactions
     public enum E_ObserveFilter
     {
         Self,
-        Ally,
+        Ally,       // 자신 포함 같은 진영 전체
+        OtherAlly,  // 자신을 제외한 같은 진영
         Enemy,
         Specific
     }
-    
+
     public enum E_TargetFilter
     {
         None,
         Caster,
-        Target
+        Target,
+        Observed,   // 조건을 만족시킨 관찰 대상
     }
     
     public interface ITrigger

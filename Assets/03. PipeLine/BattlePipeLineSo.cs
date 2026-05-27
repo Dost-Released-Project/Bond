@@ -217,7 +217,7 @@ namespace PipeLine
                 {
                     Debug.Log($"<color=yellow>Reaction:\n" +
                               $"{execution.ToString()}</color>");
-                    await execution.Agent.ExecuteReaction(execution.Reaction, context);
+                    await execution.Agent.ExecuteReaction(execution, context);
                 }
             }
             return context;
