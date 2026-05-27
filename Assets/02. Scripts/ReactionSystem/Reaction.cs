@@ -51,12 +51,4 @@ namespace Reactions
             return Trigger.CheckCondition(BaseCharacter.Dict[SubjectCharacterId], context);
         }
     }
-
-    [CreateAssetMenu(fileName = "ReactionPreset", menuName = "Bond/Reactions/Reaction Preset")]
-    public class ReactionPreset : ScriptableObject
-    {
-        public ITrigger Trigger;
-        public SkillBase Skill;
-        public E_TargetFilter SkillTarget;
-    }
 }
