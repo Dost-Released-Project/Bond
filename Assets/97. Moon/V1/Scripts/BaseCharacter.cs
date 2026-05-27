@@ -71,7 +71,10 @@ public partial class BaseCharacter : ITurnUseUnit
     public void SetAccessory(int index, AccessoryItem item)
     {
         if (index < 0 || index >= Accessories.Length) return;
+        Accessories[index]?.OnUnequip(this);
         Accessories[index] = item;
+        Accessories[index]?.OnEquip(this);
+        CalcStat();
         OnAccessoriesChanged?.Invoke(this);
     }
 

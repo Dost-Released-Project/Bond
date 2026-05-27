@@ -152,21 +152,19 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
     private void AttachCharacterEvents(BaseCharacter character)
     {
         if (character == null) return;
-        character.OnHpChanged          += HandleHpChanged;
-        character.OnInsanityChanged    += HandleInsanityChanged;
-        character.OnStatRecalculated   += HandleStatRecalculated;
-        character.OnRoleChanged        += HandleRoleChanged;
-        character.OnAccessoriesChanged += HandleAccessoriesChanged;
+        character.OnHpChanged        += HandleHpChanged;
+        character.OnInsanityChanged  += HandleInsanityChanged;
+        character.OnStatRecalculated += HandleStatRecalculated;
+        character.OnRoleChanged      += HandleRoleChanged;
     }
 
     private void DetachCharacterEvents(BaseCharacter character)
     {
         if (character == null) return;
-        character.OnHpChanged          -= HandleHpChanged;
-        character.OnInsanityChanged    -= HandleInsanityChanged;
-        character.OnStatRecalculated   -= HandleStatRecalculated;
-        character.OnRoleChanged        -= HandleRoleChanged;
-        character.OnAccessoriesChanged -= HandleAccessoriesChanged;
+        character.OnHpChanged        -= HandleHpChanged;
+        character.OnInsanityChanged  -= HandleInsanityChanged;
+        character.OnStatRecalculated -= HandleStatRecalculated;
+        character.OnRoleChanged      -= HandleRoleChanged;
     }
 
     private void HandleHpChanged(BaseCharacter c)        => RefreshHpBar(c.Stat.current_Hp, c.Stat.max_Hp);
@@ -176,12 +174,12 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
         RefreshStats();
         RefreshHpBar(c.Stat.current_Hp, c.Stat.max_Hp);
     }
-    private void HandleRoleChanged(BaseCharacter c)        => RefreshIdentity();
-    private void HandleAccessoriesChanged(BaseCharacter c) => _equipSlots?.SetCharacter(c);
+    private void HandleRoleChanged(BaseCharacter c)      => RefreshIdentity();
 
     private void OnDestroy()
     {
         DetachCharacterEvents(_character);
+        _equipSlots?.Dispose();
     }
 
     private void BindSkillSlots(BaseCharacter character)

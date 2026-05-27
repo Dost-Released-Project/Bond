@@ -33,9 +33,7 @@ public class CharacterItemService
         }
 
         // 3. 성공적으로 들어갔을 때만 해제 효과 적용 및 슬롯 비우기
-        acc.OnUnequip(target);
         target.SetAccessory(slotIdx, null);
-        UpdateHeroStats(target);
         return true;
     }
 
@@ -52,9 +50,7 @@ public class CharacterItemService
         if (targetSlot.IsEmpty)
         {
             targetInv.AddItemAt(targetSlotIdx, oldAcc, 1);
-            oldAcc.OnUnequip(target);
             target.SetAccessory(slotIdx, null);
-            UpdateHeroStats(target);
             return true;
         }
 
@@ -63,13 +59,8 @@ public class CharacterItemService
         {
             targetInv.RemoveFromSlot(targetSlotIdx, 1);
 
-            // 기존 효과 해제 후 새 효과 적용
-            oldAcc.OnUnequip(target);
-            accItem.OnEquip(target);
-
             target.SetAccessory(slotIdx, accItem);
             targetInv.AddItemAt(targetSlotIdx, oldAcc, 1);
-            UpdateHeroStats(target);
             return true;
         }
 
@@ -85,9 +76,7 @@ public class CharacterItemService
         if (acc == null) return;
 
         Debug.Log($"[장비 파괴] 영역 밖에 드롭하여 장착 중인 {acc.itemName}을(를) 버렸습니다.");
-        acc.OnUnequip(target);
         target.SetAccessory(slotIdx, null);
-        UpdateHeroStats(target);
     }
 
     // 인벤토리 풀 상태에서도 1:1 직접 스왑 해제가 가능하게끔 처리
@@ -110,11 +99,7 @@ public class CharacterItemService
         // 기존 장비가 장착되어 있지 않았던 빈 슬롯일 때만 아래 장착 로직 수행
         hero.SetAccessory(charSlotIndex, accItem);
 
-        // 장착 효과 발동
-        accItem.OnEquip(hero);
-
         sourceInv.RemoveFromSlot(invIndex, 1);
-        UpdateHeroStats(hero);
     }
 
     public bool AutoEquip(IInventory sourceInv, int invIndex)
@@ -130,11 +115,7 @@ public class CharacterItemService
             {
                 hero.SetAccessory(i, accItem);
 
-                // 장착 효과 발동
-                accItem.OnEquip(hero);
-
                 sourceInv.RemoveFromSlot(invIndex, 1);
-                UpdateHeroStats(hero);
                 return true;
             }
         }

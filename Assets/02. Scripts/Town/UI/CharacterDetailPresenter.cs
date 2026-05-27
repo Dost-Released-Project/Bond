@@ -211,33 +211,31 @@ namespace Bond.UI
         private void AttachCharacterEvents(BaseCharacter character)
         {
             if (character == null) return;
-            character.OnHpChanged          += HandleHpChanged;
-            character.OnInsanityChanged    += HandleInsanityChanged;
-            character.OnStatRecalculated   += HandleStatRecalculated;
-            character.OnRoleChanged        += HandleRoleChanged;
-            character.OnAccessoriesChanged += HandleAccessoriesChanged;
+            character.OnHpChanged        += HandleHpChanged;
+            character.OnInsanityChanged  += HandleInsanityChanged;
+            character.OnStatRecalculated += HandleStatRecalculated;
+            character.OnRoleChanged      += HandleRoleChanged;
         }
 
         private void DetachCharacterEvents(BaseCharacter character)
         {
             if (character == null) return;
-            character.OnHpChanged          -= HandleHpChanged;
-            character.OnInsanityChanged    -= HandleInsanityChanged;
-            character.OnStatRecalculated   -= HandleStatRecalculated;
-            character.OnRoleChanged        -= HandleRoleChanged;
-            character.OnAccessoriesChanged -= HandleAccessoriesChanged;
+            character.OnHpChanged        -= HandleHpChanged;
+            character.OnInsanityChanged  -= HandleInsanityChanged;
+            character.OnStatRecalculated -= HandleStatRecalculated;
+            character.OnRoleChanged      -= HandleRoleChanged;
         }
 
         // RefreshStats가 HP/광기 게이지까지 함께 갱신하므로 별도 분기는 두지 않는다
-        private void HandleHpChanged(BaseCharacter c)          => RefreshStats();
-        private void HandleInsanityChanged(BaseCharacter c)    => RefreshStats();
-        private void HandleStatRecalculated(BaseCharacter c)   => RefreshStats();
-        private void HandleRoleChanged(BaseCharacter c)        => RefreshIdentity();
-        private void HandleAccessoriesChanged(BaseCharacter c) => _equipSlots.SetCharacter(c);
+        private void HandleHpChanged(BaseCharacter c)        => RefreshStats();
+        private void HandleInsanityChanged(BaseCharacter c)  => RefreshStats();
+        private void HandleStatRecalculated(BaseCharacter c) => RefreshStats();
+        private void HandleRoleChanged(BaseCharacter c)      => RefreshIdentity();
 
         private void OnDestroy()
         {
             DetachCharacterEvents(_character);
+            _equipSlots?.Dispose();
         }
 
         public void Hide()
