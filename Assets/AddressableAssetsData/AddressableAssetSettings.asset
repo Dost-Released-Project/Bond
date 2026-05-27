@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 748404ed84ce7834994ae89f0b5c7ee0
   m_currentHash:
     serializedVersion: 2
-    Hash: f438139518daaad4b388db618dc15f01
+    Hash: 301e4def749ec5599c0a0f6f89b8e6fa
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_CatalogRequestsTimeout: 0
@@ -110,6 +110,7 @@ MonoBehaviour:
     m_LabelNames:
     - default
     - Building
+    - DBSO
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: d67ade622d2048f49881e876885e22bc, type: 2}
