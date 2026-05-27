@@ -29,7 +29,7 @@ namespace Reactions
         string Description { get; }
     }
 
-    [Serializable][AddTypeMenu("SkillTypeIs", -1000)]
+    [Serializable][AddTypeMenu("Trigger", -1000)]
     public class Trigger : ITrigger
     {
         [Serializable]
