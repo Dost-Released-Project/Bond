@@ -18,57 +18,68 @@ MonoBehaviour:
   - m_GUID: 0da345ddf55b9e84090ebc000cd00748
     m_Address: SkillDataBase
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - DBSO
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1a7eb169c2eb21249aeb2be0a31b080b
     m_Address: ConsumableDataBase
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - DBSO
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3b39a9851315ab443b503b3f1d73574b
     m_Address: BuildingDataBase
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - DBSO
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4455a3f6c5f1cde4cb39112e8fe21c75
     m_Address: AccessoryDataBase
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - DBSO
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4d604cea4f96ca740a999e0d6c392eaf
     m_Address: JournalDataBase
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - DBSO
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5d489f423e31aee4bbada1cd1e83daa4
     m_Address: ClassDataBase
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - DBSO
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7bd4d7f242769d44489103144b0086e3
     m_Address: MonsterDataBase
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - DBSO
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a3107a749b1731a4485a2edb080fc9bd
     m_Address: StatModifierDataBase
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - DBSO
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d278c20e489ff9f4599c6835ad9fcb44
     m_Address: EventDataBase
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - DBSO
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dcef6e8629283d04787950c3a2da344d
     m_Address: MonsterGroupDataBase
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - DBSO
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e646d35a16cac3b46b3c33efd328429e
     m_Address: DefaultEquipDataBase
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - DBSO
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 2844d279e9fd27e4a9c0e38b898d6b70, type: 2}

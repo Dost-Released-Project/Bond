@@ -31,7 +31,7 @@ namespace _90._HA.Temp.Test
 
         public async void Start()
         {
-            await DBSORegistry.PreloadAsync("ClassDataBase", "SkillDataBase", "DefaultEquipDataBase");
+            await DBSORegistry.PreloadByLabelAsync("DBSO");
             professionDb = DBSORegistry.GetDb<DataBaseSO>("ClassDataBase");
             
             payload.Clear();
