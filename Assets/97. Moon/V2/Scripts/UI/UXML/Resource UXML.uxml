@@ -1,8 +1,17 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:Label text="10000" name="label-frontier" display-tooltip-when-elided="true" triple-click-selects-line="true" style="width: 400px; height: 70px; -unity-text-auto-size: none; font-size: 70px; -unity-text-align: middle-right; -unity-text-generator: standard; position: absolute; top: 0; left: 50px; background-color: rgba(255, 255, 255, 0);"/>
-    <ui:Label text="&#10;" name="Label" display-tooltip-when-elided="true" triple-click-selects-line="true" style="width: 70px; height: 70px; -unity-text-auto-size: none; font-size: 100px; -unity-text-align: middle-right; -unity-text-generator: standard; position: absolute; top: 0; left: 450px; background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/money.png?fileID=2800000&amp;guid=05894312944cb444b835ce7ad0bff641&amp;type=3#money&quot;); -unity-background-image-tint-color: rgb(142, 141, 65); right: auto;"/>
-    <ui:Label text="10000&#10;" picking-mode="Position" name="label-wood" style="width: 400px; height: 70px; -unity-text-auto-size: none; font-size: 70px; -unity-text-align: middle-right; left: 650px; top: 0; text-overflow: clip; white-space: nowrap; -unity-text-generator: standard; position: absolute; transform-origin: left;"/>
-    <ui:Label text="&#10;" name="Label" display-tooltip-when-elided="true" triple-click-selects-line="true" style="width: 70px; height: 70px; -unity-text-auto-size: none; font-size: 100px; -unity-text-align: middle-right; -unity-text-generator: standard; position: absolute; top: 0; left: 1050px; background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/tree-small.png?fileID=2800000&amp;guid=8ebc6fb546c63964292316f80719c458&amp;type=3#tree-small&quot;); -unity-background-image-tint-color: rgb(142, 81, 65); right: auto;"/>
-    <ui:Label text="10000&#10;" name="label-ore" style="width: 400px; height: 70px; -unity-text-auto-size: none; font-size: 70px; -unity-text-align: middle-right; left: 1250px; top: 0; align-items: stretch; -unity-text-generator: standard; position: absolute; transform-origin: left;"/>
-    <ui:Label text="&#10;" name="Label" display-tooltip-when-elided="true" triple-click-selects-line="true" style="width: 70px; height: 70px; -unity-text-auto-size: none; font-size: 100px; -unity-text-align: middle-right; -unity-text-generator: standard; position: absolute; top: 0; left: 1650px; background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/metal.png?fileID=2800000&amp;guid=2998acfe829d44345ba68b5366ad8737&amp;type=3#metal&quot;); -unity-background-image-tint-color: rgb(77, 77, 64); right: auto;"/>
+    <Style src="project://database/Assets/97.%20Moon/V2/Scripts/UI/USS/ResourceStyle.uss?fileID=7433441132597879392&amp;guid=44e3ee76966cfcb49ae8927cfb296b48&amp;type=3#ResourceStyle"/>
+    <ui:VisualElement name="resource-container" style="flex-grow: 1;">
+        <ui:VisualElement name="resource-group" class="resource-group" style="flex-grow: 1;">
+            <ui:Label text="Label" name="label-frontier" class="resource-label" style="-unity-text-align: middle-right;"/>
+            <ui:VisualElement name="VisualElement" class="resource-icon" style="background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/money.png?fileID=2800000&amp;guid=05894312944cb444b835ce7ad0bff641&amp;type=3#money&quot;);"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="resource-group" class="resource-group" style="flex-grow: 1;">
+            <ui:Label text="Label" name="label-wood" class="resource-label" style="-unity-text-align: middle-right;"/>
+            <ui:VisualElement name="VisualElement" class="resource-icon" style="background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/tree-small.png?fileID=2800000&amp;guid=8ebc6fb546c63964292316f80719c458&amp;type=3#tree-small&quot;);"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="resource-group" class="resource-group" style="flex-grow: 1;">
+            <ui:Label text="Label" name="label-ore" class="resource-label" style="-unity-text-align: middle-right;"/>
+            <ui:VisualElement name="VisualElement" class="resource-icon" style="background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/metal.png?fileID=2800000&amp;guid=2998acfe829d44345ba68b5366ad8737&amp;type=3#metal&quot;);"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
 </ui:UXML>
