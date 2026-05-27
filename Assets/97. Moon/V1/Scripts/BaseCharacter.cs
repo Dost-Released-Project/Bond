@@ -325,24 +325,45 @@ public partial class BaseCharacter : ITurnUseUnit
         var reaction = execution.Reaction;
         SkillBase skill = Skills[reaction.SkillIndex];
 
-        BattleContext battleContext = CreateBattleContext(skill);
-        battleContext.isReaction = true;
-        battleContext.target = reaction.ReactionSkillTarget switch
-        {
-            E_TargetFilter.Caster   => context.caster,
-            E_TargetFilter.Target   => context.target,
-            E_TargetFilter.Observed => execution.MatchedSubject,
-            _ => context.target,
-        };
+        Debug.Log($"<color=lightblue>{Name} 리액션 시작!</color>");
 
         if (onBattleAction != null)
         {
-            Debug.Log($"<color=lightblue>{Name} 리액션 시작!</color>");
-            await onBattleAction.Invoke(battleContext);
-            Debug.Log($"<color=lightblue>{Name} 리액션 완료!</color>");
+            foreach (var target in ResolveReactionTargets(execution, context))
+            {
+                if (target == null) continue;
+
+                BattleContext battleContext = CreateBattleContext(skill);
+                battleContext.isReaction = true;
+                battleContext.target = target;
+                await onBattleAction.Invoke(battleContext);
+            }
         }
 
-        await UniTask.Delay(1000); // 턴 종료 딜레이
+        Debug.Log($"<color=lightblue>{Name} 리액션 완료!</color>");
+        await UniTask.Delay(1000); // 연출 마무리 — 한 리액션 당 1회
+    }
+
+    private static IEnumerable<BaseCharacter> ResolveReactionTargets(ReactionExecution execution, BattleContext context)
+    {
+        var reaction = execution.Reaction;
+        switch (reaction.ReactionSkillTarget)
+        {
+            case E_TargetFilter.Caster:
+                yield return context.caster;
+                yield break;
+            case E_TargetFilter.Target:
+                yield return context.target;
+                yield break;
+            case E_TargetFilter.Observed:
+                if (execution.MatchedSubjects != null)
+                    foreach (var s in execution.MatchedSubjects)
+                        yield return s;
+                yield break;
+            default:
+                yield return context.target;
+                yield break;
+        }
     }
 
     private BattleContext CreateBattleContext(SkillBase skill)

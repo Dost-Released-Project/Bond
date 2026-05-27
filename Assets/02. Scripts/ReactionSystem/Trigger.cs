@@ -8,6 +8,13 @@ using UnityEngine.Serialization;
 
 namespace Reactions
 {
+    public enum E_ReactionPhase
+    {
+        None,      // 미지정 — 발화하지 않음 (의식적 선택 강제)
+        PreApply,  // ApplyStep 이전 (원본 행동에 영향)
+        PostApply, // ApplyStep 이후 (원본 행동의 후속)
+    }
+
     public enum E_ObserveFilter
     {
         Self,

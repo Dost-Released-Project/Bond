@@ -198,21 +198,23 @@ namespace PipeLine
     [System.Serializable]
     public class ReactionCall : IPipeLineStep<BattleContext>
     {
+        public E_ReactionPhase Phase = E_ReactionPhase.None;
+
         private ReactionSystem reactionSystem;
 
         public void SetReactionSystem(ReactionSystem reactionSystem)
         {
             this.reactionSystem = reactionSystem;
         }
-        
+
         public async UniTask<BattleContext> Execute(BattleContext context)
         {
-            if (context.target == null || context.target.IsDead) return context;
+            if (context.target == null) return context;
 
-            Debug.Log("Executing ReactionCall");
+            Debug.Log($"Executing ReactionCall [{Phase}]");
             if (reactionSystem != null)
             {
-                var executions = reactionSystem.Resolve(context);
+                var executions = reactionSystem.Resolve(context, Phase);
                 foreach (var execution in executions)
                 {
                     Debug.Log($"<color=yellow>Reaction:\n" +

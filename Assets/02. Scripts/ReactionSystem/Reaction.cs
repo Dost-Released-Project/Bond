@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using BattleSystem;
-using PipeLine;
+using System.Linq;
 using UnityEngine;
 
 namespace Reactions
@@ -16,24 +15,27 @@ namespace Reactions
     public class ReactionExecution : IComparable<ReactionExecution>
     {
         public BaseCharacter Agent;
-        public BaseCharacter MatchedSubject;
+        public IReadOnlyList<BaseCharacter> MatchedSubjects;
         public Reaction Reaction;
         public ReactionResult Result = ReactionResult.Success;
 
-        public ReactionExecution(BaseCharacter agent, Reaction reaction, ReactionResult result, BaseCharacter matchedSubject)
+        public ReactionExecution(BaseCharacter agent, Reaction reaction, ReactionResult result, IReadOnlyList<BaseCharacter> matchedSubjects)
         {
             Agent = agent;
             Reaction = reaction;
             Result = result;
-            MatchedSubject = matchedSubject;
+            MatchedSubjects = matchedSubjects;
         }
 
         public int CompareTo(ReactionExecution other) => other.Agent.Speed.CompareTo(Agent.Speed);
 
         public override string ToString()
         {
+            var subjects = (MatchedSubjects == null || MatchedSubjects.Count == 0)
+                ? "-"
+                : string.Join(", ", MatchedSubjects.Select(s => s?.Name ?? "?"));
             return $"Agent: {Agent.Name}\n" +
-                   $"Matched: {MatchedSubject?.Name ?? "-"}\n" +
+                   $"Matched: {subjects}\n" +
                    $"Trigger: {Reaction.Trigger.Description}";
         }
     }
@@ -41,63 +43,11 @@ namespace Reactions
     [Serializable]
     public class Reaction
     {
+        public E_ReactionPhase Phase = E_ReactionPhase.None;
         public E_ObserveFilter ObserveFilter = E_ObserveFilter.Self;
         public string SubjectCharacterId; // ObserveFilter == Specific 일 때만 사용
         [SerializeReference, SubclassSelector] public ITrigger Trigger;
         public int SkillIndex; // 반응으로 실행할 스킬의 인덱스
         public E_TargetFilter ReactionSkillTarget;
-
-        /// <summary>
-        /// 후보들 중 조건을 만족하는 모든 캐릭터를 반환합니다. 한 명도 만족하지 않으면 비어있는 시퀀스.
-        /// </summary>
-        public IEnumerable<BaseCharacter> Match(BaseCharacter owner, BattleContext context, IEnumerable<BaseCharacter> participants)
-        {
-            if (Trigger == null) yield break;
-
-            foreach (var candidate in ResolveSubjects(owner, participants))
-            {
-                if (Trigger.CheckCondition(candidate, context))
-                    yield return candidate;
-            }
-        }
-
-        private IEnumerable<BaseCharacter> ResolveSubjects(BaseCharacter owner, IEnumerable<BaseCharacter> participants)
-        {
-            switch (ObserveFilter)
-            {
-                case E_ObserveFilter.Self:
-                    if (owner != null) yield return owner;
-                    yield break;
-
-                case E_ObserveFilter.Specific:
-                    if (!string.IsNullOrEmpty(SubjectCharacterId)
-                        && BaseCharacter.Dict.TryGetValue(SubjectCharacterId, out var specific))
-                        yield return specific;
-                    yield break;
-
-                case E_ObserveFilter.Ally:
-                case E_ObserveFilter.OtherAlly:
-                case E_ObserveFilter.Enemy:
-                    var ownerSide = owner?.CurrentSlot?.side;
-                    if (ownerSide == null) yield break;
-
-                    foreach (var c in participants)
-                    {
-                        if (c == null || c.IsDead) continue;
-                        var cSide = c.CurrentSlot?.side;
-                        if (cSide == null) continue;
-
-                        bool match = ObserveFilter switch
-                        {
-                            E_ObserveFilter.Ally => cSide == ownerSide,
-                            E_ObserveFilter.OtherAlly => cSide == ownerSide && c != owner,
-                            E_ObserveFilter.Enemy => cSide != ownerSide,
-                            _ => false,
-                        };
-                        if (match) yield return c;
-                    }
-                    yield break;
-            }
-        }
     }
 }

@@ -15,39 +15,11 @@ namespace Reactions
         GreaterThan,
         GreaterOrEqual,
     }
-    
+
     public interface ICondition
     {
         bool IsMet(object args);
         string Description { get; }
-        
-        // bool IsMet(E_CompareFilter coFilter, E_ObserveFilter obFilter, BaseCharacter observer, BattleContext context, BaseCharacter subject);
-        // IEnumerable<BaseCharacter> GetTargets(E_CompareFilter coFilter, E_ObserveFilter obFilter, BaseCharacter observer, BattleContext context, BaseCharacter subject);
-    }
-
-    public static class TriggerTargetComparer
-    {
-        public static IEnumerable<BaseCharacter> Compare(E_TargetFilter coFilter, E_ObserveFilter obFilter, BaseCharacter observer, BattleContext context, BaseCharacter subject)
-        {
-            List<BaseCharacter> compareTarget = coFilter switch
-            {
-                E_TargetFilter.Caster => new() { context.caster },
-                E_TargetFilter.Target => context.target != null ? new() { context.target } : new(),
-                _ => new List<BaseCharacter>()
-            };
-
-            List<BaseCharacter> observeTarget = obFilter switch
-            {
-                E_ObserveFilter.Self => new List<BaseCharacter>(){observer,},
-                E_ObserveFilter.Specific => new List<BaseCharacter>(){subject},
-                _ => new List<BaseCharacter>(){subject}
-            };
-
-            return compareTarget.Intersect(observeTarget);
-        }
-
-        public static bool IsThere(E_TargetFilter target, E_ObserveFilter filter, BaseCharacter observer, BattleContext context, BaseCharacter subject)
-            => Compare(target, filter, observer, context, subject).Any();
     }
 
     public abstract class ReactionTriggerCondition : ICondition
