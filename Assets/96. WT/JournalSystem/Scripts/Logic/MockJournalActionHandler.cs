@@ -14,6 +14,7 @@ namespace Bond.WT.Journal
             
             // 실제 프로덕션에서 동작해야 하는 구체적인 액션 키들은 가로채지 않도록 예외 처리
             if (actionKey == "ACTION_RETURN_MAP") return false;
+            if (actionKey == "CAMP_END") return false;
 
             // 그 외 테스트용이거나 미구현된 키들에 대해서만 반응하여 로그 출력
             return true;

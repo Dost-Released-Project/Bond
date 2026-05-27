@@ -20,13 +20,15 @@ namespace Bond.WT.Camping
 
         protected override void Configure(IContainerBuilder builder)
         {
+            Debug.Log($"<color=orange>[CampingStageEntry]</color> Configure 시작 - 씬 내 슬롯 개수: {(_slots != null ? _slots.Length : 0)}");
+
             // 캐릭터 아이템 사용 및 장착 서비스
             builder.Register<CharacterItemService>(Lifetime.Singleton);
             // 아이템 이동 서비스
             builder.Register<InventoryTransferService>(Lifetime.Singleton);
             // 캐릭터 선택 지정
             builder.Register<CharacterSelector>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            
+
             // 탐사 인벤토리 UI
             builder.RegisterComponentInHierarchy<ExpeditionInventoryView>();
             // 장신구 슬롯 UI
@@ -36,22 +38,19 @@ namespace Bond.WT.Camping
             // 캠핑 시스템 및 핸들러 등록
             builder.Register<CampingSystem>(Lifetime.Scoped);
             builder.Register<CampingJournalActionHandler>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
-            
+
             // 진영(포메이션) 등록
             builder.Register<FormationManager>(Lifetime.Scoped).As<IFormationManager>();
             if (_slots != null)
             {
                 builder.RegisterInstance(_slots);
             }
-            
-            // UI 등록
-            if (_journalUIView != null)
-            {
-                builder.RegisterComponent<IJournalVisualizer>(_journalUIView);
-            }
 
-            builder.RegisterEntryPoint<CampingStageRunner>();
-            
+            // UI 등록
+            builder.RegisterJournalUI(_journalUIView);
+
+            builder.RegisterEntryPoint<CampingStageRunner>().AsSelf();
+
             // 캐릭터 전투 UI
             builder.Register<CharacterDetailController>(Lifetime.Scoped);
             builder.RegisterComponentInHierarchy<CharacterDetailPresenter>();
@@ -79,23 +78,12 @@ namespace Bond.WT.Camping
             _visualizer = visualizer;
             _formationManager = formationManager;
             _payload = payload;
+
+            campingSystem.AddHander(actionHandler);
         }
 
         public void Start()
         {
-            // UI 클릭 이벤트 바인딩
-            if (_visualizer != null)
-            {
-                _visualizer.OnOptionSelected = (option) => 
-                {
-                    if (_actionHandler.CanHandle(option.actionKey))
-                    {
-                        var report = new JournalReport();
-                        _actionHandler.ExecuteAction(option.actionKey, report).Forget();
-                    }
-                };
-            }
-
             // 캐릭터 모델 슬롯 배치
             if (_payload != null && _payload.Party != null)
             {

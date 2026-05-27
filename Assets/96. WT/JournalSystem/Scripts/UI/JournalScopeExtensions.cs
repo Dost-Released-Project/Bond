@@ -34,9 +34,9 @@ namespace Bond.WT.Journal
                     Debug.LogWarning("[JournalScopeExtensions] JournalUIView 프리팹이 연결되지 않았고, 씬에도 존재하지 않습니다.");
                 }
             }
-
+            Debug.Log("dddd");
             // Binder는 씬 스코프 단위로 등록되어 씬 파괴 시 함께 Dispose() 됨 -> 구독 안전 해제
-            builder.RegisterEntryPoint<JournalBinder>(Lifetime.Scoped);
-        }
+            builder.RegisterEntryPoint<JournalBinder>(Lifetime.Scoped).AsSelf();
+            }
     }
 }

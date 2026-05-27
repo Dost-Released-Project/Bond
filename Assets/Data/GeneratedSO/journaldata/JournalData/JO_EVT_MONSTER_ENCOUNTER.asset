@@ -21,6 +21,8 @@ MonoBehaviour:
   _options:
   - text: "\uACF5\uACA9\uD55C\uB2E4."
     actionKey: Attack
+    _isDisabled: 0
   - text: "\uBC29\uC5B4\uD55C\uB2E4."
     actionKey: Defend
+    _isDisabled: 0
   _entryIconId: 

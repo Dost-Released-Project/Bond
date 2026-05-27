@@ -7,10 +7,10 @@
 	05									
 (string)	(string)	(enum)	(string)	(string)						
 ID	BuildingName	BuildingType	Description	SpritePath						
-09000000	창고	Storage	대량의 물품을 저장합니다.	Sprite/Build/Storage						
-09010000	주점	Tavern	스트레스를 감소시킵니다.	Sprite/Build/Tavern						
-09020000	여관	Inn	체력을 회복합니다.	Sprite/Build/Inn						
-09030000	조합	Guild	수집된 자원을 획득합니다.	Sprite/Build/Guild						
-09040000	대장간	Smithy	장비를 강화합니다.	Sprite/Build/Smithy						
-09050000	왕실 보급소	Supply	왕실의 보급품을 받습니다.	Sprite/Build/Supply						
-09060000	마차	Carriage	탐사 가방의 용량을 늘어납니다.	Sprite/Build/Carriage						
+09000000	창고	Storage	대량의 물품을 저장할 수 있습니다.	Sprite/Build/Storage						
+09010000	주점	Tavern	스트레스를 감소시킬 수 있습니다.	Sprite/Build/Tavern						
+09020000	여관	Inn	체력을 회복할 수 있습니다.	Sprite/Build/Inn						
+09030000	조합	Guild	일정량의 자원을 획득할 수 있습니다.	Sprite/Build/Guild						
+09040000	대장간	Smithy	장비를 강화할 수 있습니다.	Sprite/Build/Smithy						
+09050000	왕실 보급소	Supply	왕실의 보급품을 받을 수 있습니다.	Sprite/Build/Supply						
+09060000	마차	Carriage	더 많은 물품을 움직일 수 있습니다.	Sprite/Build/Carriage						

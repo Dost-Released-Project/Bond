@@ -22,6 +22,8 @@ MonoBehaviour:
   _options:
   - text: "\uB4E4\uC5B4\uAC04\uB2E4."
     actionKey: Enter
+    _isDisabled: 0
   - text: "\uC9C0\uB098\uCE5C\uB2E4."
     actionKey: Pass
+    _isDisabled: 0
   _entryIconId: 

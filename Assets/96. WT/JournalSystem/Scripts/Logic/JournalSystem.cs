@@ -13,7 +13,7 @@ namespace Bond.WT.Journal
     {
         private readonly JournalModel _model;
         private readonly List<IJournalContentProvider> _providers = new List<IJournalContentProvider>();
-        private readonly IReadOnlyList<IJournalActionHandler> _actionHandlers;
+        private readonly List<IJournalActionHandler> _actionHandlers = new();
 
         [Inject]
         public JournalSystem(JournalModel model, IReadOnlyList<IJournalContentProvider> providers, IReadOnlyList<IJournalActionHandler> actionHandlers)
@@ -23,7 +23,19 @@ namespace Bond.WT.Journal
             {
                 _providers.AddRange(providers);
             }
-            _actionHandlers = actionHandlers;
+            if (actionHandlers != null)
+            {
+                _actionHandlers.AddRange(actionHandlers);
+            }
+        }
+        
+        // 동적 추가 메서드
+        public void AddActionHandler(IJournalActionHandler handler)
+        {
+            if (handler != null)
+            {
+                _actionHandlers.Add(handler);
+            }
         }
 
         public void AddProvider(IJournalContentProvider provider)
