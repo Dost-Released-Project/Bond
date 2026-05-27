@@ -15,7 +15,7 @@ namespace Bond.Expedition
     {
         // 마을 씬 → 탐사 씬으로 넘기는 데이터 컨테이너
 
-        public IReadOnlyList<BaseCharacter> Party { get; private set; }
+        public IReadOnlyList<BaseCharacter> Party { get; private set; } = new List<BaseCharacter>();
         public ExpeditionInventory Supplies { get; private set; } = new ExpeditionInventory(ExpeditionInventory.PeekInventoryCapacity("exp_inv", 2));
         public string DungeonId { get; private set; }
 

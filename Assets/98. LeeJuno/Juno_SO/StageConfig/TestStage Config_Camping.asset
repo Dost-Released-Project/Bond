@@ -18,5 +18,5 @@ MonoBehaviour:
   Type: 3
   Icon: {fileID: 0}
   IconAddress: GodOfNormalization
-  SceneAddress: 
+  SceneAddress: Stage_Camp
   NodeColor: {r: 1, g: 1, b: 1, a: 1}

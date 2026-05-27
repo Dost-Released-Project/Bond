@@ -16,6 +16,10 @@ public interface IInventory
 
     List<InventorySlot> GetAll();
     
+    // --- 아이템 소모 ---
+    bool ConsumeItem(string itemId, int quantity);
+    bool ConsumeItemByType(ConsumableType type, int quantity);
+    
     InventorySlot GetSlot(int index);
     int Capacity { get; }
 
