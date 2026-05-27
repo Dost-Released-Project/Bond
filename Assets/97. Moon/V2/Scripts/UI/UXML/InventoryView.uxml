@@ -1,0 +1,17 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/97.%20Moon/V2/Scripts/UI/Inventory/inventory-list-item.uss?fileID=7433441132597879392&amp;guid=24fa4d010a7d9f846b5126ad4d064514&amp;type=3#inventory-list-item"/>
+    <Style src="project://database/Assets/97.%20Moon/V2/Scripts/UI/USS/InventoryViewStyle.uss?fileID=7433441132597879392&amp;guid=aafd3286e814b9c419d4f5a9164ef5f8&amp;type=3#InventoryViewStyle"/>
+    <ui:VisualElement name="inventory-container" style="top: 100px; left: 50px;">
+        <ui:VisualElement class="inventory-tab-bar">
+            <ui:Button text="Sort" name="btn-sort"/>
+            <ui:Button text="Consume" name="btn-filter-consumable"/>
+            <ui:Button text="Equip" name="btn-filter-accessory"/>
+            <ui:Button text="All" name="btn-filter-all"/>
+        </ui:VisualElement>
+        <ui:ScrollView name="total-inventory-grid" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" mode="Vertical">
+            <ui:VisualElement name="total-grid" style="flex-grow: 1; flex-direction: row; flex-wrap: wrap; align-items: flex-start; width: 500px; height: 600px; left: auto;"/>
+        </ui:ScrollView>
+        <ui:Button text="" name="btn-close" picking-mode="Position" style="background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/close-x.png?fileID=2800000&amp;guid=fca488c12ed21e747bd5ba7a7485df0f&amp;type=3#close-x&quot;);"/>
+        <ui:TextField label="Search" placeholder-text="filler text" name="inventory-search" style="color: rgb(150, 150, 150);"/>
+    </ui:VisualElement>
+</ui:UXML>
