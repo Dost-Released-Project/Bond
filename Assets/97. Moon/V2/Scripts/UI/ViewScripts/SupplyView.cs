@@ -37,7 +37,7 @@ public class SupplyView : MonoBehaviour
         // 3. 💥 [리더님 기획] 마우스 호버(MouseEnter / MouseLeave) 실시간 툴팁 연동 배선작업
         BindHoverEvents("btn-reinforce", "증원 요청", "새로운 탐사대원을 고용합니다.", 300);
         BindHoverEvents("btn-normal", "일반 보급품 요청", "일반 소모품을 요청합니다.", 100);
-        BindHoverEvents("btn-special", "특수 보급품 수령", "정신 각성제를 요청합니다.", 500);
+        BindHoverEvents("btn-special", "특제 보급품 요청", "정신 각성제를 요청합니다.", 500);
 
         ResetInfoPanel();
     }

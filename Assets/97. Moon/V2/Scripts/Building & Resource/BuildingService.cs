@@ -41,18 +41,18 @@ public class BuildingService
     }
 
     // SettlementManager에서 이관된 캐릭터 상호작용 로직
-    public void ExecuteTavern(BaseCharacter target, BuildingLevelData data)
-    {
-        if (target == null) return;
-        target.RecoverHp(data.effectValue);
-        Debug.Log($"[BuildingService] 식당 이용: {data.effectValue} HP 회복");
-    }
-
     public void ExecuteInn(BaseCharacter target, BuildingLevelData data)
     {
         if (target == null) return;
+        target.RecoverHp(data.effectValue);
+        Debug.Log($"[BuildingService] 여관 이용: {data.effectValue} HP 회복");
+    }
+
+    public void ExecuteTavern(BaseCharacter target, BuildingLevelData data)
+    {
+        if (target == null) return;
         target.RecoverInsanity(data.effectValue);
-        Debug.Log($"[BuildingService] 여관 이용: {data.effectValue} 스트레스 회복");
+        Debug.Log($"[BuildingService] 주점 이용: {data.effectValue} 스트레스 회복");
     }
 
     public void UpgradeEquipment(BaseCharacter target, Equipment equipment, int smithyLevel)
