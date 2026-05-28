@@ -28,16 +28,26 @@ public class MapUIController : MonoBehaviour
     private IStageLoader _stageLoader;
     private ISpriteLoader _spriteLoader;
     private JournalSystem _journalSystem;
+    private JournalModel _journalModel;
+    private EventLogAccumulator _logAccumulator;
     private MapData _cachedMapData;
 
     /// <summary>VContainer가 의존성을 주입하는 메서드.</summary>
     [Inject]
-    public void Construct(IMapNavigator navigator, IStageLoader stageLoader, ISpriteLoader spriteLoader, JournalSystem journalSystem)
+    public void Construct(
+        IMapNavigator navigator,
+        IStageLoader stageLoader,
+        ISpriteLoader spriteLoader,
+        JournalSystem journalSystem,
+        JournalModel journalModel,
+        EventLogAccumulator logAccumulator)
     {
         _navigator = navigator;
         _stageLoader = stageLoader;
         _spriteLoader = spriteLoader;
         _journalSystem = journalSystem;
+        _journalModel = journalModel;
+        _logAccumulator = logAccumulator;
         _navigator.OnNodeEntered += OnNodeEntered;
         _stageLoader.OnStageCompleted += HandleStageCompleted;
     }
@@ -103,11 +113,57 @@ public class MapUIController : MonoBehaviour
         // 결과 연출 (승리/패배) 판단은 추후 FlowManager 혹은 상위 레벨에서 처리
 
         _mapView.RefreshNodeStates();
-
-        // Provider가 씬 언로드(Dispose) 전에 이번 탐사의 일지를 수집한다.
-        _journalSystem?.CollectDailyLogs();
-
         UnloadAndShowMapAsync().Forget();
+    }
+
+    /// <summary>
+    /// 디버그용 키 입력 처리.
+    /// '1' 키: JournalModel에 적재된 리포트를 JournalUIView로 표시한다.
+    /// </summary>
+    private void Update()
+    {
+        if (UnityEngine.InputSystem.Keyboard.current == null)
+        {
+            return;
+        }
+
+        if (UnityEngine.InputSystem.Keyboard.current.digit1Key.wasPressedThisFrame)
+        {
+            TryShowJournalUI();
+        }
+    }
+
+    /// <summary>
+    /// 1번 키 입력 시 호출.
+    /// EventLogAccumulator에 누적된 전체 이벤트 이력을 처음부터 JournalUIView로 표시한다.
+    /// 열람 후에도 누적 이력은 지워지지 않는다.
+    /// </summary>
+    private void TryShowJournalUI()
+    {
+        if (_journalModel == null)
+            return;
+
+        // 이미 일지 팝업이 열려 있는 경우 중복 열기를 방지한다
+        if (_journalModel.IsJournalComplete.Value == false)
+            return;
+
+        if (_logAccumulator == null || _logAccumulator.HasLogs == false)
+        {
+            Debug.Log("[MapUIController] 표시할 이벤트 이력이 없습니다.");
+            return;
+        }
+
+        // ObservableValue equality 방어:
+        // 이전과 동일한 텍스트가 CurrentParagraph에 남아 있을 경우 Observer가 발동하지 않으므로
+        // 먼저 빈 문자열로 리셋한다. JournalBinder는 빈 문자열에는 반응하지 않으므로 안전하다.
+        _journalModel.CurrentParagraph.Value = string.Empty;
+
+        // AllLogs를 JournalModel에 재적재하고 첫 페이지부터 표시한다.
+        // SetReports()가 IsJournalComplete를 false로 설정하고,
+        // TryNextReport()가 UpdatePageState()를 통해 CurrentParagraph를 갱신한다.
+        // JournalBinder._paragraphObserver가 발동해 SetVisible(true)와 ShowText()를 처리한다.
+        _journalModel.SetReports(_logAccumulator.AllLogs);
+        _journalModel.TryNextReport();
     }
 
     private async UniTaskVoid LoadStageAsync(MapNode node)
@@ -127,7 +183,14 @@ public class MapUIController : MonoBehaviour
     {
         try
         {
+            // 이벤트/전투 씬 언로드 (이 시점에 EventJournalProvider.Dispose()가 실행되어
+            // 버퍼가 EventLogAccumulator로 플러시된다)
             await _stageLoader.UnloadCurrentStage();
+
+            // 자동 팝업 표시 흐름 제거:
+            // CollectDailyLogs() 호출 및 WaitUntil 블로킹을 모두 제거한다.
+            // 이력 열람은 1번 키 입력을 통해서만 가능하다.
+
             ShowMap(_cachedMapData);
         }
         catch (Exception e)

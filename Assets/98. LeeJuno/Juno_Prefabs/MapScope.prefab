@@ -45,8 +45,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapLifetimeScope
   parentReference:
-    TypeName: RootVContainer.RootScope
+    TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
   _mapUIController: {fileID: 0}
   _journalUIPrefab: {fileID: 2408579647488794321, guid: e972ad374caaa0443aa796b971b1ffc9, type: 3}
+  _activityLogPopupViewPrefab: {fileID: 8791424921936089872, guid: 4c47773e33ab4944d9a60343cd6bc2f5, type: 3}
