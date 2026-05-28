@@ -91,21 +91,18 @@ namespace Reactions
                     execution.MatchedSubjects == null ? new[] { "-" } : execution.MatchedSubjects.ConvertToNames());
                 sb.AppendLine($"{execution.Agent.Name} | Speed: {execution.Agent.Speed} | Matched: {subjects}");
             }
-            
-            if (executions.Count != 0)
-            {
-                Debug.Log($"<color=lightblue>" +
-                          $"Reaction Count [{phase}]: {executions.Count}\n" +
-                          $"{sb.ToString()}</color>\n\n" + 
-                          $"BattleContext:\n" +
-                          $"Caster: {context.caster?.Name}\n" +
-                          $"Target: {context.target?.Name}\n" +
-                          $"Skill: {context.runtimeSkill.Data.DisplayName}\n" +
-                          $"SkillType: {context.runtimeSkill.Data.Type}\n" +
-                          $"IsCritical: {context.isCritical}\n" +
-                          $"IsEvaded: {context.isEvaded}\n" +
-                          $"</color>");
-            }
+
+            Debug.Log($"<color=lightblue>" +
+                      $"Reaction Count [{phase}]: {executions.Count}\n" +
+                      $"{sb.ToString()}\n" +
+                      $"BattleContext:\n" +
+                      $"Caster: {context.caster?.Name}\n" +
+                      $"Target: {context.target?.Name}\n" +
+                      $"Skill: {context.runtimeSkill.Data.DisplayName}\n" +
+                      $"SkillType: {context.runtimeSkill.Data.Type}\n" +
+                      $"IsCritical: {context.isCritical}\n" +
+                      $"IsEvaded: {context.isEvaded}\n" +
+                      $"</color>");
 
             return executions.AsReadOnly();
         }

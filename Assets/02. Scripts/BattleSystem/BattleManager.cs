@@ -217,7 +217,7 @@ namespace BattleSystem
 
         private void HandleCharacterDeath(BaseCharacter deadCharacter)
         {
-            Debug.Log($"<color=gray>[BattleManager] {deadCharacter.Name} 사망 처리: 진영에서 제거 및 타겟팅 제외</color>");
+            Debug.Log($"<color=grey>[BattleManager] {deadCharacter.Name} 사망 처리: 진영에서 제거 및 타겟팅 제외</color>");
             m_formationManager.ClearCharacter(deadCharacter);
         }
         #endregion
