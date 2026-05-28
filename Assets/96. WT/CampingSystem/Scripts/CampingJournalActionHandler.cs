@@ -9,48 +9,52 @@ namespace Bond.WT.Camping
     {
         private readonly ExpeditionPayload _payload;
         private readonly CampingSystem _campingSystem;
+        private readonly JournalSystem _journalSystem;
 
-        public CampingJournalActionHandler(ExpeditionPayload payload, CampingSystem campingSystem)
+        public CampingJournalActionHandler(ExpeditionPayload payload, CampingSystem campingSystem, JournalSystem journalSystem)
         {
             _payload = payload;
             _campingSystem = campingSystem;
+            _journalSystem = journalSystem;
         }
 
         public bool CanHandle(string actionKey)
         {
-            return actionKey.StartsWith("CAMP_REST_HP_") || 
-                   actionKey.StartsWith("CAMP_REST_INSANITY_") || 
-                   actionKey == "CAMP_END_MAINTENANCE";
+            return actionKey.StartsWith("CAMP_ACTION|") || 
+                   actionKey == "CAMP_END";
         }
 
         public async UniTask ExecuteAction(string actionKey, JournalReport report)
         {
-            if (actionKey == "CAMP_END_MAINTENANCE")
+            Debug.Log($"[CampingJournalActionHandler] 액션 실행 시작: {actionKey}");
+            if (actionKey == "CAMP_END")
             {
-                _campingSystem.EndCamping();
+                _campingSystem.ExecuteFinalExit();
                 return;
             }
 
-            if (actionKey.StartsWith("CAMP_REST_HP_"))
+            if (actionKey.StartsWith("CAMP_ACTION|"))
             {
-                int index = int.Parse(actionKey.Replace("CAMP_REST_HP_", ""));
-
-                bool consumed = _payload.Supplies.ConsumeItemByType(ConsumableType.Bandage, 1);
-                if (consumed)
+                string[] parts = actionKey.Split('|');
+                if (parts.Length == 3)
                 {
-                    var chara = GetCharacter(index);
-                    if (chara != null) chara.RecoverHp(20); // 기획에 따라 회복량 조절 가능
-                }
-            }
-            else if (actionKey.StartsWith("CAMP_REST_INSANITY_"))
-            {
-                int index = int.Parse(actionKey.Replace("CAMP_REST_INSANITY_", ""));
-
-                bool consumed = _payload.Supplies.ConsumeItemByType(ConsumableType.Sedative, 1);
-                if (consumed)
-                {
-                    var chara = GetCharacter(index);
-                    if (chara != null) chara.RecoverInsanity(20); // 기획에 따라 회복량 조절 가능
+                    int index = int.Parse(parts[1]);
+                    if (System.Enum.TryParse<ConsumableType>(parts[2], out var type))
+                    {
+                        var chara = GetCharacter(index);
+                        if (chara != null)
+                        {
+                            var targetSlot = _payload.Supplies.GetAll().Find(s => !s.IsEmpty && s.item is ConsumableItem c && c.consumableType == type);
+                            if (targetSlot != null && targetSlot.item is ConsumableItem consumable)
+                            {
+                                bool consumed = _payload.Supplies.ConsumeItemByType(type, 1);
+                                if (consumed)
+                                {
+                                    consumable.Use(chara);
+                                }
+                            }
+                        }
+                    }
                 }
             }
 

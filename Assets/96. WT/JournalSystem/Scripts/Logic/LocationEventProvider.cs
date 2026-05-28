@@ -21,7 +21,8 @@ namespace Bond.WT.Journal
             public string LocationName;
             public string FoundItemName;
             public string ItemId;
-            public int Quantity; // 새로 추가
+            public int Quantity;
+            public List<JournalOption> CustomOptions; // 추가
         }
         private readonly List<DiscoveryEvent> _eventBuffer = new List<DiscoveryEvent>();
 
@@ -33,7 +34,7 @@ namespace Bond.WT.Journal
         /// <summary>
         /// 테스트용 데이터 설정 (이벤트 발생 시뮬레이션)
         /// </summary>
-        public void SetDiscovery(string eventId, string location, string item, string itemId = null, int quantity = 1)
+        public void SetDiscovery(string eventId, string location, string item, string itemId = null, int quantity = 1, List<JournalOption> customOptions = null)
         {
             _eventBuffer.Add(new DiscoveryEvent 
             { 
@@ -41,7 +42,8 @@ namespace Bond.WT.Journal
                 LocationName = location, 
                 FoundItemName = item,
                 ItemId = itemId,
-                Quantity = quantity
+                Quantity = quantity,
+                CustomOptions = customOptions
             });
         }
 
@@ -63,15 +65,18 @@ namespace Bond.WT.Journal
                 var assembledParagraphs = new List<string>();
                 foreach (var para in template.Paragraphs)
                 {
-                    assembledParagraphs.Add(string.Format(para, evt.LocationName, evt.FoundItemName));
+                    // 파라미터가 있을 때만 Format 수행 (캠핑 데이터 등 파라미터 없는 경우 대응)
+                    string text = para;
+                    if (para.Contains("{0}")) text = string.Format(para, evt.LocationName, evt.FoundItemName);
+                    assembledParagraphs.Add(text);
                 }
 
                 var report = new JournalReport
                 {
-                    Title = "탐색 보고",
+                    Title = template.Id.Contains("CAMP") ? "캠핑 정비" : "탐색 보고",
                     Paragraphs = assembledParagraphs,
                     IconId = template.EntryIconId,
-                    Options = template.Options.ToList(),
+                    Options = evt.CustomOptions ?? template.Options.ToList(), // 커스텀 옵션 우선 사용
                     ProviderId = "LocationEvent"
                 };
 

@@ -21,6 +21,8 @@ MonoBehaviour:
   _options:
   - text: "\uC774\uC720\uB97C \uBB3B\uB294\uB2E4."
     actionKey: Ask
+    _isDisabled: 0
   - text: "\uC704\uB85C\uD55C\uB2E4."
     actionKey: Comfort
+    _isDisabled: 0
   _entryIconId: 

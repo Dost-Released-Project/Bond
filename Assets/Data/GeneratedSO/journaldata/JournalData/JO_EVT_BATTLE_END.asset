@@ -21,4 +21,5 @@ MonoBehaviour:
   _options:
   - text: "\uB9F5\uC73C\uB85C \uB3CC\uC544\uAC00\uAE30"
     actionKey: ACTION_RETURN_MAP
+    _isDisabled: 0
   _entryIconId: 

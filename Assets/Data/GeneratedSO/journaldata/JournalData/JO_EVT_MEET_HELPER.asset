@@ -21,6 +21,8 @@ MonoBehaviour:
   _options:
   - text: "\uB3D5\uB294\uB2E4."
     actionKey: Help
+    _isDisabled: 0
   - text: "\uAC70\uC808\uD55C\uB2E4."
     actionKey: Refuse
+    _isDisabled: 0
   _entryIconId: 

@@ -23,6 +23,7 @@ public class EventSceneController : MonoBehaviour
     private IEventContext _eventContext;
     private EventJournalProvider _journalProvider;
     private IReadOnlyList<IJournalActionHandler> _actionHandlers;
+    private EventLogAccumulator _logAccumulator;
     private EventData _currentEventData; // _currentEventId 대신 EventData SO 를 직접 보관 — JournalDataSO 직접 참조용
     private EventSceneState _currentState = EventSceneState.Primary;
     private EventChoice _selectedItemRewardChoice; // 2차 선택지 진입 시 선택된 ItemReward choice 보관
@@ -36,17 +37,20 @@ public class EventSceneController : MonoBehaviour
     /// <param name="eventContext">이벤트 컨텍스트 — StageLoader 가 씬 로드 직전에 기록한 이벤트 데이터.</param>
     /// <param name="journalProvider">이벤트 선택 결과를 JournalSystem 에 보고하는 Provider.</param>
     /// <param name="actionHandlers">2차 선택지 actionKey 처리 핸들러 목록.</param>
+    /// <param name="logAccumulator">런 전체 이벤트 이력 누적 저장소 — MapLifetimeScope Singleton.</param>
     [Inject]
     public void Construct(
         IEventEffectApplier effectApplier,
         IEventContext eventContext,
         EventJournalProvider journalProvider,
-        IReadOnlyList<IJournalActionHandler> actionHandlers)
+        IReadOnlyList<IJournalActionHandler> actionHandlers,
+        EventLogAccumulator logAccumulator)
     {
         _effectApplier   = effectApplier;
         _eventContext    = eventContext;
         _journalProvider = journalProvider;
         _actionHandlers  = actionHandlers;
+        _logAccumulator  = logAccumulator;
     }
 
     private void Start()
@@ -107,6 +111,10 @@ public class EventSceneController : MonoBehaviour
 
         // _choices 목록에서 선택된 choice 의 인덱스를 찾아 JournalDataSO.Options 매핑에 사용한다
         int choiceIndex = _choices != null ? _choices.IndexOf(choice) : -1;
+
+        // ItemRewardEventEffectHandler 가 HandleAsync() 에서 이벤트 이름을 참조할 수 있도록 예약한다
+        if (_currentEventData != null)
+            _logAccumulator?.SetPendingEventName(_currentEventData.DisplayName);
 
         // 이벤트 선택 결과를 JournalSystem 에 보고한다
         // _currentEventData 는 Start() 에서 _eventContext.Clear() 전에 저장한 EventData SO 참조다
@@ -199,6 +207,11 @@ public class EventSceneController : MonoBehaviour
                 }
             }
         }
+
+        // 2차 선택지 경로에서 아이템 획득 로그를 기록한다
+        // _resolvedItemId 는 OnChoiceSelectedFromView() 에서 1차 선택 시점에 확정된다
+        if (string.IsNullOrEmpty(_resolvedItemId) == false)
+            _logAccumulator?.FlushItemRewardLogById(_resolvedItemId);
 
         StageResult result = new StageResult
         {

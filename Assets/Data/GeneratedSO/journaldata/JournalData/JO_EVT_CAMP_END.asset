@@ -10,19 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5749328eeb9677b4ab026fe783bb09f2, type: 3}
-  m_Name: JO_EVT_INSPECT_PEDESTAL
+  m_Name: JO_EVT_CAMP_END
   m_EditorClassIdentifier: Assembly-CSharp::Bond.WT.Journal.JournalDataSO
-  _id: EVT_INSPECT_PEDESTAL
-  _displayName: EVT_INSPECT_PEDESTAL
+  _id: EVT_CAMP_END
+  _displayName: EVT_CAMP_END
   _description: 
-  _paragraphs:
-  - "{0} \uAE30\uB2E8 \uC704\uC5D0 {1}\uC774(\uAC00) \uB193\uC5EC \uC788\uC2B5\uB2C8\uB2E4."
-  - "\uD568\uC815\uC77C\uC9C0\uB3C4 \uBAA8\uB985\uB2C8\uB2E4."
+  _paragraphs: []
   _options:
-  - text: "\uC870\uC0AC\uD55C\uB2E4."
-    actionKey: Inspect
-    _isDisabled: 0
-  - text: "\uB9CC\uC838\uBCF8\uB2E4."
-    actionKey: Touch
+  - text: "\uB9F5\uC73C\uB85C \uB3CC\uC544\uAC00\uAE30"
+    actionKey: CAMP_END
     _isDisabled: 0
   _entryIconId: 
