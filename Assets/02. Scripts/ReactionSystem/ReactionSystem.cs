@@ -91,11 +91,13 @@ namespace Reactions
                     execution.MatchedSubjects == null ? new[] { "-" } : execution.MatchedSubjects.ConvertToNames());
                 sb.AppendLine($"{execution.Agent.Name} | Speed: {execution.Agent.Speed} | Matched: {subjects}");
             }
-            Debug.Log($"<color=red>Reaction Count [{phase}]: {executions.Count}\n" +
-                      $"{sb.ToString()}</color>");
+            
             if (executions.Count != 0)
             {
-                Debug.Log($"<color=lightblue>BattleContext:\n" +
+                Debug.Log($"<color=lightblue>" +
+                          $"Reaction Count [{phase}]: {executions.Count}\n" +
+                          $"{sb.ToString()}</color>\n\n" + 
+                          $"BattleContext:\n" +
                           $"Caster: {context.caster?.Name}\n" +
                           $"Target: {context.target?.Name}\n" +
                           $"Skill: {context.runtimeSkill.Data.DisplayName}\n" +
@@ -131,15 +133,6 @@ namespace Reactions
 
                     var seen = new HashSet<BaseCharacter>();
 
-                    // PostApply 단계에선 context의 actor가 막 죽었어도 후보로 포함 (KillCondition 등)
-                    if (phase == E_ReactionPhase.PostApply)
-                    {
-                        if (context.caster != null && TryIncludeActor(context.caster, reaction.ObserveFilter, ownerSide.Value, owner, seen))
-                            yield return context.caster;
-                        if (context.target != null && TryIncludeActor(context.target, reaction.ObserveFilter, ownerSide.Value, owner, seen))
-                            yield return context.target;
-                    }
-
                     foreach (var c in Characters)
                     {
                         if (c == null || c.IsDead) continue;
@@ -148,10 +141,22 @@ namespace Reactions
                         if (!MatchesSide(reaction.ObserveFilter, cSide.Value, ownerSide.Value, c, owner)) continue;
                         if (seen.Add(c)) yield return c;
                     }
+                    
+                    // PostApply 단계에선 context의 actor가 막 죽었어도 후보로 포함 (KillCondition 등)
+                    if (phase == E_ReactionPhase.PostApply)
+                    {
+                        if (context.caster != null && TryIncludeActor(context.caster, reaction.ObserveFilter, ownerSide.Value, owner, seen))
+                            yield return context.caster;
+                        if (context.target != null && TryIncludeActor(context.target, reaction.ObserveFilter, ownerSide.Value, owner, seen))
+                            yield return context.target;
+                    }
+                    
                     yield break;
             }
         }
 
+        // PostApply에서 context의 actor(사망 가능성 있음)를 필터 통과 시 후보 집합에 추가.
+        // seen.Add 의 반환을 그대로 돌려줘서 호출부가 중복 없이 yield 할지 결정할 수 있게 함.
         private bool TryIncludeActor(BaseCharacter actor, E_ObserveFilter filter, E_BattleSide ownerSide, BaseCharacter owner, HashSet<BaseCharacter> seen)
         {
             var actorSide = SideOf(actor);
@@ -160,6 +165,8 @@ namespace Reactions
             return seen.Add(actor);
         }
 
+        // ObserveFilter 종류별로 후보가 owner의 진영 관계에 맞는지 판정.
+        // Ally(자신 포함) / OtherAlly(자신 제외) / Enemy(반대 진영) 분기.
         private static bool MatchesSide(E_ObserveFilter filter, E_BattleSide candidateSide, E_BattleSide ownerSide, BaseCharacter candidate, BaseCharacter owner)
         {
             return filter switch

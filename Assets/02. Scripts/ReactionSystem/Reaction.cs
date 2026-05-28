@@ -45,9 +45,9 @@ namespace Reactions
     {
         public E_ReactionPhase Phase = E_ReactionPhase.None;
         public E_ObserveFilter ObserveFilter = E_ObserveFilter.Self;
-        public string SubjectCharacterId; // ObserveFilter == Specific 일 때만 사용
+        [Tooltip("ObserveFilter == Specific 일 때만 사용")] 
+        public string SubjectCharacterId;
         [SerializeReference, SubclassSelector] public ITrigger Trigger;
-        public int SkillIndex; // 반응으로 실행할 스킬의 인덱스
-        public E_TargetFilter ReactionSkillTarget;
+        [SerializeReference, SubclassSelector] public ReactionEffect Effect;
     }
 }

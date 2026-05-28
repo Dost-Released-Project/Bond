@@ -43,7 +43,7 @@ namespace Reactions
     [Serializable][AddTypeMenu("SubjectIs", -1000)]
     public class SubjectCondition: ReactionTriggerCondition
     {
-        public E_TargetFilter Filter = E_TargetFilter.None;
+        [Tooltip("Caster or Target")] public E_TargetFilter Filter = E_TargetFilter.None;
         public override bool IsMet(ReactionTriggerConditionArgs args)
         {
             var context = args.BattleContext;
@@ -85,25 +85,25 @@ namespace Reactions
     [Serializable][AddTypeMenu("SkillTypeIs", -100)]
     public class SkillTypeCondition: ReactionTriggerCondition
     {
-        public List<SkillType> Type = new List<SkillType>();
+        public List<SkillType> Types = new List<SkillType>();
         public override bool IsMet(ReactionTriggerConditionArgs args)
         {
-            return Type.Contains(args.BattleContext.runtimeSkill.Data.Type);
+            return Types.Contains(args.BattleContext.runtimeSkill.Data.Type);
         }
         
         public SkillTypeCondition() { }
 
         public SkillTypeCondition(params SkillType[] type)
         {
-            Type.AddRange(type);
+            Types.AddRange(type);
         }
 
         public override ReactionTriggerCondition Copy()
         {
-            return new SkillTypeCondition() { Type = Type };
+            return new SkillTypeCondition() { Types = Types };
         }
 
-        public override string Description => $"스킬 타입이 {Type}일 때";
+        public override string Description => $"스킬 타입이 {string.Join(" or ", Types)}일 때";
     }
 
     [Serializable]

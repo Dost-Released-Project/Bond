@@ -493,11 +493,12 @@ namespace Bond.UI
             _reactionTriggerLabels[slotIndex].EnableInClassList(
                 "char-detail__slot-part-val--placeholder", !hasTrigger);
 
-            bool hasSkill = reaction.SkillIndex >= 0
-                && reaction.SkillIndex < _character.Skills.Length
-                && _character.Skills[reaction.SkillIndex] != null;
+            int skillIndex = (reaction.Effect as SkillCastReactionEffect)?.SkillIndex ?? -1;
+            bool hasSkill = skillIndex >= 0
+                && skillIndex < _character.Skills.Length
+                && _character.Skills[skillIndex] != null;
             _reactionSkillLabels[slotIndex].text = hasSkill
-                ? GetSkillDisplayText(reaction.SkillIndex)
+                ? GetSkillDisplayText(skillIndex)
                 : "미설정";
             _reactionSkillLabels[slotIndex].EnableInClassList(
                 "char-detail__slot-part-val--placeholder", !hasSkill);
@@ -673,7 +674,7 @@ namespace Bond.UI
         private void BuildSkillChips(int slotIndex, VisualElement container)
         {
             var reaction = GetReactionAt(slotIndex);
-            int currentSkillIndex = reaction?.SkillIndex ?? -1;
+            int currentSkillIndex = (reaction?.Effect as SkillCastReactionEffect)?.SkillIndex ?? -1;
 
             var skills = _controller.GetAvailableSkills();
             if (skills.Count == 0)

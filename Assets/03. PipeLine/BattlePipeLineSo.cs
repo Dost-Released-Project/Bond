@@ -22,7 +22,9 @@ namespace PipeLine
         public bool isReaction;
 
         public float value;
-        
+
+        public BaseCharacter interceptedFor; // Intercept 발동 시 원래 보호받은 캐릭터 (연출용)
+
         public IReadOnlyList<ReactionExecution> reactions = null;
 
         // BaseCharacter가 처음에 생성할 때 사용하는 생성자
@@ -153,7 +155,7 @@ namespace PipeLine
 
             // TODO: 개별 타겟 치명타 확률 로직 (현재는 임시로 시전자 crt 사용)
             //context.isCritical = Random.Range(0f, 100f) < context.caster.Stat.crt;
-            context.isCritical = false;
+            context.isCritical = true;
             
             if (context.isCritical)
             {
@@ -211,13 +213,13 @@ namespace PipeLine
         {
             if (context.target == null) return context;
 
-            Debug.Log($"Executing ReactionCall [{Phase}]");
+            Debug.Log($"<color=lightblue>Executing ReactionCall [{Phase}]</color>");
             if (reactionSystem != null)
             {
                 var executions = reactionSystem.Resolve(context, Phase);
                 foreach (var execution in executions)
                 {
-                    Debug.Log($"<color=yellow>Reaction:\n" +
+                    Debug.Log($"<color=lightblue>Reaction:\n" +
                               $"{execution.ToString()}</color>");
                     await execution.Agent.ExecuteReaction(execution, context);
                 }

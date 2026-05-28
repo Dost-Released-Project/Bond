@@ -65,7 +65,6 @@ namespace Reactions
 
         public bool CheckCondition(BaseCharacter subject, BattleContext context)
         {
-            Debug.Log($"Checking condition {Conditions.Count}");
             return Conditions.Any() && Conditions.All(condition => condition.IsMet(new ReactionTriggerConditionArgs() { Subject = subject, BattleContext = context }));
         }
 
@@ -96,21 +95,6 @@ namespace Reactions
                 new SubjectCondition(E_TargetFilter.Target),
                 new SkillTypeCondition(SkillType.OFFENSIVE, SkillType.SPELL),
                 new HitCondition()
-            };
-        }
-    }
-
-    [Serializable]
-    public class DeathBlowTrigger : Trigger
-    {
-        public DeathBlowTrigger()
-        {
-            _condition.Essential = new List<ICondition>()
-            {
-                new SubjectCondition(E_TargetFilter.Target),
-                new SkillTypeCondition(SkillType.OFFENSIVE, SkillType.SPELL),
-                new HitCondition(),
-                new DamageCondition() { Threshold = new DamageCondition.PercentOfCurrentHpThreshold() { Ratio = 1f } }
             };
         }
     }

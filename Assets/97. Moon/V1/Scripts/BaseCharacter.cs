@@ -310,7 +310,7 @@ public partial class BaseCharacter : ITurnUseUnit
         {
             await UniTask.Delay(1000); // 턴 종료 딜레이
 
-            Debug.Log($"<color=lightblue>{Name} 행동 완료!</color>");
+            Debug.Log($"<color=green>{Name} 행동 완료!</color>");
             
             // 상태 초기화 및 클린업
             _selectedSkill = null;
@@ -322,48 +322,13 @@ public partial class BaseCharacter : ITurnUseUnit
     
     public async UniTask ExecuteReaction(ReactionExecution execution, BattleContext context)
     {
-        var reaction = execution.Reaction;
-        SkillBase skill = Skills[reaction.SkillIndex];
+        if (execution?.Reaction?.Effect == null) return;
 
         Debug.Log($"<color=lightblue>{Name} 리액션 시작!</color>");
-
-        if (onBattleAction != null)
-        {
-            foreach (var target in ResolveReactionTargets(execution, context))
-            {
-                if (target == null) continue;
-
-                BattleContext battleContext = CreateBattleContext(skill);
-                battleContext.isReaction = true;
-                battleContext.target = target;
-                await onBattleAction.Invoke(battleContext);
-            }
-        }
-
+        await execution.Reaction.Effect.Apply(this, execution, context);
         Debug.Log($"<color=lightblue>{Name} 리액션 완료!</color>");
-        await UniTask.Delay(1000); // 연출 마무리 — 한 리액션 당 1회
-    }
 
-    private static IEnumerable<BaseCharacter> ResolveReactionTargets(ReactionExecution execution, BattleContext context)
-    {
-        var reaction = execution.Reaction;
-        switch (reaction.ReactionSkillTarget)
-        {
-            case E_TargetFilter.Caster:
-                yield return context.caster;
-                yield break;
-            case E_TargetFilter.Target:
-                yield return context.target;
-                yield break;
-            case E_TargetFilter.Observed:
-                if (execution.MatchedSubjects != null)
-                    foreach (var s in execution.MatchedSubjects)
-                        yield return s;
-                yield break;
-            default:
-                yield return context.target;
-                yield break;
-        }
+        await UniTask.Delay(1000); // 연출 마무리 — 한 리액션 당 1회
     }
 
     private BattleContext CreateBattleContext(SkillBase skill)
