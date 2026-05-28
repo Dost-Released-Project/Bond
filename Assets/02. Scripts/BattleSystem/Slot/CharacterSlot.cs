@@ -30,7 +30,7 @@ namespace BattleSystem
         }      
         public void Clear()
         {
-            Occupant.CurrentSlot = null;
+            if (Occupant != null) Occupant.CurrentSlot = null;
             Occupant = null;
         }
         

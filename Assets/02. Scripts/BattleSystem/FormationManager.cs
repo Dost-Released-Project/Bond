@@ -110,14 +110,16 @@ namespace BattleSystem
                 .Select(s => s.Occupant)
                 .ToList();
 
-            for (int i = 0; i < slots.Length; i++)
+            // 모든 슬롯 초기화
+            foreach (var slot in slots)
             {
-                if (slots[i] == null) continue;
-                
-                if (i < characters.Count)
-                    slots[i].SetOccupant(characters[i]);
-                else
-                    slots[i].Clear();
+                if (slot != null) slot.Clear();
+            }
+
+            // 앞쪽 슬롯부터 차례대로 재할당
+            for (int i = 0; i < characters.Count; i++)
+            {
+                if (slots[i] != null) slots[i].SetOccupant(characters[i]);
             }
 
             m_visualizer?.PlayConsolidationEffect(side);
