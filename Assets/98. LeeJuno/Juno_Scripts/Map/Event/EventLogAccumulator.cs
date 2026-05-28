@@ -28,24 +28,7 @@ public class EventLogAccumulator
     public IReadOnlyList<JournalReport> AllLogs => _allLogs;
 
     public bool HasLogs => _allLogs.Count > 0;
-
-    /// <summary>수집된 Report 목록을 누적 저장소에 추가한다.</summary>
-    public void Accumulate(IEnumerable<JournalReport> reports)
-    {
-        if (reports == null)
-            return;
-
-        foreach (JournalReport report in reports)
-        {
-            if (report != null)
-            {
-                // 이력 열람 시 선택지 버튼이 렌더링되지 않도록 Options를 비운다.
-                // 로그는 읽기 전용이므로 재선택이 불필요하다.
-                report.Options = new List<JournalOption>();
-                _allLogs.Add(report);
-            }
-        }
-    }
+    
 
     /// <summary>
     /// ItemReward 효과 적용 직전에 이벤트 이름을 예약한다.
