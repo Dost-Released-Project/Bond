@@ -170,6 +170,54 @@ public class EventLogAccumulator
     }
 
     /// <summary>
+    /// 전투 결과를 즉시 _allLogs 에 추가한다.
+    /// monsterGroupId 로 MonsterGroupConfig 에서 그룹 표시 이름을 조회한다.
+    /// </summary>
+    /// <param name="result">StageLoader 가 수신한 전투 완료 결과.</param>
+    /// <param name="monsterGroupId">전투 상대 몬스터 그룹 ID. 없으면 string.Empty.</param>
+    public void RecordBattleResult(StageResult result, string monsterGroupId)
+    {
+        string groupDisplayName = FindMonsterGroupName(monsterGroupId);
+
+        string groupPart   = string.IsNullOrEmpty(groupDisplayName) ? "전투" : $"'{groupDisplayName}'";
+        string outcomePart = result.IsSuccess ? "승리" : "패배";
+        string logText     = $"{groupPart}에서 {outcomePart}하였습니다.";
+
+        JournalReport report = new JournalReport
+        {
+            Title      = result.IsSuccess ? "전투 승리" : "전투 패배",
+            Paragraphs = new List<string> { logText },
+            IconId     = string.Empty,
+            Options    = new List<JournalOption>(),
+            ProviderId = "BattleResult",
+        };
+
+        _allLogs.Add(report);
+    }
+
+    /// <summary>
+    /// monsterGroupId 에 대응하는 MonsterGroupData 의 DisplayName 을 반환한다.
+    /// 찾지 못하면 string.Empty 를 반환한다.
+    /// </summary>
+    private string FindMonsterGroupName(string monsterGroupId)
+    {
+        if (string.IsNullOrEmpty(monsterGroupId))
+            return string.Empty;
+
+        MonsterGroupConfig config = _mapConfigCache?.MonsterGroupConfig;
+        if (config == null || config.Groups == null)
+            return string.Empty;
+
+        foreach (MonsterGroupData group in config.Groups)
+        {
+            if (group != null && group.Id == monsterGroupId)
+                return group.DisplayName;
+        }
+
+        return string.Empty;
+    }
+
+    /// <summary>
     /// 런 종료 시 외부에서 명시적으로 호출한다.
     /// 자동 Clear는 하지 않는다.
     /// </summary>

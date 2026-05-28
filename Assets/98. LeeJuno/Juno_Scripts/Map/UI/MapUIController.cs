@@ -23,6 +23,7 @@ public class MapUIController : MonoBehaviour
 {
     [SerializeField] private MapView _mapView;
     [SerializeField] private GameObject _mapPanel;
+    [SerializeField] private UnityEngine.UI.Button _retreatButton;
 
     private IMapNavigator _navigator;
     private IStageLoader _stageLoader;
@@ -52,12 +53,28 @@ public class MapUIController : MonoBehaviour
         _stageLoader.OnStageCompleted += HandleStageCompleted;
     }
 
+    private void Start()
+    {
+        if (_retreatButton != null)
+        {
+            // 람다식: UnityEvent<> 의 AddListener 는 void 반환 메서드만 직접 전달 가능하므로
+            // 파라미터 없는 메서드를 Action 형태로 래핑하기 위해 사용
+            _retreatButton.onClick.AddListener(() => OnRetreatButtonClicked());
+        }
+        else
+        {
+            Debug.LogWarning("[MapUIController] _retreatButton 이 연결되지 않았습니다.");
+        }
+    }
+
     private void OnDestroy()
     {
         if (_navigator != null)
             _navigator.OnNodeEntered -= OnNodeEntered;
         if (_stageLoader != null)
             _stageLoader.OnStageCompleted -= HandleStageCompleted;
+        if (_retreatButton != null)
+            _retreatButton.onClick.RemoveAllListeners();
     }
 
     /// <summary>
@@ -164,6 +181,35 @@ public class MapUIController : MonoBehaviour
         // JournalBinder._paragraphObserver가 발동해 SetVisible(true)와 ShowText()를 처리한다.
         _journalModel.SetReports(_logAccumulator.AllLogs);
         _journalModel.TryNextReport();
+    }
+
+    /// <summary>
+    /// 퇴각 버튼 클릭 시 호출된다.
+    /// 현재 로드된 스테이지 씬이 있으면 언로드한 뒤 Town 씬으로 전환한다.
+    /// 스테이지 씬이 없으면 즉시 Town 씬으로 전환한다.
+    /// </summary>
+    private void OnRetreatButtonClicked()
+    {
+        RetreatToTownAsync().Forget();
+    }
+
+    private async UniTaskVoid RetreatToTownAsync()
+    {
+        // 스테이지 씬이 로드 중이거나 로드된 상태면 먼저 언로드한다
+        if (_stageLoader.IsLoading == false)
+        {
+            try
+            {
+                await _stageLoader.UnloadCurrentStage();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[MapUIController] 퇴각 중 씬 언로드 실패: {e.Message}");
+                // 언로드 실패 시에도 마을 복귀를 시도한다
+            }
+        }
+
+        SceneLoader.Load("Town");
     }
 
     private async UniTaskVoid LoadStageAsync(MapNode node)
