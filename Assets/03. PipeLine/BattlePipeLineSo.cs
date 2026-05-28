@@ -155,7 +155,7 @@ namespace PipeLine
 
             // TODO: 개별 타겟 치명타 확률 로직 (현재는 임시로 시전자 crt 사용)
             //context.isCritical = Random.Range(0f, 100f) < context.caster.Stat.crt;
-            context.isCritical = true;
+            context.isCritical = false;
             
             if (context.isCritical)
             {

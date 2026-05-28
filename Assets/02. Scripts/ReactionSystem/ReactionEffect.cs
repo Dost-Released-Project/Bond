@@ -37,7 +37,7 @@ namespace Reactions
 
             foreach (var target in ResolveTargets(execution, originalContext))
             {
-                if (target == null) continue;
+                if (target == null || target.IsDead) continue;
 
                 var bc = new BattleContext(reactor, skill, true)
                 {
