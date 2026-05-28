@@ -38,10 +38,6 @@ public class EventTestScope : LifetimeScope
         // JournalDataBaseSO Mock 등록 불필요 — EventJournalProvider 가 DB 를 참조하지 않음
         // EventData SO 의 _journalData 슬롯에 직접 연결된 JournalDataSO 를 사용한다
 
-        // EventJournalProvider — NullJournalSystem 을 JournalSystem 으로 주입
-        // AsSelf(): EventSceneController 가 구체 타입으로 직접 주입받아 RecordChoice() 를 호출하기 위해 노출
-        builder.RegisterEntryPoint<EventJournalProvider>(Lifetime.Scoped).AsSelf();
-
         // ExpeditionPayload — 테스트 씬에서 RootScope 없이 단독 실행 시 필요
         // JournalInventoryActionHandler 가 생성자에서 주입받는다
         builder.Register<ExpeditionPayload>(Lifetime.Singleton);
