@@ -33,11 +33,16 @@ public class StageLoader : IStageLoader
     private readonly IEventContext _eventContext;
     private readonly IStageMonsterContext _stageMonsterContext;
     private readonly LifetimeScope _currentScope;
+    private readonly EventLogAccumulator _logAccumulator;
     private readonly Dictionary<StageType, StageConfig> _stageConfigMap;
 
     private SceneInstance _currentScene;         // 현재 로드된 씬 인스턴스
     private bool _hasLoadedScene;               // 현재 로드된 씬이 있는지 여부
     private bool _isLoading;                    // 비동기 로딩 진행 중 여부 (이중 호출 방지)
+
+    // 전투 결과 로그 기록용 — NotifyStageCompleted 시점에 사용
+    private bool _isBattleStage = false;           // 현재 로드된 스테이지가 전투 씬인지 여부
+    private string _pendingBattleGroupId = string.Empty; // 현재 전투의 몬스터 그룹 ID
 
     // 스테이지 씬 로드 중 비활성화할 맵 씬 컴포넌트 — 언로드 후 복구
     private AudioListener _mapAudioListener;
@@ -45,12 +50,18 @@ public class StageLoader : IStageLoader
     private EventSystem _mapEventSystem;
 
     [Inject]
-    public StageLoader(MapConfigCache mapConfigCache, IEventContext eventContext, IStageMonsterContext stageMonsterContext, LifetimeScope currentScope)
+    public StageLoader(
+        MapConfigCache mapConfigCache,
+        IEventContext eventContext,
+        IStageMonsterContext stageMonsterContext,
+        LifetimeScope currentScope,
+        EventLogAccumulator logAccumulator)
     {
         _mapConfigCache = mapConfigCache;
         _eventContext = eventContext;
         _stageMonsterContext = stageMonsterContext;
         _currentScope = currentScope;
+        _logAccumulator = logAccumulator;
         _hasLoadedScene = false;
         _stageConfigMap = new Dictionary<StageType, StageConfig>();
     }
@@ -274,6 +285,15 @@ public class StageLoader : IStageLoader
             return;
         }
 
+        // 전투 스테이지 종료 시 결과를 EventLogAccumulator 에 기록한다.
+        // IsBattleTriggered == true 인 이벤트 → 전투 전환 시에는 기록하지 않는다.
+        if (_isBattleStage)
+        {
+            _logAccumulator?.RecordBattleResult(result, _pendingBattleGroupId);
+            _isBattleStage = false;
+            _pendingBattleGroupId = string.Empty;
+        }
+
         OnStageCompleted?.Invoke(result);
     }
 
@@ -311,6 +331,9 @@ public class StageLoader : IStageLoader
             }
 
             // EventBattleContext 에서 몬스터 정보를 IStageMonsterContext 로 이전
+            // Clear() 전에 GroupId 를 캡처해 전투 결과 로그에 사용한다
+            _isBattleStage = true;
+            _pendingBattleGroupId = EventBattleContext.MonsterGroupId;
             _stageMonsterContext.Set(EventBattleContext.MonsterGroupId, EventBattleContext.MonsterIds);
             EventBattleContext.Clear();
 
@@ -365,8 +388,12 @@ public class StageLoader : IStageLoader
         // TODO: 검증 완료 후 제거
         Debug.Log($"[StageLoader] SetNormalStageContext → NodeType={node.GetType().Name}");
 
+        // 노말 스테이지는 항상 전투 씬이다
+        _isBattleStage = true;
+
         if (string.IsNullOrEmpty(node.AssignedMonsterGroupId))
         {
+            _pendingBattleGroupId = string.Empty;
             _stageMonsterContext.Set(string.Empty, new List<string>());
             return;
         }
@@ -375,12 +402,14 @@ public class StageLoader : IStageLoader
 
         if (group == null)
         {
+            _pendingBattleGroupId = string.Empty;
             _stageMonsterContext.Set(string.Empty, new List<string>());
             return;
         }
 
         // TODO: 검증 완료 후 제거
         Debug.Log($"[StageLoader] SetNormalStageContext — group.Id='{group.Id}', MonsterIds={group.MonsterIds.Count}");
+        _pendingBattleGroupId = group.Id;
         _stageMonsterContext.Set(group.Id, group.MonsterIds);
     }
 
@@ -413,6 +442,10 @@ public class StageLoader : IStageLoader
     /// </summary>
     private void SetEventContext(MapNode node)
     {
+        // 이벤트 씬은 전투 씬이 아니다 — 이벤트 전투 전환 시 TransitionToEventBattleAsync 에서 재설정한다
+        _isBattleStage = false;
+        _pendingBattleGroupId = string.Empty;
+
         if (string.IsNullOrEmpty(node.AssignedEventId))
         {
             _eventContext.Set(string.Empty, string.Empty, new List<EventChoice>(), null, null);

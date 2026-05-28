@@ -21,7 +21,6 @@ public class EventSceneController : MonoBehaviour
     private EventBattleConfig _battleConfig;
     private IEventEffectApplier _effectApplier;
     private IEventContext _eventContext;
-    private EventJournalProvider _journalProvider;
     private IReadOnlyList<IJournalActionHandler> _actionHandlers;
     private EventLogAccumulator _logAccumulator;
     private EventData _currentEventData; // _currentEventId 대신 EventData SO 를 직접 보관 — JournalDataSO 직접 참조용
@@ -35,22 +34,19 @@ public class EventSceneController : MonoBehaviour
     /// </summary>
     /// <param name="effectApplier">이벤트 효과 적용 서비스.</param>
     /// <param name="eventContext">이벤트 컨텍스트 — StageLoader 가 씬 로드 직전에 기록한 이벤트 데이터.</param>
-    /// <param name="journalProvider">이벤트 선택 결과를 JournalSystem 에 보고하는 Provider.</param>
     /// <param name="actionHandlers">2차 선택지 actionKey 처리 핸들러 목록.</param>
     /// <param name="logAccumulator">런 전체 이벤트 이력 누적 저장소 — MapLifetimeScope Singleton.</param>
     [Inject]
     public void Construct(
         IEventEffectApplier effectApplier,
         IEventContext eventContext,
-        EventJournalProvider journalProvider,
         IReadOnlyList<IJournalActionHandler> actionHandlers,
         EventLogAccumulator logAccumulator)
     {
-        _effectApplier   = effectApplier;
-        _eventContext    = eventContext;
-        _journalProvider = journalProvider;
-        _actionHandlers  = actionHandlers;
-        _logAccumulator  = logAccumulator;
+        _effectApplier  = effectApplier;
+        _eventContext   = eventContext;
+        _actionHandlers = actionHandlers;
+        _logAccumulator = logAccumulator;
     }
 
     private void Start()
@@ -116,9 +112,9 @@ public class EventSceneController : MonoBehaviour
         if (_currentEventData != null)
             _logAccumulator?.SetPendingEventName(_currentEventData.DisplayName);
 
-        // 이벤트 선택 결과를 JournalSystem 에 보고한다
+        // 이벤트 선택 결과를 EventLogAccumulator 에 직접 기록한다
         // _currentEventData 는 Start() 에서 _eventContext.Clear() 전에 저장한 EventData SO 참조다
-        _journalProvider?.RecordChoice(_currentEventData, choice, choiceIndex);
+        _logAccumulator?.RecordEventChoice(_currentEventData, choice, choiceIndex);
 
         EventEffectData effect = choice.Effect;
 

@@ -28,24 +28,7 @@ public class EventLogAccumulator
     public IReadOnlyList<JournalReport> AllLogs => _allLogs;
 
     public bool HasLogs => _allLogs.Count > 0;
-
-    /// <summary>수집된 Report 목록을 누적 저장소에 추가한다.</summary>
-    public void Accumulate(IEnumerable<JournalReport> reports)
-    {
-        if (reports == null)
-            return;
-
-        foreach (JournalReport report in reports)
-        {
-            if (report != null)
-            {
-                // 이력 열람 시 선택지 버튼이 렌더링되지 않도록 Options를 비운다.
-                // 로그는 읽기 전용이므로 재선택이 불필요하다.
-                report.Options = new List<JournalOption>();
-                _allLogs.Add(report);
-            }
-        }
-    }
+    
 
     /// <summary>
     /// ItemReward 효과 적용 직전에 이벤트 이름을 예약한다.
@@ -63,7 +46,7 @@ public class EventLogAccumulator
     /// 호출 후 _pendingEventName 을 초기화한다.
     /// </summary>
     /// <param name="itemDisplayName">AccessoryDataBaseSO 에서 조회한 아이템 표시 이름.</param>
-    public void FlushItemRewardLog(string itemDisplayName)
+    private void FlushItemRewardLog(string itemDisplayName)
     {
         string eventName = string.IsNullOrEmpty(_pendingEventName) ? "알 수 없는 이벤트" : _pendingEventName;
         string logText = $"{eventName}에서 {itemDisplayName}을 획득하였습니다.";
@@ -114,6 +97,124 @@ public class EventLogAccumulator
     public void ClearPendingEventName()
     {
         _pendingEventName = string.Empty;
+    }
+
+    /// <summary>
+    /// 이벤트 선택 결과를 즉시 _allLogs 에 추가한다.
+    /// ItemReward 타입은 FlushItemRewardLog()/FlushItemRewardLogById() 에서 별도 처리하므로 건너뛴다.
+    /// JournalDataSO 가 연결되어 있으면 그 데이터를 사용하고, 없으면 EventChoice 필드로 Fallback 처리한다.
+    /// </summary>
+    /// <param name="eventData">현재 이벤트 EventData SO. null 허용 — Fallback 처리됨.</param>
+    /// <param name="choice">플레이어가 선택한 EventChoice.</param>
+    /// <param name="choiceIndex">JournalDataSO.Options 와의 인덱스 매핑용.</param>
+    public void RecordEventChoice(EventData eventData, EventChoice choice, int choiceIndex)
+    {
+        if (choice == null)
+            return;
+
+        EffectType effectType = choice.Effect != null ? choice.Effect.EffectType : EffectType.None;
+
+        // ItemReward 는 FlushItemRewardLog()/FlushItemRewardLogById() 에서 별도 처리한다
+        if (effectType == EffectType.ItemReward)
+            return;
+
+        JournalDataSO template = eventData != null ? eventData.JournalData : null;
+
+        if (template != null)
+        {
+            List<string> paragraphs = new List<string>(template.Paragraphs);
+            List<JournalOption> options = new List<JournalOption>(template.Options);
+
+            JournalOption? selectedOption = null;
+            if (choiceIndex >= 0 && choiceIndex < options.Count)
+                selectedOption = options[choiceIndex];
+
+            JournalReport report = new JournalReport
+            {
+                Title      = "이벤트 기록",
+                Paragraphs = paragraphs,
+                IconId     = template.EntryIconId,
+                // 이력 열람용 — 재선택 불필요하므로 Options 를 비운다
+                Options    = new List<JournalOption>(),
+                ProviderId = "EventJournal",
+            };
+
+            if (selectedOption.HasValue)
+                report.SelectedOption = selectedOption;
+
+            _allLogs.Add(report);
+        }
+        else
+        {
+            // Fallback: JournalDataSO 가 연결되지 않은 경우 EventChoice 필드 직접 사용
+            List<string> paragraphs = new List<string>();
+
+            if (string.IsNullOrEmpty(choice.Label) == false)
+                paragraphs.Add($"선택: {choice.Label}");
+
+            if (string.IsNullOrEmpty(choice.OutcomeDescription) == false)
+                paragraphs.Add(choice.OutcomeDescription);
+
+            if (paragraphs.Count == 0)
+                paragraphs.Add("이벤트에서 선택을 마쳤다.");
+
+            _allLogs.Add(new JournalReport
+            {
+                Title      = "이벤트 기록",
+                Paragraphs = paragraphs,
+                IconId     = string.Empty,
+                Options    = new List<JournalOption>(),
+                ProviderId = "EventJournal",
+            });
+        }
+    }
+
+    /// <summary>
+    /// 전투 결과를 즉시 _allLogs 에 추가한다.
+    /// monsterGroupId 로 MonsterGroupConfig 에서 그룹 표시 이름을 조회한다.
+    /// </summary>
+    /// <param name="result">StageLoader 가 수신한 전투 완료 결과.</param>
+    /// <param name="monsterGroupId">전투 상대 몬스터 그룹 ID. 없으면 string.Empty.</param>
+    public void RecordBattleResult(StageResult result, string monsterGroupId)
+    {
+        string groupDisplayName = FindMonsterGroupName(monsterGroupId);
+
+        string groupPart   = string.IsNullOrEmpty(groupDisplayName) ? "전투" : $"'{groupDisplayName}'";
+        string outcomePart = result.IsSuccess ? "승리" : "패배";
+        string logText     = $"{groupPart}에서 {outcomePart}하였습니다.";
+
+        JournalReport report = new JournalReport
+        {
+            Title      = result.IsSuccess ? "전투 승리" : "전투 패배",
+            Paragraphs = new List<string> { logText },
+            IconId     = string.Empty,
+            Options    = new List<JournalOption>(),
+            ProviderId = "BattleResult",
+        };
+
+        _allLogs.Add(report);
+    }
+
+    /// <summary>
+    /// monsterGroupId 에 대응하는 MonsterGroupData 의 DisplayName 을 반환한다.
+    /// 찾지 못하면 string.Empty 를 반환한다.
+    /// </summary>
+    private string FindMonsterGroupName(string monsterGroupId)
+    {
+        if (string.IsNullOrEmpty(monsterGroupId))
+            return string.Empty;
+
+        MonsterGroupConfig config = _mapConfigCache?.MonsterGroupConfig;
+        if (config == null || config.Groups == null)
+            return string.Empty;
+
+        foreach (MonsterGroupData group in config.Groups)
+        {
+            if (group != null && group.Id == monsterGroupId)
+                return group.DisplayName;
+        }
+
+        return string.Empty;
     }
 
     /// <summary>

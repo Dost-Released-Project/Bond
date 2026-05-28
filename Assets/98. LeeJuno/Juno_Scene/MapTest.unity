@@ -493,6 +493,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MapUIController
   _mapView: {fileID: 1988441807}
   _mapPanel: {fileID: 2114059061}
+  _retreatButton: {fileID: 5797608251009159702}
 --- !u!4 &1979411113
 Transform:
   m_ObjectHideFlags: 0
@@ -682,6 +683,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d117bb016b533a24a9f7b2279f2f4d7b, type: 3}
+--- !u!114 &5797608251009159702 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 609420080218365443, guid: d117bb016b533a24a9f7b2279f2f4d7b, type: 3}
+  m_PrefabInstance: {fileID: 5797608251009159701}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
