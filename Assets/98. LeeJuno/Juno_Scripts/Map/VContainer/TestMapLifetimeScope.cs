@@ -14,8 +14,8 @@ using VContainer.Unity;
 ///   - RegisterJournalUI() 추가 — 탐사 종료 후 일지 팝업 UI 표시
 ///
 /// Inspector 연결 필요:
-///   _mapUIController  — 씬에 배치된 MapUIController MonoBehaviour
-///   _journalUIPrefab  — JournalUIView 프리팹 (null 이면 씬 내 인스턴스를 자동 탐색)
+///   _mapUIController — 씬에 배치된 MapUIController MonoBehaviour
+///   _journalUIPrefab — JournalUIView 프리팹 (null 이면 씬 내 인스턴스를 자동 탐색)
 /// </summary>
 public class TestMapLifetimeScope : LifetimeScope
 {
@@ -43,6 +43,9 @@ public class TestMapLifetimeScope : LifetimeScope
             builder.RegisterComponent(_mapUIController);
         else
             Debug.LogError("[TestMapLifetimeScope] _mapUIController 가 연결되지 않았습니다.", this);
+
+        // 런 전체 이벤트 이력 누적 저장소
+        builder.Register<EventLogAccumulator>(Lifetime.Singleton);
 
         // StageLoader: 맵 스코프에서 등록해야 LifetimeScope 주입 시 맵 스코프가 전달된다
         // EnqueueParent 패턴으로 이벤트/전투 씬 로드 시 올바른 부모 스코프를 지정하기 위해 필요하다

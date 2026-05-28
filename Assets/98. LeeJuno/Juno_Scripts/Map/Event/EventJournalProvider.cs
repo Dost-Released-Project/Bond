@@ -23,6 +23,7 @@ public class EventJournalProvider : IJournalContentProvider, IStartable, IDispos
     public int Priority => 40;
 
     private readonly JournalSystem _journalSystem;
+    private readonly EventLogAccumulator _logAccumulator;
 
     /// <summary>
     /// 이벤트 선택 결과 버퍼 내부 타입.
@@ -40,9 +41,10 @@ public class EventJournalProvider : IJournalContentProvider, IStartable, IDispos
 
     private readonly List<EventChoiceRecord> _buffer = new List<EventChoiceRecord>();
 
-    public EventJournalProvider(JournalSystem journalSystem)
+    public EventJournalProvider(JournalSystem journalSystem, EventLogAccumulator logAccumulator)
     {
         _journalSystem = journalSystem;
+        _logAccumulator = logAccumulator;
     }
 
     public void Start()
@@ -52,6 +54,15 @@ public class EventJournalProvider : IJournalContentProvider, IStartable, IDispos
 
     public void Dispose()
     {
+        // JournalSystem에서 Provider 해제 전에 버퍼를 누적 저장소로 플러시한다.
+        // 씬 언로드 완료 후 VContainer가 스코프를 파괴하는 시점에 호출되므로
+        // _buffer 데이터는 아직 유효하다.
+        if (_logAccumulator != null && _buffer.Count > 0)
+        {
+            _logAccumulator.Accumulate(GetDailyReports());
+            ClearBuffer();
+        }
+
         _journalSystem?.RemoveProvider(this);
     }
 
@@ -86,6 +97,10 @@ public class EventJournalProvider : IJournalContentProvider, IStartable, IDispos
 
         foreach (EventChoiceRecord record in _buffer)
         {
+            // ItemReward 기록은 ItemRewardEventEffectHandler/EventSceneController가 별도로 로그를 기록하므로 건너뛴다
+            if (record.EffectType == EffectType.ItemReward)
+                continue;
+
             // EventData SO 에 직접 연결된 JournalDataSO 를 참조한다. 런타임 DB 조회 불필요.
             JournalDataSO template = record.EventData != null ? record.EventData.JournalData : null;
 

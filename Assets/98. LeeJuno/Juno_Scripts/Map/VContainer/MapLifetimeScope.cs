@@ -39,7 +39,10 @@ public class MapLifetimeScope : LifetimeScope
         // IEventEffectHandler 구현체 등록 — AsImplementedInterfaces() 로 IReadOnlyList<IEventEffectHandler> 자동 주입
         // EffectType 은 배타적이므로 각 Handler 는 Singleton 으로 등록한다
         builder.Register<HpChangeEventEffectHandler>(Lifetime.Singleton).AsImplementedInterfaces();
+
+        // MapConfigCache 를 통해 AccessoryDB 를 주입받으므로 WithParameter 없이 단순 등록한다
         builder.Register<ItemRewardEventEffectHandler>(Lifetime.Singleton).AsImplementedInterfaces();
+
         builder.Register<StatusEffectEventEffectHandler>(Lifetime.Singleton).AsImplementedInterfaces();
         builder.Register<BattleEventEffectHandler>(Lifetime.Singleton).AsImplementedInterfaces();
 
@@ -49,6 +52,9 @@ public class MapLifetimeScope : LifetimeScope
         else
             Debug.LogError("[MapLifetimeScope] _mapUIController 가 연결되지 않았습니다.", this);
         
+        // 런 전체 이벤트 이력 누적 저장소
+        builder.Register<EventLogAccumulator>(Lifetime.Singleton);
+
         // StageLoader: 맵 스코프에서 등록해야 LifetimeScope 주입 시 맵 스코프가 전달된다
         // EnqueueParent 패턴으로 이벤트/전투 씬 로드 시 올바른 부모 스코프를 지정하기 위해 필요하다
         // WithParameter: LifetimeScope는 VContainer가 자동 주입을 보장하지 않으므로 this(현재 맵 스코프)를 직접 전달한다

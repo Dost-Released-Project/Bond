@@ -3,6 +3,8 @@ using System.Threading;
 using Bond.Expedition;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using VContainer;
 using VContainer.Unity;
 
@@ -31,6 +33,8 @@ public class MapInitializer : IAsyncStartable, IDisposable
     private readonly IMapRepository _mapRepository;
     private readonly MapUIController _mapUIController;
     private readonly MapConfigCache _mapConfigCache;
+
+    private AsyncOperationHandle<AccessoryDataBaseSO> _accessoryDBHandle;
 
     /// <summary>
     /// VContainer 생성자 주입.
@@ -62,6 +66,11 @@ public class MapInitializer : IAsyncStartable, IDisposable
         // Clear() 이전에 ReleaseConfigs() 를 호출하면 SO 참조가 댕글링될 수 있다.
         _mapConfigCache.Clear();
         _mapConfigLoader.ReleaseConfigs();
+
+        // AccessoryDataBase 핸들 해제 — 로드 실패 시 IsValid() 가 false 이므로 안전하게 체크한다
+        if (_accessoryDBHandle.IsValid())
+            Addressables.Release(_accessoryDBHandle);
+
         Debug.Log("[MapInitializer] Addressables 핸들 해제 완료.");
     }
 
@@ -94,10 +103,27 @@ public class MapInitializer : IAsyncStartable, IDisposable
 
         MapConfigPackage package = _mapConfigLoader.GetPackage();
 
+        // AccessoryDataBase Addressables 로드 — 실패 시 null 허용, 로그만 출력한다
+        AccessoryDataBaseSO accessoryDB = null;
+        try
+        {
+            _accessoryDBHandle = Addressables.LoadAssetAsync<AccessoryDataBaseSO>("AccessoryDataBase");
+            accessoryDB = await _accessoryDBHandle;
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[MapInitializer] AccessoryDataBase 로드 실패: {e.Message}");
+        }
+
         // SO 해제 전에 MapGenerator, StageLoader 가 참조할 수 있도록 캐시에 저장한다.
         // MapConfigCache 는 SO 참조를 그대로 보관하므로 ReleaseConfigs() 전에 반드시 호출해야 한다.
-        _mapConfigCache.Set(package.GeneratorConfig, package.StageConfigs, package.MonsterGroupConfig,
-            package.EventConfig, package.EventBattleConfig);
+        _mapConfigCache.Set(
+            package.GeneratorConfig,
+            package.StageConfigs,
+            package.MonsterGroupConfig,
+            package.EventConfig,
+            package.EventBattleConfig,
+            accessoryDB);
 
         MapData mapData;
 
