@@ -60,11 +60,12 @@ public class HpChangeEventEffectHandler : IEventEffectHandler
 
             Debug.Log($"[HpChangeEventEffectHandler] HP 변화 적용: {character.Name}, amount={amount}");
         }
+
     }
 
     private void ApplyHpToChooseOne(int amount, int index)
     {
-        
+
     }
 
     private void ApplyHpToRandom(int amount)

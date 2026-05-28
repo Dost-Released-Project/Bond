@@ -576,10 +576,6 @@ PrefabInstance:
       propertyPath: _mapUIController
       value: 
       objectReference: {fileID: 1979411112}
-    - target: {fileID: 5115941051929461589, guid: dabbe086af4bc514d9bb5f65a195ad8f, type: 3}
-      propertyPath: parentReference.TypeName
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 6812611938743058197, guid: dabbe086af4bc514d9bb5f65a195ad8f, type: 3}
       propertyPath: m_Name
       value: MapScope
