@@ -18,15 +18,15 @@ MonoBehaviour:
   STR: 1
   AGI: 2
   INT: 3
-  HP: 10
-  Def: 5
-  Atk: 5
-  Speed: 5
+  HP: 7
+  Def: 2
+  Atk: 3
+  Speed: 4
   Cri: 5
-  Acc: 5
-  InsanityCtrl: 10
-  ReactionCtrl: 10
-  SpAtk: 10
+  Acc: 4
+  InsanityCtrl: 7
+  ReactionCtrl: 7
+  SpAtk: 4
   DefaultArmorId: 03070000
   DefaultWeaponId: 03030000
   IconId: 
