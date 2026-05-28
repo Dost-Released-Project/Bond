@@ -192,6 +192,59 @@ public abstract class InventoryBase : IInventory
     return remainingQuantity;
 }
 
+    public virtual bool ConsumeItem(string itemId, int quantity)
+    {
+        if (quantity <= 0) return true;
+
+        int totalCount = GetItemCount(itemId);
+        if (totalCount < quantity) return false;
+
+        int remainingToRemove = quantity;
+        for (int i = _slots.Count - 1; i >= 0; i--)
+        {
+            var slot = _slots[i];
+            if (slot != null && !slot.IsEmpty && slot.item != null && slot.item.id == itemId)
+            {
+                int removeQty = Mathf.Min(slot.quantity, remainingToRemove);
+                RemoveFromSlot(i, removeQty); // RemoveFromSlot already calls OnChanged
+                remainingToRemove -= removeQty;
+                if (remainingToRemove <= 0) break;
+            }
+        }
+        return true;
+    }
+
+    public virtual bool ConsumeItemByType(ConsumableType type, int quantity)
+    {
+        if (quantity <= 0) return true;
+
+        int totalCount = 0;
+        for (int i = 0; i < _slots.Count; i++)
+        {
+            var slot = _slots[i];
+            if (slot != null && !slot.IsEmpty && slot.item is ConsumableItem cItem && cItem.consumableType == type)
+            {
+                totalCount += slot.quantity;
+            }
+        }
+
+        if (totalCount < quantity) return false;
+
+        int remainingToRemove = quantity;
+        for (int i = _slots.Count - 1; i >= 0; i--)
+        {
+            var slot = _slots[i];
+            if (slot != null && !slot.IsEmpty && slot.item is ConsumableItem cItem && cItem.consumableType == type)
+            {
+                int removeQty = Mathf.Min(slot.quantity, remainingToRemove);
+                RemoveFromSlot(i, removeQty); 
+                remainingToRemove -= removeQty;
+                if (remainingToRemove <= 0) break;
+            }
+        }
+        return true;
+    }
+
     private int GetItemCount(string itemID)
     {
         if (string.IsNullOrEmpty(itemID)) return 0;

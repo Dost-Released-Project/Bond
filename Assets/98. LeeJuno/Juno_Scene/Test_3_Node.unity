@@ -582,6 +582,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 712880343002839992, guid: d117bb016b533a24a9f7b2279f2f4d7b, type: 3}
+      propertyPath: _stageConfigs.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 712880343002839992, guid: d117bb016b533a24a9f7b2279f2f4d7b, type: 3}
+      propertyPath: '_stageConfigs.Array.data[4]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 9a21ccc01d9d2c046b3208da40a1ab4a, type: 2}
     - target: {fileID: 5654465864500549534, guid: d117bb016b533a24a9f7b2279f2f4d7b, type: 3}
       propertyPath: m_Pivot.x
       value: 0

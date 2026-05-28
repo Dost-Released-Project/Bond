@@ -20,3 +20,12 @@ public enum SkillTarget
     Party,  // 아군 대상
     Self    // 자기 자신 (확장용)
 }
+
+/// <summary>
+/// 스킬 타겟팅 방식 (단일 대상 / 광역 대상)
+/// </summary>
+public enum TargetingType
+{
+    Single, // 단일 대상 (범위 내에서 1명 선택)
+    AOE     // 광역 대상 (범위 내 전체 적용)
+}

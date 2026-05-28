@@ -117,7 +117,11 @@ namespace Bond.WT.Journal
             _model.HasPrevPage.Subscribe(_prevPageObserver);
             _model.IsLastPage.Subscribe(_lastPageObserver);
 
-            // UI 뷰 초기 상태 강제 동기화
+            // [초기화] 구독 시점에 이미 데이터가 있을 경우를 위해 강제 동기화 (Value가 null/초기값이 아닐 때만)
+            if (!string.IsNullOrEmpty(_model.CurrentParagraph.Value)) _paragraphObserver.EventHandler?.Invoke(_model.CurrentParagraph.Value);
+            if (_model.CurrentOptions.Value != null) _optionsObserver.EventHandler?.Invoke(_model.CurrentOptions.Value);
+            if (_model.CurrentReport.Value != null) _reportObserver.EventHandler?.Invoke(_model.CurrentReport.Value);
+            _completeObserver.EventHandler?.Invoke(_model.IsJournalComplete.Value);
             _prevPageObserver.EventHandler?.Invoke(_model.HasPrevPage.Value);
             _lastPageObserver.EventHandler?.Invoke(_model.IsLastPage.Value);
 

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildingData
   _id: 09020000
   _displayName: "\uC5EC\uAD00"
-  _description: "\uCCB4\uB825\uC744 \uD68C\uBCF5\uD569\uB2C8\uB2E4."
+  _description: "\uCCB4\uB825\uC744 \uD68C\uBCF5\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
   buildingType: 0
   buildingSprite: {fileID: 21300000, guid: 4cdb2b5e753d6bd43b20c180413b48d1, type: 3}
   levels:

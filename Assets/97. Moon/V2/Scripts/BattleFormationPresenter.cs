@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using BattleSystem.Interface;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VContainer;
@@ -8,16 +10,23 @@ namespace BattleSystem
 {
     public class BattleFormationPresenter : MonoBehaviour
     {
-        // 인스펙터 노출 제거: 이제 코드가 알아서 찾을 겁니다.
         [SerializeField]
-        private CharacterSlot[] characterSlots = new CharacterSlot[4];
+        private CharacterSlot[] characterSlots = new CharacterSlot[8]; // 플레이어 4 + 적군 4
         private ICharacterSelector m_CharacterSelector;
+        private IFormationManager m_FormationManager;
+
+        private BaseCharacter m_currentActor;
+        private BaseCharacter m_TargetingCaster; // 현재 타겟팅을 주도하는 캐릭터
+        private SkillBase m_currentSkill;
+        private List<CharacterSlot> m_validSlots = new List<CharacterSlot>();
+        private bool m_isTargetingMode;
 
         [Inject]
-        public void Construct(ICharacterSelector characterSelector)
+        public void Construct(ICharacterSelector characterSelector, IFormationManager formationManager)
         {
             m_CharacterSelector = characterSelector;
-            // 셀렉터 이벤트는 최초 1회만 구독하면 되므로 여기서 구독합니다.
+            m_FormationManager = formationManager;
+            
             m_CharacterSelector.OnSelectionChanged += HandleSelectionChanged;
         }
 
@@ -28,61 +37,39 @@ namespace BattleSystem
 
         private void OnDestroy()
         {
-            // 컴포넌트 파괴 시 전체 이벤트 해제 (메모리 누수 방지)
             UnbindSlots();
+            ResetAllHighlights();
             
             if (m_CharacterSelector != null)
-            {
                 m_CharacterSelector.OnSelectionChanged -= HandleSelectionChanged;
-            }
+            
+            if (m_currentActor != null)
+                m_currentActor.onTargetSelectionStarted -= HandleTargetSelectionStarted;
+        }
+
+        private void OnDisable()
+        {
+            ResetAllHighlights();
         }
         
-        private void Update()
-        {
-            // 테스트용: T 키를 누르면 씬에서 슬롯을 긁어옵니다.
-            if (Keyboard.current.tKey.wasPressedThisFrame) FindAndBindSlots();
-        }
-
-        /// <summary>
-        /// 💡 핵심 포인트: 전투 씬이 로드되거나 슬롯이 모두 생성된 직후 이 함수를 한 번 호출해주세요!
-        /// 예: BattleFlowManager 같은 곳에서 슬롯 생성 직후 presenter.FindAndBindSlots(); 호출
-        /// </summary>
         public void FindAndBindSlots()
         {
-            // 0. 방어 코드: VContainer 주입이 정상적으로 되었는지 확인합니다.
-            if (m_CharacterSelector == null)
-            {
-                Debug.LogError("🚨 [디버그] m_CharacterSelector가 null입니다! VContainer 주입(Inject)이 실패했습니다. LifetimeScope에 BattleFormationPresenter가 등록되어 있는지 확인해주세요.");
-                return; // 에러를 띄우고 함수를 멈춰서 NRE를 방지합니다.
-            }
+            if (m_CharacterSelector == null) return;
             
-            // 1. 혹시 이미 찾아둔 슬롯이 있다면 기존 이벤트를 먼저 안전하게 지워줍니다. (중복 구독 방지)
             UnbindSlots();
+            ResetAllHighlights();
 
-            // 2. 씬에 존재하는 모든 CharacterSlot 컴포넌트를 찾아 배열에 담습니다. (태그나 레이어 상관없이 스크립트 기준으로 찾음)
-            characterSlots = FindObjectsByType<CharacterSlot>(FindObjectsSortMode.None)
-                .Where(slot => slot.CompareTag("PlayerSlot")) 
-                .ToArray();
+            // 씬의 모든 슬롯을 가져옴 (PlayerSlot, EnemySlot 등 태그 무시하고 전체 수집)
+            characterSlots = FindObjectsByType<CharacterSlot>(FindObjectsSortMode.None).ToArray();
 
-            if (characterSlots.Length == 0)
-            {
-                Debug.LogWarning("경고: 씬에서 CharacterSlot을 하나도 찾지 못했습니다. 슬롯이 생성되기 전에 함수가 호출된 건 아닌지 확인해보세요.");
-                return;
-            }
-
-            // 3. 찾아낸 슬롯들에 이벤트를 연결해줍니다.
             foreach (var slot in characterSlots)
             {
                 if (slot != null) slot.OnSlotClicked += HandleSlotClicked;
             }
 
-            // 4. 연결 직후, 현재 셀렉터에 선택되어 있는 캐릭터가 있다면 하이라이트 UI를 갱신합니다.
             HandleSelectionChanged(m_CharacterSelector.Selected);
-            
-            Debug.Log($"총 {characterSlots.Length}개의 슬롯을 성공적으로 찾아서 연결했습니다!");
         }
 
-        // 기존 슬롯들의 이벤트를 해제하는 안전장치
         private void UnbindSlots()
         {
             if (characterSlots == null) return;
@@ -93,8 +80,36 @@ namespace BattleSystem
             }
         }
 
+        /// <summary>
+        /// 모든 슬롯의 강조 효과(Hover, Click)를 강제로 해제합니다.
+        /// </summary>
+        public void ResetAllHighlights()
+        {
+            if (characterSlots == null) return;
+            foreach (var slot in characterSlots)
+            {
+                if (slot == null) continue;
+                slot.SetForceHover(false);
+                slot.SetForceClick(false);
+            }
+        }
+
         private void HandleSlotClicked(CharacterSlot clickedSlot)
         {
+            if (m_isTargetingMode && m_TargetingCaster != null)
+            {
+                // [방어막] 타겟팅 모드: 유효한 슬롯인 경우에만 확정. 
+                // 무효 슬롯 클릭 시 Deselect()를 타지 않도록 하여 데드락 방지.
+                if (m_validSlots.Contains(clickedSlot))
+                {
+                    var caster = m_TargetingCaster;
+                    ExitTargetingMode();
+                    caster.ConfirmTargetSelection(clickedSlot);
+                }
+                return;
+            }
+
+            // 일반 모드: 캐릭터 선택 전환
             if (clickedSlot.IsEmpty || clickedSlot.Occupant == null)
             {
                 m_CharacterSelector.Deselect();
@@ -106,7 +121,17 @@ namespace BattleSystem
 
         private void HandleSelectionChanged(BaseCharacter selectedCharacter)
         {
-            if (characterSlots == null) return;
+            if (characterSlots == null || m_isTargetingMode) return;
+
+            // 기존 행동 캐릭터 이벤트 해제
+            if (m_currentActor != null)
+                m_currentActor.onTargetSelectionStarted -= HandleTargetSelectionStarted;
+
+            m_currentActor = selectedCharacter;
+
+            // 새 행동 캐릭터 이벤트 구독
+            if (m_currentActor != null)
+                m_currentActor.onTargetSelectionStarted += HandleTargetSelectionStarted;
 
             foreach (var slot in characterSlots)
             {
@@ -114,6 +139,40 @@ namespace BattleSystem
                 bool isSelected = !slot.IsEmpty && slot.Occupant == selectedCharacter;
                 slot.SetForceClick(isSelected);
             }
+        }
+
+        private void HandleTargetSelectionStarted(BaseCharacter actor, SkillBase skill)
+        {
+            if (skill == null)
+            {
+                ExitTargetingMode();
+                return;
+            }
+
+            m_TargetingCaster = actor;
+            m_currentSkill = skill;
+            m_isTargetingMode = true;
+
+            // 유효한 타겟 슬롯 계산
+            m_validSlots = m_FormationManager.GetValidSlots(actor, skill.Data);
+
+            // 유효 슬롯 하이라이트 (시각적 피드백)
+            foreach (var slot in characterSlots)
+            {
+                if (slot == null) continue;
+                bool isValid = m_validSlots.Contains(slot);
+                slot.SetForceHover(isValid);
+                slot.SetForceClick(false); // 기존 선택 강조는 끔
+            }
+        }
+
+        private void ExitTargetingMode()
+        {
+            m_isTargetingMode = false;
+            m_TargetingCaster = null;
+            ResetAllHighlights();
+            // 마지막 배우 강조 다시 켬
+            HandleSelectionChanged(m_currentActor);
         }
     }
 }

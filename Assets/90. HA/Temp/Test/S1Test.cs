@@ -29,9 +29,10 @@ namespace _90._HA.Temp.Test
         
         public List<CharacterPreset> CharacterPresets;
 
-        public void Start()
+        public async void Start()
         {
-            professionDb = Addressables.LoadAssetAsync<DataBaseSO>("ClassDataBase").WaitForCompletion();
+            await DBSORegistry.PreloadByLabelAsync("DBSO");
+            professionDb = DBSORegistry.GetDb<DataBaseSO>("ClassDataBase");
             
             payload.Clear();
             FillRosterFromPreset();
@@ -100,6 +101,7 @@ namespace _90._HA.Temp.Test
                 BaseCharacter.Dict[c.Id] = c;
                 c.SetHpFull();
                 roster.Hire(c);
+                c.isPlayable = true;
             }
         }
 

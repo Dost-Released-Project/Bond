@@ -1,5 +1,6 @@
 using BattleStage;
 using BattleSystem.Interface;
+using Bond.UI;
 using Bond.WT.Journal;
 using UnityEngine;
 using VContainer;
@@ -28,8 +29,6 @@ namespace BattleSystem.VContainer
             
             // 탐사 인벤토리 UI
             builder.RegisterComponentInHierarchy<ExpeditionInventoryView>();
-            // 장신구 슬롯 UI
-            builder.RegisterComponentInHierarchy<EquipmentSlotUI>();
             // 캐릭터 슬롯과 캐릭터 셀렉터 연결용
             builder.RegisterComponentInHierarchy<BattleFormationPresenter>();
 
@@ -38,6 +37,11 @@ namespace BattleSystem.VContainer
 
             // Journal UI 및 Binder 지역 스코프 등록
             builder.RegisterJournalUI(_journalUIPrefab);
+            
+            // 캐릭터 UI
+            builder.Register<CharacterDetailController>(Lifetime.Scoped);
+            builder.RegisterComponentInHierarchy<CharacterDetailPresenter>();
+            builder.RegisterComponentInHierarchy<CharacterCombatPanelPresenter>();
         }
     }
 }

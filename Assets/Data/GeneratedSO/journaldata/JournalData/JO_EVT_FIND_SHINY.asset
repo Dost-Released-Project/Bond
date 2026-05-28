@@ -21,6 +21,8 @@ MonoBehaviour:
   _options:
   - text: "\uC90D\uB294\uB2E4."
     actionKey: Pick_Up
+    _isDisabled: 0
   - text: "\uBB34\uC2DC\uD55C\uB2E4."
     actionKey: Pass
+    _isDisabled: 0
   _entryIconId: 

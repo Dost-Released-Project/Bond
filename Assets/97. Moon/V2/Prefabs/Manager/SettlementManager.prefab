@@ -44,10 +44,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0bd2a723d51870408dc81f46fb427ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SettlementManager
-  constructionSlots:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}

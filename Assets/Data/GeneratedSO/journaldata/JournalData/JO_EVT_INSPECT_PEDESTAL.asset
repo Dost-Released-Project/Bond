@@ -21,6 +21,8 @@ MonoBehaviour:
   _options:
   - text: "\uC870\uC0AC\uD55C\uB2E4."
     actionKey: Inspect
+    _isDisabled: 0
   - text: "\uB9CC\uC838\uBCF8\uB2E4."
     actionKey: Touch
+    _isDisabled: 0
   _entryIconId: 

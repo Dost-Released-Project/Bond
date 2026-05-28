@@ -9,6 +9,20 @@ namespace Bond.WT.Journal
     {
         public string text;
         public string actionKey; // 선택 시 수행할 로직 식별자
+
+        [SerializeField] private bool _isDisabled; // 직렬화 기본값 false -> isEnabled는 true
+        public bool isEnabled
+        {
+            get => !_isDisabled;
+            set => _isDisabled = !value;
+        }
+
+        public JournalOption(string text, string actionKey, bool isEnabled = true)
+        {
+            this.text = text;
+            this.actionKey = actionKey;
+            _isDisabled = !isEnabled;
+        }
     }
 
     /// <summary>

@@ -21,6 +21,8 @@ MonoBehaviour:
   _options:
   - text: "\uAC00\uC838\uAC04\uB2E4."
     actionKey: Take_Item
+    _isDisabled: 0
   - text: "\uADF8\uB0E5 \uB454\uB2E4"
     actionKey: Leave_Item
+    _isDisabled: 0
   _entryIconId: 

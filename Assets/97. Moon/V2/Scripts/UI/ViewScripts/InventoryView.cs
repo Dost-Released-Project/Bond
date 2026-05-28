@@ -230,9 +230,33 @@ public class InventoryView : MonoBehaviour
             }
         }
 
-        _tooltip.style.left = position.x + 20;
-        _tooltip.style.top = position.y + 20;
-        _tooltip.style.visibility = Visibility.Visible;
+        // =========================================================================
+        // 🖥️ [툴팁 스크린 이탈 방지] 
+        // =========================================================================
+        float tooltipWidth = 250f;  
+        float tooltipHeight = 150f; 
+
+        // 가로 제한 연산
+        float finalX = position.x + 20f;
+        if (finalX + tooltipWidth > Screen.width)
+        {
+            finalX = position.x - tooltipWidth - 20f;
+        }
+
+        // 세로 제한 연산
+        float finalY = position.y + 20f;
+        if (finalY + tooltipHeight > Screen.height)
+        {
+            finalY = position.y - tooltipHeight - 20f;
+        }
+
+        // 벽 뚫기 방어 최소값 보정
+        if (finalX < 5f) finalX = 5f;
+        if (finalY < 5f) finalY = 5f;
+
+        _tooltip.style.left = finalX; 
+        _tooltip.style.top = finalY;
+        _tooltip.style.visibility = Visibility.Visible; 
         _tooltip.BringToFront();
     }
 
@@ -283,7 +307,16 @@ public class InventoryView : MonoBehaviour
         SaveTotalInventory();
     }
 
-    private void SetFilter(ItemCategory? cat) { _currentFilter = cat; RefreshUI(); }
+    private void SetFilter(ItemCategory? cat) 
+    { 
+        _currentFilter = cat; 
+        RefreshUI(); 
+
+        // 💥 현재 누른 탭 버튼은 비활성화하고, 나머지 탭은 활성화하여 락 연출 수용
+        _root.Q<Button>("btn-filter-all")?.SetEnabled(cat != null);
+        _root.Q<Button>("btn-filter-consumable")?.SetEnabled(cat != ItemCategory.Consume);
+        _root.Q<Button>("btn-filter-accessory")?.SetEnabled(cat != ItemCategory.Accessories);
+    }
 
     private void HideTooltip() => _tooltip.style.visibility = Visibility.Hidden;
 }

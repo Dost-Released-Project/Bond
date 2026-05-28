@@ -114,12 +114,6 @@
     color: var(--text-disabled);
 }
 
-/* 드래그 수신 대기 강조 */
-.equip-slots__chip--drop-target {
-    border-color: var(--border-active);
-    background-color: var(--bg-raised);
-}
-
 /* 편집 불가 */
 .equip-slots__chip--disabled {
     opacity: 0.38;

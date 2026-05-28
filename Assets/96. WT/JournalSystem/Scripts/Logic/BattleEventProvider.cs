@@ -112,7 +112,7 @@ namespace Bond.WT.Journal
                 // DB에 템플릿 데이터가 없는 경우를 위한 Fallback
                 Debug.LogWarning($"[BattleEventProvider] JournalDataBaseSO에서 '{eventId}' 템플릿을 찾을 수 없습니다. 시트를 확인하세요.");
                 assembledParagraphs.Add($"동료 {_cachedPlayerCount}명이 협력하여, {_cachedEnemyCount}명의 적과 치열한 전투를 치뤘다.");
-                options.Add(new JournalOption { text = "맵으로 돌아가기", actionKey = "ACTION_RETURN_MAP" });
+                options.Add(new JournalOption { text = "맵으로 돌아가기", actionKey = "ACTION_RETURN_MAP", isEnabled = true });
             }
 
             JournalReport report = new JournalReport

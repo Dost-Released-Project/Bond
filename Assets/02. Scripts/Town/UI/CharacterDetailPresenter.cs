@@ -12,8 +12,8 @@ namespace Bond.UI
         [SerializeField] private UIDocument _document;
 
         private CharacterDetailController _controller;
-        private InventoryTransferService _transferService;
         private EquipSlotsPresenter _equipSlots;
+        private ICharacterSelector _selector;
 
         // 씬별 연결 이벤트 — 구독 여부는 각 씬 코디네이터가 결정
         public event Action OnCloseRequested;
@@ -54,14 +54,17 @@ namespace Bond.UI
         private string _openPoolPart = null;
 
         private BaseCharacter _character;
-        private CharacterDetailViewMode _viewMode;
+        private CharacterDetailEditMode _editMode;
         private IInventory _currentInventory;
 
         [Inject]
-        public void Construct(CharacterDetailController controller, InventoryTransferService transferService)
+        public void Construct(CharacterDetailController controller, ICharacterSelector selector)
         {
             _controller      = controller;
-            _transferService = transferService;
+            _selector        = selector;
+
+            _controller.OnCharacterSet += RefreshCharacter;
+            _selector.OnSelectionChanged += _controller.SetCharacter;
         }
 
         private void Start()
@@ -133,13 +136,12 @@ namespace Bond.UI
             }
 
             var equipRoot = root.Q("char-detail__equip-slots");
-            _equipSlots = new EquipSlotsPresenter(equipRoot, _controller, _transferService, _panel);
+            _equipSlots = new EquipSlotsPresenter(equipRoot, _panel);
             _equipSlots.OnInventoryOpenRequested += () => OnInventoryOpenRequested?.Invoke();
             _equipSlots.OnUnequipRequested       += OnUnequipRequested;
 
             _controller.OnRoleChanged      += _ => RefreshIdentity();
             _controller.OnReactionChanged  += RefreshReactionSlot;
-            _controller.OnAccessoryChanged += () => _equipSlots.SetCharacter(_character);
 
             for (int i = 0; i < 6; i++)
                 _reactionPools[i] = root.Q($"inline-pool-{i}");
@@ -149,8 +151,8 @@ namespace Bond.UI
                 int idx = i;
                 _reactionSkillParts[idx]?.RegisterCallback<ClickEvent>(evt =>
                 {
-                    if (_viewMode == CharacterDetailViewMode.ReadOnly) return;
-                    if (idx >= 2 && _viewMode == CharacterDetailViewMode.EquipOnly) return;
+                    if (_editMode == CharacterDetailEditMode.ReadOnly) return;
+                    if (idx >= 2 && _editMode == CharacterDetailEditMode.EquipOnly) return;
                     TogglePool(idx, "skill");
                     evt.StopPropagation();
                 });
@@ -161,13 +163,13 @@ namespace Bond.UI
                 int idx = i;
                 _reactionTargetParts[idx]?.RegisterCallback<ClickEvent>(evt =>
                 {
-                    if (_viewMode != CharacterDetailViewMode.FullEdit) return;
+                    if (_editMode != CharacterDetailEditMode.FullEdit) return;
                     TogglePool(idx, "target");
                     evt.StopPropagation();
                 });
                 _reactionTriggerParts[idx]?.RegisterCallback<ClickEvent>(evt =>
                 {
-                    if (_viewMode != CharacterDetailViewMode.FullEdit) return;
+                    if (_editMode != CharacterDetailEditMode.FullEdit) return;
                     TogglePool(idx, "trigger");
                     evt.StopPropagation();
                 });
@@ -179,21 +181,61 @@ namespace Bond.UI
                     CloseRolePicker();
             });
         }
-
-        public void Show(BaseCharacter character, CharacterDetailViewMode mode, IInventory inventory)
+        
+        public void Show(BaseCharacter character, CharacterDetailEditMode mode, IInventory inventory)
         {
-            _character        = character;
-            _viewMode         = mode;
+            SetCharacterInternal(character);
+            _editMode         = mode;
             _currentInventory = inventory;
-
-            _controller.SetCharacter(character);
-            _titleLabel.text = character.Name;
 
             RefreshAll();
             ApplyViewMode();
 
             _panel.RemoveFromClassList("character-detail--hidden");
             _panel.AddToClassList("character-detail--visible");
+        }
+
+        private void RefreshCharacter(BaseCharacter character)
+        {
+            SetCharacterInternal(character);
+            RefreshAll();
+        }
+
+        private void SetCharacterInternal(BaseCharacter character)
+        {
+            DetachCharacterEvents(_character);
+            _character = character;
+            AttachCharacterEvents(_character);
+        }
+
+        private void AttachCharacterEvents(BaseCharacter character)
+        {
+            if (character == null) return;
+            character.OnHpChanged        += HandleHpChanged;
+            character.OnInsanityChanged  += HandleInsanityChanged;
+            character.OnStatRecalculated += HandleStatRecalculated;
+            character.OnRoleChanged      += HandleRoleChanged;
+        }
+
+        private void DetachCharacterEvents(BaseCharacter character)
+        {
+            if (character == null) return;
+            character.OnHpChanged        -= HandleHpChanged;
+            character.OnInsanityChanged  -= HandleInsanityChanged;
+            character.OnStatRecalculated -= HandleStatRecalculated;
+            character.OnRoleChanged      -= HandleRoleChanged;
+        }
+
+        // RefreshStats가 HP/광기 게이지까지 함께 갱신하므로 별도 분기는 두지 않는다
+        private void HandleHpChanged(BaseCharacter c)        => RefreshStats();
+        private void HandleInsanityChanged(BaseCharacter c)  => RefreshStats();
+        private void HandleStatRecalculated(BaseCharacter c) => RefreshStats();
+        private void HandleRoleChanged(BaseCharacter c)      => RefreshIdentity();
+
+        private void OnDestroy()
+        {
+            DetachCharacterEvents(_character);
+            _equipSlots?.Dispose();
         }
 
         public void Hide()
@@ -204,16 +246,16 @@ namespace Bond.UI
             CloseRolePicker();
         }
 
-        public void SetViewMode(CharacterDetailViewMode mode)
+        public void SetViewMode(CharacterDetailEditMode mode)
         {
-            _viewMode = mode;
+            _editMode = mode;
             ApplyViewMode();
         }
 
         private void ApplyViewMode()
         {
-            bool fullEdit = _viewMode == CharacterDetailViewMode.FullEdit;
-            bool canEquip = _viewMode != CharacterDetailViewMode.ReadOnly;
+            bool fullEdit = _editMode == CharacterDetailEditMode.FullEdit;
+            bool canEquip = _editMode != CharacterDetailEditMode.ReadOnly;
 
             _roleBtnCurrent.EnableInClassList("char-detail__role-current--disabled", !fullEdit);
             _roleBtnCurrent.pickingMode = fullEdit ? PickingMode.Position : PickingMode.Ignore;
@@ -228,21 +270,21 @@ namespace Bond.UI
                 _reactionSlots[i].pickingMode = editable ? PickingMode.Position : PickingMode.Ignore;
             }
 
-            SetLockBanner(_lockBannerRole, _viewMode switch
+            SetLockBanner(_lockBannerRole, _editMode switch
             {
-                CharacterDetailViewMode.EquipOnly => "탐사 중 변경 불가",
-                CharacterDetailViewMode.ReadOnly  => "전투 중 변경 불가",
+                CharacterDetailEditMode.EquipOnly => "탐사 중 변경 불가",
+                CharacterDetailEditMode.ReadOnly  => "전투 중 변경 불가",
                 _                                => "",
             });
-            SetLockBanner(_lockBannerEquip, _viewMode switch
+            SetLockBanner(_lockBannerEquip, _editMode switch
             {
-                CharacterDetailViewMode.ReadOnly => "전투 중 변경 불가",
+                CharacterDetailEditMode.ReadOnly => "전투 중 변경 불가",
                 _                               => "",
             });
-            SetLockBanner(_lockBannerReaction, _viewMode switch
+            SetLockBanner(_lockBannerReaction, _editMode switch
             {
-                CharacterDetailViewMode.EquipOnly => "탐사 중 변경 불가",
-                CharacterDetailViewMode.ReadOnly  => "전투 중 변경 불가",
+                CharacterDetailEditMode.EquipOnly => "탐사 중 변경 불가",
+                CharacterDetailEditMode.ReadOnly  => "전투 중 변경 불가",
                 _                                => "",
             });
         }
@@ -255,7 +297,7 @@ namespace Bond.UI
             banner.text = msg;
             if (string.IsNullOrEmpty(msg)) return;
             banner.AddToClassList("char-detail__lock-banner--visible");
-            banner.AddToClassList(_viewMode == CharacterDetailViewMode.EquipOnly
+            banner.AddToClassList(_editMode == CharacterDetailEditMode.EquipOnly
                 ? "char-detail__lock-banner--equip-only"
                 : "char-detail__lock-banner--read-only");
         }
@@ -275,6 +317,8 @@ namespace Bond.UI
         {
             if (_character == null) return;
 
+            _titleLabel.text = _character.Name;
+            
             string profName = _character.Profession?.Name ?? "—";
             _classLevelLabel.text = $"{profName}  Lv.{_character.Level}";
 
@@ -493,7 +537,7 @@ namespace Bond.UI
 
         private void ToggleRolePicker()
         {
-            if (_viewMode != CharacterDetailViewMode.FullEdit) return;
+            if (_editMode != CharacterDetailEditMode.FullEdit) return;
             _rolePickerOpen = !_rolePickerOpen;
             if (_rolePickerOpen)
                 _rolePicker.AddToClassList("char-detail__role-picker--open");
@@ -528,7 +572,8 @@ namespace Bond.UI
             {
                 "target"  => "관찰 대상",
                 "trigger" => "조건",
-                _         => "스킬",
+                "skill"   => "스킬",
+                _ => ""
             });
             title.AddToClassList("char-detail__pool-title");
             header.Add(title);
@@ -545,7 +590,8 @@ namespace Bond.UI
             {
                 case "target":  BuildTargetChips(slotIndex, chips);  break;
                 case "trigger": BuildTriggerChips(slotIndex, chips); break;
-                default:        BuildSkillChips(slotIndex, chips);   break;
+                case "skill":   BuildSkillChips(slotIndex, chips);   break;
+                default: break;
             }
             pool.Add(chips);
 
@@ -554,8 +600,9 @@ namespace Bond.UI
             {
                 "target"  => "char-detail__inline-pool--target",
                 "trigger" => "char-detail__inline-pool--trigger",
-                _         => isRole ? "char-detail__inline-pool--skill"
+                "skill"   => isRole ? "char-detail__inline-pool--skill"
                                     : "char-detail__inline-pool--trait-skill",
+                _ => ""
             });
         }
 
@@ -580,15 +627,15 @@ namespace Bond.UI
             var reaction = GetReactionAt(slotIndex);
             string currentId = reaction.SubjectCharacterId;
 
-            var members = _controller.GetPartyMembers();
-            if (members.Count == 0)
+            var candidates = _controller.GetObserveCandidates();
+            if (candidates.Count == 0)
             {
                 AddPoolEmpty(container, "파티원 없음");
                 return;
             }
-            foreach (var member in members)
+            foreach (var candidate in candidates)
             {
-                var captured = member;
+                var captured = candidate;
                 var chip = new Button(() => { _controller.SetReactionTarget(slotIndex, captured.Id); CloseAllPools(); });
                 chip.AddToClassList("char-detail__pool-chip");
                 chip.AddToClassList("char-detail__pool-chip--target");

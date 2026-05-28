@@ -21,6 +21,8 @@ MonoBehaviour:
   _options:
   - text: "\uC270\uB2E4."
     actionKey: Rest
+    _isDisabled: 0
   - text: "\uACC4\uC18D \uAC04\uB2E4."
     actionKey: Continue
+    _isDisabled: 0
   _entryIconId: 

@@ -22,6 +22,8 @@ MonoBehaviour:
   _options:
   - text: "\uAD6C\uB9E4\uD55C\uB2E4."
     actionKey: Buy
+    _isDisabled: 0
   - text: "\uAD6C\uACBD\uB9CC \uD55C\uB2E4."
     actionKey: Look
+    _isDisabled: 0
   _entryIconId: 

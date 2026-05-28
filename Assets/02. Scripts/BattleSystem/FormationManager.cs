@@ -110,14 +110,16 @@ namespace BattleSystem
                 .Select(s => s.Occupant)
                 .ToList();
 
-            for (int i = 0; i < slots.Length; i++)
+            // 모든 슬롯 초기화
+            foreach (var slot in slots)
             {
-                if (slots[i] == null) continue;
-                
-                if (i < characters.Count)
-                    slots[i].SetOccupant(characters[i]);
-                else
-                    slots[i].Clear();
+                if (slot != null) slot.Clear();
+            }
+
+            // 앞쪽 슬롯부터 차례대로 재할당
+            for (int i = 0; i < characters.Count; i++)
+            {
+                if (slots[i] != null) slots[i].SetOccupant(characters[i]);
             }
 
             m_visualizer?.PlayConsolidationEffect(side);
@@ -132,6 +134,44 @@ namespace BattleSystem
                     slot.Clear();
                 }
             }
+        }
+
+        public List<CharacterSlot> GetValidSlots(BaseCharacter caster, SkillData skillData)
+        {
+            List<CharacterSlot> validSlots = new List<CharacterSlot>();
+            E_BattleSide sideToCheck;
+            int maskToCheck;
+
+            switch (skillData.Target)
+            {
+                case SkillTarget.Enemy:
+                    sideToCheck = (caster.CurrentSlot.side == E_BattleSide.Player) ?
+                        E_BattleSide.Enemy : E_BattleSide.Player;
+                    maskToCheck = skillData.EnemyTargetMask;
+                    break;
+                case SkillTarget.Party:
+                    sideToCheck = caster.CurrentSlot.side;
+                    maskToCheck = skillData.AllyTargetMask;
+                    break;
+                case SkillTarget.Self:
+                    sideToCheck = caster.CurrentSlot.side;
+                    maskToCheck = (int)caster.CurrentSlot.rank;
+                    break;
+                default:
+                    return validSlots;
+            }
+
+            var targetData = GetData(sideToCheck);
+            foreach (var slot in targetData.Slots)
+            {
+                if (slot == null) continue;
+                if ((maskToCheck & (int)slot.rank) != 0)
+                {
+                    validSlots.Add(slot);
+                }
+            }
+
+            return validSlots;
         }
 
         public bool HasAnyValidTarget(BaseCharacter caster, SkillData skillData)

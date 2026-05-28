@@ -19,3 +19,5 @@ EVT_MEET_HELPER	{0}에서 {1}을(를) 만났습니다. ; 그는 우리에게 도
 EVT_INSPECT_PEDESTAL	{0} 기단 위에 {1}이(가) 놓여 있습니다. ; 함정일지도 모릅니다.	Inspect:조사한다.;Touch:만져본다.	
 EVT_REST_VIEW	{0} 너머로 {1}의 풍경이 보입니다. ; 잠시 쉬어가는 건 어떨까요?	Rest:쉰다.;Continue:계속 간다.	
 EVT_BATTLE_END	{0}명의 동료들과 함께 {1}마리의 적을 처치했다.	ACTION_RETURN_MAP:맵으로 돌아가기 	
+EVT_CAMP_START	탐사 중 휴식을 취할 시간입니다.	CAMP_ACTION_USEITEM;사용한다	
+EVT_CAMP_END		CAMP_END:맵으로 돌아가기 	

@@ -12,6 +12,7 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
     private CharacterCombatPanelController _controller;
     private CharacterDetailPresenter _detailPresenter;
     private ICharacterSelector _selector;
+    private EquipSlotsPresenter _equipSlots;
 
     private VisualElement _root;
     private VisualElement _charIcon;
@@ -36,17 +37,15 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
     private readonly Label[]         _skillNames = new Label[4];
     private readonly VisualElement[] _skillIcons = new VisualElement[4];
 
-    private VisualElement _chipWeapon;
-    private VisualElement _chipArmor;
-    private readonly VisualElement[] _chipAcc = new VisualElement[2];
-
     private BaseCharacter _character;
 
     [Inject]
-    public void Construct(CharacterDetailPresenter detailPresenter, ICharacterSelector selector)
+    public void Construct(
+        CharacterDetailPresenter detailPresenter,
+        ICharacterSelector selector)
     {
-        _detailPresenter = detailPresenter;
-        _selector        = selector;
+        _detailPresenter  = detailPresenter;
+        _selector         = selector;
     }
 
     private void Start()
@@ -86,10 +85,8 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
         var equipMount = _root.Q("combat-panel__equip-mount");
         if (equipMount != null)
         {
-            _chipWeapon = equipMount.Q("equip-chip-weapon");
-            _chipArmor  = equipMount.Q("equip-chip-armor");
-            _chipAcc[0] = equipMount.Q("equip-chip-acc0");
-            _chipAcc[1] = equipMount.Q("equip-chip-acc1");
+            _equipSlots = new EquipSlotsPresenter(equipMount, _root);
+            _equipSlots.SetEditable(false);
         }
 
         _controller.OnCharacterUpdated += BindCharacter;
@@ -114,30 +111,75 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
 
     private void BindCharacter(BaseCharacter character)
     {
+        DetachCharacterEvents(_character);
         _character = character;
+        AttachCharacterEvents(_character);
 
-        if (_charName != null) _charName.text = character.Name ?? "";
-        if (_charJob  != null) _charJob.text  = character.Profession?.Name ?? "";
-        if (_charRole != null) _charRole.text = character.RoleType.ToString();
-
-        if (_iconText != null)
-            _iconText.text = FirstChar(character.Profession?.Name);
-        if (!string.IsNullOrEmpty(character.ImageAddress))
-            LoadPortraitAsync(character.ImageAddress).Forget();
-
+        RefreshIdentity();
         RefreshHpBar(character.Stat.current_Hp, character.Stat.max_Hp);
         RefreshInsanityBar(character.Insanity, 100);
+        RefreshStats();
+        BindSkillSlots(character);
+        _equipSlots?.SetCharacter(character);
+    }
 
-        var stat = character.Stat;
+    private void RefreshIdentity()
+    {
+        if (_character == null) return;
+
+        if (_charName != null) _charName.text = _character.Name ?? "";
+        if (_charJob  != null) _charJob.text  = _character.Profession?.Name ?? "";
+        if (_charRole != null) _charRole.text = _character.RoleType.ToString();
+
+        if (_iconText != null)
+            _iconText.text = FirstChar(_character.Profession?.Name);
+        if (!string.IsNullOrEmpty(_character.ImageAddress))
+            LoadPortraitAsync(_character.ImageAddress).Forget();
+    }
+
+    private void RefreshStats()
+    {
+        if (_character == null) return;
+        var stat = _character.Stat;
         if (_statAtk   != null) _statAtk.text   = stat.atk.ToString();
         if (_statDef   != null) _statDef.text    = stat.def.ToString();
         if (_statSpAtk != null) _statSpAtk.text  = stat.Sp_Atk.ToString();
         if (_statSpd   != null) _statSpd.text    = stat.speed.ToString();
         if (_statCrt   != null) _statCrt.text    = $"{stat.crt:0.#}%";
         if (_statAcc   != null) _statAcc.text    = $"{stat.acc:0.#}%";
+    }
 
-        BindSkillSlots(character);
-        RefreshEquipSlots(character);
+    private void AttachCharacterEvents(BaseCharacter character)
+    {
+        if (character == null) return;
+        character.OnHpChanged        += HandleHpChanged;
+        character.OnInsanityChanged  += HandleInsanityChanged;
+        character.OnStatRecalculated += HandleStatRecalculated;
+        character.OnRoleChanged      += HandleRoleChanged;
+    }
+
+    private void DetachCharacterEvents(BaseCharacter character)
+    {
+        if (character == null) return;
+        character.OnHpChanged        -= HandleHpChanged;
+        character.OnInsanityChanged  -= HandleInsanityChanged;
+        character.OnStatRecalculated -= HandleStatRecalculated;
+        character.OnRoleChanged      -= HandleRoleChanged;
+    }
+
+    private void HandleHpChanged(BaseCharacter c)        => RefreshHpBar(c.Stat.current_Hp, c.Stat.max_Hp);
+    private void HandleInsanityChanged(BaseCharacter c)  => RefreshInsanityBar(c.Insanity, 100);
+    private void HandleStatRecalculated(BaseCharacter c)
+    {
+        RefreshStats();
+        RefreshHpBar(c.Stat.current_Hp, c.Stat.max_Hp);
+    }
+    private void HandleRoleChanged(BaseCharacter c)      => RefreshIdentity();
+
+    private void OnDestroy()
+    {
+        DetachCharacterEvents(_character);
+        _equipSlots?.Dispose();
     }
 
     private void BindSkillSlots(BaseCharacter character)
@@ -152,20 +194,9 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
             {
                 _skillIcons[i].style.backgroundImage = new StyleBackground();
                 string iconAddr = skill?.Data?.IconAddress;
-                //if (!string.IsNullOrEmpty(iconAddr))
-                    //LoadSkillIconAsync(_skillIcons[i], iconAddr).Forget();
+                if (!string.IsNullOrEmpty(iconAddr))
+                    LoadSkillIconAsync(_skillIcons[i], iconAddr).Forget();
             }
-        }
-    }
-
-    private void RefreshEquipSlots(BaseCharacter character)
-    {
-        SetChipData(_chipWeapon, character.Weapon?.itemName, character.Weapon != null);
-        SetChipData(_chipArmor,  character.Armor?.itemName,  character.Armor  != null);
-        for (int i = 0; i < 2; i++)
-        {
-            var acc = character.Accessories?[i];
-            SetChipData(_chipAcc[i], acc?.itemName, acc != null);
         }
     }
 
@@ -258,7 +289,7 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
         _charIcon?.RegisterCallback<PointerDownEvent>(evt =>
         {
             if (evt.button != 1 || _character == null) return;
-            _detailPresenter?.Show(_character, CharacterDetailViewMode.ReadOnly, null);
+            _detailPresenter?.Show(_character, CharacterDetailEditMode.ReadOnly, null);
             evt.StopPropagation();
         });
     }
@@ -286,29 +317,20 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
         if (_iconText != null) _iconText.style.display = DisplayStyle.None;
     }
 
+    #pragma warning disable CS1998
     private async UniTaskVoid LoadSkillIconAsync(VisualElement iconEl, string address)
     {
-        var sprite = await Addressables.LoadAssetAsync<Sprite>(address).ToUniTask();
-        if (sprite == null || iconEl == null) return;
-        iconEl.style.backgroundImage = new StyleBackground(sprite);
+        // TODO: 실제 이미지 로드로 변경
+        iconEl.style.backgroundImage = new StyleBackground(Texture2D.whiteTexture);
+        
+        // var sprite = await Addressables.LoadAssetAsync<Sprite>(address).ToUniTask();
+        // if (sprite == null || iconEl == null) return;
+        // iconEl.style.backgroundImage = new StyleBackground(sprite);
     }
+    #pragma warning restore CS1998
 
     // ── 유틸 ────────────────────────────────────────────────────────────
 
     private static string FirstChar(string s) =>
         !string.IsNullOrEmpty(s) ? s[0].ToString() : "?";
-
-    private static string Truncate(string s, int max) =>
-        s != null && s.Length > max ? s[..max] + "…" : s ?? "";
-
-    private static void SetChipData(VisualElement chip, string itemName, bool equipped)
-    {
-        if (chip == null) return;
-        var nameLabel = chip.Q<Label>(className: "equip-slots__chip-name");
-        if (nameLabel != null)
-            nameLabel.text = equipped ? Truncate(itemName, 8) : "비어있음";
-
-        chip.EnableInClassList("equip-slots__chip--equipped", equipped);
-        chip.EnableInClassList("equip-slots__chip--empty",    !equipped);
-    }
 }
