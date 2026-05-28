@@ -65,37 +65,49 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     RoleReactions:
-    - SubjectCharacterId: 76efe732-631c-45fd-be5d-95ee3c0d7887
+    - Phase: 1
+      ObserveFilter: 2
+      SubjectCharacterId: 
       Trigger:
         rid: 8081819941751750750
-      SkillIndex: 0
-      ReactionSkillTarget: 1
-    - SubjectCharacterId: 
+      Effect:
+        rid: 8081820094143922314
+    - Phase: 0
+      ObserveFilter: 0
+      SubjectCharacterId: 
       Trigger:
         rid: -2
-      SkillIndex: 0
-      ReactionSkillTarget: 1
+      Effect:
+        rid: -2
     TraitReactions:
-    - SubjectCharacterId: 
+    - Phase: 0
+      ObserveFilter: 0
+      SubjectCharacterId: 
       Trigger:
         rid: -2
-      SkillIndex: 0
-      ReactionSkillTarget: 0
-    - SubjectCharacterId: 
+      Effect:
+        rid: -2
+    - Phase: 0
+      ObserveFilter: 0
+      SubjectCharacterId: 
       Trigger:
         rid: -2
-      SkillIndex: 0
-      ReactionSkillTarget: 0
-    - SubjectCharacterId: 
+      Effect:
+        rid: -2
+    - Phase: 0
+      ObserveFilter: 0
+      SubjectCharacterId: 
       Trigger:
         rid: -2
-      SkillIndex: 0
-      ReactionSkillTarget: 0
-    - SubjectCharacterId: 
+      Effect:
+        rid: -2
+    - Phase: 0
+      ObserveFilter: 0
+      SubjectCharacterId: 
       Trigger:
         rid: -2
-      SkillIndex: 0
-      ReactionSkillTarget: 0
+      Effect:
+        rid: -2
   references:
     version: 2
     RefIds:
@@ -128,27 +140,17 @@ MonoBehaviour:
     - rid: 8081819941751750750
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
-        Conditions:
-        - rid: 8081819941751750797
-        - rid: 8081819941751750798
-        - rid: 8081819941751750799
-        - rid: 8081819941751750800
-    - rid: 8081819941751750797
-      type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
-      data:
-        Filter: 2
-    - rid: 8081819941751750798
-      type: {class: SkillTypeCondition, ns: Reactions, asm: Assembly-CSharp}
-      data:
-        Type: 1
-    - rid: 8081819941751750799
-      type: {class: HpBelowCondition, ns: Reactions, asm: Assembly-CSharp}
-      data:
-        Threshold: 0.8
-    - rid: 8081819941751750800
-      type: {class: HitCondition, ns: Reactions, asm: Assembly-CSharp}
-      data: 
+        _condition:
+          Additional:
+          - rid: 8081820094143922313
     - rid: 8081819941751750806
       type: {class: AutoBattle_Def, ns: , asm: Assembly-CSharp}
       data:
         isPlayable: 0
+    - rid: 8081820094143922313
+      type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Filter: 2
+    - rid: 8081820094143922314
+      type: {class: InterceptReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data: 

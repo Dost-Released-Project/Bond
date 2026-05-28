@@ -217,18 +217,8 @@ namespace BattleSystem
 
         private void HandleCharacterDeath(BaseCharacter deadCharacter)
         {
-            Debug.Log($"<color=gray>[BattleManager] {deadCharacter.Name} 사망 처리: 진영에서 제거 및 타겟팅 제외</color>");
-            
-            if (deadCharacter != null && deadCharacter.CurrentSlot != null)
-            {
-                var side = deadCharacter.CurrentSlot.side;
-                m_formationManager.ClearCharacter(deadCharacter);
-                m_formationManager.ConsolidationFormation(side);
-            }
-            else
-            {
-                m_formationManager.ClearCharacter(deadCharacter);
-            }
+            Debug.Log($"<color=grey>[BattleManager] {deadCharacter.Name} 사망 처리: 진영에서 제거 및 타겟팅 제외</color>");
+            m_formationManager.ClearCharacter(deadCharacter);
         }
         #endregion
     }
