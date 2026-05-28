@@ -142,7 +142,6 @@ namespace Bond.UI
 
             _controller.OnRoleChanged      += _ => RefreshIdentity();
             _controller.OnReactionChanged  += RefreshReactionSlot;
-            _controller.OnAccessoryChanged += () => _equipSlots.SetCharacter(_character);
 
             for (int i = 0; i < 6; i++)
                 _reactionPools[i] = root.Q($"inline-pool-{i}");
@@ -185,10 +184,10 @@ namespace Bond.UI
         
         public void Show(BaseCharacter character, CharacterDetailEditMode mode, IInventory inventory)
         {
-            _character        = character;
+            SetCharacterInternal(character);
             _editMode         = mode;
             _currentInventory = inventory;
-            
+
             RefreshAll();
             ApplyViewMode();
 
@@ -198,9 +197,45 @@ namespace Bond.UI
 
         private void RefreshCharacter(BaseCharacter character)
         {
-            _character        = character;
-            
+            SetCharacterInternal(character);
             RefreshAll();
+        }
+
+        private void SetCharacterInternal(BaseCharacter character)
+        {
+            DetachCharacterEvents(_character);
+            _character = character;
+            AttachCharacterEvents(_character);
+        }
+
+        private void AttachCharacterEvents(BaseCharacter character)
+        {
+            if (character == null) return;
+            character.OnHpChanged        += HandleHpChanged;
+            character.OnInsanityChanged  += HandleInsanityChanged;
+            character.OnStatRecalculated += HandleStatRecalculated;
+            character.OnRoleChanged      += HandleRoleChanged;
+        }
+
+        private void DetachCharacterEvents(BaseCharacter character)
+        {
+            if (character == null) return;
+            character.OnHpChanged        -= HandleHpChanged;
+            character.OnInsanityChanged  -= HandleInsanityChanged;
+            character.OnStatRecalculated -= HandleStatRecalculated;
+            character.OnRoleChanged      -= HandleRoleChanged;
+        }
+
+        // RefreshStats가 HP/광기 게이지까지 함께 갱신하므로 별도 분기는 두지 않는다
+        private void HandleHpChanged(BaseCharacter c)        => RefreshStats();
+        private void HandleInsanityChanged(BaseCharacter c)  => RefreshStats();
+        private void HandleStatRecalculated(BaseCharacter c) => RefreshStats();
+        private void HandleRoleChanged(BaseCharacter c)      => RefreshIdentity();
+
+        private void OnDestroy()
+        {
+            DetachCharacterEvents(_character);
+            _equipSlots?.Dispose();
         }
 
         public void Hide()

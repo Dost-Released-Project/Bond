@@ -16,7 +16,6 @@ namespace Bond.UI
 
         public event Action<BaseCharacter> OnCharacterSet;
         public event Action<RoleType>      OnRoleChanged;
-        public event Action                OnAccessoryChanged;
         public event Action<int>           OnReactionChanged;
 
         public CharacterDetailController(
@@ -24,9 +23,6 @@ namespace Bond.UI
             )
         {
             _itemService = itemService;
-
-            // CharacterItemService 경유 장착/해제(우클릭) 시에 칩을 갱신한다
-            _itemService.OnEquipmentChanged += () => OnAccessoryChanged?.Invoke();
         }
 
         public void SetCharacter(BaseCharacter character)

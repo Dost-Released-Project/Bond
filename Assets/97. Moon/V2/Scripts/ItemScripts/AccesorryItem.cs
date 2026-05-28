@@ -18,7 +18,7 @@ public class AccessoryItem : BaseItem
     // 해제 시 효과 제거
     public void OnUnequip(BaseCharacter target)
     {
-        target.StatController.RemoveModifiersFromSource(this);
+        target.StatController.RemoveModifiersFromSource(this, specialEffects.Count);
         Debug.Log($"{itemName} 해제 효과 제거!");
     }
 }
