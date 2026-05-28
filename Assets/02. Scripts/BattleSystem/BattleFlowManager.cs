@@ -3,6 +3,7 @@ using System.Linq;
 using BattleSystem.Interface;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace BattleStage
 {
@@ -69,6 +70,20 @@ namespace BattleStage
             // 구독하고 있는 매니저들 한테 전투 신호 토글(플레이어 파티, 적 파티)
             OnBattle?.Invoke(m_playerUnits, m_enemyUnits);
         }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private void Update()
+        {
+            if (Keyboard.current.spaceKey.wasPressedThisFrame)
+            {
+                if (m_isBattleEnding) return;
+                
+                Debug.Log("<color=yellow>[DEBUG] Space 키 입력으로 전투를 스킵합니다.</color>");
+                m_isBattleEnding = true;
+                ProcessBattleEndAsync(true).Forget();
+            }
+        }
+#endif
 
         private void CheckBattleEnd(BaseCharacter deadCharacter)
         {
