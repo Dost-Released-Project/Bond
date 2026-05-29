@@ -119,7 +119,15 @@ public class TurnManager : ITurnManager, IStartable, IDisposable
                 {
                     _selector.Select(chara);
                 }
+                else
+                {
+                    _selector.Deselect(); // 플레이어가 아닌 유닛 턴일 때 기존 선택 해제
+                }
+                
                 await unit.TakeTurnAsync();
+                
+                // 턴이 완전히 끝나면 선택 상태를 초기화하여 다음 턴(혹은 다음 라운드의 동일 캐릭터 턴)에 이벤트가 정상 발생하도록 함
+                _selector.Deselect();
             }
             if (_turnQueue.Count > 0 && _turnQueue[0] == unit)
             {

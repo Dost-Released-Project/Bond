@@ -14,10 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSO
   _id: 10090000
   _displayName: Lich
-  _description: 
+  _description: Lich
   RoleType: 3
   Level: 7
   ImageAddress: RiceSummoner
+  IdleImageId: 
+  BattleImageId: 
   STR: 10
   AGI: 8
   INT: 28

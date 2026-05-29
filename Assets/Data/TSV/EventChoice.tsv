@@ -7,11 +7,13 @@
 											
 							EffectType 이 ItemReward 일 때 사용한다.				
 EventId	Label	OutcomeDescription	EffectType	TargetType	HpChangeAmount	StatusEffectId	ItemRewardType	GuaranteedItemId	ItemProbability	ProbabilityItemId	ItemPool
-12010000	도와준다	체력이 회복됐다	HpChange	All	20						
+12010000	도와준다	체력을 회복했다	HpChange	All	20						
 12010000	무시한다	아무 일도 없었다	None	None	0						
-											
 12020000	쉬어간다	기습을 당했다	Battle	None							
 12020000	지나친다	아무 일도 없었다	None	None							
-											
-12030000	열어본다	아이템을 획득했다	ItemReward				Guaranteed				
+12030000	열어본다	획득했다	ItemReward				Guaranteed	08000000			
 12030000	무시한다	아무 일도 없었다	None	None							
+12040000	선택한다	체력을 회복했다	HpChange	ChooseOne	20						
+12040000	무시한다	아무 일도 없었다	None	None	0						
+12050000	아이템 풀	획득했다	ItemReward				RandomFromPool				08000000;08010000;08020000;08030000
+12050000	무시한다	아무 일도 없었다	None								

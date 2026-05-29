@@ -30,5 +30,7 @@ MonoBehaviour:
   DefaultArmorId: 03070000
   DefaultWeaponId: 03030000
   IconId: 
+  IdleImageId: 123
+  BattleImageId: 1234
   ClassType: 03
   LV: 0

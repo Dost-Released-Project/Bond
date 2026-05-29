@@ -79,6 +79,8 @@ public class MonsterFactory
         monster.Level        = so.Level;
         monster.RoleType     = so.RoleType;
         monster.ImageAddress = so.ImageAddress;
+        monster.IdleImageAddress = so.IdleImageId;
+        monster.AttackImageAddress = so.BattleImageId;
 
         // 기본 능력치 세팅
         monster.Stat.STR = so.STR;

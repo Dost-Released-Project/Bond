@@ -13,12 +13,10 @@ MonoBehaviour:
   m_Name: EventMonsterGroupData
   m_EditorClassIdentifier: Assembly-CSharp::MonsterGroupData
   _id: 10101010
-  _displayName: 
-  _description: 
+  _displayName: "\uC774\uBCA4\uD2B8\uBAB9"
+  _description: "\uC774\uBCA4\uD2B8\uBAB9\uC784"
   MonsterIds:
-  - 12345678
-  - 12345889
-  - 12345889
+  - 10090000
   MinLayer: 0
   MaxLayer: 0
   IsElite: 0

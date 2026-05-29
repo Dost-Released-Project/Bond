@@ -15,8 +15,23 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 748404ed84ce7834994ae89f0b5c7ee0
   m_SerializeEntries:
+  - m_GUID: 1c14953b581eda64d84a87c2996425f0
+    m_Address: 1234
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5040080801ce41d4d84e88b819bd9908
+    m_Address: Stage_Camp
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a309ff3a52af1b64092e2dee5c4fa7b2
     m_Address: Test_3_Node
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c7afa3bae4149e849b6e99716a30f3c8
+    m_Address: 123
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

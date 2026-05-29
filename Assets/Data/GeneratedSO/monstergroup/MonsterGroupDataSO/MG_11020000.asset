@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MG_11020000
   m_EditorClassIdentifier: Assembly-CSharp::MonsterGroupData
   _id: 11020000
-  _displayName: "\uC624\uD06C \uBD80\uB300"
+  _displayName: "\uC624\uD06C\uC640 \uACE0\uBE14\uB9B0"
   _description: "\uC624\uD06C+\uACE0\uBE14\uB9B0"
   MonsterIds:
   - 10020000
