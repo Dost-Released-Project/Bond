@@ -41,8 +41,9 @@ public class StageLoader : IStageLoader
     private bool _isLoading;                    // 비동기 로딩 진행 중 여부 (이중 호출 방지)
 
     // 전투 결과 로그 기록용 — NotifyStageCompleted 시점에 사용
-    private bool _isBattleStage = false;           // 현재 로드된 스테이지가 전투 씬인지 여부
-    private string _pendingBattleGroupId = string.Empty; // 현재 전투의 몬스터 그룹 ID
+    private bool _isBattleStage = false;                  // 현재 로드된 스테이지가 전투 씬인지 여부
+    private bool _isEventBattle = false;                  // 이벤트 선택으로 전환된 전투인지 여부 — 일반 전투와 구분해 로그 합산 여부를 결정한다
+    private string _pendingBattleGroupId = string.Empty;  // 현재 전투의 몬스터 그룹 ID
 
     // 스테이지 씬 로드 중 비활성화할 맵 씬 컴포넌트 — 언로드 후 복구
     private AudioListener _mapAudioListener;
@@ -286,11 +287,17 @@ public class StageLoader : IStageLoader
         }
 
         // 전투 스테이지 종료 시 결과를 EventLogAccumulator 에 기록한다.
-        // IsBattleTriggered == true 인 이벤트 → 전투 전환 시에는 기록하지 않는다.
+        // 이벤트 전투(_isEventBattle)이면 열려있는 Pending Report 에 결과를 덧붙여 이벤트 기록과 합산한다.
+        // 일반 전투이면 독립된 전투 기록으로 추가한다.
         if (_isBattleStage)
         {
-            _logAccumulator?.RecordBattleResult(result, _pendingBattleGroupId);
+            if (_isEventBattle)
+                _logAccumulator?.AppendBattleResultToPendingReport(result, _pendingBattleGroupId);
+            else
+                _logAccumulator?.RecordBattleResult(result, _pendingBattleGroupId);
+
             _isBattleStage = false;
+            _isEventBattle = false;
             _pendingBattleGroupId = string.Empty;
         }
 
@@ -333,6 +340,7 @@ public class StageLoader : IStageLoader
             // EventBattleContext 에서 몬스터 정보를 IStageMonsterContext 로 이전
             // Clear() 전에 GroupId 를 캡처해 전투 결과 로그에 사용한다
             _isBattleStage = true;
+            _isEventBattle = true;  // 이벤트 선택으로 전환된 전투 — 로그를 이벤트 기록에 합산한다
             _pendingBattleGroupId = EventBattleContext.MonsterGroupId;
             _stageMonsterContext.Set(EventBattleContext.MonsterGroupId, EventBattleContext.MonsterIds);
             EventBattleContext.Clear();
@@ -388,8 +396,9 @@ public class StageLoader : IStageLoader
         // TODO: 검증 완료 후 제거
         Debug.Log($"[StageLoader] SetNormalStageContext → NodeType={node.GetType().Name}");
 
-        // 노말 스테이지는 항상 전투 씬이다
+        // 노말 스테이지는 항상 전투 씬이다 — 이벤트 전투가 아니므로 독립 기록한다
         _isBattleStage = true;
+        _isEventBattle = false;
 
         if (string.IsNullOrEmpty(node.AssignedMonsterGroupId))
         {

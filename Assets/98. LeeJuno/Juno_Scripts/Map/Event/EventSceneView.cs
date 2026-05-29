@@ -141,6 +141,38 @@ public class EventSceneView : MonoBehaviour, IEventChoiceView
     }
 
     /// <summary>
+    /// 효과 적용 결과 텍스트를 DescriptionLabel 에 표시하고 선택지 자리에 "확인" 버튼을 생성한다.
+    /// 확인 버튼 클릭 시 onConfirm 을 호출한다.
+    /// outcomeText 가 null 이면 string.Empty 로 대체한다.
+    /// </summary>
+    /// <param name="outcomeText">결과 설명 텍스트.</param>
+    /// <param name="onConfirm">확인 버튼 클릭 시 호출할 콜백.</param>
+    public void ShowOutcome(string outcomeText, Action onConfirm)
+    {
+        if (_descriptionLabel != null)
+            _descriptionLabel.text = outcomeText ?? string.Empty;
+
+        ClearChoices();
+
+        if (_choiceButtonTemplate == null || _choiceContainer == null)
+            return;
+
+        TemplateContainer buttonInstance = _choiceButtonTemplate.Instantiate();
+        Button btn = buttonInstance.Q<Button>("ChoiceButton");
+
+        if (btn == null)
+            return;
+
+        Label label = btn.Q<Label>("ChoiceLabel");
+        if (label != null)
+            label.text = "확인";
+
+        // 람다식: onConfirm 을 클로저로 캡처해 버튼 클릭 시 호출하기 위해 사용한다
+        btn.clicked += () => onConfirm?.Invoke();
+        _choiceContainer.Add(buttonInstance);
+    }
+
+    /// <summary>
     /// 선택지 컨테이너의 모든 자식 요소를 제거한다.
     /// JournalUIView.ClearUI() 의 _optionButtonContainer.Clear() 패턴과 동일.
     /// </summary>
@@ -152,6 +184,41 @@ public class EventSceneView : MonoBehaviour, IEventChoiceView
         }
 
         _choiceContainer.Clear();
+    }
+
+    /// <summary>
+    /// HpChange ChooseOne 효과 처리 시 파티원 이름 버튼을 표시한다.
+    /// 버튼 클릭 시 onSelected 에 해당 파티 인덱스를 전달한다.
+    /// </summary>
+    /// <param name="characterNames">선택 가능한 파티원 이름 목록.</param>
+    /// <param name="onSelected">선택된 캐릭터의 파티 인덱스를 인자로 받는 콜백.</param>
+    public void ShowCharacterSelection(IReadOnlyList<string> characterNames, Action<int> onSelected)
+    {
+        ClearChoices();
+
+        if (_choiceButtonTemplate == null || _choiceContainer == null)
+            return;
+
+        for (int i = 0; i < characterNames.Count; i++)
+        {
+            TemplateContainer buttonInstance = _choiceButtonTemplate.Instantiate();
+            Button btn = buttonInstance.Q<Button>("ChoiceButton");
+
+            if (btn == null)
+            {
+                Debug.LogWarning("[EventSceneView] 템플릿에서 'ChoiceButton' 을 찾을 수 없습니다.");
+                continue;
+            }
+
+            Label label = btn.Q<Label>("ChoiceLabel");
+            if (label != null)
+                label.text = characterNames[i];
+
+            // 람다식: 루프 변수 i 를 클로저로 캡처해 각 버튼에 파티 인덱스를 바인딩하기 위해 사용한다
+            int captured = i;
+            btn.clicked += () => onSelected?.Invoke(captured);
+            _choiceContainer.Add(buttonInstance);
+        }
     }
 
     /// <summary>
