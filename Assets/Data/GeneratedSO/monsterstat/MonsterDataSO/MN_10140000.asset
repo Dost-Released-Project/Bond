@@ -18,6 +18,8 @@ MonoBehaviour:
   RoleType: 3
   Level: 6
   ImageAddress: RiceSummoner
+  IdleImageId: 
+  BattleImageId: 
   STR: 8
   AGI: 10
   INT: 24

@@ -108,6 +108,9 @@ public partial class BaseCharacter
             Profession pro = new Profession(data);
             chara.Profession = pro;
             
+            chara.IdleImageAddress = data.IdleImageId;
+            chara.AttackImageAddress = data.BattleImageId;
+            
             var weaponSo = equipDb.GetSO<DefaultEquipSO>(data.DefaultWeaponId);
             var armorSo = equipDb.GetSO<DefaultEquipSO>(data.DefaultArmorId);
 

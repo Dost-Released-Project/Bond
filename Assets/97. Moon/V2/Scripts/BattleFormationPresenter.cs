@@ -89,8 +89,7 @@ namespace BattleSystem
             foreach (var slot in characterSlots)
             {
                 if (slot == null) continue;
-                slot.SetForceHover(false);
-                slot.SetForceClick(false);
+                slot.ResetAllStates(); // 잔상 방지: 모든 플래그 완벽히 밀어버림
             }
         }
 
@@ -136,8 +135,13 @@ namespace BattleSystem
             foreach (var slot in characterSlots)
             {
                 if (slot == null) continue;
+                
+                // [핵심] 턴(선택)이 넘어갈 때마다 이전 상태 찌꺼기를 전부 지워버림
+                slot.ResetAllStates();
+                
+                // [기획 요구사항] 현재 턴 캐릭터(Actor) = Hover 색상 (IsSelected 상태)
                 bool isSelected = !slot.IsEmpty && slot.Occupant == selectedCharacter;
-                slot.SetForceClick(isSelected);
+                if (isSelected) slot.SetSelected(true); 
             }
         }
 
@@ -160,9 +164,12 @@ namespace BattleSystem
             foreach (var slot in characterSlots)
             {
                 if (slot == null) continue;
+
+                slot.SetTargetable(false); // 기존 타겟 상태 초기화
+                
+                // [기획 요구사항] 스킬 대상(Target) = Click 색상 (IsTargetable 상태)
                 bool isValid = m_validSlots.Contains(slot);
-                slot.SetForceHover(isValid);
-                slot.SetForceClick(false); // 기존 선택 강조는 끔
+                if (isValid) slot.SetTargetable(true);
             }
         }
 
@@ -170,8 +177,7 @@ namespace BattleSystem
         {
             m_isTargetingMode = false;
             m_TargetingCaster = null;
-            ResetAllHighlights();
-            // 마지막 배우 강조 다시 켬
+            // HandleSelectionChanged에서 모든 상태를 초기화하고 Actor를 다시 세팅함
             HandleSelectionChanged(m_currentActor);
         }
     }

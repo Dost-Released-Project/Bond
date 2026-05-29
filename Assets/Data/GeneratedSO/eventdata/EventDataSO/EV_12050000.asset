@@ -10,24 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1f0df188d0682c7429f9d5a0ba9968fe, type: 3}
-  m_Name: EV_12010000
+  m_Name: EV_12050000
   m_EditorClassIdentifier: Assembly-CSharp::EventData
-  _id: 12010000
-  _displayName: "\uC4F0\uB7EC\uC9C4 \uB204\uAD70\uAC00     "
-  _description: "\uB204\uAD70\uAC00 \uAE38\uAC00\uC5D0 \uC4F0\uB7EC\uC838 \uC788\uB2E4"
+  _id: 12050000
+  _displayName: "\uB79C\uB364 \uC544\uC774\uD15C \uD480"
+  _description: "\uD480\uC5D0\uC11C \uD558\uB098 \uB79C\uB364\uC73C\uB85C"
   _choices:
-  - _label: "\uB3C4\uC640\uC900\uB2E4"
-    _outcomeDescription: "\uCCB4\uB825\uC744 \uD68C\uBCF5\uD588\uB2E4"
+  - _label: "\uC544\uC774\uD15C \uD480"
+    _outcomeDescription: "\uD68D\uB4DD\uD588\uB2E4"
     _effect:
-      _effectType: 1
-      _targetType: 3
-      _hpChangeAmount: 20
+      _effectType: 3
+      _targetType: 0
+      _hpChangeAmount: 0
       _statusEffectId: 
-      _itemRewardType: 0
+      _itemRewardType: 2
       _guaranteedItemId: 
       _itemProbability: 0
       _probabilityItemId: 
-      _itemPool: []
+      _itemPool:
+      - 08000000
+      - 08010000
+      - 08020000
+      - 08030000
   - _label: "\uBB34\uC2DC\uD55C\uB2E4"
     _outcomeDescription: "\uC544\uBB34 \uC77C\uB3C4 \uC5C6\uC5C8\uB2E4"
     _effect:
@@ -40,4 +44,4 @@ MonoBehaviour:
       _itemProbability: 0
       _probabilityItemId: 
       _itemPool: []
-  _journalData: {fileID: 11400000, guid: 882c9a6a095033b4cbc0f6a76636911d, type: 2}
+  _journalData: {fileID: 0}
