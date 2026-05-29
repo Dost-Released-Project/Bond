@@ -10,6 +10,7 @@ namespace Reactions
     /// 디자이너가 인스펙터에서 어떤 부분을 편집 가능하게 둘지 지정한다.
     /// 순수 데이터(+검증/적용 헬퍼)만 담는다 — 후보 선택 UI 렌더링은 상위 UI 레이어 책임.
     /// </summary>
+    [Serializable]
     public abstract class ReactionEditableSlot
     {
         [Tooltip("플레이어 UI에 표시할 라벨 (예: 관찰 대상, 사용할 방어 스킬)")]

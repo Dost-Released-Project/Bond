@@ -49,6 +49,11 @@ namespace Bond.UI
         private readonly VisualElement[] _reactionTriggerParts  = new VisualElement[6];
         private readonly VisualElement[] _reactionSkillParts    = new VisualElement[6];
 
+        // 역할 슬롯(0-1) 전용 필드
+        private readonly VisualElement[] _reactionReactionParts = new VisualElement[2];
+        private readonly Label[]         _reactionReactionVals  = new Label[2];
+        private readonly VisualElement[] _reactionEditables     = new VisualElement[2];
+
         private readonly VisualElement[] _reactionPools = new VisualElement[6];
         private int    _openPoolSlot = -1;
         private string _openPoolPart = null;
@@ -117,7 +122,22 @@ namespace Bond.UI
             _traitList = root.Q("char-detail__trait-list");
             _skillGrid  = root.Q("char-detail__skill-grid");
 
-            for (int i = 0; i < 6; i++)
+            // 역할 슬롯(0-1) 쿼리
+            for (int i = 0; i < 2; i++)
+            {
+                _reactionSlots[i]           = root.Q($"reaction-slot-{i}");
+                _reactionReactionParts[i]   = root.Q($"reaction-slot-{i}__reaction-part");
+                _reactionReactionVals[i]    = root.Q<Label>($"reaction-slot-{i}__reaction");
+                _reactionEditables[i]       = root.Q($"reaction-slot-{i}__editables");
+                _reactionTargetParts[i]     = root.Q($"reaction-slot-{i}__target-part");
+                _reactionTargetLabels[i]    = root.Q<Label>($"reaction-slot-{i}__target");
+                _reactionSkillParts[i]      = root.Q($"reaction-slot-{i}__skill-part");
+                _reactionSkillLabels[i]     = root.Q<Label>($"reaction-slot-{i}__skill");
+                _reactionEchoLabels[i]      = root.Q<Label>($"reaction-slot-{i}__echo");
+            }
+
+            // 트레잇 슬롯(2-5) 쿼리
+            for (int i = 2; i < 6; i++)
             {
                 _reactionSlots[i]         = root.Q($"reaction-slot-{i}");
                 _reactionTargetLabels[i]  = root.Q<Label>($"reaction-slot-{i}__target");
@@ -141,36 +161,44 @@ namespace Bond.UI
             _equipSlots.OnUnequipRequested       += OnUnequipRequested;
 
             _controller.OnRoleChanged      += _ => RefreshIdentity();
-            _controller.OnReactionChanged  += RefreshReactionSlot;
+            _controller.OnReactionChanged  += idx => { if (idx < 2) RefreshRoleSlot(idx); else RefreshTraitSlot(idx); };
 
             for (int i = 0; i < 6; i++)
                 _reactionPools[i] = root.Q($"inline-pool-{i}");
 
-            for (int i = 0; i < 6; i++)
+            // 역할 슬롯(0-1) 클릭 핸들러
+            for (int i = 0; i < 2; i++)
             {
                 int idx = i;
+                _reactionReactionParts[idx]?.RegisterCallback<ClickEvent>(evt =>
+                {
+                    if (_editMode != CharacterDetailEditMode.FullEdit) return;
+                    TogglePool(idx, "reaction");
+                    evt.StopPropagation();
+                });
+                _reactionTargetParts[idx]?.RegisterCallback<ClickEvent>(evt =>
+                {
+                    if (_editMode != CharacterDetailEditMode.FullEdit) return;
+                    TogglePool(idx, "observe");
+                    evt.StopPropagation();
+                });
                 _reactionSkillParts[idx]?.RegisterCallback<ClickEvent>(evt =>
                 {
-                    if (_editMode == CharacterDetailEditMode.ReadOnly) return;
-                    if (idx >= 2 && _editMode == CharacterDetailEditMode.EquipOnly) return;
+                    if (_editMode != CharacterDetailEditMode.FullEdit) return;
                     TogglePool(idx, "skill");
                     evt.StopPropagation();
                 });
             }
 
-            for (int i = 0; i < 2; i++)
+            // 트레잇 슬롯(2-5) 클릭 핸들러
+            for (int i = 2; i < 6; i++)
             {
                 int idx = i;
-                _reactionTargetParts[idx]?.RegisterCallback<ClickEvent>(evt =>
+                _reactionSkillParts[idx]?.RegisterCallback<ClickEvent>(evt =>
                 {
-                    if (_editMode != CharacterDetailEditMode.FullEdit) return;
-                    TogglePool(idx, "target");
-                    evt.StopPropagation();
-                });
-                _reactionTriggerParts[idx]?.RegisterCallback<ClickEvent>(evt =>
-                {
-                    if (_editMode != CharacterDetailEditMode.FullEdit) return;
-                    TogglePool(idx, "trigger");
+                    if (_editMode == CharacterDetailEditMode.ReadOnly) return;
+                    if (_editMode == CharacterDetailEditMode.EquipOnly) return;
+                    TogglePool(idx, "skill");
                     evt.StopPropagation();
                 });
             }
@@ -309,7 +337,8 @@ namespace Bond.UI
             RefreshStats();
             RefreshTraits();
             RefreshSkillGrid();
-            for (int i = 0; i < 6; i++) RefreshReactionSlot(i);
+            for (int i = 0; i < 2; i++) RefreshRoleSlot(i);
+            for (int i = 2; i < 6; i++) RefreshTraitSlot(i);
             _equipSlots.SetCharacter(_character);
         }
 
@@ -453,45 +482,89 @@ namespace Bond.UI
             }
         }
 
-        private void RefreshReactionSlot(int slotIndex)
+        private void RefreshRoleSlot(int i)
         {
-            if (_character == null || slotIndex < 0 || slotIndex >= 6) return;
+            if (_character == null || i < 0 || i >= 2) return;
 
-            Reaction reaction;
-            if (slotIndex < 2)
+            var reaction = i < _character.RoleReactions.Length ? _character.RoleReactions[i] : null;
+            var def = _controller.GetSlotDefinition(i);
+
+            if (reaction == null)
             {
-                reaction = slotIndex < _character.RoleReactions.Length
-                    ? _character.RoleReactions[slotIndex]
-                    : null;
+                _reactionReactionVals[i].text = "리액션 선택";
+                _reactionReactionVals[i].AddToClassList("char-detail__slot-part-val--placeholder");
+                if (_reactionEditables[i] != null)
+                    _reactionEditables[i].style.display = DisplayStyle.None;
+                _reactionSlots[i].RemoveFromClassList("char-detail__reaction-slot--locked");
+                _reactionEchoLabels[i].text = "○";
+                _reactionEchoLabels[i].AddToClassList("char-detail__slot-echo--empty");
+                return;
             }
-            else
+
+            _reactionReactionVals[i].text = def?.DisplayName ?? "(정의 없음)";
+            _reactionReactionVals[i].RemoveFromClassList("char-detail__slot-part-val--placeholder");
+
+            bool hasObserve = _controller.HasObserveEditable(i);
+            bool hasSkill   = _controller.HasSkillEditable(i);
+
+            if (_reactionEditables[i] != null)
+                _reactionEditables[i].style.display = (hasObserve || hasSkill) ? DisplayStyle.Flex : DisplayStyle.None;
+
+            if (_reactionTargetParts[i] != null)
+                _reactionTargetParts[i].style.display = hasObserve ? DisplayStyle.Flex : DisplayStyle.None;
+            if (_reactionSkillParts[i] != null)
+                _reactionSkillParts[i].style.display = hasSkill ? DisplayStyle.Flex : DisplayStyle.None;
+
+            if (hasObserve)
             {
-                int traitIdx = slotIndex - 2;
-                reaction = traitIdx < _character.TraitReactions.Length
-                    ? _character.TraitReactions[traitIdx]
-                    : null;
+                bool hasSub = !string.IsNullOrEmpty(reaction.SubjectCharacterId);
+                string targetName = hasSub && BaseCharacter.Dict.TryGetValue(reaction.SubjectCharacterId, out var subj)
+                    ? subj.Name
+                    : "미설정";
+                _reactionTargetLabels[i].text = targetName;
+                _reactionTargetLabels[i].EnableInClassList("char-detail__slot-part-val--placeholder", !hasSub);
             }
+
+            if (hasSkill)
+            {
+                int skillIdx = (reaction.Effect as SkillCastReactionEffect)?.SkillIndex ?? -1;
+                bool valid = skillIdx >= 0 && skillIdx < _character.Skills.Length && _character.Skills[skillIdx] != null;
+                _reactionSkillLabels[i].text = valid
+                    ? (_character.Skills[skillIdx].Data?.DisplayName ?? "미설정")
+                    : "미설정";
+                _reactionSkillLabels[i].EnableInClassList("char-detail__slot-part-val--placeholder", !valid);
+            }
+
+            bool complete = _controller.IsSlotComplete(i);
+            _reactionEchoLabels[i].text = complete ? "◈" : "○";
+            _reactionEchoLabels[i].EnableInClassList("char-detail__slot-echo--empty", !complete);
+        }
+
+        private void RefreshTraitSlot(int slotIndex)
+        {
+            if (_character == null || slotIndex < 2 || slotIndex >= 6) return;
+
+            int traitIdx = slotIndex - 2;
+            var reaction = traitIdx < _character.TraitReactions.Length ? _character.TraitReactions[traitIdx] : null;
 
             bool locked = reaction == null;
             _reactionSlots[slotIndex].EnableInClassList("char-detail__reaction-slot--locked", locked);
-            SetReactionPartsVisible(slotIndex, !locked);
+            SetTraitPartsVisible(slotIndex, !locked);
 
             if (locked) return;
 
-            bool hasTarget = string.IsNullOrEmpty(reaction.SubjectCharacterId) == false;
+            bool hasTarget = !string.IsNullOrEmpty(reaction.SubjectCharacterId);
             string targetName = hasTarget && BaseCharacter.Dict.TryGetValue(reaction.SubjectCharacterId, out var subj)
                 ? subj.Name
                 : hasTarget ? reaction.SubjectCharacterId : "미설정";
             _reactionTargetLabels[slotIndex].text = targetName;
-            _reactionTargetLabels[slotIndex].EnableInClassList(
-                "char-detail__slot-part-val--placeholder", !hasTarget);
+            _reactionTargetLabels[slotIndex].EnableInClassList("char-detail__slot-part-val--placeholder", !hasTarget);
 
             bool hasTrigger = reaction.Trigger is Trigger tt && tt.Conditions.Count > 0;
             _reactionTriggerLabels[slotIndex].text = hasTrigger
                 ? GetTriggerDisplayText(reaction.Trigger)
                 : "미설정";
-            _reactionTriggerLabels[slotIndex].EnableInClassList(
-                "char-detail__slot-part-val--placeholder", !hasTrigger);
+            _reactionTriggerLabels[slotIndex].EnableInClassList("char-detail__slot-part-val--placeholder", !hasTrigger);
 
             int skillIndex = (reaction.Effect as SkillCastReactionEffect)?.SkillIndex ?? -1;
             bool hasSkill = skillIndex >= 0
@@ -500,15 +573,14 @@ namespace Bond.UI
             _reactionSkillLabels[slotIndex].text = hasSkill
                 ? GetSkillDisplayText(skillIndex)
                 : "미설정";
-            _reactionSkillLabels[slotIndex].EnableInClassList(
-                "char-detail__slot-part-val--placeholder", !hasSkill);
+            _reactionSkillLabels[slotIndex].EnableInClassList("char-detail__slot-part-val--placeholder", !hasSkill);
 
             bool complete = hasTarget && hasTrigger && hasSkill;
             _reactionEchoLabels[slotIndex].text = complete ? "◈" : "○";
             _reactionEchoLabels[slotIndex].EnableInClassList("char-detail__slot-echo--empty", !complete);
         }
 
-        private void SetReactionPartsVisible(int i, bool visible)
+        private void SetTraitPartsVisible(int i, bool visible)
         {
             var display = visible ? DisplayStyle.Flex : DisplayStyle.None;
             if (_reactionTargetParts[i]  != null) _reactionTargetParts[i].style.display  = display;
@@ -571,9 +643,9 @@ namespace Bond.UI
 
             var title = new Label(part switch
             {
-                "target"  => "관찰 대상",
-                "trigger" => "조건",
-                "skill"   => "스킬",
+                "reaction" => "리액션",
+                "observe"  => "관찰 대상",
+                "skill"    => slotIndex < 2 ? "행동" : "스킬",
                 _ => ""
             });
             title.AddToClassList("char-detail__pool-title");
@@ -589,9 +661,12 @@ namespace Bond.UI
             chips.AddToClassList("char-detail__pool-chips");
             switch (part)
             {
-                case "target":  BuildTargetChips(slotIndex, chips);  break;
-                case "trigger": BuildTriggerChips(slotIndex, chips); break;
-                case "skill":   BuildSkillChips(slotIndex, chips);   break;
+                case "reaction": BuildReactionCatalogChips(slotIndex, chips); break;
+                case "observe":  BuildObserveChips(slotIndex, chips);         break;
+                case "skill":
+                    if (slotIndex < 2) BuildRoleSkillChips(slotIndex, chips);
+                    else               BuildSkillChips(slotIndex, chips);
+                    break;
                 default: break;
             }
             pool.Add(chips);
@@ -599,10 +674,10 @@ namespace Bond.UI
             bool isRole = slotIndex < 2;
             pool.AddToClassList(part switch
             {
-                "target"  => "char-detail__inline-pool--target",
-                "trigger" => "char-detail__inline-pool--trigger",
-                "skill"   => isRole ? "char-detail__inline-pool--skill"
-                                    : "char-detail__inline-pool--trait-skill",
+                "reaction" => "char-detail__inline-pool--target",
+                "observe"  => "char-detail__inline-pool--target",
+                "skill"    => isRole ? "char-detail__inline-pool--skill"
+                                     : "char-detail__inline-pool--trait-skill",
                 _ => ""
             });
         }
@@ -623,48 +698,92 @@ namespace Bond.UI
             _openPoolPart = null;
         }
 
-        private void BuildTargetChips(int slotIndex, VisualElement container)
+        private void BuildReactionCatalogChips(int slotIndex, VisualElement container)
         {
-            var reaction = GetReactionAt(slotIndex);
-            string currentId = reaction.SubjectCharacterId;
-
-            var candidates = _controller.GetObserveCandidates();
-            if (candidates.Count == 0)
+            var catalog = _controller.GetRoleReactionCatalog(slotIndex);
+            if (catalog.Count == 0)
             {
-                AddPoolEmpty(container, "파티원 없음");
+                AddPoolEmpty(container, "선택 가능한 리액션 없음");
                 return;
             }
-            foreach (var candidate in candidates)
+
+            var currentDef = _controller.GetSlotDefinition(slotIndex);
+            var reaction = GetReactionAt(slotIndex);
+
+            if (reaction != null)
             {
-                var captured = candidate;
-                var chip = new Button(() => { _controller.SetReactionTarget(slotIndex, captured.Id); CloseAllPools(); });
+                var clearChip = new Button(() => { _controller.ClearRoleReaction(slotIndex); CloseAllPools(); });
+                clearChip.AddToClassList("char-detail__pool-chip");
+                clearChip.AddToClassList("char-detail__pool-chip--target");
+                var clearLabel = new Label("해제");
+                clearLabel.AddToClassList("char-detail__pool-chip-name");
+                clearChip.Add(clearLabel);
+                container.Add(clearChip);
+            }
+
+            foreach (var def in catalog)
+            {
+                var capturedDef = def;
+                var chip = new Button(() => { _controller.SelectRoleReaction(slotIndex, capturedDef); CloseAllPools(); });
                 chip.AddToClassList("char-detail__pool-chip");
                 chip.AddToClassList("char-detail__pool-chip--target");
-                if (captured.Id == currentId)
+                if (currentDef != null && currentDef.Id == capturedDef.Id)
                     chip.AddToClassList("char-detail__pool-chip--selected");
-                var label = new Label(captured.Name);
-                label.AddToClassList("char-detail__pool-chip-name");
-                chip.Add(label);
+                var nameLabel = new Label(capturedDef.DisplayName);
+                nameLabel.AddToClassList("char-detail__pool-chip-name");
+                chip.Add(nameLabel);
                 container.Add(chip);
             }
         }
 
-        private void BuildTriggerChips(int slotIndex, VisualElement container)
+        private void BuildObserveChips(int slotIndex, VisualElement container)
         {
-            var triggers = _controller.GetRoleTriggers(_character.RoleType);
-            if (triggers.Count == 0)
+            var candidates = _controller.GetObserveTargetCandidates(slotIndex);
+            if (candidates.Count == 0)
             {
-                AddPoolEmpty(container, "설정 가능한 조건 없음");
+                AddPoolEmpty(container, "파티 아군 없음");
                 return;
             }
-            foreach (var trigger in triggers)
+
+            var reaction = GetReactionAt(slotIndex);
+            string currentId = reaction?.SubjectCharacterId;
+
+            foreach (var c in candidates)
             {
-                var captured = trigger;
-                string label = GetTriggerDisplayText(captured);
-                var chip = new Button(() => { _controller.SetReactionTrigger(slotIndex, captured); CloseAllPools(); });
+                var captured = c;
+                var chip = new Button(() => { _controller.SetObserveTarget(slotIndex, captured.Id); CloseAllPools(); });
                 chip.AddToClassList("char-detail__pool-chip");
-                chip.AddToClassList("char-detail__pool-chip--trigger");
-                var nameLabel = new Label(label);
+                chip.AddToClassList("char-detail__pool-chip--target");
+                if (captured.Id == currentId)
+                    chip.AddToClassList("char-detail__pool-chip--selected");
+                var nameLabel = new Label(captured.Name);
+                nameLabel.AddToClassList("char-detail__pool-chip-name");
+                chip.Add(nameLabel);
+                container.Add(chip);
+            }
+        }
+
+        private void BuildRoleSkillChips(int slotIndex, VisualElement container)
+        {
+            var candidates = _controller.GetActionSkillCandidates(slotIndex);
+            if (candidates.Count == 0)
+            {
+                AddPoolEmpty(container, "사용 가능한 스킬 없음");
+                return;
+            }
+
+            var reaction = GetReactionAt(slotIndex);
+            int currentIndex = (reaction?.Effect as SkillCastReactionEffect)?.SkillIndex ?? -1;
+
+            foreach (var (index, skill) in candidates)
+            {
+                int capturedIndex = index;
+                var chip = new Button(() => { _controller.SetActionSkill(slotIndex, capturedIndex); CloseAllPools(); });
+                chip.AddToClassList("char-detail__pool-chip");
+                chip.AddToClassList("char-detail__pool-chip--skill");
+                if (capturedIndex == currentIndex)
+                    chip.AddToClassList("char-detail__pool-chip--selected");
+                var nameLabel = new Label(skill.Data?.DisplayName ?? "?");
                 nameLabel.AddToClassList("char-detail__pool-chip-name");
                 chip.Add(nameLabel);
                 container.Add(chip);
