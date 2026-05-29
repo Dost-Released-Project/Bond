@@ -45,11 +45,24 @@ namespace BattleSystem
         private Color m_currentColor;
         private bool m_isHovered;
         private bool m_isPressed;
-        private bool m_forceHover;
-        private bool m_forceClick;
+        
+        public bool IsSelected { get; private set; }
+        public bool IsTargetable { get; private set; }
+        public bool IsActing { get; private set; }
+        public bool IsTargeted { get; private set; }
 
-        public void SetForceHover(bool force) => m_forceHover = force;
-        public void SetForceClick(bool force) => m_forceClick = force;
+        public void SetSelected(bool val) => IsSelected = val;
+        public void SetTargetable(bool val) => IsTargetable = val;
+        public void SetActing(bool val) => IsActing = val;
+        public void SetTargeted(bool val) => IsTargeted = val;
+
+        public void ResetAllStates()
+        {
+            IsSelected = false;
+            IsTargetable = false;
+            IsActing = false;
+            IsTargeted = false;
+        }
 
         public CharacterSlot(E_BattleSide side, FormationMask rank)
         {
@@ -77,12 +90,28 @@ namespace BattleSystem
 
         private void VisualUpdate()
         {
-            bool finalHover = m_isHovered || m_forceHover;
-            bool finalClick = m_isPressed || m_forceClick;
+            bool isActor = IsSelected || IsActing;
+            bool isTarget = IsTargetable || IsTargeted;
 
-            if (finalClick) m_targetColor = colorData.pressedColor;
-            else if (finalHover) m_targetColor = colorData.hoverColor;
-            else m_targetColor = colorData.normalColor;
+            // [사용자 요구사항 절대 준수]
+            // 스킬 대상 (Target) = 클릭 효과 (pressedColor)
+            // 현재 턴인 캐릭터 (Actor) = 호버 효과 (hoverColor)
+            
+            if (isTarget)
+            {
+                m_targetColor = colorData.pressedColor;
+            }
+            else if (isActor)
+            {
+                m_targetColor = m_isPressed ? colorData.pressedColor : colorData.hoverColor;
+            }
+            // 아무 상태도 아닐 때의 기본 마우스 반응
+            else
+            {
+                if (m_isPressed) m_targetColor = colorData.pressedColor;
+                else if (m_isHovered) m_targetColor = colorData.hoverColor;
+                else m_targetColor = colorData.normalColor;
+            }
 
             m_currentColor = Color.Lerp(m_currentColor, m_targetColor, Time.unscaledDeltaTime * colorData.lerpSpeed);
             m_CharacterSlotVisualizer.SetCurrentColor(m_currentColor);

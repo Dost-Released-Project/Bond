@@ -57,6 +57,24 @@ namespace BattleSystem
                 case false:
                     UnSubCharacter(players);
                     UnSubCharacter(enemies);
+                    
+                    // 전투 종료 시 모든 캐릭터 슬롯 상태 초기화
+                    if (players != null)
+                    {
+                        foreach (var player in players)
+                        {
+                            if (player != null && player.CurrentSlot != null)
+                                player.CurrentSlot.ResetAllStates();
+                        }
+                    }
+                    if (enemies != null)
+                    {
+                        foreach (var enemy in enemies)
+                        {
+                            if (enemy != null && enemy.CurrentSlot != null)
+                                enemy.CurrentSlot.ResetAllStates();
+                        }
+                    }
                     break;
             }
         }
@@ -65,11 +83,12 @@ namespace BattleSystem
         {
             var casterSlot = battleContext.caster.CurrentSlot;
             List<BaseCharacter> targets = new List<BaseCharacter>();
+            List<CharacterSlot> targetSlots = new List<CharacterSlot>(); // 사망 시 슬롯 정보 유실 방지용 캐싱
 
             try
             {
                 // 1. 시전자 강조 (Hover)
-                casterSlot.SetForceHover(true);
+                casterSlot.SetActing(true);
                 
                 // 2. 1000ms 대기
                 await UniTask.Delay(1000);
@@ -134,7 +153,11 @@ namespace BattleSystem
                 Debug.Log($"Target Count: {targets.Count}");
                 foreach (var target in targets)
                 {
-                    target.CurrentSlot.SetForceClick(true);
+                    if (target.CurrentSlot != null)
+                    {
+                        targetSlots.Add(target.CurrentSlot);
+                        target.CurrentSlot.SetTargeted(true);
+                    }
                 }
 
                 // 5. 1000ms 대기
@@ -153,13 +176,15 @@ namespace BattleSystem
             }
             finally
             {
-                // 7. 연출 초기화 (시각적 피드백 유지 후 해제, 사망자 발생 대비 null 체크)
-                if (casterSlot != null) casterSlot.SetForceHover(false);
-                foreach (var target in targets)
+                // 7. 연출 초기화 (시각적 피드백 유지 후 해제)
+                if (casterSlot != null) casterSlot.SetActing(false);
+                
+                // 타겟이 사망하여 target.CurrentSlot이 null이 되더라도, 캐싱된 슬롯 정보를 통해 효과를 확실히 끔
+                foreach (var slot in targetSlots)
                 {
-                    if (target != null && target.CurrentSlot != null)
+                    if (slot != null)
                     {
-                        target.CurrentSlot.SetForceClick(false);
+                        slot.SetTargeted(false);
                     }
                 }
             }
