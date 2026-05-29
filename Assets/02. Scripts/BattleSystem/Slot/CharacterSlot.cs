@@ -90,27 +90,31 @@ namespace BattleSystem
 
         private void VisualUpdate()
         {
-            bool isActor = IsSelected || IsActing;
-            bool isTarget = IsTargetable || IsTargeted;
-
-            // [사용자 요구사항 절대 준수]
-            // 스킬 대상 (Target) = 클릭 효과 (pressedColor)
-            // 현재 턴인 캐릭터 (Actor) = 호버 효과 (hoverColor)
-            
-            if (isTarget)
+            // [UI 우선순위] 유저 인터랙션(마우스)을 최우선으로 처리하여 즉각적인 피드백 제공
+            if (m_isPressed)
             {
                 m_targetColor = colorData.pressedColor;
             }
-            else if (isActor)
+            else if (m_isHovered)
             {
-                m_targetColor = m_isPressed ? colorData.pressedColor : colorData.hoverColor;
+                m_targetColor = colorData.hoverColor;
             }
-            // 아무 상태도 아닐 때의 기본 마우스 반응
+            // 마우스 입력이 없을 때만 논리적 상태(대상 지정, 현재 턴 등)를 표시
+            else if (IsTargeted)
+            {
+                m_targetColor = colorData.pressedColor;
+            }
+            else if (IsTargetable)
+            {
+                m_targetColor = colorData.targetableColor;
+            }
+            else if (IsSelected || IsActing)
+            {
+                m_targetColor = colorData.hoverColor;
+            }
             else
             {
-                if (m_isPressed) m_targetColor = colorData.pressedColor;
-                else if (m_isHovered) m_targetColor = colorData.hoverColor;
-                else m_targetColor = colorData.normalColor;
+                m_targetColor = colorData.normalColor;
             }
 
             m_currentColor = Color.Lerp(m_currentColor, m_targetColor, Time.unscaledDeltaTime * colorData.lerpSpeed);
