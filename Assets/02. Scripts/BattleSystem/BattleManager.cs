@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using PipeLine;
 using Reactions;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using VContainer.Unity;
 
 namespace BattleSystem
@@ -58,24 +59,55 @@ namespace BattleSystem
                     UnSubCharacter(players);
                     UnSubCharacter(enemies);
                     
-                    // 전투 종료 시 모든 캐릭터 슬롯 상태 초기화
+                    // 전투 종료 시 모든 캐릭터 슬롯 상태 초기화 및 리소스 해제
                     if (players != null)
                     {
                         foreach (var player in players)
                         {
-                            if (player != null && player.CurrentSlot != null)
-                                player.CurrentSlot.ResetAllStates();
+                            if (player != null)
+                            {
+                                if (player.CurrentSlot != null)
+                                    player.CurrentSlot.ResetAllStates();
+                                
+                                // 모든 어드레서블 리소스 해제 및 캐시 초기화
+                                ReleaseCharacterPortraits(player);
+                            }
                         }
                     }
                     if (enemies != null)
                     {
                         foreach (var enemy in enemies)
                         {
-                            if (enemy != null && enemy.CurrentSlot != null)
-                                enemy.CurrentSlot.ResetAllStates();
+                            if (enemy != null)
+                            {
+                                if (enemy.CurrentSlot != null)
+                                    enemy.CurrentSlot.ResetAllStates();
+                                
+                                // 모든 어드레서블 리소스 해제 및 캐시 초기화
+                                ReleaseCharacterPortraits(enemy);
+                            }
                         }
                     }
                     break;
+            }
+        }
+
+        private void ReleaseCharacterPortraits(BaseCharacter character)
+        {
+            if (character.Portrait != null)
+            {
+                Addressables.Release(character.Portrait);
+                character.Portrait = null;
+            }
+            if (character.IdlePortrait != null)
+            {
+                Addressables.Release(character.IdlePortrait);
+                character.IdlePortrait = null;
+            }
+            if (character.AttackPortrait != null)
+            {
+                Addressables.Release(character.AttackPortrait);
+                character.AttackPortrait = null;
             }
         }
 
@@ -87,8 +119,9 @@ namespace BattleSystem
 
             try
             {
-                // 1. 시전자 강조 (Hover)
+                // 1. 시전자 강조 및 공격 이미지 전환
                 casterSlot.SetActing(true);
+                casterSlot.SetImageType(SlotImageType.Attack);
                 
                 // 2. 1000ms 대기
                 await UniTask.Delay(1000);
@@ -177,7 +210,11 @@ namespace BattleSystem
             finally
             {
                 // 7. 연출 초기화 (시각적 피드백 유지 후 해제)
-                if (casterSlot != null) casterSlot.SetActing(false);
+                if (casterSlot != null)
+                {
+                    casterSlot.SetActing(false);
+                    casterSlot.SetImageType(SlotImageType.Idle);
+                }
                 
                 // 타겟이 사망하여 target.CurrentSlot이 null이 되더라도, 캐싱된 슬롯 정보를 통해 효과를 확실히 끔
                 foreach (var slot in targetSlots)

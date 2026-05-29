@@ -30,6 +30,8 @@ public partial class BaseCharacter : ITurnUseUnit
 
     public string Id;
     public string ImageAddress;
+    public string IdleImageAddress;
+    public string AttackImageAddress;
     public string Name;
     
     public Profession Profession;
@@ -49,6 +51,16 @@ public partial class BaseCharacter : ITurnUseUnit
     public Reaction[] RoleReactions = new Reaction[2];
     public Reaction[] TraitReactions = new Reaction[4];
     [JsonIgnore] public Reaction[] Reactions => RoleReactions.Concat(TraitReactions).ToArray();
+    
+    [JsonIgnore] public Sprite Portrait { get; set; }
+    [JsonIgnore] public Texture IdlePortrait { get; set; }
+    [JsonIgnore] public Texture AttackPortrait { get; set; }
+    
+    [JsonIgnore] public string EffectiveIdleImageAddress => 
+        !string.IsNullOrEmpty(IdleImageAddress) ? IdleImageAddress : Profession?.IdleImageId;
+    
+    [JsonIgnore] public string EffectiveAttackImageAddress => 
+        !string.IsNullOrEmpty(AttackImageAddress) ? AttackImageAddress : Profession?.BattleImageId;
     
     [JsonIgnore] public Stat Stat { get; } = new Stat();
     [JsonIgnore] public StatController StatController { get; } = new StatController();

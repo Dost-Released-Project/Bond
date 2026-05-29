@@ -16,12 +16,23 @@ public class CharacterSlotVisualizer : ImmediateModePanel, ICharacterSlotVisuali
     [SerializeField][ColorUsage(true, true)] private Color m_bgColor;
     
     [SerializeField]private Color m_currentColor;
+    [SerializeField]private Texture m_portrait;
+
     public override void DrawPanelShapes(Rect rect, ImCanvasContext ctx)
     {
         Rect drawRect = Inset(rect, padding);
             
-        // 배경과 테두리 그리기
+        // 1. 배경 그리기
         Draw.Rectangle(drawRect, cornerRadius, m_bgColor);
+
+        // 2. 캐릭터 스프라이트 그리기 (배경과 테두리 사이 레이어)
+        if (m_portrait != null)
+        {
+            // Shapes.Draw.Texture 호출 시 Texture를 직접 사용
+            Draw.Texture(m_portrait, drawRect);
+        }
+
+        // 3. 테두리 그리기
         Draw.RectangleBorder(drawRect, thickness, cornerRadius, m_currentColor);
     }
     
@@ -38,5 +49,10 @@ public class CharacterSlotVisualizer : ImmediateModePanel, ICharacterSlotVisuali
     public void SetCurrentColor(Color currentColor)
     {
         this.m_currentColor = currentColor;
+    }
+
+    public void SetPortrait(Texture texture)
+    {
+        this.m_portrait = texture;
     }
 }

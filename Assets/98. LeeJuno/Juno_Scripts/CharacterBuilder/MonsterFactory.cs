@@ -65,6 +65,8 @@ public class MonsterFactory
         monster.Level        = so.Level;
         monster.RoleType     = so.RoleType;
         monster.ImageAddress = so.ImageAddress;
+        monster.IdleImageAddress = so.IdleImageId;
+        monster.AttackImageAddress = so.BattleImageId;
 
         // 스탯 직접 세팅 (Profession 없는 몬스터는 CalcStat() 미호출)
         monster.Stat.STR = so.STR;

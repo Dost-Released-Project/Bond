@@ -14,6 +14,8 @@ public class MonsterDTO
     public int AGI             { get; set; }
     public int INT             { get; set; }
     public string ImageAddress { get; set; }
+    public string IdleImageID  { get; set; }
+    public string BattleImageID { get; set; }
     public string SkillIdsRaw     { get; set; }
 }
 
@@ -51,6 +53,8 @@ public class MonsterParser : TSVParserBase<MonsterDTO, MonsterSO>
             agi:          dto.AGI,
             intel:        dto.INT,
             imageAddress: dto.ImageAddress,
+            idleImageId:  dto.IdleImageID,
+            battleImageId: dto.BattleImageID,
             skillIds:     skillIds
         );
     }
@@ -103,6 +107,8 @@ public class MonsterParser : TSVParserBase<MonsterDTO, MonsterSO>
             Map(m => m.AGI).Name("AGI").Default(0);
             Map(m => m.INT).Name("INT").Default(0);
             Map(m => m.ImageAddress).Name("ImageAddress").Default("");
+            Map(m => m.IdleImageID).Name("IdleImageID").Default("");
+            Map(m => m.BattleImageID).Name("BattleImageID").Default("");
             Map(m => m.SkillIdsRaw).Name("SkillIds").Default("");
         }
     }

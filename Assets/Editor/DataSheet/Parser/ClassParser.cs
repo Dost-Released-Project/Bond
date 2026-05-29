@@ -23,6 +23,8 @@ public class ClassDTO
     public string ArmorID { get; set; }
     public string WeaponID { get; set; }
     public string IconID { get; set; }
+    public string IdleImageID { get; set; }
+    public string BattleImageID { get; set; }
     public string Class { get; set; }
     public int LV { get; set; }
 }
@@ -38,7 +40,7 @@ public class ClassParser : TSVParserBase<ClassDTO, ClassSO>
     protected override void Populate(ClassSO so, ClassDTO dto)
     {
         so.SetData(dto.ID, dto.Name, dto.STR, dto.AGI, dto.INT, dto.HP, dto.DEF, dto.ATK, dto.Speed, dto.CRI, dto.ACC, 
-            dto.InsanityCtrl, dto.ReactionCtrl, dto.SP_ATK, dto.ArmorID, dto.WeaponID, dto.IconID, dto.Class, dto.LV);
+            dto.InsanityCtrl, dto.ReactionCtrl, dto.SP_ATK, dto.ArmorID, dto.WeaponID, dto.IconID, dto.IdleImageID, dto.BattleImageID, dto.Class, dto.LV);
     }
 
     protected override void OnPostImport(string outputDir)
@@ -97,6 +99,8 @@ public class ClassParser : TSVParserBase<ClassDTO, ClassSO>
             Map(m => m.ArmorID).Name("방어구 ID");
             Map(m => m.WeaponID).Name("무기 ID");
             Map(m => m.IconID).Name("Icon ID");
+            Map(m => m.IdleImageID).Name("IdleImageID");
+            Map(m => m.BattleImageID).Name("BattleImageID");
             Map(m => m.Class).Name("Class");
             Map(m => m.LV).Name("LV").Default(0);
         }

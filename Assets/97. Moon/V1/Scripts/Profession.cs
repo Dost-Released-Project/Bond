@@ -19,6 +19,9 @@ public class Profession
 
     [JsonIgnore] public string Name => _classData.DisplayName;
     [JsonIgnore] public int Id => int.Parse(_classData.ClassType);
+
+    [JsonIgnore] public string IdleImageId => _classData?.IdleImageId;
+    [JsonIgnore] public string BattleImageId => _classData?.BattleImageId;
     
     public void CalculateStat(BaseCharacter character, StatController controller)
     {

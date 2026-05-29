@@ -22,11 +22,13 @@ public class ClassSO : BaseSO
     public string DefaultArmorId;
     public string DefaultWeaponId;
     public string IconId;
+    public string IdleImageId;
+    public string BattleImageId;
 
     public string ClassType;
     public int LV;
 
-    public void SetData(string id, string name, int str, int agi, int @int, int hp, int def, int atk, int speed, int cri, int acc, int insanity, int reaction, int spAtk, string armor, string weapon, string icon, string classType, int lv)
+    public void SetData(string id, string name, int str, int agi, int @int, int hp, int def, int atk, int speed, int cri, int acc, int insanity, int reaction, int spAtk, string armor, string weapon, string icon, string idleIcon, string battleIcon, string classType, int lv)
     {
         base.Initialize(id, name, "");
         this.STR = str;
@@ -44,6 +46,8 @@ public class ClassSO : BaseSO
         this.DefaultArmorId = armor;
         this.DefaultWeaponId = weapon;
         this.IconId = icon;
+        this.IdleImageId = idleIcon;
+        this.BattleImageId = battleIcon;
         this.ClassType = classType;
         this.LV = lv;
     }
