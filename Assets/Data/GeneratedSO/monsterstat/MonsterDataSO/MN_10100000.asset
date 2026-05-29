@@ -18,6 +18,8 @@ MonoBehaviour:
   RoleType: 2
   Level: 6
   ImageAddress: GodOfWar
+  IdleImageId: 
+  BattleImageId: 
   STR: 22
   AGI: 14
   INT: 4

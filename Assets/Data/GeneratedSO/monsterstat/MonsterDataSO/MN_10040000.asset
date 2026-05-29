@@ -18,6 +18,8 @@ MonoBehaviour:
   RoleType: 1
   Level: 1
   ImageAddress: GodOfNormalization
+  IdleImageId: 
+  BattleImageId: 
   STR: 6
   AGI: 4
   INT: 2

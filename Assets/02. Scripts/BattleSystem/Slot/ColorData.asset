@@ -16,4 +16,5 @@ MonoBehaviour:
   bgColor: {r: 0, g: 0, b: 0, a: 0}
   hoverColor: {r: 1, g: 0.80166054, b: 0, a: 1}
   pressedColor: {r: 0, g: 1, b: 1, a: 0.6}
+  targetableColor: {r: 1, g: 0, b: 0.02501297, a: 1}
   lerpSpeed: 15

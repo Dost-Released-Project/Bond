@@ -12,6 +12,8 @@ public class MonsterSO : BaseSO
     public RoleType RoleType;
     public int Level;
     public string ImageAddress;
+    public string IdleImageId;
+    public string BattleImageId;
 
     [Header("기본 스탯")]
     public int STR;
@@ -34,6 +36,8 @@ public class MonsterSO : BaseSO
         int agi,
         int intel,
         string imageAddress,
+        string idleImageId,
+        string battleImageId,
         List<string> skillIds)
     {
         base.Initialize(id, displayName, "");
@@ -43,6 +47,8 @@ public class MonsterSO : BaseSO
         this.AGI          = agi;
         this.INT          = intel;
         this.ImageAddress = imageAddress;
+        this.IdleImageId  = idleImageId;
+        this.BattleImageId = battleImageId;
         this.SkillIds     = skillIds;
     }
 }

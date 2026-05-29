@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using PipeLine;
 using Reactions;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using VContainer.Unity;
 
 namespace BattleSystem
@@ -57,7 +58,56 @@ namespace BattleSystem
                 case false:
                     UnSubCharacter(players);
                     UnSubCharacter(enemies);
+                    
+                    // 전투 종료 시 모든 캐릭터 슬롯 상태 초기화 및 리소스 해제
+                    if (players != null)
+                    {
+                        foreach (var player in players)
+                        {
+                            if (player != null)
+                            {
+                                if (player.CurrentSlot != null)
+                                    player.CurrentSlot.ResetAllStates();
+                                
+                                // 모든 어드레서블 리소스 해제 및 캐시 초기화
+                                ReleaseCharacterPortraits(player);
+                            }
+                        }
+                    }
+                    if (enemies != null)
+                    {
+                        foreach (var enemy in enemies)
+                        {
+                            if (enemy != null)
+                            {
+                                if (enemy.CurrentSlot != null)
+                                    enemy.CurrentSlot.ResetAllStates();
+                                
+                                // 모든 어드레서블 리소스 해제 및 캐시 초기화
+                                ReleaseCharacterPortraits(enemy);
+                            }
+                        }
+                    }
                     break;
+            }
+        }
+
+        private void ReleaseCharacterPortraits(BaseCharacter character)
+        {
+            if (character.Portrait != null)
+            {
+                Addressables.Release(character.Portrait);
+                character.Portrait = null;
+            }
+            if (character.IdlePortrait != null)
+            {
+                Addressables.Release(character.IdlePortrait);
+                character.IdlePortrait = null;
+            }
+            if (character.AttackPortrait != null)
+            {
+                Addressables.Release(character.AttackPortrait);
+                character.AttackPortrait = null;
             }
         }
 
@@ -65,11 +115,13 @@ namespace BattleSystem
         {
             var casterSlot = battleContext.caster.CurrentSlot;
             List<BaseCharacter> targets = new List<BaseCharacter>();
+            List<CharacterSlot> targetSlots = new List<CharacterSlot>(); // 사망 시 슬롯 정보 유실 방지용 캐싱
 
             try
             {
-                // 1. 시전자 강조 (Hover)
-                casterSlot.SetForceHover(true);
+                // 1. 시전자 강조 및 공격 이미지 전환
+                casterSlot.SetActing(true);
+                casterSlot.SetImageType(SlotImageType.Attack);
                 
                 // 2. 1000ms 대기
                 await UniTask.Delay(1000);
@@ -134,7 +186,11 @@ namespace BattleSystem
                 Debug.Log($"Target Count: {targets.Count}");
                 foreach (var target in targets)
                 {
-                    target.CurrentSlot.SetForceClick(true);
+                    if (target.CurrentSlot != null)
+                    {
+                        targetSlots.Add(target.CurrentSlot);
+                        target.CurrentSlot.SetTargeted(true);
+                    }
                 }
 
                 // 5. 1000ms 대기
@@ -153,13 +209,19 @@ namespace BattleSystem
             }
             finally
             {
-                // 7. 연출 초기화 (시각적 피드백 유지 후 해제, 사망자 발생 대비 null 체크)
-                if (casterSlot != null) casterSlot.SetForceHover(false);
-                foreach (var target in targets)
+                // 7. 연출 초기화 (시각적 피드백 유지 후 해제)
+                if (casterSlot != null)
                 {
-                    if (target != null && target.CurrentSlot != null)
+                    casterSlot.SetActing(false);
+                    casterSlot.SetImageType(SlotImageType.Idle);
+                }
+                
+                // 타겟이 사망하여 target.CurrentSlot이 null이 되더라도, 캐싱된 슬롯 정보를 통해 효과를 확실히 끔
+                foreach (var slot in targetSlots)
+                {
+                    if (slot != null)
                     {
-                        target.CurrentSlot.SetForceClick(false);
+                        slot.SetTargeted(false);
                     }
                 }
             }
