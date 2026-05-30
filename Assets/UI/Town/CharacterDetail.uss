@@ -6,8 +6,8 @@
    ════════════════════════════════════════ */
 .character-detail {
     position: absolute;
-    left: 8%;
-    right: 8%;
+    left: 3%;
+    right: 13%;
     top: 6%;
     bottom: 6%;
     flex-direction: column;

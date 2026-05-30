@@ -96,7 +96,6 @@ namespace Bond.UI.Town
 
             var card = new Button(() =>
             {
-                _selector.ToggleSelection(character);
                 OnCardClicked?.Invoke(character);
             });
             card.RegisterCallback<PointerDownEvent>(evt =>

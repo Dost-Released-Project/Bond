@@ -26,7 +26,7 @@ namespace Bond.UI.Town
 
         private readonly List<BaseCharacter> _partySnapshot = new(4);
 
-        public EmbarkPresenter(VisualElement townRoot, EmbarkController controller, Roster roster)
+        public EmbarkPresenter(VisualElement townRoot, EmbarkController controller, Roster roster, CharacterDetailPresenter characterDetail, ITotalInventory townInventory)
         {
             _controller = controller;
 
@@ -64,6 +64,10 @@ namespace Bond.UI.Town
             _embarkRosterPresenter.OnCardClicked = character =>
             {
                 _controller.TogglePartyMember(character);
+            };
+            _embarkRosterPresenter.OnCardRightClicked += (character) =>
+            {
+                characterDetail.Show(character, CharacterDetailEditMode.FullEdit, townInventory);
             };
 
             _controller.OnOverlayOpened += Show;
