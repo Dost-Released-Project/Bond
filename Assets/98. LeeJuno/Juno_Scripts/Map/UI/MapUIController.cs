@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Bond.WT.Journal;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -30,6 +31,7 @@ public class MapUIController : MonoBehaviour
     private ISpriteLoader _spriteLoader;
     private JournalSystem _journalSystem;
     private JournalModel _journalModel;
+    private IJournalVisualizer _journalView;
     private EventLogAccumulator _logAccumulator;
     private MapData _cachedMapData;
 
@@ -41,6 +43,7 @@ public class MapUIController : MonoBehaviour
         ISpriteLoader spriteLoader,
         JournalSystem journalSystem,
         JournalModel journalModel,
+        IJournalVisualizer journalView,
         EventLogAccumulator logAccumulator)
     {
         _navigator = navigator;
@@ -48,6 +51,7 @@ public class MapUIController : MonoBehaviour
         _spriteLoader = spriteLoader;
         _journalSystem = journalSystem;
         _journalModel = journalModel;
+        _journalView = journalView;
         _logAccumulator = logAccumulator;
         _navigator.OnNodeEntered += OnNodeEntered;
         _stageLoader.OnStageCompleted += HandleStageCompleted;
@@ -85,15 +89,20 @@ public class MapUIController : MonoBehaviour
     {
         _cachedMapData = mapData;
         _mapPanel.SetActive(true);
+        if (_retreatButton != null)
+            _retreatButton.gameObject.SetActive(true);
         _mapView.Initialize(mapData, OnNodeButtonClicked, _spriteLoader);
     }
 
     /// <summary>
     /// 맵 패널을 닫는다. 노드 선택 후 스테이지 씬 로드 직전 호출된다.
+    /// 퇴각 버튼도 함께 숨긴다.
     /// </summary>
     public void HideMap()
     {
         _mapPanel.SetActive(false);
+        if (_retreatButton != null)
+            _retreatButton.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -185,12 +194,66 @@ public class MapUIController : MonoBehaviour
 
     /// <summary>
     /// 퇴각 버튼 클릭 시 호출된다.
-    /// 현재 로드된 스테이지 씬이 있으면 언로드한 뒤 Town 씬으로 전환한다.
-    /// 스테이지 씬이 없으면 즉시 Town 씬으로 전환한다.
+    /// 확인 다이얼로그를 표시하고 확인 선택 시에만 퇴각을 진행한다.
     /// </summary>
     private void OnRetreatButtonClicked()
     {
+        // 람다식: 비동기 예외를 void 컨텍스트에서 명시적으로 기록하기 위해 사용한다
+        RetreatWithConfirmAsync().Forget(e => Debug.LogError(e));
+    }
+
+    /// <summary>
+    /// 퇴각 확인 다이얼로그를 표시하고 확인 선택 시 퇴각을 진행한다.
+    /// </summary>
+    private async UniTask RetreatWithConfirmAsync()
+    {
+        bool confirmed = await ShowRetreatConfirmAsync();
+        if (confirmed == false)
+            return;
+
         RetreatToTownAsync().Forget();
+    }
+
+    /// <summary>
+    /// JournalUIView 를 사용해 "퇴각 하시겠습니까?" 확인 다이얼로그를 표시한다.
+    /// JournalBinder 가 설정한 OnOptionSelected 콜백을 저장하고 완료 후 복원한다.
+    /// IJournalVisualizer 가 없으면 즉시 true 를 반환한다.
+    /// </summary>
+    private async UniTask<bool> ShowRetreatConfirmAsync()
+    {
+        if (_journalView == null)
+            return true;
+
+        // JournalBinder 가 설정한 기존 콜백을 저장한다 — 완료 후 복원해 일지 기능이 정상 동작하게 한다
+        Action<JournalOption> savedCallback = _journalView.OnOptionSelected;
+
+        UniTaskCompletionSource<bool> tcs = new UniTaskCompletionSource<bool>();
+
+        _journalView.ClearUI();
+        _journalView.ShowText("퇴각 하시겠습니까?", isTyping: false);
+
+        List<JournalOption> options = new List<JournalOption>
+        {
+            new JournalOption { text = "확인", actionKey = string.Empty, isEnabled = true },
+            new JournalOption { text = "취소", actionKey = string.Empty, isEnabled = true },
+        };
+
+        // 람다식: 확인/취소 선택 결과를 UniTaskCompletionSource 에 전달하기 위해 사용한다
+        _journalView.OnOptionSelected = option =>
+        {
+            bool isConfirm = option.text == "확인";
+            tcs.TrySetResult(isConfirm);
+        };
+
+        _journalView.SetOptions(options);
+        _journalView.SetVisible(true);
+
+        bool result = await tcs.Task;
+
+        _journalView.SetVisible(false);
+        _journalView.OnOptionSelected = savedCallback;
+
+        return result;
     }
 
     private async UniTaskVoid RetreatToTownAsync()

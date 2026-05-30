@@ -112,6 +112,57 @@ public class EventJournalChoiceView : IEventChoiceView, IStartable, IDisposable
         _isInteractable = interactable;
     }
 
+    /// <summary>
+    /// 효과 적용 결과 텍스트를 JournalUIView 에 표시하고 "확인" 선택지를 생성한다.
+    /// 확인 선택지 클릭 시 onConfirm 을 호출한다.
+    /// </summary>
+    /// <param name="outcomeText">결과 설명 텍스트.</param>
+    /// <param name="onConfirm">확인 선택지 클릭 시 호출할 콜백.</param>
+    public void ShowOutcome(string outcomeText, Action onConfirm)
+    {
+        _view.ShowText(outcomeText ?? string.Empty, isTyping: false);
+
+        List<JournalOption> confirmOptions = new List<JournalOption>
+        {
+            new JournalOption { text = "확인", actionKey = string.Empty, isEnabled = true }
+        };
+
+        // 람다식: onConfirm 을 클로저로 캡처해 확인 선택지 클릭 시 호출하기 위해 사용한다
+        _view.OnOptionSelected = _ => onConfirm?.Invoke();
+        _view.SetOptions(confirmOptions);
+    }
+
+    /// <summary>
+    /// HpChange ChooseOne 효과 처리 시 파티원 이름 선택지를 JournalUIView 에 표시한다.
+    /// 선택지 클릭 시 onSelected 에 파티 인덱스를 전달한다.
+    /// actionKey 에 인덱스 문자열을 저장해 OnOptionSelected 콜백에서 역참조한다.
+    /// </summary>
+    /// <param name="characterNames">선택 가능한 파티원 이름 목록.</param>
+    /// <param name="onSelected">선택된 캐릭터의 파티 인덱스를 인자로 받는 콜백.</param>
+    public void ShowCharacterSelection(IReadOnlyList<string> characterNames, Action<int> onSelected)
+    {
+        _isInteractable = true;  // SetInteractable(false) 이후 캐릭터 선택 진입 시 인터랙션 재활성화
+
+        List<JournalOption> options = new List<JournalOption>();
+        for (int i = 0; i < characterNames.Count; i++)
+        {
+            // actionKey 에 인덱스를 문자열로 저장해 OnOptionSelected 에서 파티 인덱스를 역참조한다
+            options.Add(new JournalOption { text = characterNames[i], actionKey = i.ToString(), isEnabled = true });
+        }
+
+        // 람다식: OnOptionSelected 콜백에서 actionKey 를 파싱해 onSelected 에 인덱스를 전달하기 위해 사용한다
+        _view.OnOptionSelected = option =>
+        {
+            if (_isInteractable == false)
+                return;
+
+            if (int.TryParse(option.actionKey, out int index))
+                onSelected?.Invoke(index);
+        };
+
+        _view.SetOptions(options);
+    }
+
     /// <summary>선택지 및 UI 를 초기화한다.</summary>
     public void ClearChoices()
     {

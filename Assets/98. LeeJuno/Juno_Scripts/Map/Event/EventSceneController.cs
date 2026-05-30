@@ -62,10 +62,29 @@ public class EventSceneController : MonoBehaviour
         _currentEventData  = _eventContext.EventData; // Clear() 전에 EventData 저장 — OnChoiceSelectedFromView 에서 사용
         _eventContext.Clear();
 
+        // CharacterSelectChannel 구독 — HpChange ChooseOne 처리 시 캐릭터 선택 UI 를 표시하기 위해 등록한다
+        CharacterSelectChannel.OnSelectionRequired += OnCharacterSelectionRequired;
+
         // EventChoicePresenter.Start() 가 먼저 실행되어 _choiceView 가 이미 주입된 경우 즉시 표시한다
         // Presenter.Start() 가 아직 실행되지 않은 경우 BindView() 호출 시 ShowDescription()/ShowChoices() 가 실행된다
         _choiceView?.ShowDescription(_description);
         _choiceView?.ShowChoices(_choices);
+    }
+
+    private void OnDestroy()
+    {
+        CharacterSelectChannel.OnSelectionRequired -= OnCharacterSelectionRequired;
+    }
+
+    /// <summary>
+    /// CharacterSelectChannel.OnSelectionRequired 이벤트 핸들러.
+    /// View 에 파티원 선택 버튼을 표시하고 선택 시 채널에 인덱스를 전달한다.
+    /// </summary>
+    /// <param name="characterNames">선택 가능한 파티원 이름 목록.</param>
+    private void OnCharacterSelectionRequired(IReadOnlyList<string> characterNames)
+    {
+        // 람다식: 선택된 캐릭터 인덱스를 CharacterSelectChannel.Complete 에 전달하기 위해 사용한다
+        _choiceView?.ShowCharacterSelection(characterNames, index => CharacterSelectChannel.Complete(index));
     }
 
     /// <summary>
@@ -112,9 +131,9 @@ public class EventSceneController : MonoBehaviour
         if (_currentEventData != null)
             _logAccumulator?.SetPendingEventName(_currentEventData.DisplayName);
 
-        // 이벤트 선택 결과를 EventLogAccumulator 에 직접 기록한다
+        // 이벤트 선택 결과로 Pending Report 를 열어둔다 — 효과 적용 후 CommitPendingReport() 로 확정한다
         // _currentEventData 는 Start() 에서 _eventContext.Clear() 전에 저장한 EventData SO 참조다
-        _logAccumulator?.RecordEventChoice(_currentEventData, choice, choiceIndex);
+        _logAccumulator?.BeginPendingReport(_currentEventData, choice, choiceIndex);
 
         EventEffectData effect = choice.Effect;
 
@@ -139,7 +158,7 @@ public class EventSceneController : MonoBehaviour
 
         // 일반 효과 적용 — 비동기이므로 UniTask 를 Forget() 으로 실행한다
         // 람다식: 비동기 예외를 void 컨텍스트에서 명시적으로 기록하기 위해 사용
-        ApplyEffectAndCompleteAsync(effect).Forget(e => Debug.LogError(e));
+        ApplyEffectAndCompleteAsync(effect, choice.OutcomeDescription).Forget(e => Debug.LogError(e));
     }
 
     /// <summary>
@@ -204,10 +223,13 @@ public class EventSceneController : MonoBehaviour
             }
         }
 
-        // 2차 선택지 경로에서 아이템 획득 로그를 기록한다
+        // 2차 선택지 경로에서 아이템 획득 내역을 Pending Report 에 추가한다
         // _resolvedItemId 는 OnChoiceSelectedFromView() 에서 1차 선택 시점에 확정된다
         if (string.IsNullOrEmpty(_resolvedItemId) == false)
             _logAccumulator?.FlushItemRewardLogById(_resolvedItemId);
+
+        // 이벤트 선택 텍스트 + 아이템 획득 내역을 하나의 Report 로 확정한다
+        _logAccumulator?.CommitPendingReport();
 
         StageResult result = new StageResult
         {
@@ -279,14 +301,28 @@ public class EventSceneController : MonoBehaviour
     }
 
     /// <summary>
-    /// 일반 효과를 비동기로 적용하고 스테이지 완료를 알린다.
+    /// 일반 효과를 비동기로 적용하고, 결과 화면을 표시한 뒤 스테이지 완료를 알린다.
+    /// outcomeDescription 이 비어있으면 결과 화면 없이 즉시 완료한다.
     /// </summary>
     /// <param name="effect">적용할 효과 데이터. null 이면 효과 없이 완료.</param>
-    private async UniTask ApplyEffectAndCompleteAsync(EventEffectData effect)
+    /// <param name="outcomeDescription">선택 결과 설명 텍스트. 비어있으면 결과 화면 생략.</param>
+    private async UniTask ApplyEffectAndCompleteAsync(EventEffectData effect, string outcomeDescription)
     {
         if (effect != null && _effectApplier != null)
         {
             await _effectApplier.ApplyAsync(effect);
+        }
+
+        // 효과 적용이 끝난 시점에 Pending Report 를 확정한다 — 선택 텍스트 + HP 변화 등이 하나의 Report 로 묶인다
+        _logAccumulator?.CommitPendingReport();
+
+        // OutcomeDescription 이 있으면 결과 화면을 표시하고 확인 클릭을 대기한다
+        if (string.IsNullOrEmpty(outcomeDescription) == false && _choiceView != null)
+        {
+            UniTaskCompletionSource tcs = new UniTaskCompletionSource();
+            // 람다식: UniTaskCompletionSource 를 클로저로 캡처해 확인 클릭 시 비동기 대기를 해제하기 위해 사용한다
+            _choiceView.ShowOutcome(outcomeDescription, () => tcs.TrySetResult());
+            await tcs.Task;
         }
 
         StageResult result = new StageResult
@@ -330,6 +366,8 @@ public class EventSceneController : MonoBehaviour
         // StageLoader.TransitionToEventBattleAsync() 에서 IStageMonsterContext 로 이전된다
         EventBattleContext.Set(selectedGroup.Id, selectedGroup.MonsterIds);
 
+        // 전투 선택 경로에서는 Pending Report 를 열어둔다 —
+        // 전투 결과가 확정된 뒤 StageLoader.NotifyStageCompleted() 에서 AppendBattleResultToPendingReport() 로 덧붙여 함께 Commit 한다
         StageResult result = new StageResult
         {
             IsSuccess = true,

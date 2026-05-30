@@ -34,4 +34,20 @@ public interface IEventChoiceView
 
     /// <summary>2차 선택지 클릭 이벤트 핸들러.</summary>
     Action<JournalOption> OnSecondaryOptionSelected { get; set; }
+
+    /// <summary>
+    /// 효과 적용 후 결과 화면을 표시하고 확인 클릭 시 onConfirm 을 호출한다.
+    /// outcomeText 가 null 이거나 비어있는 경우 호출하지 않는다.
+    /// </summary>
+    /// <param name="outcomeText">선택 결과 설명 텍스트.</param>
+    /// <param name="onConfirm">확인 버튼 클릭 시 호출할 콜백.</param>
+    void ShowOutcome(string outcomeText, Action onConfirm);
+
+    /// <summary>
+    /// HpChange ChooseOne 효과 처리 시 파티원 선택 버튼을 표시한다.
+    /// 플레이어가 버튼을 클릭하면 onSelected 에 해당 파티 인덱스를 전달한다.
+    /// </summary>
+    /// <param name="characterNames">선택 가능한 파티원 이름 목록.</param>
+    /// <param name="onSelected">선택된 캐릭터의 파티 인덱스를 인자로 받는 콜백.</param>
+    void ShowCharacterSelection(IReadOnlyList<string> characterNames, Action<int> onSelected);
 }

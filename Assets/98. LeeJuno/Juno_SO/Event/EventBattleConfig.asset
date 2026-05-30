@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d7207a467546da4089af24a4455f4e5, type: 3}
   m_Name: EventBattleConfig
   m_EditorClassIdentifier: Assembly-CSharp::EventBattleConfig
-  _eventBattleSceneAddress: 
+  _eventBattleSceneAddress: Stage_Battle
   _monsterGroupPool:
   - {fileID: 11400000, guid: 5f4fa5d22e9b59245b0ba4a574d238cf, type: 2}

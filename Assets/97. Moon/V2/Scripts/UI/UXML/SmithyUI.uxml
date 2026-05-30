@@ -1,7 +1,7 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/97.%20Moon/V2/Scripts/UI/USS/SmithyUSS.uss?fileID=7433441132597879392&amp;guid=f54c34d648a953046a643cf43baafb3f&amp;type=3#SmithyUSS"/>
     <ui:VisualElement name="VisualElement" style="flex-grow: 1; position: absolute; width: 960px; height: 540px; top: 262px; left: 482px;">
-        <ui:Button text="" name="btn-close" style="background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/close-x.png?fileID=2800000&amp;guid=fca488c12ed21e747bd5ba7a7485df0f&amp;type=3#close-x&quot;);"/>
+        <ui:Button text="" name="btn-close" style="background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/close-x.png?fileID=2800000&amp;guid=fca488c12ed21e747bd5ba7a7485df0f&amp;type=3#close-x&quot;); width: 50px; height: 50px;"/>
         <ui:VisualElement name="smithy-main-body" class="smithy-main-body">
             <ui:VisualElement name="smithy-left-panel" class="smithy-left-panel" style="flex-grow: 1;">
                 <ui:VisualElement name="smithy-slot-row" class="smithy-slot-row">
@@ -10,11 +10,11 @@
                 </ui:VisualElement>
                 <ui:Button text="강화" name="btn-upgrade"/>
             </ui:VisualElement>
-            <ui:Label text="마법사의 로브 (+5)" name="item-name" style="font-size: 40px; left: 0; right: 0; -unity-text-align: middle-center; white-space: nowrap; text-overflow: clip; -unity-text-auto-size: none; -unity-text-generator: standard; position: absolute; top: 0; height: 80px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; margin-bottom: 2px;"/>
-            <ui:Label text="소모: 개척데이터 {costLog} / 광석 {costOre}" name="upgrade-cost" style="bottom: 0; position: absolute; left: 0; right: 0; font-size: 40px; -unity-text-align: middle-center; height: 80px; -unity-text-auto-size: none; -unity-text-generator: advanced; top: auto;"/>
-            <ui:VisualElement name="smithy-right-panel" class="smithy-right-panel" style="height: 300px;">
-                <ui:Label text="STR : &#10;AGI : &#10;INT : " name="stat-name" style="-unity-text-align: middle-right; font-size: 50px; width: 125px; height: 150px; position: absolute; top: 75px; left: 100px; bottom: auto;"/>
-                <ui:Label text="200&#10;200&#10;200" name="stat-info" style="position: absolute; -unity-text-align: middle-left; top: 75px; left: auto; font-size: 50px; width: 105px; height: 150px; right: 100px;"/>
+            <ui:Label text="(+0)" name="item-name" style="font-size: 40px; left: 0; right: 0; -unity-text-align: middle-center; white-space: nowrap; text-overflow: clip; -unity-text-auto-size: none; -unity-text-generator: standard; position: absolute; top: 0; height: 80px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; margin-bottom: 2px;"/>
+            <ui:Label text="소모 : 개척데이터 0 / 광석 0" name="upgrade-cost" style="bottom: 0; position: absolute; left: 0; right: 0; font-size: 40px; -unity-text-align: middle-center; height: 80px; -unity-text-auto-size: none; -unity-text-generator: advanced; top: auto;"/>
+            <ui:VisualElement name="smithy-right-panel" class="smithy-right-panel" style="height: 250px;">
+                <ui:Label text="STR : &#10;AGI : &#10;INT : " name="stat-name" style="-unity-text-align: middle-right; font-size: 50px; width: 125px; height: 150px; position: absolute; top: 50px; left: 100px; bottom: auto;"/>
+                <ui:Label text="0&#10;0&#10;0" name="stat-info" style="position: absolute; -unity-text-align: middle-left; top: 50px; left: auto; font-size: 50px; width: 105px; height: 150px; right: 100px;"/>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

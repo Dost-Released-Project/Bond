@@ -11,9 +11,9 @@ public class DefaultEquipSO : BaseSO
     public int UpSTR, UpAGI, UpINT; // 성장 계수 추가
     public string ArmorID, WeaponID, IconID;
 
-    public void SetData(string id, ClassType type, int s, int a, int i, int us, int ua, int ui, string ar, string wp, string ic)
+    public void SetData(string id, string disName, ClassType type, int s, int a, int i, int us, int ua, int ui, string ar, string wp, string ic)
     {
-        base.Initialize(id, name, "");
+        base.Initialize(id, disName, "");
         ClassType = type; 
         STR = s; AGI = a; INT = i;
         UpSTR = us; UpAGI = ua; UpINT = ui;
