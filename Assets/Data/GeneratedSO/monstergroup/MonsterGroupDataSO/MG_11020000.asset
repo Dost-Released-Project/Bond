@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: MG_11020000
   m_EditorClassIdentifier: Assembly-CSharp::MonsterGroupData
   _id: 11020000
-  _displayName: "\uC624\uD06C\uC640 \uACE0\uBE14\uB9B0"
-  _description: "\uC624\uD06C+\uACE0\uBE14\uB9B0"
+  _displayName: "\uC624\uD06C \uBB34\uB9AC"
+  _description: "\uC624\uD06C 3\uB9C8\uB9AC"
   MonsterIds:
   - 10020000
-  - 10010000
+  - 10020000
+  - 10020000
   MinLayer: 0
   MaxLayer: 5
   IsElite: 0
+  DungeonType: 3

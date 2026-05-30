@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Bond.Expedition;
 using UnityEngine;
 using VContainer;
 
@@ -11,11 +12,13 @@ using VContainer;
 public class FixedMapGenerator : IMapGenerator
 {
     private readonly MapConfigCache _mapConfigCache;
+    private readonly ExpeditionPayload _expeditionPayload;
 
     [Inject]
-    public FixedMapGenerator(MapConfigCache mapConfigCache)
+    public FixedMapGenerator(MapConfigCache mapConfigCache, ExpeditionPayload expeditionPayload)
     {
-        _mapConfigCache = mapConfigCache;
+        _mapConfigCache    = mapConfigCache;
+        _expeditionPayload = expeditionPayload;
     }
 
     public MapData GenerateMap(int seed)
@@ -96,14 +99,25 @@ public class FixedMapGenerator : IMapGenerator
 
         List<MonsterGroupData> candidates = new List<MonsterGroupData>();
 
+        DungeonType currentDungeon = _expeditionPayload?.DungeonType ?? DungeonType.None;
+
         foreach (MonsterGroupData group in monsterGroupConfig.Groups)
         {
             if (group == null)
                 continue;
 
             // 비엘리트 그룹만 후보로 추가
-            if (group.IsElite == false)
-                candidates.Add(group);
+            if (group.IsElite)
+                continue;
+
+            // DungeonType.None / All 이면 모든 던전에 등장, 특정 타입이면 현재 던전과 일치해야 등장
+            bool dungeonMatch = group.DungeonType == DungeonType.None
+                             || group.DungeonType == DungeonType.All
+                             || group.DungeonType == currentDungeon;
+            if (dungeonMatch == false)
+                continue;
+
+            candidates.Add(group);
         }
 
         if (candidates.Count == 0)

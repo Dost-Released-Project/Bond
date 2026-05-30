@@ -50,7 +50,7 @@ public class HpChangeEventEffectHandler : IEventEffectHandler
             return;
         }
 
-        string direction = amount > 0 ? "증가" : "감소";
+        string direction = amount > 0 ? "회복" : "감소";
         int absAmount    = Mathf.Abs(amount);
 
         foreach (BaseCharacter character in party)
@@ -106,7 +106,7 @@ public class HpChangeEventEffectHandler : IEventEffectHandler
         // 선택지 Label 단락("선택: 파티원 선택 → 홍길동")에 대상 이름을 덧붙인다
         _logAccumulator?.AppendChoiceLabelTarget(target.Name);
 
-        string direction = amount > 0 ? "증가" : "감소";
+        string direction = amount > 0 ? "회복" : "감소";
         _logAccumulator?.AppendToPendingReport($"{target.Name}의 체력이 {Mathf.Abs(amount)} 만큼 {direction} 했다.");
     }
 

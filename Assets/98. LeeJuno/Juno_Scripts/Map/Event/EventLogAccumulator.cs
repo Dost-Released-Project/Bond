@@ -28,6 +28,21 @@ public class EventLogAccumulator
     /// </summary>
     private int _pendingChoiceLabelIndex = -1;
 
+    /// <summary>
+    /// ItemRewardEventEffectHandler 가 아이템 확정 후 기록하는 표시 이름.
+    /// ApplyEffectAndCompleteAsync 에서 OutcomeDescription 앞에 붙이기 위해 사용한다.
+    /// BeginPendingReport 호출 시 초기화된다.
+    /// </summary>
+    public string LastResolvedItemDisplayName { get; private set; } = string.Empty;
+
+    /// <summary>
+    /// ItemRewardEventEffectHandler 가 아이템 확정 시 호출한다.
+    /// </summary>
+    public void SetLastResolvedItemDisplayName(string displayName)
+    {
+        LastResolvedItemDisplayName = displayName ?? string.Empty;
+    }
+
     public EventLogAccumulator(MapConfigCache mapConfigCache)
     {
         _mapConfigCache = mapConfigCache;
@@ -112,6 +127,8 @@ public class EventLogAccumulator
     {
         if (choice == null)
             return;
+
+        LastResolvedItemDisplayName = string.Empty;
 
         JournalDataSO template = eventData != null ? eventData.JournalData : null;
 
@@ -245,7 +262,7 @@ public class EventLogAccumulator
         string groupDisplayName = FindMonsterGroupName(monsterGroupId);
         string groupPart   = string.IsNullOrEmpty(groupDisplayName) ? "전투" : $"'{groupDisplayName}'";
         string outcomePart = result.IsSuccess ? "승리" : "패배";
-        string logText     = $"{groupPart}에서 {outcomePart}하였습니다.";
+        string logText     = $"{groupPart}에게 {outcomePart}하였습니다.";
 
         AppendToPendingReport(logText);
         CommitPendingReport();

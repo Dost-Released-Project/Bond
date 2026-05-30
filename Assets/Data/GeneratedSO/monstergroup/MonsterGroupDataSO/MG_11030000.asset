@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MG_11030000
   m_EditorClassIdentifier: Assembly-CSharp::MonsterGroupData
   _id: 11030000
-  _displayName: "\uC0AC\uC545\uD55C \uB9AC\uCE58"
+  _displayName: "\uB9AC\uCE58\uC640 \uACE8\uB818"
   _description: "\uC2A4\uD1A4\uACE8\uB8182+\uB9AC\uCE58"
   MonsterIds:
   - 10060000
@@ -22,3 +22,4 @@ MonoBehaviour:
   MinLayer: 3
   MaxLayer: 5
   IsElite: 1
+  DungeonType: 1

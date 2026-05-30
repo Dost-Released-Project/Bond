@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Bond.Expedition;
 using UnityEngine;
 
 /// <summary>
@@ -20,6 +21,9 @@ public class MonsterGroupData : BaseSO
     [Header("그룹 등급")]
     public bool IsElite; // true = 엘리트 전용 그룹, false = 노말 전용 그룹
 
+    [Header("등장 던전")]
+    public DungeonType DungeonType; // 이 그룹이 등장하는 던전 타입
+
     /// <summary>
     /// 파서 등 외부에서 프로그래밍 방식으로 데이터를 초기화하는 메서드.
     /// BaseSO.Initialize 에 직접 접근하기 위해 MonsterGroupData 에서 래핑한다.
@@ -31,12 +35,14 @@ public class MonsterGroupData : BaseSO
         List<string> monsterIds,
         int minLayer,
         int maxLayer,
-        bool isElite)
+        bool isElite,
+        DungeonType dungeonType)
     {
         Initialize(id, displayName, description);
-        MonsterIds = monsterIds;
-        MinLayer   = minLayer;
-        MaxLayer   = maxLayer;
-        IsElite    = isElite;
+        MonsterIds  = monsterIds;
+        MinLayer    = minLayer;
+        MaxLayer    = maxLayer;
+        IsElite     = isElite;
+        DungeonType = dungeonType;
     }
 }

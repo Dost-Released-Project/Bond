@@ -58,7 +58,7 @@ public class ExpeditionPayloadWindow : EditorWindow
 
         _scroll = EditorGUILayout.BeginScrollView(_scroll);
 
-        EditorGUILayout.LabelField("Dungeon ID", string.IsNullOrEmpty(payload.DungeonId) ? "(없음)" : payload.DungeonId, EditorStyles.label);
+        EditorGUILayout.LabelField("Dungeon ID", string.IsNullOrEmpty(payload.DungeonType.ToString()) ? "(없음)" : payload.DungeonType.ToString(), EditorStyles.label);
         EditorGUILayout.LabelField("Outcome", payload.Outcome.ToString(), EditorStyles.label);
 
         EditorGUILayout.Space();

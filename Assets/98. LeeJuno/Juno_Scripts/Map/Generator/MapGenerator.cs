@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Bond.Expedition;
 using UnityEngine;
 using VContainer;
 
@@ -30,11 +31,13 @@ public class MapGenerator : IMapGenerator
     };
 
     private readonly MapConfigCache _mapConfigCache;
+    private readonly ExpeditionPayload _expeditionPayload;
 
     [Inject]
-    public MapGenerator(MapConfigCache mapConfigCache)
+    public MapGenerator(MapConfigCache mapConfigCache, ExpeditionPayload expeditionPayload)
     {
-        _mapConfigCache = mapConfigCache;
+        _mapConfigCache    = mapConfigCache;
+        _expeditionPayload = expeditionPayload;
     }
 
     public MapData GenerateMap(int seed)
@@ -601,13 +604,16 @@ public class MapGenerator : IMapGenerator
     }
 
     /// <summary>
-    /// 지정 층 번호와 등급에 맞는 몬스터 그룹 목록을 반환한다.
+    /// 지정 층 번호, 등급, 던전 타입에 맞는 몬스터 그룹 목록을 반환한다.
     /// MinLayer == 0 &amp;&amp; MaxLayer == 0 이면 층 제한 없음으로 처리한다.
     /// isElite: true이면 IsElite == true 그룹만, false이면 IsElite == false 그룹만 반환한다.
+    /// DungeonType.None / All 인 그룹은 던전 타입 무관하게 항상 후보에 포함된다.
     /// </summary>
     private List<MonsterGroupData> GetCandidateGroups(int layer, bool isElite, MonsterGroupConfig monsterGroupConfig)
     {
         List<MonsterGroupData> candidates = new List<MonsterGroupData>();
+
+        DungeonType currentDungeon = _expeditionPayload?.DungeonType ?? DungeonType.None;
 
         foreach (MonsterGroupData group in monsterGroupConfig.Groups)
         {
@@ -618,8 +624,15 @@ public class MapGenerator : IMapGenerator
             if (group.IsElite != isElite)
                 continue;
 
+            // DungeonType.None / All 이면 모든 던전에 등장, 특정 타입이면 현재 던전과 일치해야 등장
+            bool dungeonMatch = group.DungeonType == DungeonType.None
+                             || group.DungeonType == DungeonType.All
+                             || group.DungeonType == currentDungeon;
+            if (dungeonMatch == false)
+                continue;
+
             bool noLayerLimit = group.MinLayer == 0 && group.MaxLayer == 0;
-            bool inRange = layer >= group.MinLayer && layer <= group.MaxLayer;
+            bool inRange      = layer >= group.MinLayer && layer <= group.MaxLayer;
 
             if (noLayerLimit || inRange)
                 candidates.Add(group);
