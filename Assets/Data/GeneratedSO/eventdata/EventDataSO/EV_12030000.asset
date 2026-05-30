@@ -24,7 +24,7 @@ MonoBehaviour:
       _hpChangeAmount: 0
       _statusEffectId: 
       _itemRewardType: 0
-      _guaranteedItemId: 
+      _guaranteedItemId: 08000000
       _itemProbability: 0
       _probabilityItemId: 
       _itemPool: []

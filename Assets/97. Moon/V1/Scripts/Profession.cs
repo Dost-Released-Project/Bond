@@ -46,20 +46,20 @@ public class Profession
 
         // 2. ClassSO의 보정치 적용 및 모디파이어 합산 후 최종 산출
         // STR 영향군
-        stat.max_Hp = Mathf.RoundToInt(controller.ApplyModifiers(StatType.MaxHP, stat.STR * _classData.HP));
-        stat.atk = Mathf.RoundToInt(controller.ApplyModifiers(StatType.Atk, stat.STR * _classData.Atk));
-        stat.def = Mathf.RoundToInt(controller.ApplyModifiers(StatType.Def, stat.STR * _classData.Def));
+        stat.max_Hp = Mathf.FloorToInt(controller.ApplyModifiers(StatType.MaxHP, stat.STR * _classData.HP));
+        stat.atk = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Atk, stat.STR * _classData.Atk));
+        stat.def = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Def, stat.STR * _classData.Def));
         
         // AGI 영향군
-        stat.speed = Mathf.RoundToInt(controller.ApplyModifiers(StatType.Speed, stat.AGI * _classData.Speed));
-        stat.crt = Mathf.RoundToInt(controller.ApplyModifiers(StatType.Cri, stat.AGI * _classData.Cri));
-        stat.acc = Mathf.RoundToInt(controller.ApplyModifiers(StatType.Acc, stat.AGI * _classData.Acc));
+        stat.speed = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Speed, stat.AGI * _classData.Speed));
+        stat.crt = controller.ApplyModifiers(StatType.Cri, stat.AGI * _classData.Cri) * 0.01f;
+        stat.acc = controller.ApplyModifiers(StatType.Acc, stat.AGI * _classData.Acc) * 0.01f;
         
         // INT 영향군
         stat.Insanity_Ctrl =
-            Mathf.RoundToInt(controller.ApplyModifiers(StatType.InsanityCtrl, stat.INT * _classData.InsanityCtrl));
+            controller.ApplyModifiers(StatType.InsanityCtrl, stat.INT * _classData.InsanityCtrl) * 0.01f;
         stat.Reaction_Ctrl =
-            Mathf.RoundToInt(controller.ApplyModifiers(StatType.ReactionCtrl, stat.INT * _classData.ReactionCtrl));
-        stat.Sp_Atk = Mathf.RoundToInt(controller.ApplyModifiers(StatType.SpAtk, stat.INT * _classData.SpAtk));
+            controller.ApplyModifiers(StatType.ReactionCtrl, stat.INT * _classData.ReactionCtrl) * 0.01f;
+        stat.Sp_Atk = Mathf.FloorToInt(controller.ApplyModifiers(StatType.SpAtk, stat.INT * _classData.SpAtk));
     }
 }
