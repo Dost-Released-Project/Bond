@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using Bond.Expedition;
 using CsvHelper.Configuration;
 using UnityEditor;
 using UnityEngine;
@@ -41,7 +42,8 @@ public class MonsterGroupParser : TSVParserBase<MonsterGroupDTO, MonsterGroupDat
             monsterIds:  monsterIds,
             minLayer:    dto.MinLayer,
             maxLayer:    dto.MaxLayer,
-            isElite:     dto.IsElite
+            isElite:     dto.IsElite,
+            dungeonType: dto.DungeonType
         );
     }
 
@@ -99,6 +101,7 @@ public sealed class MonsterGroupDataMap : ClassMap<MonsterGroupDTO>
         Map(m => m.MinLayer).Name("MinLayer").Default(0);
         Map(m => m.MaxLayer).Name("MaxLayer").Default(0);
         Map(m => m.IsElite).Name("IsElite").Default(false);
+        Map(m => m.DungeonType).Name("DungeonType").Default(DungeonType.None);
     }
 }
 
@@ -112,7 +115,8 @@ public class MonsterGroupDTO
     public string DisplayName   { get; set; }
     public string Description   { get; set; }
     public string MonsterIdsRaw { get; set; } // "MO00001;MO00002" 형태
-    public int    MinLayer      { get; set; }
-    public int    MaxLayer      { get; set; }
-    public bool   IsElite       { get; set; }
+    public int        MinLayer      { get; set; }
+    public int        MaxLayer      { get; set; }
+    public bool       IsElite       { get; set; }
+    public DungeonType DungeonType  { get; set; }
 }

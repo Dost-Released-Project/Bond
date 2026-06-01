@@ -11,13 +11,22 @@ namespace Bond.Expedition
         Failure
     }
 
+    public enum DungeonType
+    {
+        None = 0,
+        All,
+        Forest,
+        Ruin,
+    }
+
     public class ExpeditionPayload
     {
         // 마을 씬 → 탐사 씬으로 넘기는 데이터 컨테이너
 
         public IReadOnlyList<BaseCharacter> Party { get; private set; } = new List<BaseCharacter>();
-        public ExpeditionInventory Supplies { get; private set; } = new ExpeditionInventory(ExpeditionInventory.PeekInventoryCapacity("exp_inv", 2));
-        public string DungeonId { get; private set; }
+        public ExpeditionInventory Supplies { get; private set; } =
+            new ExpeditionInventory(ExpeditionInventory.PeekInventoryCapacity("exp_inv", 2));
+        public DungeonType DungeonType { get; private set; }
 
         public IReadOnlyList<BaseCharacter> EnemyParty { get; private set; }
         // 탐사 결과 (귀환 후 마을 씬이 읽음)
@@ -26,11 +35,11 @@ namespace Bond.Expedition
         public void SetContents(
             IReadOnlyList<BaseCharacter> party,
             ExpeditionInventory supplies,
-            string dungeonId)
+            DungeonType dungeonType)
         {
             Party = party;
             Supplies = supplies;
-            DungeonId = dungeonId;
+            DungeonType = dungeonType;
         }
 
         public void SetSuplies(ExpeditionInventory supplies)
@@ -46,7 +55,7 @@ namespace Bond.Expedition
         public void Clear()
         {
             Party = new List<BaseCharacter>();
-            DungeonId = string.Empty;
+            DungeonType = DungeonType.None;
             Outcome = ExpeditionOutcome.None;
         }
 
@@ -62,9 +71,10 @@ namespace Bond.Expedition
             {
                 str += $"{slot.item.itemName}\n";
             }
+
             return str;
         }
-        
+
         public void SetEnemy(IReadOnlyList<BaseCharacter> enemyParty)
         {
             EnemyParty = enemyParty;

@@ -22,3 +22,4 @@ MonoBehaviour:
   MinLayer: 3
   MaxLayer: 5
   IsElite: 1
+  DungeonType: 1
