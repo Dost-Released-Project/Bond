@@ -12,7 +12,7 @@ namespace Bond.Embark
         // Controller가 OnDataChanged 발행 전에 채워서 Presenter에 전달
         public List<InventorySlot> TownInventorySlots { get; set; }
     }
-    
+
     public class EmbarkController
     {
         private readonly ExpeditionPayload _payload;
@@ -62,8 +62,8 @@ namespace Bond.Embark
                 isChanged = _partyManager.RemoveMember(character);
             else
                 isChanged = _partyManager.TryAddMember(character);
-            
-            if(isChanged)
+
+            if (isChanged)
                 NotifyChanged();
         }
 
@@ -95,7 +95,7 @@ namespace Bond.Embark
 
         public void SavePayload()
         {
-            _payload.SetContents(_partyManager.GetCurrentParty(), _expeditionInventory, "mollu");
+            _payload.SetContents(_partyManager.GetCurrentParty(), _expeditionInventory, DungeonType.Forest);
         }
 
         private void NotifyChanged()

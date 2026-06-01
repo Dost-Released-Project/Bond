@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Bond.Expedition;
 using UnityEngine;
 
 /// <summary>
@@ -41,14 +42,14 @@ public class MonsterSO : BaseSO
         List<string> skillIds)
     {
         base.Initialize(id, displayName, "");
-        this.RoleType     = roleType;
-        this.Level        = level;
-        this.STR          = str;
-        this.AGI          = agi;
-        this.INT          = intel;
+        this.RoleType = roleType;
+        this.Level = level;
+        this.STR = str;
+        this.AGI = agi;
+        this.INT = intel;
         this.ImageAddress = imageAddress;
-        this.IdleImageId  = idleImageId;
+        this.IdleImageId = idleImageId;
         this.BattleImageId = battleImageId;
-        this.SkillIds     = skillIds;
+        this.SkillIds = skillIds;
     }
 }

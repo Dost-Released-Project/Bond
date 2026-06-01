@@ -12,10 +12,18 @@ namespace Bond.Expedition
         Failure
     }
     
+    public enum DungeonType
+    {
+        None = 0,
+        All,
+        Forest,
+        Ruin,
+    }
+    
     // 마을 씬 → 탐사 씬으로 넘기는 데이터 컨테이너
     public class ExpeditionPayload : IPartyController
     {
-        // IPartyController
+        // IPartyController ====
         private PartyController _partyController = new PartyController();
         public List<BaseCharacter> GetCurrentParty() => _partyController.GetCurrentParty();
         public bool IsInParty(BaseCharacter character) => _partyController.IsInParty(character);
@@ -23,10 +31,12 @@ namespace Bond.Expedition
         public bool TryAddMember(BaseCharacter character) => _partyController.TryAddMember(character);
         public bool RemoveMember(BaseCharacter character) => _partyController.RemoveMember(character);
         void IPartyController.Clear() => _partyController.Clear();
-
+        // =====================
+        
         public IReadOnlyList<BaseCharacter> Party => GetCurrentParty();
-        public ExpeditionInventory Supplies { get; private set; } = new ExpeditionInventory(ExpeditionInventory.PeekInventoryCapacity("exp_inv", 2));
-        public string DungeonId { get; private set; }
+        public ExpeditionInventory Supplies { get; private set; } =
+            new ExpeditionInventory(ExpeditionInventory.PeekInventoryCapacity("exp_inv", 2));
+        public DungeonType DungeonType { get; private set; }
 
         public IReadOnlyList<BaseCharacter> EnemyParty { get; private set; }
         // 탐사 결과 (귀환 후 마을 씬이 읽음)
@@ -35,11 +45,11 @@ namespace Bond.Expedition
         public void SetContents(
             IReadOnlyList<BaseCharacter> party,
             ExpeditionInventory supplies,
-            string dungeonId)
+            DungeonType dungeonType)
         {
             //Party = party;
             Supplies = supplies;
-            DungeonId = dungeonId;
+            DungeonType = dungeonType;
         }
 
         public void SetSuplies(ExpeditionInventory supplies)
@@ -55,7 +65,7 @@ namespace Bond.Expedition
         public void Clear()
         {
             _partyController.Clear();
-            DungeonId = string.Empty;
+            DungeonType = DungeonType.None;
             Outcome = ExpeditionOutcome.None;
         }
 
@@ -71,9 +81,10 @@ namespace Bond.Expedition
             {
                 str += $"{slot.item.itemName}\n";
             }
+
             return str;
         }
-        
+
         public void SetEnemy(IReadOnlyList<BaseCharacter> enemyParty)
         {
             EnemyParty = enemyParty;

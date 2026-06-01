@@ -316,12 +316,23 @@ public class EventSceneController : MonoBehaviour
         // 효과 적용이 끝난 시점에 Pending Report 를 확정한다 — 선택 텍스트 + HP 변화 등이 하나의 Report 로 묶인다
         _logAccumulator?.CommitPendingReport();
 
+        // ItemReward 타입이면 확정된 아이템 이름을 OutcomeDescription 앞에 붙인다
+        string resolvedOutcome = outcomeDescription;
+        if (effect != null && effect.EffectType == EffectType.ItemReward)
+        {
+            string itemName = _logAccumulator?.LastResolvedItemDisplayName ?? string.Empty;
+            if (string.IsNullOrEmpty(itemName) == false && string.IsNullOrEmpty(resolvedOutcome) == false)
+                resolvedOutcome = $"[{itemName}] {resolvedOutcome}";
+            else if (string.IsNullOrEmpty(itemName) == false)
+                resolvedOutcome = itemName;
+        }
+
         // OutcomeDescription 이 있으면 결과 화면을 표시하고 확인 클릭을 대기한다
-        if (string.IsNullOrEmpty(outcomeDescription) == false && _choiceView != null)
+        if (string.IsNullOrEmpty(resolvedOutcome) == false && _choiceView != null)
         {
             UniTaskCompletionSource tcs = new UniTaskCompletionSource();
             // 람다식: UniTaskCompletionSource 를 클로저로 캡처해 확인 클릭 시 비동기 대기를 해제하기 위해 사용한다
-            _choiceView.ShowOutcome(outcomeDescription, () => tcs.TrySetResult());
+            _choiceView.ShowOutcome(resolvedOutcome, () => tcs.TrySetResult());
             await tcs.Task;
         }
 
