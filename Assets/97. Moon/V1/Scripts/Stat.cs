@@ -31,8 +31,8 @@ public class Stat
     public int speed;
     public float crt;
     public float acc;
+    public float eva;
 
-    public float Insanity_Ctrl;
     public float Reaction_Ctrl;
     public int Sp_Atk;
 

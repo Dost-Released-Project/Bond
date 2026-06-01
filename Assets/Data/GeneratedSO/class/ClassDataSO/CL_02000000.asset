@@ -21,12 +21,12 @@ MonoBehaviour:
   HP: 10
   Def: 4
   Atk: 4
-  Speed: 3
-  Cri: 2
-  Acc: 7
-  InsanityCtrl: 4
+  Speed: 1
+  Cri: 4
+  Acc: 3
+  Eva: 1
   ReactionCtrl: 4
-  SpAtk: 4
+  SpAtk: 1
   DefaultArmorId: 03040000
   DefaultWeaponId: 03000000
   IconId: 

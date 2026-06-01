@@ -54,10 +54,9 @@ public class Profession
         stat.speed = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Speed, stat.AGI * _classData.Speed));
         stat.crt = controller.ApplyModifiers(StatType.Cri, stat.AGI * _classData.Cri) * 0.01f;
         stat.acc = controller.ApplyModifiers(StatType.Acc, stat.AGI * _classData.Acc) * 0.01f;
+        stat.eva = controller.ApplyModifiers(StatType.Eva, stat.AGI * _classData.Eva) * 0.01f;
         
         // INT 영향군
-        stat.Insanity_Ctrl =
-            controller.ApplyModifiers(StatType.InsanityCtrl, stat.INT * _classData.InsanityCtrl) * 0.01f;
         stat.Reaction_Ctrl =
             controller.ApplyModifiers(StatType.ReactionCtrl, stat.INT * _classData.ReactionCtrl) * 0.01f;
         stat.Sp_Atk = Mathf.FloorToInt(controller.ApplyModifiers(StatType.SpAtk, stat.INT * _classData.SpAtk));

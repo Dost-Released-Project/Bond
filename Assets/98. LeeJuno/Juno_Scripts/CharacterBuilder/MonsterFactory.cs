@@ -19,7 +19,7 @@ public class MonsterFactory
     private const float SpeedMultiplier        = 3f;  // AGI 계열: speed
     private const float CriMultiplier          = 1f;  // AGI 계열: crt
     private const float AccMultiplier          = 2f;  // AGI 계열: acc
-    private const float InsanityCtrlMultiplier = 1f;  // INT 계열: Insanity_Ctrl
+    private const float EvaMultiplier          = 1f;  // AGI 계열: eva
     private const float ReactionCtrlMultiplier = 1f;  // INT 계열: Reaction_Ctrl
     private const float SpAtkMultiplier        = 2f;  // INT 계열: Sp_Atk
     // ─────────────────────────────────────────────────────────────────────────
@@ -137,7 +137,7 @@ public class MonsterFactory
             $"  RoleType : {monster.RoleType}\n" +
             $"  STR={monster.Stat.STR}  AGI={monster.Stat.AGI}  INT={monster.Stat.INT}\n" +
             $"  HP={monster.Stat.max_Hp}  ATK={monster.Stat.atk}  DEF={monster.Stat.def}\n" +
-            $"  SPD={monster.Stat.speed}  CRI={monster.Stat.crt}  ACC={monster.Stat.acc}"
+            $"  SPD={monster.Stat.speed}  CRI={monster.Stat.crt}  ACC={monster.Stat.acc}  EVA={monster.Stat.eva}"
         );
         // ────────────────────────────────────────────────────────────────
 
@@ -169,9 +169,9 @@ public class MonsterFactory
         stat.speed = Mathf.RoundToInt(controller.ApplyModifiers(StatType.Speed, finalAGI * SpeedMultiplier));
         stat.crt   = Mathf.RoundToInt(controller.ApplyModifiers(StatType.Cri,   finalAGI * CriMultiplier));
         stat.acc   = Mathf.RoundToInt(controller.ApplyModifiers(StatType.Acc,   finalAGI * AccMultiplier));
+        stat.eva = Mathf.RoundToInt(controller.ApplyModifiers(StatType.Eva, finalINT * EvaMultiplier));
 
         // INT 계열
-        stat.Insanity_Ctrl = Mathf.RoundToInt(controller.ApplyModifiers(StatType.InsanityCtrl, finalINT * InsanityCtrlMultiplier));
         stat.Reaction_Ctrl = Mathf.RoundToInt(controller.ApplyModifiers(StatType.ReactionCtrl, finalINT * ReactionCtrlMultiplier));
         stat.Sp_Atk        = Mathf.RoundToInt(controller.ApplyModifiers(StatType.SpAtk,        finalINT * SpAtkMultiplier));
 
