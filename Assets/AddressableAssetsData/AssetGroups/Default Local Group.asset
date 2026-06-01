@@ -41,6 +41,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4be4a8fbba353749a4af0d0181ce7f1
+    m_Address: TraitDataBase
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DBSO
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 2844d279e9fd27e4a9c0e38b898d6b70, type: 2}
   m_SchemaSet:

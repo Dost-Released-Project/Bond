@@ -7,6 +7,6 @@ namespace Reactions
     /// 부트스트랩 PreloadByLabelAsync("DBSO") 에 자동 포함된다.
     /// 컨벤션 조회 키 = "ReactionDefinitionDataBase".
     /// </summary>
-    [CreateAssetMenu(fileName = "ReactionDefinitionDataBase", menuName = "Bond/DBSO/ReactionDefinitionDataBase")]
+    [CreateAssetMenu(fileName = "ReactionDefinitionDataBase", menuName = "Bond/Reactions/ReactionDefinitionDataBase")]
     public class ReactionDefinitionDataBaseSO : DataBaseSO { }
 }

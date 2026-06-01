@@ -5,12 +5,6 @@ using UnityEngine;
 
 namespace Reactions
 {
-    public enum ReactionSource
-    {
-        Role,
-        Trait
-    }
-
     [Serializable]
     public class ReactionExecution : IComparable<ReactionExecution>
     {
