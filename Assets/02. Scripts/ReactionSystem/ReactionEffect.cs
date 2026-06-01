@@ -16,6 +16,7 @@ namespace Reactions
         public abstract UniTask Apply(BaseCharacter reactor, ReactionExecution execution, BattleContext originalContext);
 
         public abstract string Description { get; }
+        public abstract ReactionEffect Clone();
     }
 
     /// <summary>
@@ -70,6 +71,8 @@ namespace Reactions
         }
 
         public override string Description => $"스킬 #{SkillIndex} 발동 → {SkillTarget}";
+
+        public override ReactionEffect Clone() => new SkillCastReactionEffect { SkillIndex = SkillIndex, SkillTarget = SkillTarget };
     }
 
     /// <summary>
@@ -94,5 +97,7 @@ namespace Reactions
         }
 
         public override string Description => "대상이 받을 공격을 대신 받음";
+
+        public override ReactionEffect Clone() => new InterceptReactionEffect();
     }
 }
