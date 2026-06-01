@@ -43,8 +43,6 @@ namespace Bond.UI.Town
             scroll.contentViewport.style.backgroundColor = StyleKeyword.None;
 
             root.Q<Button>("roster-panel__close-btn").clicked += Hide;
-
-            _selector.OnSelectionChanged += _ => UpdateSelectedVisual();
         }
 
         public void Show()
@@ -75,7 +73,6 @@ namespace Bond.UI.Town
             }
 
             _countLabel.text = $"{_roster.Characters.Count}명";
-            UpdateSelectedVisual();
         }
 
         public void UpdatePartyHighlight(IReadOnlyList<BaseCharacter> party)
@@ -204,17 +201,6 @@ namespace Bond.UI.Town
             var sprite = await Addressables.LoadAssetAsync<Sprite>(address).ToUniTask();
             if (sprite != null)
                 avatar.style.backgroundImage = new StyleBackground(sprite);
-        }
-
-        private void UpdateSelectedVisual()
-        {
-            foreach (var vm in _cards)
-            {
-                if (_selector.Selected == vm.Character)
-                    vm.Root.AddToClassList("roster-card--selected");
-                else
-                    vm.Root.RemoveFromClassList("roster-card--selected");
-            }
         }
     }
 }
