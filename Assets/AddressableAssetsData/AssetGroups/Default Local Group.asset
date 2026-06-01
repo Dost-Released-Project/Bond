@@ -25,6 +25,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5882e7480da550c44adccb94efd7eff6
+    m_Address: ReactionDefinitionDataBase
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DBSO
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a309ff3a52af1b64092e2dee5c4fa7b2
     m_Address: Test_3_Node
     m_ReadOnly: 0

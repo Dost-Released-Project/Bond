@@ -592,6 +592,22 @@
 .char-detail__slot-part--trigger { width: 100px; }
 .char-detail__slot-part--skill   { flex-grow: 1; flex-shrink: 1; }
 .char-detail__slot-part--fixed   { opacity: 0.6; }
+.char-detail__slot-main {
+    flex-direction: column;
+    flex-grow: 1;
+    flex-shrink: 1;
+    overflow: hidden;
+}
+.char-detail__slot-editables {
+    flex-direction: row;
+    border-top-width: 1px;
+    border-top-color: var(--border-default);
+}
+.char-detail__slot-part--reaction {
+    flex-grow: 1;
+    flex-shrink: 1;
+    border-right-width: 0;
+}
 
 .char-detail__reaction-slot--role .char-detail__slot-part:hover {
     background-color: var(--slot-role-bg);

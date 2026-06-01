@@ -157,17 +157,21 @@
                             <!-- 역할 슬롯 0 (slotIndex=0) -->
                             <ui:VisualElement name="reaction-slot-0" class="char-detail__reaction-slot char-detail__reaction-slot--role">
                                 <ui:VisualElement class="char-detail__reaction-slot__indicator char-detail__reaction-slot__indicator--role" />
-                                <ui:VisualElement name="reaction-slot-0__target-part" class="char-detail__slot-part char-detail__slot-part--target">
-                                    <ui:Label class="char-detail__slot-part-label" text="관찰 대상" />
-                                    <ui:Label name="reaction-slot-0__target" class="char-detail__slot-part-val" text="미설정" />
-                                </ui:VisualElement>
-                                <ui:VisualElement name="reaction-slot-0__trigger-part" class="char-detail__slot-part char-detail__slot-part--trigger">
-                                    <ui:Label class="char-detail__slot-part-label" text="조건" />
-                                    <ui:Label name="reaction-slot-0__trigger" class="char-detail__slot-part-val" text="미설정" />
-                                </ui:VisualElement>
-                                <ui:VisualElement name="reaction-slot-0__skill-part" class="char-detail__slot-part char-detail__slot-part--skill">
-                                    <ui:Label class="char-detail__slot-part-label" text="스킬" />
-                                    <ui:Label name="reaction-slot-0__skill" class="char-detail__slot-part-val" text="미설정" />
+                                <ui:VisualElement class="char-detail__slot-main">
+                                    <ui:VisualElement name="reaction-slot-0__reaction-part" class="char-detail__slot-part char-detail__slot-part--reaction">
+                                        <ui:Label class="char-detail__slot-part-label" text="리액션" />
+                                        <ui:Label name="reaction-slot-0__reaction" class="char-detail__slot-part-val char-detail__slot-part-val--placeholder" text="리액션 선택" />
+                                    </ui:VisualElement>
+                                    <ui:VisualElement name="reaction-slot-0__editables" class="char-detail__slot-editables">
+                                        <ui:VisualElement name="reaction-slot-0__target-part" class="char-detail__slot-part char-detail__slot-part--target">
+                                            <ui:Label class="char-detail__slot-part-label" text="관찰 대상" />
+                                            <ui:Label name="reaction-slot-0__target" class="char-detail__slot-part-val" text="미설정" />
+                                        </ui:VisualElement>
+                                        <ui:VisualElement name="reaction-slot-0__skill-part" class="char-detail__slot-part char-detail__slot-part--skill">
+                                            <ui:Label class="char-detail__slot-part-label" text="행동" />
+                                            <ui:Label name="reaction-slot-0__skill" class="char-detail__slot-part-val" text="미설정" />
+                                        </ui:VisualElement>
+                                    </ui:VisualElement>
                                 </ui:VisualElement>
                                 <ui:Label name="reaction-slot-0__echo" class="char-detail__slot-echo" text="○" />
                             </ui:VisualElement>
@@ -176,17 +180,21 @@
                             <!-- 역할 슬롯 1 (slotIndex=1) -->
                             <ui:VisualElement name="reaction-slot-1" class="char-detail__reaction-slot char-detail__reaction-slot--role">
                                 <ui:VisualElement class="char-detail__reaction-slot__indicator char-detail__reaction-slot__indicator--role" />
-                                <ui:VisualElement name="reaction-slot-1__target-part" class="char-detail__slot-part char-detail__slot-part--target">
-                                    <ui:Label class="char-detail__slot-part-label" text="관찰 대상" />
-                                    <ui:Label name="reaction-slot-1__target" class="char-detail__slot-part-val" text="미설정" />
-                                </ui:VisualElement>
-                                <ui:VisualElement name="reaction-slot-1__trigger-part" class="char-detail__slot-part char-detail__slot-part--trigger">
-                                    <ui:Label class="char-detail__slot-part-label" text="조건" />
-                                    <ui:Label name="reaction-slot-1__trigger" class="char-detail__slot-part-val" text="미설정" />
-                                </ui:VisualElement>
-                                <ui:VisualElement name="reaction-slot-1__skill-part" class="char-detail__slot-part char-detail__slot-part--skill">
-                                    <ui:Label class="char-detail__slot-part-label" text="스킬" />
-                                    <ui:Label name="reaction-slot-1__skill" class="char-detail__slot-part-val" text="미설정" />
+                                <ui:VisualElement class="char-detail__slot-main">
+                                    <ui:VisualElement name="reaction-slot-1__reaction-part" class="char-detail__slot-part char-detail__slot-part--reaction">
+                                        <ui:Label class="char-detail__slot-part-label" text="리액션" />
+                                        <ui:Label name="reaction-slot-1__reaction" class="char-detail__slot-part-val char-detail__slot-part-val--placeholder" text="리액션 선택" />
+                                    </ui:VisualElement>
+                                    <ui:VisualElement name="reaction-slot-1__editables" class="char-detail__slot-editables">
+                                        <ui:VisualElement name="reaction-slot-1__target-part" class="char-detail__slot-part char-detail__slot-part--target">
+                                            <ui:Label class="char-detail__slot-part-label" text="관찰 대상" />
+                                            <ui:Label name="reaction-slot-1__target" class="char-detail__slot-part-val" text="미설정" />
+                                        </ui:VisualElement>
+                                        <ui:VisualElement name="reaction-slot-1__skill-part" class="char-detail__slot-part char-detail__slot-part--skill">
+                                            <ui:Label class="char-detail__slot-part-label" text="행동" />
+                                            <ui:Label name="reaction-slot-1__skill" class="char-detail__slot-part-val" text="미설정" />
+                                        </ui:VisualElement>
+                                    </ui:VisualElement>
                                 </ui:VisualElement>
                                 <ui:Label name="reaction-slot-1__echo" class="char-detail__slot-echo" text="○" />
                             </ui:VisualElement>
