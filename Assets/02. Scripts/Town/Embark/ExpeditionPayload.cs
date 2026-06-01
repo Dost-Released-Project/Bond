@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using BattleSystem;
+using Bond.Embark;
 using UnityEngine;
 
 namespace Bond.Expedition
@@ -10,12 +11,20 @@ namespace Bond.Expedition
         Success,
         Failure
     }
-
-    public class ExpeditionPayload
+    
+    // 마을 씬 → 탐사 씬으로 넘기는 데이터 컨테이너
+    public class ExpeditionPayload : IPartyController
     {
-        // 마을 씬 → 탐사 씬으로 넘기는 데이터 컨테이너
+        // IPartyController
+        private PartyController _partyController = new PartyController();
+        public List<BaseCharacter> GetCurrentParty() => _partyController.GetCurrentParty();
+        public bool IsInParty(BaseCharacter character) => _partyController.IsInParty(character);
+        public bool IsFull() => _partyController.IsFull();
+        public bool TryAddMember(BaseCharacter character) => _partyController.TryAddMember(character);
+        public bool RemoveMember(BaseCharacter character) => _partyController.RemoveMember(character);
+        void IPartyController.Clear() => _partyController.Clear();
 
-        public IReadOnlyList<BaseCharacter> Party { get; private set; } = new List<BaseCharacter>();
+        public IReadOnlyList<BaseCharacter> Party => GetCurrentParty();
         public ExpeditionInventory Supplies { get; private set; } = new ExpeditionInventory(ExpeditionInventory.PeekInventoryCapacity("exp_inv", 2));
         public string DungeonId { get; private set; }
 
@@ -28,7 +37,7 @@ namespace Bond.Expedition
             ExpeditionInventory supplies,
             string dungeonId)
         {
-            Party = party;
+            //Party = party;
             Supplies = supplies;
             DungeonId = dungeonId;
         }
@@ -45,7 +54,7 @@ namespace Bond.Expedition
 
         public void Clear()
         {
-            Party = new List<BaseCharacter>();
+            _partyController.Clear();
             DungeonId = string.Empty;
             Outcome = ExpeditionOutcome.None;
         }
