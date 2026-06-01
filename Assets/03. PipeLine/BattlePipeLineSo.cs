@@ -22,7 +22,9 @@ namespace PipeLine
         public bool isReaction;
 
         public float value;
-        
+
+        public BaseCharacter interceptedFor; // Intercept 발동 시 원래 보호받은 캐릭터 (연출용)
+
         public IReadOnlyList<ReactionExecution> reactions = null;
 
         // BaseCharacter가 처음에 생성할 때 사용하는 생성자
@@ -198,26 +200,28 @@ namespace PipeLine
     [System.Serializable]
     public class ReactionCall : IPipeLineStep<BattleContext>
     {
+        public E_ReactionPhase Phase = E_ReactionPhase.None;
+
         private ReactionSystem reactionSystem;
 
         public void SetReactionSystem(ReactionSystem reactionSystem)
         {
             this.reactionSystem = reactionSystem;
         }
-        
+
         public async UniTask<BattleContext> Execute(BattleContext context)
         {
-            if (context.target == null || context.target.IsDead) return context;
+            if (context.target == null) return context;
 
-            Debug.Log("Executing ReactionCall");
+            Debug.Log($"<color=lightblue>Executing ReactionCall [{Phase}]</color>");
             if (reactionSystem != null)
             {
-                var executions = reactionSystem.Resolve(context);
+                var executions = reactionSystem.Resolve(context, Phase);
                 foreach (var execution in executions)
                 {
-                    Debug.Log($"<color=yellow>Reaction:\n" +
+                    Debug.Log($"<color=lightblue>Reaction:\n" +
                               $"{execution.ToString()}</color>");
-                    await execution.Agent.ExecuteReaction(execution.Reaction, context);
+                    await execution.Agent.ExecuteReaction(execution, context);
                 }
             }
             return context;

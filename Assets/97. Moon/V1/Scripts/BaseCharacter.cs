@@ -355,7 +355,7 @@ public partial class BaseCharacter : ITurnUseUnit
         {
             await UniTask.Delay(1000); // 턴 종료 딜레이
 
-            Debug.Log($"<color=lightblue>{Name} 행동 완료!</color>");
+            Debug.Log($"<color=green>{Name} 행동 완료!</color>");
             
             // 상태 초기화 및 클린업
             _selectedSkill = null;
@@ -365,23 +365,15 @@ public partial class BaseCharacter : ITurnUseUnit
         }
     }
     
-    public async UniTask ExecuteReaction(Reaction reaction, BattleContext context)
+    public async UniTask ExecuteReaction(ReactionExecution execution, BattleContext context)
     {
-        SkillBase skill = Skills[reaction.SkillIndex];
-        
-        BattleContext battleContext = CreateBattleContext(skill);
-        battleContext.isReaction = true;
-        var target = reaction.ReactionSkillTarget == E_TargetFilter.Caster ? context.caster : context.target;
-        battleContext.target = target;
-        
-        if (onBattleAction != null)
-        {
-            Debug.Log($"<color=lightblue>{Name} 리액션 시작!</color>");
-            await onBattleAction.Invoke(battleContext);
-            Debug.Log($"<color=lightblue>{Name} 리액션 완료!</color>");
-        }
-    
-        await UniTask.Delay(1000); // 턴 종료 딜레이
+        if (execution?.Reaction?.Effect == null) return;
+
+        Debug.Log($"<color=lightblue>{Name} 리액션 시작!</color>");
+        await execution.Reaction.Effect.Apply(this, execution, context);
+        Debug.Log($"<color=lightblue>{Name} 리액션 완료!</color>");
+
+        await UniTask.Delay(1000); // 연출 마무리 — 한 리액션 당 1회
     }
 
     private BattleContext CreateBattleContext(SkillBase skill)

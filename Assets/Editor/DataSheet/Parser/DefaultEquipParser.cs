@@ -17,6 +17,8 @@ public class DefaultEquipDTO
     public string ArmorID { get; set; }
     public string WeaponID { get; set; }
     public string IconID { get; set; }
+    
+    public string Name { get; set; }
 }
 
 public class DefaultEquipParser : TSVParserBase<DefaultEquipDTO, DefaultEquipSO>
@@ -29,7 +31,7 @@ public class DefaultEquipParser : TSVParserBase<DefaultEquipDTO, DefaultEquipSO>
 
     protected override void Populate(DefaultEquipSO so, DefaultEquipDTO dto)
     {
-        so.SetData(dto.ID, dto.ClassType, dto.STR, dto.AGI, dto.INT, 
+        so.SetData(dto.ID, dto.Name, dto.ClassType, dto.STR, dto.AGI, dto.INT, 
             dto.UpSTR, dto.UpAGI, dto.UpINT, // 성장 계수 주입
             dto.ArmorID, dto.WeaponID, dto.IconID);
     }
@@ -85,5 +87,6 @@ public sealed class DefaultEquipMap : ClassMap<DefaultEquipDTO>
         Map(m => m.ArmorID).Name("ArmorID");
         Map(m => m.WeaponID).Name("WeaponID");
         Map(m => m.IconID).Name("IconID");
+        Map(m => m.Name).Name("Name");
     }
 }

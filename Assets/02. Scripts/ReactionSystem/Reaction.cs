@@ -1,6 +1,6 @@
 using System;
-using System.Runtime.Serialization;
-using PipeLine;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Reactions
@@ -15,48 +15,39 @@ namespace Reactions
     public class ReactionExecution : IComparable<ReactionExecution>
     {
         public BaseCharacter Agent;
+        public IReadOnlyList<BaseCharacter> MatchedSubjects;
         public Reaction Reaction;
         public ReactionResult Result = ReactionResult.Success;
 
-        public ReactionExecution(BaseCharacter agent, Reaction reaction, ReactionResult result)
+        public ReactionExecution(BaseCharacter agent, Reaction reaction, ReactionResult result, IReadOnlyList<BaseCharacter> matchedSubjects)
         {
             Agent = agent;
             Reaction = reaction;
             Result = result;
+            MatchedSubjects = matchedSubjects;
         }
-        
+
         public int CompareTo(ReactionExecution other) => other.Agent.Speed.CompareTo(Agent.Speed);
 
         public override string ToString()
         {
+            var subjects = (MatchedSubjects == null || MatchedSubjects.Count == 0)
+                ? "-"
+                : string.Join(", ", MatchedSubjects.Select(s => s?.Name ?? "?"));
             return $"Agent: {Agent.Name}\n" +
+                   $"Matched Subject: {subjects}\n" +
                    $"Trigger: {Reaction.Trigger.Description}";
         }
     }
-    
+
     [Serializable]
     public class Reaction
     {
-        //public ReactionSource Source;
-        public string SubjectCharacterId; // 캐릭터 ID
+        public E_ReactionPhase Phase = E_ReactionPhase.None;
+        public E_ObserveFilter ObserveFilter = E_ObserveFilter.Self;
+        [Tooltip("ObserveFilter == Specific 일 때만 사용")] 
+        public string SubjectCharacterId;
         [SerializeReference, SubclassSelector] public ITrigger Trigger;
-        public int SkillIndex; // 반응으로 실행할 스킬의 인덱스
-        public E_TargetFilter ReactionSkillTarget;
-        //[SerializeReference] public SkillBase AnomalySkill; // 돌발 행동 시 행동
-
-        public bool Check(BattleContext context)
-        {
-            if (Trigger == null)
-                return false;
-            return Trigger.CheckCondition(BaseCharacter.Dict[SubjectCharacterId], context);
-        }
-    }
-
-    [CreateAssetMenu(fileName = "ReactionPreset", menuName = "Bond/Reactions/Reaction Preset")]
-    public class ReactionPreset : ScriptableObject
-    {
-        public ITrigger Trigger;
-        public SkillBase Skill;
-        public E_TargetFilter SkillTarget;
+        [SerializeReference, SubclassSelector] public ReactionEffect Effect;
     }
 }

@@ -1,0 +1,122 @@
+/* =========================================================================
+   ⚒️ 대장간(SmithyUI) 2분할 레이아웃 완전판 USS 스타일시트
+   ========================================================================= */
+
+/* 1. 최상위 루트 바디 - 960x540 규격 고정 */
+#VisualElement {
+    width: 960px !important;
+    height: 540px !important;
+    background-color: rgba(18, 20, 28, 0.98) !important;
+    padding: 32px !important;
+    border-left-width: 2px !important; border-right-width: 2px !important;
+    border-top-width: 2px !important; border-bottom-width: 2px !important;
+    border-color: #8e7045 !important;
+    border-radius: 8px;
+    position: relative !important;
+}
+
+/* 2. 신규 가로 분할 메인 바디 컨테이너 */
+.smithy-main-body {
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin-top: 16px !important;
+}
+
+/* 3. 좌측 패널 (슬롯 + 강화 버튼) */
+.smithy-left-panel {
+    width: 400px !important;
+    height: 100% !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+/* 무기, 방어구 버튼을 가로로 정렬해 줄 얇은 줄 박스 */
+.smithy-slot-row {
+    flex-direction: row !important;
+    justify-content: center !important;
+    margin-bottom: 32px !important;
+}
+
+#slot-weapon, #slot-armor {
+    width: 90px !important;
+    height: 90px !important;
+    margin: 0 12px !important;
+    background-color: #1e222d !important;
+    border-width: 1px !important;
+    border-color: rgba(142, 112, 69, 0.4) !important;
+    border-radius: 6px;
+}
+#slot-weapon:hover, #slot-armor:hover {
+    background-color: #2a303f !important;
+    border-color: #e5c185 !important;
+}
+
+/* 강화 버튼 큼직하게 튜닝 */
+#btn-upgrade {
+    width: 240px !important;
+    height: 48px !important;
+    background-color: #2e382e !important;
+    color: #a7f3d0 !important;
+    font-size: 18px !important;
+    -unity-font-style: bold !important;
+    border-width: 1px !important;
+    border-color: #405440 !important;
+    border-radius: 4px;
+}
+#btn-upgrade:hover { background-color: #3b4a3b !important; border-color: #526e52 !important; }
+#btn-upgrade:disabled { background-color: #1c1f1c !important; color: #4b5563 !important; opacity: 0.6 !important; }
+
+
+/* 4. 🎯 [핵심] 우측 상세 가이드 패널 (글자 넘침 완벽 방어존) */
+.smithy-right-panel {
+    width: 440px !important;
+    height: 100% !important;
+    background-color: rgba(10, 11, 15, 0.5) !important;
+    border-width: 1px !important;
+    border-color: rgba(142, 112, 69, 0.15) !important;
+    border-radius: 6px;
+    padding: 24px !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+}
+
+/* 💥 이름이 아무리 길어져도 우측 영역 안에서 자동 줄바꿈 처리 */
+#item-name {
+    font-size: 24px !important;
+    color: #e5c185 !important;
+    -unity-font-style: bold !important;
+    white-space: normal !important; /* 넘치면 아래 줄로 유연하게 복사 */
+    margin-bottom: 16px !important;
+    border-bottom-width: 1px !important;
+    border-bottom-color: rgba(142, 112, 69, 0.2) !important;
+    padding-bottom: 8px !important;
+}
+
+/* 스탯 정보 배열 */
+#stat-name { font-size: 16px !important; color: #cbd5e1 !important; margin-bottom: 4px !important; }
+#stat-info { font-size: 16px !important; color: #ffffff !important; -unity-font-style: bold !important; flex-grow: 1 !important; }
+
+/* 하단 비용 박스 형태 마감 */
+#upgrade-cost {
+    font-size: 14px !important;
+    color: #94a3b8 !important;
+    background-color: rgba(0, 0, 0, 0.25) !important;
+    padding: 10px !important;
+    border-radius: 4px;
+    -unity-text-align: middle-center !important;
+}
+
+/* 5. 우측 상단 닫기 버튼 */
+#btn-close {
+    position: absolute !important;
+    right: 16px !important;
+    top: 16px !important;
+    background-color: transparent !important;
+    border-width: 0 !important;
+    -unity-background-image-tint-color: #94a3b8 !important;
+}
+#btn-close:hover { -unity-background-image-tint-color: #df4a4a !important; }

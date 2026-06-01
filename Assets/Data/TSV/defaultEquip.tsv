@@ -1,17 +1,17 @@
-﻿시트 페이지 2자리	캐릭터 클래스				동일 타입 번호			
-03	00	전사			00			
-	01	도적		아군 / 적군 여부				
-	02	마법사		00	아군			
-	03	성직자		01	중립			-
-	04			02	적			
-	05							
-(string)	(enum)	(int)	(int)	(int)	(string)			
-ID	ClassType	STR	AGI	INT	IconID	UpSTR	UpAGI	UpINT
-03000000	Warrior	2	0	0	Icon_Warrior	2	0	0
-03010000	Assassin	0	2	0	Icon_Rogue	0	2	0
-03020000	Wizard	0	0	2	Icon_Wizard	0	0	2
-03030000	Cleric	0	0	2	Icon_Priest	0	0	2
-03040000	Warrior	0	1	1	Icon_Warrior	0	1	1
-03050000	Assassin	1	0	1	Icon_Rogue	1	0	1
-03060000	Wizard	1	1	0	Icon_Wizard	1	1	0
-03070000	Cleric	1	1	0	Icon_Priest	1	1	0
+﻿시트 페이지 2자리	캐릭터 클래스				동일 타입 번호				
+03	00	전사			00				
+	01	도적		아군 / 적군 여부					
+	02	마법사		00	아군				
+	03	성직자		01	중립			-	
+	04			02	적				
+	05								
+(string)	(enum)	(int)	(int)	(int)	(string)				
+ID	ClassType	STR	AGI	INT	IconID	UpSTR	UpAGI	UpINT	Name
+03000000	Warrior	2	0	0	Icon_Warrior	2	0	0	전사의 대검
+03010000	Assassin	0	2	0	Icon_Rogue	0	2	0	암살자의 단도
+03020000	Wizard	0	0	2	Icon_Wizard	0	0	2	마법사의 지팡이
+03030000	Cleric	0	0	2	Icon_Priest	0	0	2	성직자의 성서
+03040000	Warrior	0	1	1	Icon_Warrior	0	1	1	전사의 판금 갑옷
+03050000	Assassin	1	0	1	Icon_Rogue	1	0	1	암살자의 천옷
+03060000	Wizard	1	1	0	Icon_Wizard	1	1	0	마법사의 로브
+03070000	Cleric	1	1	0	Icon_Priest	1	1	0	성직자의 가운

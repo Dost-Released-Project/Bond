@@ -79,7 +79,7 @@ namespace Bond.UI
             OnReactionChanged?.Invoke(slotIndex);
         }
 
-        // SkillBase를 Skills[] 배열에서 역탐색하여 SkillIndex로 저장한다
+        // SkillBase를 Skills[] 배열에서 역탐색해 SkillCastReactionEffect.SkillIndex 로 저장한다
         public void SetReactionSkill(int slotIndex, SkillBase skill)
         {
             if (_character == null || skill == null) return;
@@ -88,7 +88,16 @@ namespace Bond.UI
 
             int idx = Array.IndexOf(_character.Skills, skill);
             if (idx < 0) return;
-            reaction.SkillIndex = idx;
+
+            // 기존 Effect 가 SkillCastReactionEffect 면 인덱스만 갱신, 아니면 새로 생성
+            if (reaction.Effect is SkillCastReactionEffect cast)
+            {
+                cast.SkillIndex = idx;
+            }
+            else
+            {
+                reaction.Effect = new SkillCastReactionEffect { SkillIndex = idx };
+            }
             OnReactionChanged?.Invoke(slotIndex);
         }
 

@@ -8,19 +8,28 @@ using UnityEngine.Serialization;
 
 namespace Reactions
 {
+    public enum E_ReactionPhase
+    {
+        None,      // 미지정 — 발화하지 않음 (의식적 선택 강제)
+        PreApply,  // ApplyStep 이전 (원본 행동에 영향)
+        PostApply, // ApplyStep 이후 (원본 행동의 후속)
+    }
+
     public enum E_ObserveFilter
     {
         Self,
-        Ally,
+        Ally,       // 자신 포함 같은 진영 전체
+        OtherAlly,  // 자신을 제외한 같은 진영
         Enemy,
         Specific
     }
-    
+
     public enum E_TargetFilter
     {
         None,
         Caster,
-        Target
+        Target,
+        Observed,   // 조건을 만족시킨 관찰 대상
     }
     
     public interface ITrigger
@@ -29,7 +38,7 @@ namespace Reactions
         string Description { get; }
     }
 
-    [Serializable][AddTypeMenu("SkillTypeIs", -1000)]
+    [Serializable][AddTypeMenu("Trigger", -1000)]
     public class Trigger : ITrigger
     {
         [Serializable]
@@ -56,7 +65,6 @@ namespace Reactions
 
         public bool CheckCondition(BaseCharacter subject, BattleContext context)
         {
-            Debug.Log($"Checking condition {Conditions.Count}");
             return Conditions.Any() && Conditions.All(condition => condition.IsMet(new ReactionTriggerConditionArgs() { Subject = subject, BattleContext = context }));
         }
 
@@ -87,21 +95,6 @@ namespace Reactions
                 new SubjectCondition(E_TargetFilter.Target),
                 new SkillTypeCondition(SkillType.OFFENSIVE, SkillType.SPELL),
                 new HitCondition()
-            };
-        }
-    }
-
-    [Serializable]
-    public class DeathBlowTrigger : Trigger
-    {
-        public DeathBlowTrigger()
-        {
-            _condition.Essential = new List<ICondition>()
-            {
-                new SubjectCondition(E_TargetFilter.Target),
-                new SkillTypeCondition(SkillType.OFFENSIVE, SkillType.SPELL),
-                new HitCondition(),
-                new DamageCondition() { Threshold = new DamageCondition.PercentOfCurrentHpThreshold() { Ratio = 1f } }
             };
         }
     }
