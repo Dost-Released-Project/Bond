@@ -48,7 +48,7 @@ public class Profession
         // STR 영향군
         stat.max_Hp = Mathf.FloorToInt(controller.ApplyModifiers(StatType.MaxHP, stat.STR * _classData.HP));
         stat.atk = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Atk, stat.STR * _classData.Atk));
-        stat.def = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Def, stat.STR * _classData.Def));
+        stat.def = controller.ApplyModifiers(StatType.Def, stat.STR * _classData.Def) * 0.01f;
         
         // AGI 영향군
         stat.speed = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Speed, stat.AGI * _classData.Speed));

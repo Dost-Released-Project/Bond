@@ -25,7 +25,7 @@ public class Stat
     [Header("Calculated Results")]
     public int max_Hp;
     public int current_Hp;
-    public int def;
+    public float def;
     public int atk;
 
     public int speed;

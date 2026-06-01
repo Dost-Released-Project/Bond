@@ -390,7 +390,7 @@ namespace Bond.UI
             _baseStatInt.text = s.INT.ToString();
 
             _statHp.text  = $"{s.current_Hp}/{s.max_Hp}";
-            _statDef.text = s.def.ToString();
+            _statDef.text = $"{s.def:P0}";
             _statAtk.text = s.atk.ToString();
             _statSpd.text = s.speed.ToString();
             _statCrt.text = $"{s.crt:P0}";
