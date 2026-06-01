@@ -16,7 +16,7 @@ namespace RootVContainer
 
         protected override void Configure(IContainerBuilder builder)
         {
-            builder.Register<ExpeditionPayload>(Lifetime.Singleton);
+            builder.Register<ExpeditionPayload>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
 
             // MapConfigLoaderSettings — Inspector 에서 에셋을 연결한다.
             if (_mapConfigLoaderSettings != null)

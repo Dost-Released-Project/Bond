@@ -44,7 +44,7 @@ namespace Bond.UI.Town
             var root = townUIDocument.rootVisualElement;
 
             _rosterPresenter = new TownRosterPanelPresenter(root, _roster, _selector);
-            _embarkPresenter = new EmbarkPresenter(root, _embarkController, _roster);
+            _embarkPresenter = new EmbarkPresenter(root, _embarkController, _roster, _characterDetail, _townInventory);
 
             foreach (var tc in root.Query<TemplateContainer>().ToList())
                 tc.pickingMode = PickingMode.Ignore;
@@ -53,18 +53,14 @@ namespace Bond.UI.Town
             _toggleBtn.clicked += ToggleRoster;
             root.Q<Button>("embark-btn").clicked += _embarkController.Open;
 
-            _characterDetail.OnCloseRequested       += _selector.Deselect;
             _characterDetail.OnInventoryOpenRequested += _accessoryBagView.ToggleWindow;
-
-            _selector.OnSelectionChanged += character =>
+            _characterDetail.OnCloseRequested       += _accessoryBagView.CloseWindow;
+            
+            _rosterPresenter.OnCardClicked += (character) => _selector.Select(character);
+            _rosterPresenter.OnCardRightClicked += (character) =>
             {
-                if (character != null)
-                    _characterDetail.Show(character, CharacterDetailEditMode.FullEdit, _townInventory);
-                else
-                {
-                    _characterDetail.Hide();
-                    _accessoryBagView.CloseWindow();
-                }
+                _selector.Select(character);
+                _characterDetail.Show(character, CharacterDetailEditMode.FullEdit, _townInventory);
             };
         }
 

@@ -212,11 +212,14 @@ namespace Bond.UI
         
         public void Show(BaseCharacter character, CharacterDetailEditMode mode, IInventory inventory)
         {
-            SetCharacterInternal(character);
             _editMode         = mode;
             _currentInventory = inventory;
 
-            RefreshAll();
+            // 상세 대상의 단일 출처는 컨트롤러다. selector 경유 없이 직접 열리는 호출처(탐사 준비 등)에서도
+            // 컨트롤러 _character 가 동기화돼야 GetRoleReactionCatalog 등이 올바른 캐릭터로 동작한다.
+            // SetCharacter → OnCharacterSet → RefreshCharacter 가 프레젠터 _character 동기화 + RefreshAll 까지 동기 수행.
+            _controller.SetCharacter(character);
+
             ApplyViewMode();
 
             _panel.RemoveFromClassList("character-detail--hidden");

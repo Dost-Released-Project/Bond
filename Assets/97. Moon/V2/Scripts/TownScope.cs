@@ -1,5 +1,4 @@
 using System;
-using _90._HA.Temp.Test;
 using Bond.Embark;
 using Bond.Expedition;
 using Bond.UI;
@@ -33,7 +32,7 @@ public class TownScope : LifetimeScope
 
         // 캐릭터 & 출정
         builder.Register<EmbarkController>(Lifetime.Scoped);
-        builder.Register<PartyController>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
+        //builder.Register<PartyController>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
         builder.Register<StageCoach>(Lifetime.Scoped);
         builder.Register<Roster>(Lifetime.Scoped);
         builder.Register<CharacterSelector>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
@@ -56,7 +55,7 @@ public class TownScope : LifetimeScope
 
 #if UNITY_EDITOR
         // 테스트용 스크립트
-        builder.RegisterComponentInHierarchy<S1Test>();
+        builder.RegisterComponentInHierarchy<_90._HA.Temp.Test.S1Test>();
 #endif
         
         // Journal UI 및 Binder 지역 스코프 등록
