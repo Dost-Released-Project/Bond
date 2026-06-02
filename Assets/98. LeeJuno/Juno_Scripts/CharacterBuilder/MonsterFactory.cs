@@ -168,7 +168,7 @@ public class MonsterFactory
         stat.def   = controller.ApplyModifiers(StatType.Def,   finalAGI * DefMultiplier) * 0.01f;
         stat.speed = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Speed, finalAGI * SpeedMultiplier));
         stat.crt   = controller.ApplyModifiers(StatType.Cri,   finalAGI * CriMultiplier) * 0.01f;
-        stat.acc   = controller.ApplyModifiers(StatType.Acc,   finalAGI * AccMultiplier) * 0.01f;
+        stat.acc   = (controller.ApplyModifiers(StatType.Acc,   finalAGI * AccMultiplier) * 0.01f) + 0.5f;
         stat.eva   = controller.ApplyModifiers(StatType.Eva, finalINT * EvaMultiplier) * 0.01f;
 
         // INT 계열
