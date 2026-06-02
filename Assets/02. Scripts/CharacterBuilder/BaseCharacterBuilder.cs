@@ -9,26 +9,6 @@ public partial class BaseCharacter
     
     public class Builder
     {
-        // TODO: 나중에 데이터베이스에서 가져오는 걸로 변경
-        private List<Trait> traits = new List<Trait>()
-        {
-            new Trait()
-            {
-                Name = "A",
-                Description = "aaa"
-            },
-            new Trait()
-            {
-                Name = "B",
-                Description = "bbb"
-            },
-            new Trait()
-            {
-                Name = "C",
-                Description = "ccc"
-            }
-        };
-        
         private List<string> names = new List<string>(){"Wildboar","GodOfNormalization","MTE","GodOfWar","RiceSummoner"};
         private readonly BaseCharacter chara = new BaseCharacter();
 
@@ -61,6 +41,7 @@ public partial class BaseCharacter
             chara.CalcStat();
             chara.SetHpFull();
             chara.Id = System.Guid.NewGuid().ToString();
+            chara.SyncTraitReactions();
             Dict[chara.Id] = chara;
             return chara;
         }
@@ -128,12 +109,6 @@ public partial class BaseCharacter
             return this;
         }
 
-        public Builder SetTraits(Trait[] traits)
-        {
-            chara.Traits = traits;
-            return this;
-        }
-
         public Builder SetRandomProfession()
         {
             var data = professionDb.GetRandom<ClassSO>();
@@ -143,16 +118,16 @@ public partial class BaseCharacter
 
         public Builder AddRandomTrait()
         {
-            Trait randomTrait = traits.GetRandom();
+            var pool = DBSORegistry.QuerySO<TraitSO>(t => t != null).ToList();
+            // 이미 보유한 성향 제외(중복 리액션 방지)
+            pool = pool.Where(t => !chara.TraitIds.Contains(t.Id)).ToList();
+            if (pool.Count == 0) return this;   // 카탈로그 미로드/소진 — graceful
 
-            int i = Array.FindIndex(chara.Traits, trait => trait == null);
-            if (i == -1)
-            {
-                i = UnityEngine.Random.Range(0, chara.Traits.Length);
-            }
+            var picked = pool[UnityEngine.Random.Range(0, pool.Count)];
 
-            chara.Traits[i] = randomTrait;
-
+            int i = Array.FindIndex(chara.TraitIds, string.IsNullOrEmpty);
+            if (i == -1) i = UnityEngine.Random.Range(0, chara.TraitIds.Length);
+            chara.TraitIds[i] = picked.Id;
             return this;
         }
 
