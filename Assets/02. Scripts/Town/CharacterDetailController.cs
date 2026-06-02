@@ -31,6 +31,7 @@ namespace Bond.UI
         public void SetCharacter(BaseCharacter character)
         {
             _character = character;
+            _character?.SyncTraitReactions();
             OnCharacterSet?.Invoke(_character);
         }
 
@@ -59,35 +60,6 @@ namespace Bond.UI
         {
             if (_character == null) return;
             _itemService.UnequipToInventory(_character, index, targetInventory);
-        }
-
-        // SkillBase를 Skills[] 배열에서 역탐색해 SkillCastReactionEffect.SkillIndex 로 저장한다
-        public void SetReactionSkill(int slotIndex, SkillBase skill)
-        {
-            if (_character == null || skill == null) return;
-            var reaction = GetReaction(slotIndex);
-            if (reaction == null) return;
-
-            int idx = Array.IndexOf(_character.Skills, skill);
-            if (idx < 0) return;
-
-            // 기존 Effect 가 SkillCastReactionEffect 면 인덱스만 갱신, 아니면 새로 생성
-            if (reaction.Effect is SkillCastReactionEffect cast)
-            {
-                cast.SkillIndex = idx;
-            }
-            else
-            {
-                reaction.Effect = new SkillCastReactionEffect { SkillIndex = idx };
-            }
-            OnReactionChanged?.Invoke(slotIndex);
-        }
-
-        // 캐릭터가 현재 보유한 스킬 목록 반환
-        public List<SkillBase> GetAvailableSkills()
-        {
-            if (_character == null) return new List<SkillBase>();
-            return _character.Skills.Where(s => s != null).ToList();
         }
 
         // 직업이 보유 가능한 전체 스킬 목록 반환 (스킬 그리드용)
