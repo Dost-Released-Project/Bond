@@ -1114,8 +1114,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9078333816197698050, guid: a89cdd7fe3dc956409e3fb793963a739, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 330585545}
+    - target: {fileID: 9078333816197698050, guid: a89cdd7fe3dc956409e3fb793963a739, type: 3}
       propertyPath: m_RenderMode
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9078333816197698050, guid: a89cdd7fe3dc956409e3fb793963a739, type: 3}
       propertyPath: m_SortingOrder
@@ -1185,7 +1189,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!223 &1127401141
 Canvas:
   m_ObjectHideFlags: 0
@@ -1246,7 +1250,7 @@ MonoBehaviour:
   cornerRadius: 20.8
   thickness: 10
   padding: 40
-  frameColor: {r: 1, g: 1, b: 1, a: 1}
+  frameColor: {r: 1, g: 1, b: 1, a: 0}
   backgroundColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &1194974102
 GameObject:
