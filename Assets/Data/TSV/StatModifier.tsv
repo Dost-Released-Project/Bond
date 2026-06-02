@@ -1,7 +1,7 @@
 ﻿시트 페이지 2자리	캐릭터 클래스		아군 / 적군 여부			스탯 타입 =>	STR	AGI	INT		-> 기본 스탯 3종
 13	00	전사	00	아군			MaxHP	Atk	Def		-> STR 파생 스탯 3종
-	01	도적	01	중립			Speed	Cri	Acc		-> AGI 파생 스탯 3종
-동일 타입 번호	02	마법사	02	적			InsanityCtrl	ReactionCtrl	SpAtk		-> INT 파생 스탯 3종
+	01	도적	01	중립			Speed	Cri	Acc	Eva	-> AGI 파생 스탯 4종
+동일 타입 번호	02	마법사	02	적			ReactionCtrl	SpAtk			-> INT 파생 스탯 2종
 00	03	성직자					DamageMultiplier	DamageReduction	HealEfficiency	StressResistance	-> (버?프류 구현 안 됨)
 	04										
 	05					모드 타입 =>	Flat(고정 수치)	Percent(비율)			
@@ -15,7 +15,7 @@ ID	Name	Type	Mode	Value
 13050000	방어력 증가(수치)	Def	Flat	10							
 13060000	속도 증가(수치)	Speed	Flat	10							
 13070000	치명타 확률 증가(수치)	Cri	Flat	10							
-13080000	스트레스 제어 증가(수치)	InsanityCtrl	Flat	10							
+13080000	회피율 증가(수치)	Eva	Flat	10							
 13090000	리액션 제어 증가(수치)	ReactionCtrl	Flat	10							
 13100000	주문력 증가(수치)	SpAtk	Flat	10							
 13110000	주는 데미지 증가(비율)	DamageMultiplier	Percent	0.1							
@@ -30,6 +30,6 @@ ID	Name	Type	Mode	Value
 13200000	방어력 증가(비율)	Def	Percent	0.1							
 13210000	속도 증가(비율)	Speed	Percent	0.1							
 13220000	치명타 확률 증가(비율)	Cri	Percent	0.1							
-13230000	스트레스 제어 증가(비율)	InsanityCtrl	Percent	0.1							
+13230000	회피율 증가(비율)	Eva	Percent	0.1							
 13240000	리액션 제어 증가(비율)	ReactionCtrl	Percent	0.1							
 13250000	주문력 증가(비율)	SpAtk	Percent	0.1							

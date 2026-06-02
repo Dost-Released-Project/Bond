@@ -14,7 +14,7 @@ public enum StatType
     Speed,
     Cri,
     Acc,
-    InsanityCtrl,
+    Eva,
     ReactionCtrl,
     SpAtk
 }

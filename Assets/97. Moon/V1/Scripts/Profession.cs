@@ -48,16 +48,15 @@ public class Profession
         // STR 영향군
         stat.max_Hp = Mathf.FloorToInt(controller.ApplyModifiers(StatType.MaxHP, stat.STR * _classData.HP));
         stat.atk = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Atk, stat.STR * _classData.Atk));
-        stat.def = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Def, stat.STR * _classData.Def));
+        stat.def = controller.ApplyModifiers(StatType.Def, stat.STR * _classData.Def) * 0.01f;
         
         // AGI 영향군
         stat.speed = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Speed, stat.AGI * _classData.Speed));
         stat.crt = controller.ApplyModifiers(StatType.Cri, stat.AGI * _classData.Cri) * 0.01f;
         stat.acc = controller.ApplyModifiers(StatType.Acc, stat.AGI * _classData.Acc) * 0.01f;
+        stat.eva = controller.ApplyModifiers(StatType.Eva, stat.AGI * _classData.Eva) * 0.01f;
         
         // INT 영향군
-        stat.Insanity_Ctrl =
-            controller.ApplyModifiers(StatType.InsanityCtrl, stat.INT * _classData.InsanityCtrl) * 0.01f;
         stat.Reaction_Ctrl =
             controller.ApplyModifiers(StatType.ReactionCtrl, stat.INT * _classData.ReactionCtrl) * 0.01f;
         stat.Sp_Atk = Mathf.FloorToInt(controller.ApplyModifiers(StatType.SpAtk, stat.INT * _classData.SpAtk));

@@ -129,9 +129,15 @@ namespace PipeLine
                 return UniTask.FromResult(context);
             }
 
-            float hitRate = context.caster.Stat.acc - (context.target.Stat.AGI * 0.5f);
-            //context.isEvaded = Random.Range(0f, 100f) > hitRate;
-            context.isEvaded = false;
+            // [수정] 시전자 명중률(acc)에서 타겟 회피율(eva)을 차감하여 최종 명중 확률 계산 (0~1 범위)
+            float hitRate = context.caster.Stat.acc - context.target.Stat.eva;
+        
+            // 최소 명중률 보장 (예: 아무리 회피가 높아도 5% 확률로는 맞음 - 필요 시 조정 가능)
+            hitRate = Mathf.Max(0.05f, hitRate);
+
+            // Random.value는 0.0 이상 1.0 이하의 값을 반환합니다.
+            // 난수가 명중 확률보다 크면 공격을 회피한 것으로 판정합니다.
+            context.isEvaded = Random.value > hitRate;
 
             if (context.isEvaded)
             {
@@ -180,16 +186,29 @@ namespace PipeLine
             }
             else
             {
-                int def = context.target.Stat.def;
-                context.value = Mathf.Max(0, context.value - def);
+                // [참고] 이 로직이 정상 작동하려면 Stat 클래스의 def가 float(0~1)로 바뀌거나, 
+                // int 상태라면 임시로 0.01f를 곱해주어야 합니다. 여기서는 float(0~1 값)으로 전환됨을 가정합니다.
+                float targetDefPercent = context.target.Stat.def; 
+
+                // 방어 제한선 설정 (예: 방어력이 아무리 높아도 데미지의 90%까지만 감소 가능)
+                targetDefPercent = Mathf.Min(0.9f, targetDefPercent);
+
+                // 데미지 감소 계산: 원래 데미지 * (1 - 방어율)
+                float reducedValue = context.value * (1f - targetDefPercent);
+
+                // [요구사항] 반올림을 지양하고 소수점을 남기지 않도록 버림(FloorToInt) 처리
+                int finalDamage = Mathf.FloorToInt(reducedValue);
+            
+                // 데미지는 최소 0 이하로 내려가지 않도록 방어
+                context.value = Mathf.Max(0, finalDamage);
 
                 if (context.value <= 0)
                 {
-                    Debug.Log($"<color=gray><b>[무효]</b></color> {context.target.Name}의 방어력({def})에 막혀 데미지가 0이 되었습니다.");
+                    Debug.Log($"<color=gray><b>[무효]</b></color> {context.target.Name}의 방어력({targetDefPercent})에 막혀 데미지가 0이 되었습니다.");
                 }
                 else
                 {
-                    Debug.Log($"[DefenseStep] 방어력({def}) 차감 후 최종 수치: {context.value} (타겟: {context.target.Name})");
+                    Debug.Log($"[DefenseStep] 방어력({targetDefPercent:P0}) 차감 후 최종 수치: {context.value} (타겟: {context.target.Name})");
                 }
             }
             
