@@ -40,7 +40,7 @@ public class SmithyUIController : MonoBehaviour
         _root.style.display = DisplayStyle.Flex;
         
         // 기본적으로 무기 선택 상태로 시작
-        SelectEquipment(_character.Weapon);
+        if(hero != null) SelectEquipment(_character.Weapon);
     }
 
     public void ChangeCharacter(BaseCharacter hero)

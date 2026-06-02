@@ -1,19 +1,17 @@
 using UnityEngine;
 using System;
 
-[Serializable] // 인스펙터에서 수정 가능하게 설정
-public enum EquipmentType { Base, Accessory }
-
 [Serializable]
 public class Equipment
 {
     public string itemName;
-    public EquipmentType type;
     public int upgradeLevel = 0;
     public const int MAX_UPGRADE = 5;
 
     public Equipment(DefaultEquipSO so)
     {
+        itemName = so.DisplayName;
+
         baseSTR = so.STR;
         baseAGI = so.AGI;
         baseINT = so.INT;

@@ -19,16 +19,17 @@
 /* 툴팁 디자인 */
 .inventory-tooltip {
     position: absolute;
-    background-color: rgba(10, 10, 10, 0.98);
-    padding: 12px;
+    padding: 14px;
     border-width: 1px;
-    border-color: white;
     min-width: 220px;
     max-width: 300px;
+    background-color: rgba(14, 16, 22, 0.98) !important;
+    border-color: #8e7045 !important;
+    border-radius: 4px;
 }
 
 .tooltip-title {
-    color: yellow;
+    color: #e5c185 !important; /* 앤티크 화이트골드로 통일 */
     font-size: 18px;
     -unity-font-style: bold;
     margin-bottom: 8px;
@@ -94,11 +95,16 @@
     flex-direction: row;
     align-items: center;
     height: 55px;
-    margin-bottom: 6px;
+    margin-bottom: 6px !important;
     padding-left: 10px;
     background-color: rgba(51, 38, 25, 0.8);
-    border-bottom-width: 2px;
-    border-bottom-color: rgba(102, 76, 51, 1);
+    
+    background-color: #1e222d !important;
+    border-bottom-width: 1px !important;
+    border-bottom-color: rgba(142, 112, 69, 0.25) !important;
+    border-radius: 4px;
+    transition-property: background-color, border-color;
+    transition-duration: 0.1s;
 }
 
 /* 화질 깨짐 방지 아이콘 스타일 */
@@ -108,4 +114,11 @@
     flex-shrink: 0;
     /* [핵심] 이미지 비율 유지 및 화질 저하 방지 */
     -unity-background-scale-mode: scale-to-fit;
+}
+
+/* 리스트 아이템 마우스 호버 */
+.accessory-list-item:hover {
+    background-color: #2a303f !important;
+    border-left-width: 2px !important;
+    border-left-color: #e5c185 !important; /* 마우스 올리면 좌측에 황금 포커싱 선 연출 */
 }

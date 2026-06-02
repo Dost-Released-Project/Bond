@@ -13,4 +13,4 @@ ID	BuildingName	BuildingType	Description	SpritePath
 09030000	조합	Guild	일정량의 자원을 획득할 수 있습니다.	Sprite/Build/Guild						
 09040000	대장간	Smithy	장비를 강화할 수 있습니다.	Sprite/Build/Smithy						
 09050000	왕실 보급소	Supply	왕실의 보급품을 받을 수 있습니다.	Sprite/Build/Supply						
-09060000	마차	Carriage	더 많은 물품을 움직일 수 있습니다.	Sprite/Build/Carriage						
+09060000	마차 창고	Carriage	더 많은 물품을 옮길 수 있습니다.	Sprite/Build/Carriage						

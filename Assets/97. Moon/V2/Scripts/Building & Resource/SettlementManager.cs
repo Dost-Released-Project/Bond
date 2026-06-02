@@ -120,12 +120,9 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
                 _supplyView.Open();
                 break;
             case BuildingType.Smithy:
-                if (_characterSelector.Selected != null)
-                {
-                    _constructionUI.Show(false);
-                    _supplyView.Close();
-                    _smithyUI.Open(_characterSelector.Selected, building.CurrentLevel);
-                }
+                _constructionUI.Show(false);
+                _supplyView.Close();
+                _smithyUI.Open(_characterSelector.Selected, building.CurrentLevel);
                 break;
         }
     }

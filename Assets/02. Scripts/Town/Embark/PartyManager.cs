@@ -6,10 +6,6 @@ namespace Bond.Embark
 {
     public interface IPartyController
     {
-        /// <summary>
-        /// 현재 파티 구성원 목록을 읽기전용으로 반환합니다.
-        /// </summary>
-        /// <returns></returns>
         List<BaseCharacter> GetCurrentParty();
         bool IsInParty(BaseCharacter character);
         bool IsFull();

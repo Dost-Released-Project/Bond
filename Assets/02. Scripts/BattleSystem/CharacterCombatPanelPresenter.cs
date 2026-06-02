@@ -142,11 +142,11 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
         if (_character == null) return;
         var stat = _character.Stat;
         if (_statAtk   != null) _statAtk.text   = stat.atk.ToString();
-        if (_statDef   != null) _statDef.text    = stat.def.ToString();
+        if (_statDef   != null) _statDef.text    = $"{stat.def:P0}";
         if (_statSpAtk != null) _statSpAtk.text  = stat.Sp_Atk.ToString();
         if (_statSpd   != null) _statSpd.text    = stat.speed.ToString();
-        if (_statCrt   != null) _statCrt.text    = $"{stat.crt:0.#}%";
-        if (_statAcc   != null) _statAcc.text    = $"{stat.acc:0.#}%";
+        if (_statCrt   != null) _statCrt.text    = $"{stat.crt:P0}";
+        if (_statAcc   != null) _statAcc.text    = $"{stat.acc:P0}";
     }
 
     private void AttachCharacterEvents(BaseCharacter character)

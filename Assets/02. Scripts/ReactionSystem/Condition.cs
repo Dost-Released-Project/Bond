@@ -15,39 +15,11 @@ namespace Reactions
         GreaterThan,
         GreaterOrEqual,
     }
-    
+
     public interface ICondition
     {
         bool IsMet(object args);
         string Description { get; }
-        
-        // bool IsMet(E_CompareFilter coFilter, E_ObserveFilter obFilter, BaseCharacter observer, BattleContext context, BaseCharacter subject);
-        // IEnumerable<BaseCharacter> GetTargets(E_CompareFilter coFilter, E_ObserveFilter obFilter, BaseCharacter observer, BattleContext context, BaseCharacter subject);
-    }
-
-    public static class TriggerTargetComparer
-    {
-        public static IEnumerable<BaseCharacter> Compare(E_TargetFilter coFilter, E_ObserveFilter obFilter, BaseCharacter observer, BattleContext context, BaseCharacter subject)
-        {
-            List<BaseCharacter> compareTarget = coFilter switch
-            {
-                E_TargetFilter.Caster => new() { context.caster },
-                E_TargetFilter.Target => context.target != null ? new() { context.target } : new(),
-                _ => new List<BaseCharacter>()
-            };
-
-            List<BaseCharacter> observeTarget = obFilter switch
-            {
-                E_ObserveFilter.Self => new List<BaseCharacter>(){observer,},
-                E_ObserveFilter.Specific => new List<BaseCharacter>(){subject},
-                _ => new List<BaseCharacter>(){subject}
-            };
-
-            return compareTarget.Intersect(observeTarget);
-        }
-
-        public static bool IsThere(E_TargetFilter target, E_ObserveFilter filter, BaseCharacter observer, BattleContext context, BaseCharacter subject)
-            => Compare(target, filter, observer, context, subject).Any();
     }
 
     public abstract class ReactionTriggerCondition : ICondition
@@ -71,7 +43,7 @@ namespace Reactions
     [Serializable][AddTypeMenu("SubjectIs", -1000)]
     public class SubjectCondition: ReactionTriggerCondition
     {
-        public E_TargetFilter Filter = E_TargetFilter.None;
+        [Tooltip("Caster or Target")] public E_TargetFilter Filter = E_TargetFilter.None;
         public override bool IsMet(ReactionTriggerConditionArgs args)
         {
             var context = args.BattleContext;
@@ -113,25 +85,25 @@ namespace Reactions
     [Serializable][AddTypeMenu("SkillTypeIs", -100)]
     public class SkillTypeCondition: ReactionTriggerCondition
     {
-        public List<SkillType> Type = new List<SkillType>();
+        public List<SkillType> Types = new List<SkillType>();
         public override bool IsMet(ReactionTriggerConditionArgs args)
         {
-            return Type.Contains(args.BattleContext.runtimeSkill.Data.Type);
+            return Types.Contains(args.BattleContext.runtimeSkill.Data.Type);
         }
         
         public SkillTypeCondition() { }
 
         public SkillTypeCondition(params SkillType[] type)
         {
-            Type.AddRange(type);
+            Types.AddRange(type);
         }
 
         public override ReactionTriggerCondition Copy()
         {
-            return new SkillTypeCondition() { Type = Type };
+            return new SkillTypeCondition() { Types = new List<SkillType>(Types) };
         }
 
-        public override string Description => $"스킬 타입이 {Type}일 때";
+        public override string Description => $"스킬 타입이 {string.Join(" or ", Types)}일 때";
     }
 
     [Serializable]
@@ -220,6 +192,7 @@ namespace Reactions
         {
             public abstract float Resolve(ReactionTriggerConditionArgs args);
             public abstract string Description { get; }
+            public abstract ThresholdValue Copy();
         }
 
         public class AbsoluteThreshold : ThresholdValue
@@ -227,6 +200,7 @@ namespace Reactions
             public float Value;
             public override float Resolve(ReactionTriggerConditionArgs args) => Value;
             public override string Description => $"피해량이 {Value} 이상일 때";
+            public override ThresholdValue Copy() => new AbsoluteThreshold { Value = Value };
         }
 
         public class PercentOfMaxHpThreshold : ThresholdValue
@@ -235,6 +209,7 @@ namespace Reactions
             public override float Resolve(ReactionTriggerConditionArgs args)
                 => args.Subject.Stat.max_Hp * Ratio;
             public override string Description => $"피해량이 대상 최대 체력의 {Ratio * 100}% 이상일 때";
+            public override ThresholdValue Copy() => new PercentOfMaxHpThreshold { Ratio = Ratio };
         }
 
         public class PercentOfCurrentHpThreshold : ThresholdValue
@@ -243,8 +218,9 @@ namespace Reactions
             public override float Resolve(ReactionTriggerConditionArgs args)
                 => args.Subject.Stat.current_Hp * Ratio;
             public override string Description => $"피해량이 대상 현재 체력의 {Ratio * 100}% 이상일 때";
+            public override ThresholdValue Copy() => new PercentOfCurrentHpThreshold { Ratio = Ratio };
         }
-        
+
         [SerializeReference, SubclassSelector]
         public ThresholdValue Threshold;
         public override bool IsMet(ReactionTriggerConditionArgs args)
@@ -254,7 +230,7 @@ namespace Reactions
 
         public override ReactionTriggerCondition Copy()
         {
-            return new DamageCondition();
+            return new DamageCondition { Threshold = Threshold?.Copy() };
         }
 
         public override string Description => Threshold.Description;

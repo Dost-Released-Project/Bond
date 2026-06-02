@@ -143,6 +143,8 @@ public class InventoryView : MonoBehaviour
 
         _totalInventory.OnChanged += RefreshUI;
         SyncSlotCount(_totalGrid, _totalInventory.Capacity, _totalSlotElements, _totalInventory);
+        
+        SetFilter(null);
     }
 
     // 오버레이 요소 생성 헬퍼 (코드 단축)

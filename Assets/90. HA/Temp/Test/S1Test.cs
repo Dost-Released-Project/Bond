@@ -21,7 +21,7 @@ namespace _90._HA.Temp.Test
     {
         [Inject] public ExpeditionInventory _expeditionInventory;
         [Inject] public EmbarkController _embarkManager;
-        [Inject] public PartyController _partyManager;
+        [Inject] public IPartyController _partyManager;
         [Inject] public StageCoach _stageCoach;
         [Inject] public ExpeditionPayload payload;
         [Inject] public Roster roster;

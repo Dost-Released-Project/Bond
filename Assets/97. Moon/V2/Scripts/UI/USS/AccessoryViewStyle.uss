@@ -1,0 +1,29 @@
+/* =========================================================================
+   💍 장신구 가방(AccessoryBagView) 테마 동기화 USS 
+   ========================================================================= */
+
+/* 1. 최상위 스크롤 뷰 컨테이너 오버라이드 (#accessory-grid) */
+#accessory-grid {
+    background-color: rgba(18, 20, 28, 0.98) !important;
+    padding: 16px !important;
+
+    /* 다크 골드 라인 프레임워크 */
+    border-left-width: 2px !important; border-right-width: 2px !important;
+    border-top-width: 2px !important; border-bottom-width: 2px !important;
+    border-color: #8e7045 !important;
+    border-top-left-radius: 6px; border-top-right-radius: 6px;
+    border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;
+}
+
+/* 2. 유니티 내장 스크롤바 다크 테마 커스텀 가이드 (재사용 팁) */
+#accessory-grid .unity-scroller__slider {
+    background-color: rgba(10, 11, 15, 0.5) !important; /* 스크롤 트랙 음영 처리 */
+    width: 6px !important;
+    border-width: 0 !important;
+}
+
+#accessory-grid .unity-scroller__thumb {
+    background-color: #8e7045 !important; /* 스크롤 바를 골드 브라운 가죽 톤으로 변경 */
+    border-width: 0 !important;
+    border-radius: 3px;
+}

@@ -41,7 +41,7 @@ public partial class BaseCharacter : ITurnUseUnit
     [field: SerializeReference, SubclassSelector] public AutoBattle battleType { get; set; }
 
     [SerializeReference] public SkillBase[] Skills = new SkillBase[4];
-    public Trait[] Traits = new Trait[4];
+    public string[] TraitIds = new string[4];
     public Equipment Weapon;
     public Equipment Armor;
     public AccessoryItem[] Accessories = new AccessoryItem[2];
@@ -51,7 +51,35 @@ public partial class BaseCharacter : ITurnUseUnit
     public Reaction[] RoleReactions = new Reaction[2];
     public Reaction[] TraitReactions = new Reaction[4];
     [JsonIgnore] public Reaction[] Reactions => RoleReactions.Concat(TraitReactions).ToArray();
-    
+
+    /// <summary>TraitIds[i] 를 카탈로그에서 해석한 TraitSO. 미설정/미로드면 null.</summary>
+    public TraitSO GetTrait(int index)
+    {
+        if (TraitIds == null || index < 0 || index >= TraitIds.Length) return null;
+        var id = TraitIds[index];
+        return string.IsNullOrEmpty(id) ? null : DBSORegistry.GetSO<TraitSO>(id);
+    }
+
+    /// <summary>
+    /// 보유 성향에 맞춰 TraitReactions 동기화. 성향↔리액션 1:1.
+    /// 같은 정의면 기존 런타임 리액션(편집값 포함) 보존, 달라졌을 때만 새 인스턴스화.
+    /// Id는 있으나 미해석(미로드)인 경우 보존 — 로드 타이밍 유실 방지.
+    /// </summary>
+    public void SyncTraitReactions()
+    {
+        if (TraitIds == null) return;
+        for (int i = 0; i < TraitReactions.Length && i < TraitIds.Length; i++)
+        {
+            if (string.IsNullOrEmpty(TraitIds[i])) { TraitReactions[i] = null; continue; }
+            var traitSO = GetTrait(i);
+            if (traitSO == null) continue;                 // 미로드 — 보존
+            var def = traitSO.ReactionDefinition;
+            if (def == null) { TraitReactions[i] = null; continue; }
+            if (TraitReactions[i] == null || TraitReactions[i].DefinitionId != def.Id)
+                TraitReactions[i] = def.CreateRuntimeReaction();
+        }
+    }
+
     [JsonIgnore] public Sprite Portrait { get; set; }
     [JsonIgnore] public Texture IdlePortrait { get; set; }
     [JsonIgnore] public Texture AttackPortrait { get; set; }
@@ -355,7 +383,7 @@ public partial class BaseCharacter : ITurnUseUnit
         {
             await UniTask.Delay(1000); // 턴 종료 딜레이
 
-            Debug.Log($"<color=lightblue>{Name} 행동 완료!</color>");
+            Debug.Log($"<color=green>{Name} 행동 완료!</color>");
             
             // 상태 초기화 및 클린업
             _selectedSkill = null;
@@ -365,23 +393,15 @@ public partial class BaseCharacter : ITurnUseUnit
         }
     }
     
-    public async UniTask ExecuteReaction(Reaction reaction, BattleContext context)
+    public async UniTask ExecuteReaction(ReactionExecution execution, BattleContext context)
     {
-        SkillBase skill = Skills[reaction.SkillIndex];
-        
-        BattleContext battleContext = CreateBattleContext(skill);
-        battleContext.isReaction = true;
-        var target = reaction.ReactionSkillTarget == E_TargetFilter.Caster ? context.caster : context.target;
-        battleContext.target = target;
-        
-        if (onBattleAction != null)
-        {
-            Debug.Log($"<color=lightblue>{Name} 리액션 시작!</color>");
-            await onBattleAction.Invoke(battleContext);
-            Debug.Log($"<color=lightblue>{Name} 리액션 완료!</color>");
-        }
-    
-        await UniTask.Delay(1000); // 턴 종료 딜레이
+        if (execution?.Reaction?.Effect == null) return;
+
+        Debug.Log($"<color=lightblue>{Name} 리액션 시작!</color>");
+        await execution.Reaction.Effect.Apply(this, execution, context);
+        Debug.Log($"<color=lightblue>{Name} 리액션 완료!</color>");
+
+        await UniTask.Delay(1000); // 연출 마무리 — 한 리액션 당 1회
     }
 
     private BattleContext CreateBattleContext(SkillBase skill)

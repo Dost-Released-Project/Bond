@@ -3,10 +3,10 @@
     <Style src="project://database/Assets/97.%20Moon/V2/Scripts/UI/USS/InventoryViewStyle.uss?fileID=7433441132597879392&amp;guid=aafd3286e814b9c419d4f5a9164ef5f8&amp;type=3#InventoryViewStyle"/>
     <ui:VisualElement name="inventory-container" style="top: 100px; left: 50px;">
         <ui:VisualElement class="inventory-tab-bar">
-            <ui:Button text="Sort" name="btn-sort"/>
+            <ui:Button text="All" name="btn-filter-all"/>
             <ui:Button text="Consume" name="btn-filter-consumable"/>
             <ui:Button text="Equip" name="btn-filter-accessory"/>
-            <ui:Button text="All" name="btn-filter-all"/>
+            <ui:Button text="Sort" name="btn-sort"/>
         </ui:VisualElement>
         <ui:ScrollView name="total-inventory-grid" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" mode="Vertical">
             <ui:VisualElement name="total-grid" style="flex-grow: 1; flex-direction: row; flex-wrap: wrap; align-items: flex-start; width: 500px; height: 600px; left: auto;"/>

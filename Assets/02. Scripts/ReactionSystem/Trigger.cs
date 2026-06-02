@@ -8,19 +8,28 @@ using UnityEngine.Serialization;
 
 namespace Reactions
 {
+    public enum E_ReactionPhase
+    {
+        None,      // 미지정 — 발화하지 않음 (의식적 선택 강제)
+        PreApply,  // ApplyStep 이전 (원본 행동에 영향)
+        PostApply, // ApplyStep 이후 (원본 행동의 후속)
+    }
+
     public enum E_ObserveFilter
     {
         Self,
-        Ally,
+        Ally,       // 자신 포함 같은 진영 전체
+        OtherAlly,  // 자신을 제외한 같은 진영
         Enemy,
         Specific
     }
-    
+
     public enum E_TargetFilter
     {
         None,
         Caster,
-        Target
+        Target,
+        Observed,   // 조건을 만족시킨 관찰 대상
     }
     
     public interface ITrigger
@@ -29,7 +38,7 @@ namespace Reactions
         string Description { get; }
     }
 
-    [Serializable][AddTypeMenu("SkillTypeIs", -1000)]
+    [Serializable][AddTypeMenu("Trigger", -1000)]
     public class Trigger : ITrigger
     {
         [Serializable]
@@ -56,8 +65,29 @@ namespace Reactions
 
         public bool CheckCondition(BaseCharacter subject, BattleContext context)
         {
-            Debug.Log($"Checking condition {Conditions.Count}");
             return Conditions.Any() && Conditions.All(condition => condition.IsMet(new ReactionTriggerConditionArgs() { Subject = subject, BattleContext = context }));
+        }
+
+        /// <summary>
+        /// 조건 리스트(Essential/Additional)까지 독립 복사한 새 Trigger 반환.
+        /// 주의: GetHitTrigger 등 서브클래스를 Clone 하면 동일 조건을 가진 base Trigger 가 나온다
+        /// — 런타임은 Conditions(=Essential+Additional)만 읽으므로 동작 동일, 구체 타입은 보존 안 됨.
+        /// </summary>
+        public Trigger Clone()
+        {
+            var clone = new Trigger();
+            clone._condition.Essential  = CopyConditions(_condition.Essential);
+            clone._condition.Additional = CopyConditions(_condition.Additional);
+            return clone;
+
+            static List<ICondition> CopyConditions(List<ICondition> src)
+            {
+                var list = new List<ICondition>(src?.Count ?? 0);
+                if (src != null)
+                    foreach (var c in src)
+                        list.Add((c as ReactionTriggerCondition)?.Copy() ?? c);
+                return list;
+            }
         }
 
         public string Description
@@ -87,21 +117,6 @@ namespace Reactions
                 new SubjectCondition(E_TargetFilter.Target),
                 new SkillTypeCondition(SkillType.OFFENSIVE, SkillType.SPELL),
                 new HitCondition()
-            };
-        }
-    }
-
-    [Serializable]
-    public class DeathBlowTrigger : Trigger
-    {
-        public DeathBlowTrigger()
-        {
-            _condition.Essential = new List<ICondition>()
-            {
-                new SubjectCondition(E_TargetFilter.Target),
-                new SkillTypeCondition(SkillType.OFFENSIVE, SkillType.SPELL),
-                new HitCondition(),
-                new DamageCondition() { Threshold = new DamageCondition.PercentOfCurrentHpThreshold() { Ratio = 1f } }
             };
         }
     }

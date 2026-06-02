@@ -15,7 +15,7 @@ public class ClassSO : BaseSO
     public int Cri;
     public int Acc;
 
-    public int InsanityCtrl;
+    public int Eva;
     public int ReactionCtrl;
     public int SpAtk;
 
@@ -28,7 +28,7 @@ public class ClassSO : BaseSO
     public string ClassType;
     public int LV;
 
-    public void SetData(string id, string name, int str, int agi, int @int, int hp, int def, int atk, int speed, int cri, int acc, int insanity, int reaction, int spAtk, string armor, string weapon, string icon, string idleIcon, string battleIcon, string classType, int lv)
+    public void SetData(string id, string name, int str, int agi, int @int, int hp, int def, int atk, int speed, int cri, int acc, int eva, int reaction, int spAtk, string armor, string weapon, string icon, string idleIcon, string battleIcon, string classType, int lv)
     {
         base.Initialize(id, name, "");
         this.STR = str;
@@ -40,7 +40,7 @@ public class ClassSO : BaseSO
         this.Speed = speed;
         this.Cri = cri;
         this.Acc = acc;
-        this.InsanityCtrl = insanity;
+        this.Eva = eva;
         this.ReactionCtrl = reaction;
         this.SpAtk = spAtk;
         this.DefaultArmorId = armor;
