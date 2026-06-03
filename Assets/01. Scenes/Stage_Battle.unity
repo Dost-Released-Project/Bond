@@ -1017,10 +1017,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Juno_Canvas
       objectReference: {fileID: 0}
-    - target: {fileID: 1196670311615114383, guid: a89cdd7fe3dc956409e3fb793963a739, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5718782545273320520, guid: a89cdd7fe3dc956409e3fb793963a739, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1051,18 +1047,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5718782545273320520, guid: a89cdd7fe3dc956409e3fb793963a739, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5718782545273320520, guid: a89cdd7fe3dc956409e3fb793963a739, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5718782545273320520, guid: a89cdd7fe3dc956409e3fb793963a739, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5718782545273320520, guid: a89cdd7fe3dc956409e3fb793963a739, type: 3}
-      propertyPath: m_LocalScale.z
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5718782545273320520, guid: a89cdd7fe3dc956409e3fb793963a739, type: 3}
@@ -1117,14 +1101,6 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 330585545}
-    - target: {fileID: 9078333816197698050, guid: a89cdd7fe3dc956409e3fb793963a739, type: 3}
-      propertyPath: m_RenderMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 9078333816197698050, guid: a89cdd7fe3dc956409e3fb793963a739, type: 3}
-      propertyPath: m_SortingOrder
-      value: -1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

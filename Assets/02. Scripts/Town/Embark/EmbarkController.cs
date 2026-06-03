@@ -95,7 +95,7 @@ namespace Bond.Embark
 
         public void SavePayload()
         {
-            _payload.SetContents(_partyManager.GetCurrentParty(), _expeditionInventory, DungeonType.Forest);
+            _payload.SetContents(_partyManager.GetCurrentParty(), _expeditionInventory, DungeonType.Ruin);
         }
 
         private void NotifyChanged()
