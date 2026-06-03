@@ -33,8 +33,11 @@ public class MapInitializer : IAsyncStartable, IDisposable
     private readonly IMapRepository _mapRepository;
     private readonly MapUIController _mapUIController;
     private readonly MapConfigCache _mapConfigCache;
+    private readonly ISpriteLoader _spriteLoader;
+    private readonly ExpeditionPayload _expeditionPayload;
 
     private AsyncOperationHandle<AccessoryDataBaseSO> _accessoryDBHandle;
+    private AsyncOperationHandle<Sprite> _bgSpriteHandle;
 
     /// <summary>
     /// VContainer 생성자 주입.
@@ -46,7 +49,9 @@ public class MapInitializer : IAsyncStartable, IDisposable
         IMapNavigator mapNavigator,
         IMapRepository mapRepository,
         MapUIController mapUIController,
-        MapConfigCache mapConfigCache)
+        MapConfigCache mapConfigCache,
+        ISpriteLoader spriteLoader,
+        ExpeditionPayload expeditionPayload)
     {
         _mapConfigLoader = mapConfigLoader;
         _mapGenerator = mapGenerator;
@@ -54,6 +59,8 @@ public class MapInitializer : IAsyncStartable, IDisposable
         _mapRepository = mapRepository;
         _mapUIController = mapUIController;
         _mapConfigCache = mapConfigCache;
+        _spriteLoader = spriteLoader;
+        _expeditionPayload = expeditionPayload;
     }
 
     /// <summary>
@@ -70,6 +77,11 @@ public class MapInitializer : IAsyncStartable, IDisposable
         // AccessoryDataBase 핸들 해제 — 로드 실패 시 IsValid() 가 false 이므로 안전하게 체크한다
         if (_accessoryDBHandle.IsValid())
             Addressables.Release(_accessoryDBHandle);
+
+        // BattleMapBgChannel 참조 초기화 후 핸들 해제
+        BattleMapBgChannel.Clear();
+        if (_bgSpriteHandle.IsValid())
+            Addressables.Release(_bgSpriteHandle);
 
         Debug.Log("[MapInitializer] Addressables 핸들 해제 완료.");
     }
@@ -149,6 +161,23 @@ public class MapInitializer : IAsyncStartable, IDisposable
 
         // ReleaseConfigs() 는 챕터 종료 시점에 호출한다.
         // MapConfigCache 가 SO 참조를 유지하므로 이 시점에서 해제하지 않는다.
+
+        // DungeonType 에 따른 배경 스프라이트 로드 — 맵 생성 시 한 번만 수행한다.
+        // None 이면 로드를 건너뛰고 채널을 비워둔다.
+        if (_expeditionPayload.DungeonType != DungeonType.None)
+        {
+            string bgAddress = $"Map_{_expeditionPayload.DungeonType}";
+            _bgSpriteHandle = await _spriteLoader.LoadAsync(bgAddress);
+
+            if (_bgSpriteHandle.Status == AsyncOperationStatus.Succeeded)
+            {
+                BattleMapBgChannel.Set(_bgSpriteHandle.Result);
+            }
+            else
+            {
+                Debug.LogWarning($"[MapInitializer] 배경 스프라이트 로드 실패: address={bgAddress}");
+            }
+        }
 
         _mapNavigator.Initialize(mapData);
         _mapUIController.ShowMap(mapData);

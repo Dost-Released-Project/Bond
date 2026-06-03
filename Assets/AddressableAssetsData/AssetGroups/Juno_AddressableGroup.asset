@@ -50,6 +50,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 73a297591c9e9dd4da379d9d5b6c023f
+    m_Address: Map_Forest
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 87fa9ee5570c7e445ac5df9d9fb746aa
     m_Address: EventBattleConfig
     m_ReadOnly: 0
