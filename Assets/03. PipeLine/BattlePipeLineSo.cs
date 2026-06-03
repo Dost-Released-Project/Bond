@@ -153,11 +153,11 @@ namespace PipeLine
 
             if (context.isEvaded)
             {
-                Debug.Log($"<color=white><b>[회피]</b></color> {context.target.Name}이(가) {context.caster.Name}의 공격을 피했습니다! (명중률: {hitRate}%)");
+                Debug.Log($"<color=white><b>[회피]</b></color> {context.target.Name}이(가) {context.caster.Name}의 공격을 피했습니다! (명중률: {hitRate:P0})");
             }
             else
             {
-                Debug.Log($"[EvasionStep] 타겟: {context.target.Name}, 명중률: {hitRate}%, 회피 발생 여부: {context.isEvaded}");
+                Debug.Log($"[EvasionStep] 타겟: {context.target.Name}, 명중률: {hitRate:P0}, 회피 발생 여부: {context.isEvaded}");
             }
             return UniTask.FromResult(context);
         }
