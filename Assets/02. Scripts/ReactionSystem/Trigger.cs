@@ -63,6 +63,16 @@ namespace Reactions
             _condition.Essential = condition.ToList();
         }
 
+        /// <summary>
+        /// 저작 도구(빌더)용: 조건들을 Additional 목록에 추가하고 자신을 반환한다.
+        /// Additional 은 인스펙터에 노출되므로 생성 후에도 확인·수정이 쉽다. (런타임은 Essential+Additional 모두 평가)
+        /// </summary>
+        public Trigger WithConditions(params ICondition[] conditions)
+        {
+            if (conditions != null) _condition.Additional.AddRange(conditions);
+            return this;
+        }
+
         public bool CheckCondition(BaseCharacter subject, BattleContext context)
         {
             return Conditions.Any() && Conditions.All(condition => condition.IsMet(new ReactionTriggerConditionArgs() { Subject = subject, BattleContext = context }));

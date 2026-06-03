@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Buffs;
 using Cysharp.Threading.Tasks;
 using PipeLine;
 using Unity.VisualScripting;
@@ -59,13 +60,10 @@ namespace Reactions
                 case E_TargetFilter.Target:
                     yield return context.target;
                     yield break;
-                case E_TargetFilter.Observed:
+                default: // Observed / None → 매치된 관찰 대상
                     if (execution.MatchedSubjects != null)
                         foreach (var s in execution.MatchedSubjects)
                             yield return s;
-                    yield break;
-                default:
-                    yield return context.target;
                     yield break;
             }
         }
@@ -79,7 +77,7 @@ namespace Reactions
     /// 대신 맞기: 원본 context 의 타겟을 reactor 로 변경.
     /// 이후 파이프라인의 Evasion/Critical/Defense 가 새 타겟(reactor) 기준으로 다시 계산됨.
     /// context.interceptedFor 에 원래 보호받은 캐릭터를 보관해 viz 가 끼어들기 연출을 재생할 수 있게 함.
-    /// PreApply 가 EntryStep 직후에 있을 때 동작 — 이후 단계가 reactor 기준으로 흘러야 함.
+    /// PreApply 가 Evasion/Critical/Defense 이전에 있을 때 동작 — 이후 단계가 reactor(새 타겟) 기준으로 흘러야 함.
     /// </summary>
     [Serializable][AddTypeMenu("Intercept", -500)]
     public class InterceptReactionEffect : ReactionEffect
@@ -99,5 +97,79 @@ namespace Reactions
         public override string Description => "대상이 받을 공격을 대신 받음";
 
         public override ReactionEffect Clone() => new InterceptReactionEffect();
+    }
+
+    /// <summary>
+    /// 버프 부여: 대상(관찰 대상 / Caster / Target)에게 일정 턴 지속되는 능력치 모디파이어를 건다.
+    /// 공격력↑ 은 StatType.DamageMultiplier, 방어력↑ 은 StatType.DamageReduction(Flat, 비율값)으로 저작하면
+    /// 파이프라인(EntryStep / DefenseStep)이 라이브로 읽어 데미지 계산에 반영한다.
+    /// 값은 인라인(Modifiers)으로 저작한다.
+    /// </summary>
+    [Serializable][AddTypeMenu("Apply Buff", -400)]
+    public class BuffReactionEffect : ReactionEffect
+    {
+        [Tooltip("버프를 받을 대상. 보통 Observed(조건을 만족시킨 관찰 대상).")]
+        public E_TargetFilter BuffTarget = E_TargetFilter.Observed;
+
+        [Tooltip("버프 식별자(중복/스택 판정). 비우면 Description 으로 대체된다.")]
+        public string BuffId;
+
+        [Tooltip("지속(버프 받은 캐릭터의 자기 턴 수).")]
+        public int DurationTurns = 2;
+
+        [Tooltip("적용할 능력치 모디파이어. 공격력↑=DamageMultiplier, 방어력↑=DamageReduction. value=추가 비율(0.3=+30%), mode(Flat/Percent) 무관.")]
+        public List<StatModifier> Modifiers = new List<StatModifier>();
+
+        public override UniTask Apply(BaseCharacter reactor, ReactionExecution execution, BattleContext originalContext)
+        {
+            foreach (var target in ResolveTargets(execution, originalContext))
+            {
+                if (target == null || target.IsDead) continue;
+                target.ApplyBuff(new ActiveBuff
+                {
+                    Id = string.IsNullOrEmpty(BuffId) ? Description : BuffId,
+                    Modifiers = CloneModifiers(Modifiers),
+                    RemainingTurns = DurationTurns
+                });
+            }
+            return UniTask.CompletedTask;
+        }
+
+        private IEnumerable<BaseCharacter> ResolveTargets(ReactionExecution execution, BattleContext context)
+        {
+            switch (BuffTarget)
+            {
+                case E_TargetFilter.Caster:
+                    yield return context.caster;
+                    yield break;
+                case E_TargetFilter.Target:
+                    yield return context.target;
+                    yield break;
+                default: // Observed / None → 매치된 관찰 대상
+                    if (execution.MatchedSubjects != null)
+                        foreach (var s in execution.MatchedSubjects)
+                            yield return s;
+                    yield break;
+            }
+        }
+
+        private static List<StatModifier> CloneModifiers(List<StatModifier> src)
+        {
+            var list = new List<StatModifier>(src?.Count ?? 0);
+            if (src != null)
+                foreach (var m in src)
+                    list.Add(new StatModifier { id = m.id, name = m.name, type = m.type, mode = m.mode, value = m.value });
+            return list;
+        }
+
+        public override string Description => $"{BuffTarget}에게 버프 {DurationTurns}턴";
+
+        public override ReactionEffect Clone() => new BuffReactionEffect
+        {
+            BuffTarget = BuffTarget,
+            BuffId = BuffId,
+            DurationTurns = DurationTurns,
+            Modifiers = CloneModifiers(Modifiers)
+        };
     }
 }
