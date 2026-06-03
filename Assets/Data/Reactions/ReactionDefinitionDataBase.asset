@@ -15,3 +15,9 @@ MonoBehaviour:
   _soList:
   - {fileID: 11400000, guid: 654524629a90f1b4aab33c85a8211598, type: 2}
   - {fileID: 11400000, guid: fa02695d72f2f984fbb288c9d0da7f8a, type: 2}
+  - {fileID: 11400000, guid: d7c724979d3f1554dafeb1ee3149a18c, type: 2}
+  - {fileID: 11400000, guid: 5431a1e309562d54f978922e70dbcd0d, type: 2}
+  - {fileID: 11400000, guid: 5f732e1409e295e488c8d3c1cd9d731e, type: 2}
+  - {fileID: 11400000, guid: 1a8dc570b93dfaa408e8e9a888c0e37a, type: 2}
+  - {fileID: 11400000, guid: 0a9030cf883b303408eb77b29db0d0a8, type: 2}
+  - {fileID: 11400000, guid: 0d573a6a94eb7724f92fd31cbde27ca7, type: 2}
