@@ -17,6 +17,7 @@ namespace BattleSystem
         private readonly IBattlePipeLine m_skillApplyPipeline;
         private readonly IBattleFlowManager m_battleFlowManager;
         private readonly IFormationManager m_formationManager;
+        private readonly BattlePresentationManager m_presentationManager;
         private bool m_isBattle;
         
         public BattleManager(ReactionSystem reactionSystem, 
@@ -28,6 +29,7 @@ namespace BattleSystem
             m_skillApplyPipeline = skillApplyPipeline;
             m_isBattle = false;
             m_formationManager = formationManager;
+            m_presentationManager = new BattlePresentationManager();
             Init();
         }
         
@@ -193,8 +195,11 @@ namespace BattleSystem
                     }
                 }
 
-                // 5. 1000ms 대기
-                await UniTask.Delay(1000);
+                // 5. 전투 집중 연출 시작 (Dim 패널 및 캐릭터 확대 이동)
+                await m_presentationManager.StartFocusEffect(casterSlot, targetSlots);
+                
+                // 연출 감상을 위한 추가 대기
+                await UniTask.Delay(500);
 
                 // 6. 기술 실행 (개별 타겟 단위)
                 foreach (var target in targets)
@@ -224,6 +229,9 @@ namespace BattleSystem
                         slot.SetTargeted(false);
                     }
                 }
+
+                // 전투 집중 연출 종료 (Dim 해제 및 원복)
+                await m_presentationManager.EndFocusEffect(casterSlot, targetSlots);
             }
         }
 
