@@ -172,6 +172,20 @@ namespace Reactions
     }
 
     [Serializable]
+    public class ReactionCountCondition: ReactionTriggerCondition
+    {
+        public int Threshold = 3; // 마지막 자기 턴 이후 발동한 리액션 수 임계. 이상이면 발동.
+
+        public override bool IsMet(ReactionTriggerConditionArgs args)
+            => args.Subject.ReactionsFiredCount >= Threshold;
+
+        public override ReactionTriggerCondition Copy()
+            => new ReactionCountCondition { Threshold = Threshold };
+
+        public override string Description => $"리액션을 {Threshold}회 이상 발동했을 때";
+    }
+
+    [Serializable]
     public class CritCondition: ReactionTriggerCondition
     {
         public override bool IsMet(ReactionTriggerConditionArgs args)

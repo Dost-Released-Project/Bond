@@ -141,6 +141,8 @@ public class TurnManager : ITurnManager, IStartable, IDisposable
                     {
                         skipNormalTurn = await ownerChar.TryRunSelfTurnAnomalyAsync();
                     }
+
+                    ownerChar.ResetReactionCount(); // 자기 턴 도달 → '연속' 리액션 카운트 리셋 (돌발 판정 이후)
                 }
 
                 if (!skipNormalTurn) await unit.TakeTurnAsync();

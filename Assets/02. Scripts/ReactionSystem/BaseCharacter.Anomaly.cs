@@ -22,8 +22,11 @@ public partial class BaseCharacter
         var reaction = FindSelfTurnAnomaly();
         if (reaction == null) return false;
 
-        // TODO: 돌발 행동 확률 공식([기본 + 스트레스] - (INT 계수 + 관계 보너스))을 여기서 게이트.
-        //       현재는 조건 충족 시 즉시 발동(메커니즘 우선). 확률 미적용 시 매 턴 발동될 수 있음.
+        if (!RollAnomaly())
+        {
+            Debug.Log($"<color=grey>[돌발 억제]</color> {Name} 의 성향이 발동하지 않았습니다 (확률 {GetAnomalyChance():P0}).");
+            return false;
+        }
 
         var ctx = new BattleContext(this, null, false); // 자기 턴 — 원본 스킬 없음
         var execution = new ReactionExecution(this, reaction, ReactionResult.Anomaly, new List<BaseCharacter> { this });
@@ -60,4 +63,26 @@ public partial class BaseCharacter
         }
         return null;
     }
+
+    /// <summary>
+    /// 돌발 행동 확률 = clamp([기본 + 스트레스 × 계수] − 지능 × 계수, 최저 5%, 1).
+    /// 관계 보너스는 정책상 제외. 상수는 실제 Insanity/INT 범위에 맞춰 튜닝할 밸런스 값.
+    /// </summary>
+    public float GetAnomalyChance()
+    {
+        const float baseRate   = 0.20f;
+        const float stressCoef = 0.005f; // Insanity(0~100) → 최대 +0.5
+        const float intCoef    = 0.004f; // 지능 억제 계수 (INT 범위에 맞춰 튜닝)
+        const float minRate    = 0.05f;  // 최저 발동 확률 하한선
+
+        float chance = baseRate + Insanity * stressCoef - Stat.INT * intCoef;
+        return Mathf.Clamp(chance, minRate, 1f);
+    }
+
+    /// <summary>돌발 행동 확률로 1회 굴림.</summary>
+    public bool RollAnomaly() => UnityEngine.Random.value < GetAnomalyChance();
+
+    /// <summary>해당 리액션이 이 캐릭터의 성향(트레잇) 리액션인지.</summary>
+    public bool IsTraitReaction(Reaction reaction)
+        => reaction != null && TraitReactions != null && System.Array.IndexOf(TraitReactions, reaction) >= 0;
 }

@@ -67,6 +67,7 @@ namespace Reactions.Authoring
         public static ICondition HpAbove(float ratio) => new HpAboveCondition { Threshold = ratio };
         public static ICondition StressAbove(int value = 50) => new StressAboveCondition { Threshold = value };
         public static ICondition PartyStressAbove(float average = 60f) => new PartyStressAverageCondition { Threshold = average };
+        public static ICondition ReactionCountAtLeast(int count = 3) => new ReactionCountCondition { Threshold = count };
         public static ICondition Crit() => new CritCondition();
         public static ICondition Evaded() => new EvadeCondition();
         public static ICondition Hit() => new HitCondition();
@@ -113,6 +114,9 @@ namespace Reactions.Authoring
 
         /// <summary>리액터의 다음 turns 번 자기 턴을 행동 불가로 만든다.</summary>
         public static ReactionEffect SkipTurn(int turns = 1) => new SkipTurnReactionEffect { Turns = turns };
+
+        /// <summary>같은 진영 전원의 연쇄(리액션 발동) 카운트를 리셋.</summary>
+        public static ReactionEffect ResetChainCount() => new ResetChainCountReactionEffect();
 
         // ── 편집 슬롯 단축 팩토리 ─────────────────────────────
         public static ReactionEditableSlot ObserveTarget(string label, bool excludeSelf = true)

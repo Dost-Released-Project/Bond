@@ -362,4 +362,23 @@ namespace Reactions
 
         public override ReactionEffect Clone() => new SkipTurnReactionEffect { Turns = Turns };
     }
+
+    /// <summary>
+    /// 연쇄 카운트 리셋: 리액터와 같은 진영 전원의 리액션 발동 카운트를 0으로 되돌린다(연쇄 종료).
+    /// </summary>
+    [Serializable][AddTypeMenu("Reset Chain Count", -220)]
+    public class ResetChainCountReactionEffect : ReactionEffect
+    {
+        public override UniTask Apply(BaseCharacter reactor, ReactionExecution execution, BattleContext originalContext)
+        {
+            if (reactor != null)
+                foreach (var ally in reactor.GetSameSideAllies(true))
+                    ally.ResetReactionCount();
+            return UniTask.CompletedTask;
+        }
+
+        public override string Description => "같은 진영 연쇄 카운트 리셋";
+
+        public override ReactionEffect Clone() => new ResetChainCountReactionEffect();
+    }
 }
