@@ -6,7 +6,7 @@
    ════════════════════════════════════════ */
 .character-detail {
     position: absolute;
-    left: 3%;
+    left: 13%;
     right: 13%;
     top: 6%;
     bottom: 6%;
@@ -88,14 +88,13 @@
 
 /* ── 초상화 ── */
 .char-detail__portrait {
-    width: 100%;
-    height: 120px;
+    width: 240px;
+    height: 240px;
     background-color: var(--bg-raised);
     border-width: 1px;
     border-color: var(--border-default);
     border-radius: 3px;
     margin-bottom: 8px;
-    -unity-background-scale-mode: scale-and-crop;
 }
 
 /* ── 정체성 ── */

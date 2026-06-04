@@ -1,7 +1,9 @@
 using System;
 using Bond.UI;
+using Cysharp.Threading.Tasks;
 using Reactions;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UIElements;
 using VContainer;
 
@@ -22,6 +24,9 @@ namespace Bond.UI
         private VisualElement _panel;
         private Label _titleLabel;
         private Label _classLevelLabel;
+
+        private Image  _portrait;
+        private string _portraitAddress;
 
         private Button        _roleBtnCurrent;
         private VisualElement _rolePicker;
@@ -83,6 +88,8 @@ namespace Bond.UI
             };
 
             _classLevelLabel = root.Q<Label>("char-detail__class-level");
+            _portrait        = root.Q<Image>("char-detail__portrait");
+            _portrait.scaleMode = ScaleMode.ScaleAndCrop;   // 고정 박스에 맞춰 채우고 넘치면 크롭
 
             _roleBtnCurrent   = root.Q<Button>("role-btn-current");
             _rolePicker       = root.Q("char-detail__role-picker");
@@ -350,6 +357,8 @@ namespace Bond.UI
             string profName = _character.Profession?.Name ?? "—";
             _classLevelLabel.text = $"{profName}  Lv.{_character.Level}";
 
+            RefreshPortrait();
+
             _roleBtnCurrent.RemoveFromClassList("char-detail__role-current--tanker");
             _roleBtnCurrent.RemoveFromClassList("char-detail__role-current--dealer");
             _roleBtnCurrent.RemoveFromClassList("char-detail__role-current--supporter");
@@ -358,22 +367,44 @@ namespace Bond.UI
             switch (_character.RoleType)
             {
                 case RoleType.Tanker:
-                    _roleBtnCurrent.text = "탱커 ▶";
+                    _roleBtnCurrent.text = "탱커";
                     _roleBtnCurrent.AddToClassList("char-detail__role-current--tanker");
                     break;
                 case RoleType.Dealer:
-                    _roleBtnCurrent.text = "딜러 ▶";
+                    _roleBtnCurrent.text = "딜러";
                     _roleBtnCurrent.AddToClassList("char-detail__role-current--dealer");
                     break;
                 case RoleType.Supporter:
-                    _roleBtnCurrent.text = "서포터 ▶";
+                    _roleBtnCurrent.text = "서포터";
                     _roleBtnCurrent.AddToClassList("char-detail__role-current--supporter");
                     break;
                 default:
-                    _roleBtnCurrent.text = "미설정 ▶";
+                    _roleBtnCurrent.text = "미설정";
                     _roleBtnCurrent.AddToClassList("char-detail__role-current--none");
                     break;
             }
+        }
+
+        /// <summary>대기 이미지를 초상화에 로드. 주소가 같으면 재로드하지 않는다(역할 변경 등으로 RefreshIdentity가 재호출돼도 중복 로드 방지).</summary>
+        private void RefreshPortrait()
+        {
+            if (_portrait == null) return;
+
+            string address = _character?.EffectiveIdleImageAddress;
+            if (address == _portraitAddress) return;
+            _portraitAddress = address;
+
+            _portrait.sprite = null;   // 이전 초상화 제거
+            if (!string.IsNullOrEmpty(address))
+                LoadPortraitAsync(address).Forget();
+        }
+
+        private async UniTaskVoid LoadPortraitAsync(string address)
+        {
+            var sprite = await Addressables.LoadAssetAsync<Sprite>(address).ToUniTask();
+            // 로드가 끝나기 전에 캐릭터가 바뀌었으면 폐기(경합 방지)
+            if (sprite == null || _portrait == null || _portraitAddress != address) return;
+            _portrait.sprite = sprite;
         }
 
         private void RefreshStats()
