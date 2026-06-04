@@ -147,7 +147,7 @@ public partial class BaseCharacter : ITurnUseUnit
         OnStatRecalculated?.Invoke(this);
     }
 
-    public float HpRatio => Stat.current_Hp / Stat.max_Hp;
+    public float HpRatio => Stat.max_Hp <= 0 ? 0f : (float)Stat.current_Hp / Stat.max_Hp;
 
     public void SetHpFull()
     {

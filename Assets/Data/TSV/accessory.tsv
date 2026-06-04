@@ -7,7 +7,7 @@
 	05						
 (string)	(string)	(enum)	(int)	(int)	(string)		
 ID	ItemName	Category	TotalMax	ExpSlotMax	IconPath	ModifierIDs	Description
-08000000	힘의 목걸이	Accessories	1	1	Sprite/Item/Ring_STR	13000000,13150000	착용 시 힘이 강해진다.
-08010000	민첩의 목걸이	Accessories	1	1	Sprite/Item/Ring_AGI	13010000,13160000	착용 시 몸이 가벼워진다.
-08020000	지능의 목걸이	Accessories	1	1	Sprite/Item/Ring_INT	13020000,13170000	착용 시 머리가 비상해진다.
-08030000	전능의 목걸이	Accessories	1	1	Sprite/Item/Ring_Master	13000000,13010000,13020000,13150000,13160000,13170000	착용 시 모든 능력치가 상승한다.
+08000000	힘의 목걸이	Accessories	1	1	Ring_STR	13000000,13150000	착용 시 힘이 강해진다.
+08010000	민첩의 목걸이	Accessories	1	1	Ring_AGI	13010000,13160000	착용 시 몸이 가벼워진다.
+08020000	지능의 목걸이	Accessories	1	1	Ring_INT	13020000,13170000	착용 시 머리가 비상해진다.
+08030000	전능의 목걸이	Accessories	1	1	Ring_Master	13000000,13010000,13020000,13150000,13160000,13170000	착용 시 모든 능력치가 상승한다.

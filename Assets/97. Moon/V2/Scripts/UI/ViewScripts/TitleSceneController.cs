@@ -12,9 +12,17 @@ public class TitleSceneController : MonoBehaviour
     // 리더님이 지정하신 세이브 데이터 경로
     private string _saveFolderPath;
 
-    private void Awake()
+    private async void Awake()
+    {
+        await DBSORegistry.PreloadByLabelAsync("DBSO");
+    }
+
+    private void Start()
     {
         _saveFolderPath = Path.Combine(Application.dataPath, "Data", "Save");
+
+        // 세이브 파일이 없으면 '이어하기' 버튼을 비활성화하는 방어 코드
+        CheckSaveDataExistence();
     }
 
     private void OnEnable()
@@ -26,9 +34,6 @@ public class TitleSceneController : MonoBehaviour
 
         if (_btnNewGame != null) _btnNewGame.clicked += OnNewGameClicked;
         if (_btnContinue != null) _btnContinue.clicked += OnContinueClicked;
-
-        // 세이브 파일이 없으면 '이어하기' 버튼을 비활성화하는 방어 코드
-        CheckSaveDataExistence();
     }
 
     private void CheckSaveDataExistence()

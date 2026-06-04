@@ -28,11 +28,14 @@ public class ConstructionUI : MonoBehaviour
     // 💥 내부 팝업 상태 분기 제어용 열거형
     private enum PopupMode { Construction, Upgrade, Interaction }
     private PopupMode _currentMode;
-    
-    private async void Awake()
+
+    private void Start()
     {
-        var handle = Addressables.LoadAssetAsync<BuildingDataBaseSO>("BuildingDataBase");
-        _buildingDB = await handle.Task;
+        _buildingDB = DBSORegistry.GetDb<BuildingDataBaseSO>();
+        if (_buildingDB == null)
+        {
+            Debug.LogError("[ConstructionUI] BuildingDataBaseSO가 레지스트리에 로드되어 있지 않습니다. 부트스트랩을 확인하세요.");
+        }
         LoadSettlement();
     }
 

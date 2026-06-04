@@ -42,16 +42,16 @@ public class InventoryView : MonoBehaviour
         
         // 2. ID로 테스트 아이템 추가.
         // 소모품 추가
-        await _totalInventory.AddItemId("07000000", 5);
-        await _totalInventory.AddItemId("07010000", 5);
-        await _totalInventory.AddItemId("07020000", 5);
-        await _totalInventory.AddItemId("07030000", 5);
-        await _totalInventory.AddItemId("07040000", 5);
+        _totalInventory.AddItemId("07000000", 5);
+        _totalInventory.AddItemId("07010000", 5);
+        _totalInventory.AddItemId("07020000", 5);
+        _totalInventory.AddItemId("07030000", 5);
+        _totalInventory.AddItemId("07040000", 5);
         // 장신구 추가.
-        await _totalInventory.AddItemId("08000000", 1);
-        await _totalInventory.AddItemId("08010000", 1);
-        await _totalInventory.AddItemId("08020000", 1);
-        await _totalInventory.AddItemId("08030000", 1);
+        _totalInventory.AddItemId("08000000", 1);
+        _totalInventory.AddItemId("08010000", 1);
+        _totalInventory.AddItemId("08020000", 1);
+        _totalInventory.AddItemId("08030000", 1);
         
         // 3. 탐사 후 타운으로 넘어올 때, 탐사 인벤토리 아이템 모두 토탈 인벤토리로 이동. 파일 로드 이후 적용해야지 적용됨
         _expeditionResultService.ProcessExpeditionReturn();
@@ -60,16 +60,8 @@ public class InventoryView : MonoBehaviour
         ToggleWindow(false);
     }
 
-    private async Task LoadTotalInventory()
+    private Task LoadTotalInventory()
     {
-        var conHandle = Addressables.LoadAssetAsync<ConsumableDataBaseSO>("ConsumableDataBase");
-        var accHandle = Addressables.LoadAssetAsync<AccessoryDataBaseSO>("AccessoryDataBase");
-        
-        // [중요] 두 데이터베이스가 하드디스크/메모리에서 완전히 로드될 때까지 기다림
-        await Task.WhenAll(conHandle.Task, accHandle.Task);
-        
-        DataBaseSO[] dbs = { conHandle.Result, accHandle.Result };
-        
         // 로드 시도
         var save = new InventorySaveData("total_inv");
         // SaveLoadSystem의 GetPath와 Key를 조합하여 경로 생성 (시스템 수정 없이 대응)
@@ -89,7 +81,8 @@ public class InventoryView : MonoBehaviour
                 // 2. 아이템 복구
                 foreach (var s in save.slots)
                 {
-                    BaseItem item = dbs.Select(db => db.GetSO<BaseItem>(s.id)).FirstOrDefault(i => i != null);
+                    // 아이템 데이터 베이스 접근
+                    BaseItem item = DBSORegistry.GetSO<BaseItem>(s.id);
                     if (item != null) _totalInventory.AddItemAuto(item, s.count);
                 }
                 
@@ -104,6 +97,8 @@ public class InventoryView : MonoBehaviour
         {
             Debug.Log("TotalInventory: 기존 세이브 없음. 기본값으로 시작.");
         }
+
+        return Task.CompletedTask;
     }
     
     private void SaveTotalInventory()
