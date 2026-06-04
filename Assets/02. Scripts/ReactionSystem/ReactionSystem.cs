@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Text;
 using PipeLine;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Reactions
 {
@@ -68,6 +67,7 @@ namespace Reactions
                     if (reaction.Phase == E_ReactionPhase.None) continue;
                     if (reaction.Phase != phase) continue;
                     if (reaction.Trigger == null) continue;
+                    if (owner.IsReactionSealed(reaction)) continue; // 봉인된 리액션은 발화 후보에서 제외
 
                     var matched = new List<BaseCharacter>();
                     foreach (var candidate in ResolveCandidates(reaction, owner, context, phase))
@@ -77,7 +77,14 @@ namespace Reactions
                     }
                     if (matched.Count == 0) continue;
 
-                    var result = IsSuccess(owner, matched, reaction);
+                    // 성향(트레잇) 리액션은 돌발 확률로 게이트 — 굴림 성공 시에만 발동(Anomaly).
+                    // 역할(설계) 리액션은 항상 발동(Success).
+                    ReactionResult result = ReactionResult.Success;
+                    if (owner.IsTraitReaction(reaction))
+                    {
+                        if (!owner.RollAnomaly()) continue;
+                        result = ReactionResult.Anomaly;
+                    }
                     executions.Add(new ReactionExecution(owner, reaction, result, matched));
                 }
             }
@@ -173,17 +180,6 @@ namespace Reactions
                 E_ObserveFilter.Enemy => candidateSide != ownerSide,
                 _ => false,
             };
-        }
-
-        /// <summary>
-        /// 리액션의 성공 확률을 계산해 반환합니다.
-        /// </summary>
-        private static ReactionResult IsSuccess(BaseCharacter agent, IReadOnlyList<BaseCharacter> matched, Reaction reaction) // TODO: 구현
-        {
-            // 계산식: [기본 확률 + 스트레스 가산치] - (지능 × 계수 + 파티 관계 보너스)
-            // 파티 관계 보너스는 agent와 matched 사이의 Relation 값을 사용 예정
-
-            return (ReactionResult)Random.Range(0,3); // 임시 처리임
         }
     }
 

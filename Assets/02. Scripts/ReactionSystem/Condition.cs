@@ -125,6 +125,78 @@ namespace Reactions
     }
 
     [Serializable]
+    public class HpAboveCondition: ReactionTriggerCondition
+    {
+        public float Threshold;
+
+        public override bool IsMet(ReactionTriggerConditionArgs args)
+            => args.Subject.HpRatio >= Threshold;
+
+        public override ReactionTriggerCondition Copy()
+            => new HpAboveCondition { Threshold = Threshold };
+
+        public override string Description => $"관찰 대상의 Hp 비율이 {Threshold} 이상일 때";
+    }
+
+    [Serializable]
+    public class StressAboveCondition: ReactionTriggerCondition
+    {
+        public int Threshold = 50;
+
+        public override bool IsMet(ReactionTriggerConditionArgs args)
+            => args.Subject.Insanity >= Threshold;
+
+        public override ReactionTriggerCondition Copy()
+            => new StressAboveCondition { Threshold = Threshold };
+
+        public override string Description => $"관찰 대상의 스트레스가 {Threshold} 이상일 때";
+    }
+
+    [Serializable]
+    public class PartyStressAverageCondition: ReactionTriggerCondition
+    {
+        public float Threshold = 60f; // 같은 진영 생존자 평균 스트레스(0~100) 임계. 초과 시 발동.
+
+        public override bool IsMet(ReactionTriggerConditionArgs args)
+        {
+            var party = args.Subject.GetSameSideAllies(true).ToList();
+            if (party.Count == 0) return false;
+            float avg = (float)party.Sum(c => c.Insanity) / party.Count;
+            return avg > Threshold;
+        }
+
+        public override ReactionTriggerCondition Copy()
+            => new PartyStressAverageCondition { Threshold = Threshold };
+
+        public override string Description => $"파티 평균 스트레스가 {Threshold} 초과일 때";
+    }
+
+    [Serializable]
+    public class ReactionCountCondition: ReactionTriggerCondition
+    {
+        public int Threshold = 3; // 마지막 자기 턴 이후 발동한 리액션 수 임계. 이상이면 발동.
+
+        public override bool IsMet(ReactionTriggerConditionArgs args)
+            => args.Subject.ReactionsFiredCount >= Threshold;
+
+        public override ReactionTriggerCondition Copy()
+            => new ReactionCountCondition { Threshold = Threshold };
+
+        public override string Description => $"리액션을 {Threshold}회 이상 발동했을 때";
+    }
+
+    [Serializable]
+    public class AllyAnomalyCondition: ReactionTriggerCondition
+    {
+        public override bool IsMet(ReactionTriggerConditionArgs args)
+            => args.Subject.GetSameSideAllies(false).Any(a => a.HasRecentAnomaly);
+
+        public override ReactionTriggerCondition Copy() => new AllyAnomalyCondition();
+
+        public override string Description => "같은 진영 아군이 최근 돌발했을 때";
+    }
+
+    [Serializable]
     public class CritCondition: ReactionTriggerCondition
     {
         public override bool IsMet(ReactionTriggerConditionArgs args)

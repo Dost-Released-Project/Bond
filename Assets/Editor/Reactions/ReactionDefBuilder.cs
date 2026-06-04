@@ -50,13 +50,25 @@ namespace Reactions.Authoring
         public ReactionDefBuilder Phase(E_ReactionPhase phase) { _template.Phase = phase; return this; }
         public ReactionDefBuilder Observe(E_ObserveFilter filter) { _template.ObserveFilter = filter; return this; }
         public ReactionDefBuilder When(params ICondition[] conditions) { if (conditions != null) _conditions.AddRange(conditions); return this; }
-        public ReactionDefBuilder Do(ReactionEffect effect) { _template.Effect = effect; return this; }
+        /// <summary>행동을 지정. 여러 개를 주면 CompositeReactionEffect 로 묶는다.</summary>
+        public ReactionDefBuilder Do(params ReactionEffect[] effects)
+        {
+            _template.Effect = (effects == null || effects.Length == 0) ? null
+                : effects.Length == 1 ? effects[0]
+                : new CompositeReactionEffect { Effects = effects.ToList() };
+            return this;
+        }
         public ReactionDefBuilder Editable(ReactionEditableSlot slot) { if (slot != null) _slots.Add(slot); return this; }
 
         // ── 조건 단축 팩토리 ──────────────────────────────────
         public static ICondition SubjectIs(E_TargetFilter filter) => new SubjectCondition(filter);
         public static ICondition SkillTypeIs(params SkillType[] types) => new SkillTypeCondition(types);
         public static ICondition HpBelow(float ratio) => new HpBelowCondition { Threshold = ratio };
+        public static ICondition HpAbove(float ratio) => new HpAboveCondition { Threshold = ratio };
+        public static ICondition StressAbove(int value = 50) => new StressAboveCondition { Threshold = value };
+        public static ICondition PartyStressAbove(float average = 60f) => new PartyStressAverageCondition { Threshold = average };
+        public static ICondition ReactionCountAtLeast(int count = 3) => new ReactionCountCondition { Threshold = count };
+        public static ICondition AllyAnomaly() => new AllyAnomalyCondition();
         public static ICondition Crit() => new CritCondition();
         public static ICondition Evaded() => new EvadeCondition();
         public static ICondition Hit() => new HitCondition();
@@ -82,6 +94,30 @@ namespace Reactions.Authoring
         /// <summary>리액터의 장착 스킬을 발동. skillIndex 가 -1 이면 ActionSkill 편집슬롯으로 런타임에 채운다.</summary>
         public static ReactionEffect CastSkill(E_TargetFilter to, int skillIndex = -1)
             => new SkillCastReactionEffect { SkillTarget = to, SkillIndex = skillIndex };
+
+        /// <summary>리액션 봉인. self=true 면 리액터 자신, false 면 관찰 대상(Observed)을 봉인.</summary>
+        public static ReactionEffect Seal(SealKind kind = SealKind.All, int turns = 1, int count = 1, bool self = true)
+            => new SealReactionEffect { Kind = kind, DurationTurns = turns, Count = count, TargetSelf = self };
+
+        /// <summary>여러 효과를 순차 실행하는 묶음.</summary>
+        public static ReactionEffect Composite(params ReactionEffect[] effects)
+            => new CompositeReactionEffect { Effects = effects != null ? effects.ToList() : new List<ReactionEffect>() };
+
+        /// <summary>스트레스 증감. delta&gt;0 증가, delta&lt;0 감소. to=Self 면 리액터 자신.</summary>
+        public static ReactionEffect Stress(int delta, E_TargetFilter to = E_TargetFilter.Self)
+            => new StressReactionEffect { Delta = delta, Target = to };
+
+        /// <summary>리액터를 후열로 이동.</summary>
+        public static ReactionEffect MoveBack() => new FormationMoveReactionEffect { To = FormationMoveReactionEffect.Where.Back };
+
+        /// <summary>리액터를 전열로 이동.</summary>
+        public static ReactionEffect MoveFront() => new FormationMoveReactionEffect { To = FormationMoveReactionEffect.Where.Front };
+
+        /// <summary>리액터의 다음 turns 번 자기 턴을 행동 불가로 만든다.</summary>
+        public static ReactionEffect SkipTurn(int turns = 1) => new SkipTurnReactionEffect { Turns = turns };
+
+        /// <summary>같은 진영 전원의 연쇄(리액션 발동) 카운트를 리셋.</summary>
+        public static ReactionEffect ResetChainCount() => new ResetChainCountReactionEffect();
 
         // ── 편집 슬롯 단축 팩토리 ─────────────────────────────
         public static ReactionEditableSlot ObserveTarget(string label, bool excludeSelf = true)
