@@ -268,4 +268,72 @@ namespace Reactions
             return clone;
         }
     }
+
+    /// <summary>
+    /// 스트레스(Insanity) 증감. Delta&gt;0 = 증가, Delta&lt;0 = 감소.
+    /// 기존 API 재사용 — 증가는 ReduceInsanity(명명과 반대로 +), 감소는 RecoverInsanity.
+    /// </summary>
+    [Serializable][AddTypeMenu("Modify Stress", -250)]
+    public class StressReactionEffect : ReactionEffect
+    {
+        [Tooltip("스트레스 변화량. 양수=증가, 음수=감소.")]
+        public int Delta = 10;
+
+        [Tooltip("대상. Self=리액터 자신, Observed=관찰 대상, Caster/Target=원본 행동 기준.")]
+        public E_TargetFilter Target = E_TargetFilter.Self;
+
+        public override UniTask Apply(BaseCharacter reactor, ReactionExecution execution, BattleContext originalContext)
+        {
+            foreach (var t in ResolveTargets(reactor, execution, originalContext))
+            {
+                if (t == null) continue;
+                if (Delta >= 0) t.ReduceInsanity(Delta);   // 기존 명명: ReduceInsanity = 스트레스 증가
+                else t.RecoverInsanity(-Delta);
+            }
+            return UniTask.CompletedTask;
+        }
+
+        private IEnumerable<BaseCharacter> ResolveTargets(BaseCharacter reactor, ReactionExecution execution, BattleContext context)
+        {
+            switch (Target)
+            {
+                case E_TargetFilter.Caster: yield return context.caster; yield break;
+                case E_TargetFilter.Target:  yield return context.target;  yield break;
+                case E_TargetFilter.Observed:
+                    if (execution.MatchedSubjects != null)
+                        foreach (var s in execution.MatchedSubjects) yield return s;
+                    yield break;
+                default: // Self / None → 리액터
+                    yield return reactor;
+                    yield break;
+            }
+        }
+
+        public override string Description => $"{Target} 스트레스 {(Delta >= 0 ? "+" : "")}{Delta}";
+
+        public override ReactionEffect Clone() => new StressReactionEffect { Delta = Delta, Target = Target };
+    }
+
+    /// <summary>
+    /// 리액터를 자기 진영의 전열(Front, index 0) 또는 후열(Back, index 3)로 이동.
+    /// 대상 슬롯이 차 있으면 SwapFormation 으로 교체된다(다키스트 스타일).
+    /// </summary>
+    [Serializable][AddTypeMenu("Move Formation", -240)]
+    public class FormationMoveReactionEffect : ReactionEffect
+    {
+        public enum Where { Front, Back }
+
+        [Tooltip("이동 위치. Front=최전방(0), Back=최후방(3)")]
+        public Where To = Where.Back;
+
+        public override UniTask Apply(BaseCharacter reactor, ReactionExecution execution, BattleContext originalContext)
+        {
+            reactor?.MoveToFormationIndex(To == Where.Front ? 0 : 3);
+            return UniTask.CompletedTask;
+        }
+
+        public override string Description => To == Where.Front ? "전열로 이동" : "후열로 이동";
+
+        public override ReactionEffect Clone() => new FormationMoveReactionEffect { To = To };
+    }
 }

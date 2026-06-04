@@ -98,6 +98,16 @@ namespace Reactions.Authoring
         public static ReactionEffect Composite(params ReactionEffect[] effects)
             => new CompositeReactionEffect { Effects = effects != null ? effects.ToList() : new List<ReactionEffect>() };
 
+        /// <summary>스트레스 증감. delta&gt;0 증가, delta&lt;0 감소. to=Self 면 리액터 자신.</summary>
+        public static ReactionEffect Stress(int delta, E_TargetFilter to = E_TargetFilter.Self)
+            => new StressReactionEffect { Delta = delta, Target = to };
+
+        /// <summary>리액터를 후열로 이동.</summary>
+        public static ReactionEffect MoveBack() => new FormationMoveReactionEffect { To = FormationMoveReactionEffect.Where.Back };
+
+        /// <summary>리액터를 전열로 이동.</summary>
+        public static ReactionEffect MoveFront() => new FormationMoveReactionEffect { To = FormationMoveReactionEffect.Where.Front };
+
         // ── 편집 슬롯 단축 팩토리 ─────────────────────────────
         public static ReactionEditableSlot ObserveTarget(string label, bool excludeSelf = true)
             => new ObserveTargetEditableSlot { Label = label, ExcludeSelf = excludeSelf };

@@ -30,6 +30,7 @@ namespace Reactions
         Caster,
         Target,
         Observed,   // 조건을 만족시킨 관찰 대상
+        Self,       // 리액터 자신 (효과 대상 지정용. 조건 필터로는 미사용)
     }
     
     public interface ITrigger
