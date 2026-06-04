@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Reactions.ReactionDefinitionSO
   _id: TRT_009_RDEF
   _displayName: "\uC778\uC815\uC695\uAD6C \u2014 \uBB34\uBAA8\uD55C \uB3CC\uACA9"
-  _description: 
+  _description: "\uD30C\uD2F0 \uB0B4 \uC2A4\uD2B8\uB808\uC2A4 \uD3C9\uADE0 60% \uCD08\uACFC
+    \uC2DC\t\uD30C\uD2F0 \uC704\uAE30 \uC0C1\uD669\uC5D0\uC11C \uB2E8\uB3C5\uC73C\uB85C
+    \uC804\uC5F4 \uB3CC\uD30C \uC2DC\uB3C4. \uC2E4\uD328 \uC2DC \uBCF8\uC778 \uC2A4\uD2B8\uB808\uC2A4
+    +25"
   Role: 0
   Template:
     Phase: 3
