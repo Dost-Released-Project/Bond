@@ -186,6 +186,17 @@ namespace Reactions
     }
 
     [Serializable]
+    public class AllyAnomalyCondition: ReactionTriggerCondition
+    {
+        public override bool IsMet(ReactionTriggerConditionArgs args)
+            => args.Subject.GetSameSideAllies(false).Any(a => a.HasRecentAnomaly);
+
+        public override ReactionTriggerCondition Copy() => new AllyAnomalyCondition();
+
+        public override string Description => "같은 진영 아군이 최근 돌발했을 때";
+    }
+
+    [Serializable]
     public class CritCondition: ReactionTriggerCondition
     {
         public override bool IsMet(ReactionTriggerConditionArgs args)

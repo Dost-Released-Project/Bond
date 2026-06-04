@@ -68,6 +68,7 @@ namespace Reactions.Authoring
         public static ICondition StressAbove(int value = 50) => new StressAboveCondition { Threshold = value };
         public static ICondition PartyStressAbove(float average = 60f) => new PartyStressAverageCondition { Threshold = average };
         public static ICondition ReactionCountAtLeast(int count = 3) => new ReactionCountCondition { Threshold = count };
+        public static ICondition AllyAnomaly() => new AllyAnomalyCondition();
         public static ICondition Crit() => new CritCondition();
         public static ICondition Evaded() => new EvadeCondition();
         public static ICondition Hit() => new HitCondition();

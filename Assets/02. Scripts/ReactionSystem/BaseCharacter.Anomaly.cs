@@ -32,6 +32,7 @@ public partial class BaseCharacter
         var execution = new ReactionExecution(this, reaction, ReactionResult.Anomaly, new List<BaseCharacter> { this });
 
         Debug.Log($"<color=magenta>[돌발]</color> {Name} 의 성향이 발동해 계획 행동을 대체합니다. ({reaction.Effect?.Description})");
+        MarkAnomaly();
 
         if (reaction.Effect != null)
             await reaction.Effect.Apply(this, execution, ctx);
@@ -85,4 +86,12 @@ public partial class BaseCharacter
     /// <summary>해당 리액션이 이 캐릭터의 성향(트레잇) 리액션인지.</summary>
     public bool IsTraitReaction(Reaction reaction)
         => reaction != null && TraitReactions != null && System.Array.IndexOf(TraitReactions, reaction) >= 0;
+
+    // ── 최근 돌발 플래그 (아군 돌발 관찰용) ──────────────────────────
+    // 돌발 발동 시 set, 자기 턴 시작에 clear → "마지막 자기 턴 이후 돌발했는지"를 나타낸다.
+    private bool _hasRecentAnomaly;
+
+    public bool HasRecentAnomaly => _hasRecentAnomaly;
+    public void MarkAnomaly() => _hasRecentAnomaly = true;
+    public void ClearRecentAnomaly() => _hasRecentAnomaly = false;
 }
