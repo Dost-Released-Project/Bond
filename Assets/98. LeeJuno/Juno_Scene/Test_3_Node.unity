@@ -599,56 +599,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1773755562}
   m_CullTransparentMesh: 1
---- !u!1 &1883643905
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1883643907}
-  - component: {fileID: 1883643906}
-  m_Layer: 0
-  m_Name: MapScope
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1883643906
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1883643905}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d66642814fc6775478610fb23b2d628e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TestMapLifetimeScope
-  parentReference:
-    TypeName: RootVContainer.RootScope
-  autoRun: 1
-  autoInjectGameObjects: []
-  _mapUIController: {fileID: 1979411112}
-  _journalUIPrefab: {fileID: 2408579647488794321, guid: e972ad374caaa0443aa796b971b1ffc9, type: 3}
---- !u!4 &1883643907
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1883643905}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 960, y: 540, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1979411112 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5558994552886173223, guid: d68743e1fac709f419c196e7e9fdfa0b, type: 3}
@@ -676,6 +626,67 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3490585439940620518, guid: d117bb016b533a24a9f7b2279f2f4d7b, type: 3}
   m_PrefabInstance: {fileID: 5797608251009159701}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2453763433212015237
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2265023690592475847, guid: 2829ca6ff76b3f34a820746cfbd3afc3, type: 3}
+      propertyPath: _mapUIController
+      value: 
+      objectReference: {fileID: 1979411112}
+    - target: {fileID: 2856240865671535684, guid: 2829ca6ff76b3f34a820746cfbd3afc3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 960
+      objectReference: {fileID: 0}
+    - target: {fileID: 2856240865671535684, guid: 2829ca6ff76b3f34a820746cfbd3afc3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 540
+      objectReference: {fileID: 0}
+    - target: {fileID: 2856240865671535684, guid: 2829ca6ff76b3f34a820746cfbd3afc3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2856240865671535684, guid: 2829ca6ff76b3f34a820746cfbd3afc3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2856240865671535684, guid: 2829ca6ff76b3f34a820746cfbd3afc3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2856240865671535684, guid: 2829ca6ff76b3f34a820746cfbd3afc3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2856240865671535684, guid: 2829ca6ff76b3f34a820746cfbd3afc3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2856240865671535684, guid: 2829ca6ff76b3f34a820746cfbd3afc3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2856240865671535684, guid: 2829ca6ff76b3f34a820746cfbd3afc3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2856240865671535684, guid: 2829ca6ff76b3f34a820746cfbd3afc3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3494813191861857580, guid: 2829ca6ff76b3f34a820746cfbd3afc3, type: 3}
+      propertyPath: m_Name
+      value: MapScope
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2829ca6ff76b3f34a820746cfbd3afc3, type: 3}
 --- !u!1001 &2672356819253633508
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -886,4 +897,4 @@ SceneRoots:
   - {fileID: 2672356819253633508}
   - {fileID: 5797608251009159701}
   - {fileID: 1161473469}
-  - {fileID: 1883643907}
+  - {fileID: 2453763433212015237}
