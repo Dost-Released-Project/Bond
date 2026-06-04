@@ -184,7 +184,7 @@ namespace BattleSystem
                     }
                 }
 
-                // 4. 대상자 강조 (Click)
+                // 4. 대상자 강조 (Click) 및 피격 이미지 전환
                 Debug.Log($"Target Count: {targets.Count}");
                 foreach (var target in targets)
                 {
@@ -192,6 +192,7 @@ namespace BattleSystem
                     {
                         targetSlots.Add(target.CurrentSlot);
                         target.CurrentSlot.SetTargeted(true);
+                        target.CurrentSlot.SetImageType(SlotImageType.Attack); // 확대 연출과 동시에 피격 자세로 전환
                     }
                 }
 
@@ -214,19 +215,19 @@ namespace BattleSystem
             }
             finally
             {
-                // 7. 연출 초기화 (시각적 피드백 유지 후 해제)
+                // 7. 연출 초기화 및 상태 복구 (축소 연출 시작 시점)
                 if (casterSlot != null)
                 {
                     casterSlot.SetActing(false);
-                    casterSlot.SetImageType(SlotImageType.Idle);
+                    casterSlot.SetImageType(SlotImageType.Idle); // 축소되며 Idle 복구
                 }
                 
-                // 타겟이 사망하여 target.CurrentSlot이 null이 되더라도, 캐싱된 슬롯 정보를 통해 효과를 확실히 끔
                 foreach (var slot in targetSlots)
                 {
                     if (slot != null)
                     {
                         slot.SetTargeted(false);
+                        slot.SetImageType(SlotImageType.Idle); // 축소되며 Idle 복구
                     }
                 }
 

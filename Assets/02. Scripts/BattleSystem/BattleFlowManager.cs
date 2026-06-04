@@ -59,10 +59,14 @@ namespace BattleStage
             }
         }
         
+        private bool m_isBattleActive = false;
+
         public void BattleSwitch()
         {
+            m_isBattleActive = !m_isBattleActive;
+
             // 전투 시작 시 종료 플래그 초기화
-            if (m_playerUnits != null && m_enemyUnits != null)
+            if (m_isBattleActive)
             {
                 m_isBattleEnding = false;
             }
@@ -104,9 +108,18 @@ namespace BattleStage
             }
         }
 
-        private async UniTask ProcessBattleEndAsync(bool isPlayerWin)
+        public void HandleRetreat()
         {
-            Debug.Log($"<color=green>[BattleFlowManager] 전투 종료 처리 시작. (플레이어 승리: {isPlayerWin})</color>");
+            if (m_isBattleEnding) return;
+            
+            Debug.Log("<color=yellow>[BattleFlowManager] 전투 퇴각(도주) 요청 수신.</color>");
+            m_isBattleEnding = true;
+            ProcessBattleEndAsync(false, true).Forget();
+        }
+
+        private async UniTask ProcessBattleEndAsync(bool isPlayerWin, bool isRetreat = false)
+        {
+            Debug.Log($"<color=green>[BattleFlowManager] 전투 종료 처리 시작. (플레이어 승리: {isPlayerWin}, 퇴각 여부: {isRetreat})</color>");
             
             // 1. 진행 중인 턴 루프 및 전투 로직 중지 신호 발송 (토글 오프)
             BattleSwitch();
@@ -115,13 +128,14 @@ namespace BattleStage
             await UniTask.Delay(2000);
 
             // 3. Provider(일지 시스템) 등 외부 구독자에게 전투 종료 및 승패 결과 알림
-            if (OnBattleEnd != null)
+            // 단, 퇴각(Retreat)인 경우 이미 일지 창을 거쳤으므로 다시 띄우지 않음.
+            if (OnBattleEnd != null && !isRetreat)
             {
                 OnBattleEnd.Invoke(isPlayerWin);
             }
             else
             {
-                // 구독자가 없을 경우 즉시 맵 복귀 (안전 장치)
+                // 퇴각이거나 구독자가 없을 경우 즉시 맵 복귀
                 StageResult result = new StageResult
                 {
                     IsSuccess = isPlayerWin,

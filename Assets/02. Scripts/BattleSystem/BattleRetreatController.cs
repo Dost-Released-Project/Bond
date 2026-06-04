@@ -10,10 +10,13 @@ namespace BattleSystem
         private readonly JournalSystem _journalSystem;
         private readonly JournalDataBaseSO _journalDB;
 
-        public BattleRetreatController(JournalSystem journalSystem, JournalDataBaseSO journalDB)
+        public BattleRetreatController(JournalSystem journalSystem, JournalDataBaseSO journalDB, BattleRetreatJournalHandler retreatHandler)
         {
             _journalSystem = journalSystem;
             _journalDB = journalDB;
+            
+            // 캠프 시스템과 동일한 방식: 지역 스코프 핸들러를 수동으로 글로벌 JournalSystem에 등록
+            _journalSystem?.AddActionHandler(retreatHandler);
         }
 
         public void ShowRetreatConfirm()
@@ -38,7 +41,7 @@ namespace BattleSystem
             {
                 Debug.LogWarning($"[BattleRetreatController] JournalDataBaseSO에서 '{eventId}' 템플릿을 찾을 수 없습니다.");
                 assembledParagraphs.Add("전투에서 퇴각하시겠습니까?");
-                options.Add(new JournalOption { text = "맵으로 돌아가기", actionKey = "ACTION_RETURN_MAP", isEnabled = true });
+                options.Add(new JournalOption { text = "퇴각하기", actionKey = "ACTION_RETREAT_MAP", isEnabled = true });
             }
 
             // "취소" 옵션 동적 추가 (actionKey를 비워두어 팝업만 닫히게 함)

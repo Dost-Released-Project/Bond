@@ -23,7 +23,7 @@ namespace RootVContainer
             // Data & Logic (Global Core)
             builder.Register<JournalModel>(Lifetime.Singleton);
             builder.Register<LocationEventProvider>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<MockJournalActionHandler>(Lifetime.Singleton).AsImplementedInterfaces();
+            // builder.Register<MockJournalActionHandler>(Lifetime.Singleton).AsImplementedInterfaces(); // 테스트용 Mock 핸들러가 실 동작을 가로채지 않도록 비활성화
             builder.Register<JournalInventoryActionHandler>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<BattleResultJournalHandler>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.RegisterEntryPoint<JournalSystem>(Lifetime.Singleton).AsSelf();
