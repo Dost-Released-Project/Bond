@@ -15,13 +15,103 @@ MonoBehaviour:
   m_GroupName: Moon
   m_GUID: ac641a8448e02f14fb8f0aa796135860
   m_SerializeEntries:
-  - m_GUID: 152274382062a4a458f54817b404cb75
-    m_Address: SpriteOutlineMaterial
+  - m_GUID: 083b44c10eefa4d47ac1b423a872c27f
+    m_Address: Assassin_Battle
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 099c5b06aea5358419223983f92bcf7e
+    m_Address: Warrior_Idle
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 17f8b6843af28774fa447d04bec9f412
+    m_Address: Cleric_Idle
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 31eb02a3728024f4c8e2e83f595e8799
+    m_Address: Assassin_Icon
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3927827441b3eb04cb05038d1cde3a48
     m_Address: Town
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 46d7ac2486ab77640ba0340c9190842f
+    m_Address: Storage
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4cdb2b5e753d6bd43b20c180413b48d1
+    m_Address: Inn
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 52ed08096cad8a74db410478088c45e3
+    m_Address: Wizard_Icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5a9f9b36e44b41e4d86aa59f07f7dc76
+    m_Address: Wizard_Battle
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 603751618a05f024e89cbdf047719bf4
+    m_Address: Warrior_Battle
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 63b99c12126a4e04282ea2f53c0ea240
+    m_Address: Cleric_Battle
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67b0e26d6d755f843a7ce6e6713471f9
+    m_Address: Tavern
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 777d37f94139c07428786d15ca5f323f
+    m_Address: Smithy
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a122b9577d181434b9dd55528515f129
+    m_Address: Supply
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ce88bcf4d6dc5a5469554bbb4a4698fb
+    m_Address: Warrior_Icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc036f3d41e97b44e86da9f6ab9b00ed
+    m_Address: Assassin_Idle
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: df7bf15903ce3c845a20981331b6de3e
+    m_Address: Cleric_Idle
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f0d7729361cb70146890aec8f09d1732
+    m_Address: Guild
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f84490ee1b4f3d34f86b51b8b031cab3
+    m_Address: Wizard_Idle
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ffc4884274d05c64d8ab4766b36c9687
+    m_Address: Carriage
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

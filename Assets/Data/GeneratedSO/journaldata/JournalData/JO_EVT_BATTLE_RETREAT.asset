@@ -19,6 +19,6 @@ MonoBehaviour:
   - "\uD1F4\uAC01 \uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
   _options:
   - text: "\uB9F5\uC73C\uB85C \uB3CC\uC544\uAC00\uAE30"
-    actionKey: ACTION_RETURN_MAP
+    actionKey: ACTION_RETREAT_MAP
     _isDisabled: 0
   _entryIconId: 

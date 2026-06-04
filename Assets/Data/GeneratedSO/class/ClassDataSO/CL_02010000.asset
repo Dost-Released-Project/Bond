@@ -29,8 +29,8 @@ MonoBehaviour:
   SpAtk: 1
   DefaultArmorId: 03050000
   DefaultWeaponId: 03010000
-  IconId: 
-  IdleImageId: 123
-  BattleImageId: 1234
+  IconId: Assassin_Icon
+  IdleImageId: Assassin_Idle
+  BattleImageId: Assassin_Battle
   ClassType: 01
   LV: 0
