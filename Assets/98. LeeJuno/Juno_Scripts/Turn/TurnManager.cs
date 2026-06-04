@@ -124,10 +124,17 @@ public class TurnManager : ITurnManager, IStartable, IDisposable
                     _selector.Deselect(); // 플레이어가 아닌 유닛 턴일 때 기존 선택 해제
                 }
                 
-                // 자기 턴 시작: 버프·봉인 지속(자기 턴 수)을 1 감소시키고 만료분을 제거
-                if (unit is BaseCharacter ownerChar) { ownerChar.TickBuffs(); ownerChar.TickSeals(); }
+                // 자기 턴 시작: 버프·봉인 지속(자기 턴 수)을 1 감소시키고 만료분을 제거. 이어서 강제 휴식(턴 스킵) 소비
+                bool skipTurn = false;
+                if (unit is BaseCharacter ownerChar)
+                {
+                    ownerChar.TickBuffs();
+                    ownerChar.TickSeals();
+                    skipTurn = ownerChar.ConsumeSkipTurn();
+                    if (skipTurn) Debug.Log($"<color=gray>[강제 휴식]</color> {ownerChar.Name} 이(가) 이번 턴 행동하지 않습니다.");
+                }
 
-                await unit.TakeTurnAsync();
+                if (!skipTurn) await unit.TakeTurnAsync();
                 
                 // 턴이 완전히 끝나면 선택 상태를 초기화하여 다음 턴(혹은 다음 라운드의 동일 캐릭터 턴)에 이벤트가 정상 발생하도록 함
                 _selector.Deselect();

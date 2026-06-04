@@ -31,6 +31,8 @@ namespace Reactions
         Target,
         Observed,   // 조건을 만족시킨 관찰 대상
         Self,       // 리액터 자신 (효과 대상 지정용. 조건 필터로는 미사용)
+        FrontmostEnemy, // 가장 가까운(최전열) 적 — 효과 대상 지정용
+        BackmostEnemy,  // 가장 먼(최후열) 적 — 효과 대상 지정용
     }
     
     public interface ITrigger

@@ -125,6 +125,53 @@ namespace Reactions
     }
 
     [Serializable]
+    public class HpAboveCondition: ReactionTriggerCondition
+    {
+        public float Threshold;
+
+        public override bool IsMet(ReactionTriggerConditionArgs args)
+            => args.Subject.HpRatio >= Threshold;
+
+        public override ReactionTriggerCondition Copy()
+            => new HpAboveCondition { Threshold = Threshold };
+
+        public override string Description => $"관찰 대상의 Hp 비율이 {Threshold} 이상일 때";
+    }
+
+    [Serializable]
+    public class StressAboveCondition: ReactionTriggerCondition
+    {
+        public int Threshold = 50;
+
+        public override bool IsMet(ReactionTriggerConditionArgs args)
+            => args.Subject.Insanity >= Threshold;
+
+        public override ReactionTriggerCondition Copy()
+            => new StressAboveCondition { Threshold = Threshold };
+
+        public override string Description => $"관찰 대상의 스트레스가 {Threshold} 이상일 때";
+    }
+
+    [Serializable]
+    public class PartyStressAverageCondition: ReactionTriggerCondition
+    {
+        public float Threshold = 60f; // 같은 진영 생존자 평균 스트레스(0~100) 임계. 초과 시 발동.
+
+        public override bool IsMet(ReactionTriggerConditionArgs args)
+        {
+            var party = args.Subject.GetSameSideAllies(true).ToList();
+            if (party.Count == 0) return false;
+            float avg = (float)party.Sum(c => c.Insanity) / party.Count;
+            return avg > Threshold;
+        }
+
+        public override ReactionTriggerCondition Copy()
+            => new PartyStressAverageCondition { Threshold = Threshold };
+
+        public override string Description => $"파티 평균 스트레스가 {Threshold} 초과일 때";
+    }
+
+    [Serializable]
     public class CritCondition: ReactionTriggerCondition
     {
         public override bool IsMet(ReactionTriggerConditionArgs args)

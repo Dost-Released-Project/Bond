@@ -64,6 +64,9 @@ namespace Reactions.Authoring
         public static ICondition SubjectIs(E_TargetFilter filter) => new SubjectCondition(filter);
         public static ICondition SkillTypeIs(params SkillType[] types) => new SkillTypeCondition(types);
         public static ICondition HpBelow(float ratio) => new HpBelowCondition { Threshold = ratio };
+        public static ICondition HpAbove(float ratio) => new HpAboveCondition { Threshold = ratio };
+        public static ICondition StressAbove(int value = 50) => new StressAboveCondition { Threshold = value };
+        public static ICondition PartyStressAbove(float average = 60f) => new PartyStressAverageCondition { Threshold = average };
         public static ICondition Crit() => new CritCondition();
         public static ICondition Evaded() => new EvadeCondition();
         public static ICondition Hit() => new HitCondition();
@@ -107,6 +110,9 @@ namespace Reactions.Authoring
 
         /// <summary>리액터를 전열로 이동.</summary>
         public static ReactionEffect MoveFront() => new FormationMoveReactionEffect { To = FormationMoveReactionEffect.Where.Front };
+
+        /// <summary>리액터의 다음 turns 번 자기 턴을 행동 불가로 만든다.</summary>
+        public static ReactionEffect SkipTurn(int turns = 1) => new SkipTurnReactionEffect { Turns = turns };
 
         // ── 편집 슬롯 단축 팩토리 ─────────────────────────────
         public static ReactionEditableSlot ObserveTarget(string label, bool excludeSelf = true)

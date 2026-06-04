@@ -37,7 +37,7 @@ namespace Reactions
             var skill = reactor.Skills[SkillIndex];
             if (skill == null) return;
 
-            foreach (var target in ResolveTargets(execution, originalContext))
+            foreach (var target in ResolveTargets(reactor, execution, originalContext))
             {
                 if (target == null || target.IsDead) continue;
 
@@ -50,7 +50,7 @@ namespace Reactions
             }
         }
 
-        private IEnumerable<BaseCharacter> ResolveTargets(ReactionExecution execution, BattleContext context)
+        private IEnumerable<BaseCharacter> ResolveTargets(BaseCharacter reactor, ReactionExecution execution, BattleContext context)
         {
             switch (SkillTarget)
             {
@@ -59,6 +59,12 @@ namespace Reactions
                     yield break;
                 case E_TargetFilter.Target:
                     yield return context.target;
+                    yield break;
+                case E_TargetFilter.FrontmostEnemy:
+                    yield return reactor?.GetOpposingByRank(true);
+                    yield break;
+                case E_TargetFilter.BackmostEnemy:
+                    yield return reactor?.GetOpposingByRank(false);
                     yield break;
                 default: // Observed / None → 매치된 관찰 대상
                     if (execution.MatchedSubjects != null)
@@ -335,5 +341,25 @@ namespace Reactions
         public override string Description => To == Where.Front ? "전열로 이동" : "후열로 이동";
 
         public override ReactionEffect Clone() => new FormationMoveReactionEffect { To = To };
+    }
+
+    /// <summary>
+    /// 리액터의 다음 N번 자기 턴을 행동 불가로 만든다(TurnManager 가 자기 턴 시작에 소비).
+    /// </summary>
+    [Serializable][AddTypeMenu("Skip Turn", -230)]
+    public class SkipTurnReactionEffect : ReactionEffect
+    {
+        [Tooltip("건너뛸 자기 턴 수")]
+        public int Turns = 1;
+
+        public override UniTask Apply(BaseCharacter reactor, ReactionExecution execution, BattleContext originalContext)
+        {
+            reactor?.RequestSkipTurns(Turns);
+            return UniTask.CompletedTask;
+        }
+
+        public override string Description => $"다음 {Turns}턴 행동 불가";
+
+        public override ReactionEffect Clone() => new SkipTurnReactionEffect { Turns = Turns };
     }
 }

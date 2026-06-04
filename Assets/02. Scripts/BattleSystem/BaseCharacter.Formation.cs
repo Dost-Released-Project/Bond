@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using BattleSystem;
 using BattleSystem.Interface;
 
@@ -12,5 +13,39 @@ public partial class BaseCharacter
     {
         if (m_formationManager == null || CurrentSlot == null) return;
         m_formationManager.MoveCharacter(this, CurrentSlot.side, index);
+    }
+
+    /// <summary>상대 진영에서 가장 가까운(frontmost=Rank1쪽) 또는 가장 먼(Rank4쪽) 생존 캐릭터를 반환. 없으면 null.</summary>
+    public BaseCharacter GetOpposingByRank(bool frontmost)
+    {
+        if (m_formationManager == null || CurrentSlot == null) return null;
+
+        var enemySide = CurrentSlot.side == E_BattleSide.Player ? E_BattleSide.Enemy : E_BattleSide.Player;
+        FormationMask[] order = frontmost
+            ? new[] { FormationMask.Rank1, FormationMask.Rank2, FormationMask.Rank3, FormationMask.Rank4 }
+            : new[] { FormationMask.Rank4, FormationMask.Rank3, FormationMask.Rank2, FormationMask.Rank1 };
+
+        foreach (var r in order)
+        {
+            var c = m_formationManager.GetCharacterAt(enemySide, r);
+            if (c != null && !c.IsDead) return c;
+        }
+        return null;
+    }
+
+    /// <summary>같은 진영의 생존 캐릭터를 열거(기본 자신 포함). FormationManager 가 없으면 빈 열거.</summary>
+    public IEnumerable<BaseCharacter> GetSameSideAllies(bool includeSelf = true)
+    {
+        if (m_formationManager == null || CurrentSlot == null) yield break;
+
+        var side = CurrentSlot.side;
+        FormationMask[] ranks = { FormationMask.Rank1, FormationMask.Rank2, FormationMask.Rank3, FormationMask.Rank4 };
+        foreach (var r in ranks)
+        {
+            var c = m_formationManager.GetCharacterAt(side, r);
+            if (c == null || c.IsDead) continue;
+            if (!includeSelf && c == this) continue;
+            yield return c;
+        }
     }
 }
