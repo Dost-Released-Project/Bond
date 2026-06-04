@@ -13,37 +13,30 @@ MonoBehaviour:
   m_Name: CharacterPreset_2
   m_EditorClassIdentifier: Assembly-CSharp::_90._HA.CharacterPreset
   BaseCharacter:
-    Id: 1d5f4aa9-0454-435f-8da4-0207a021d864
-    ImageAddress: RiceSummoner
-    Name: RiceSummoner
+    Id: ecfa2338-a293-4368-a763-ba57f07f5826
+    ImageAddress: Wizard_Icon
+    IdleImageAddress: Wizard_Idle
+    AttackImageAddress: Wizard_Battle
+    Name: Wildboar
     Profession:
       _classData: {fileID: 11400000, guid: be9027a2dfbfccb49969b49ccefe3230, type: 2}
     Level: 0
-    Insanity: 80
+    Insanity: 0
     RoleType: 2
     <battleType>k__BackingField:
-      rid: 8081819941751750808
+      rid: 2064475022841610378
     Skills:
-    - rid: 8081819941751750737
-    - rid: 8081819941751750738
-    - rid: 8081819941751750739
-    - rid: 8081819941751750740
-    Traits:
-    - Type: 0
-      Name: A
-      Description: aaa
-    - Type: 0
-      Name: B
-      Description: bbb
-    - Type: 0
-      Name: Missing
-      Description: Missing
-    - Type: 0
-      Name: Missing
-      Description: Missing
+    - rid: 2064475022841610379
+    - rid: 2064475022841610380
+    - rid: 2064475022841610381
+    - rid: 2064475022841610382
+    TraitIds:
+    - TRT_003
+    - TRT_018
+    - 
+    - 
     Weapon:
-      itemName: 
-      type: 0
+      itemName: "\uB9C8\uBC95\uC0AC\uC758 \uC9C0\uD321\uC774"
       upgradeLevel: 0
       baseSTR: 0
       baseAGI: 0
@@ -52,8 +45,7 @@ MonoBehaviour:
       upAGI: 0
       upINT: 2
     Armor:
-      itemName: 
-      type: 0
+      itemName: "\uB9C8\uBC95\uC0AC\uC758 \uB85C\uBE0C"
       upgradeLevel: 0
       baseSTR: 1
       baseAGI: 1
@@ -65,107 +57,125 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     RoleReactions:
-    - SubjectCharacterId: 1d5f4aa9-0454-435f-8da4-0207a021d864
+    - Phase: 0
+      ObserveFilter: 0
+      SubjectCharacterId: 
+      DefinitionId: 
       Trigger:
-        rid: 8081819941751750747
-      SkillIndex: 0
-      ReactionSkillTarget: 1
-    - SubjectCharacterId: 12c65b3a-efef-405e-b6fd-98e360b245ed
+        rid: -2
+      Effect:
+        rid: -2
+    - Phase: 0
+      ObserveFilter: 0
+      SubjectCharacterId: 
+      DefinitionId: 
       Trigger:
-        rid: 8081819941751750746
-      SkillIndex: 0
-      ReactionSkillTarget: 2
+        rid: -2
+      Effect:
+        rid: -2
     TraitReactions:
-    - SubjectCharacterId: 
+    - Phase: 1
+      ObserveFilter: 2
+      SubjectCharacterId: 
+      DefinitionId: TRT_003_RDEF
+      Trigger:
+        rid: 2064475022841610383
+      Effect:
+        rid: 2064475022841610384
+    - Phase: 2
+      ObserveFilter: 0
+      SubjectCharacterId: 
+      DefinitionId: TRT_018_RDEF
+      Trigger:
+        rid: 2064475022841610385
+      Effect:
+        rid: 2064475022841610386
+    - Phase: 0
+      ObserveFilter: 0
+      SubjectCharacterId: 
+      DefinitionId: 
       Trigger:
         rid: -2
-      SkillIndex: 0
-      ReactionSkillTarget: 0
-    - SubjectCharacterId: 
+      Effect:
+        rid: -2
+    - Phase: 0
+      ObserveFilter: 0
+      SubjectCharacterId: 
+      DefinitionId: 
       Trigger:
         rid: -2
-      SkillIndex: 0
-      ReactionSkillTarget: 0
-    - SubjectCharacterId: 
-      Trigger:
+      Effect:
         rid: -2
-      SkillIndex: 0
-      ReactionSkillTarget: 0
-    - SubjectCharacterId: 
-      Trigger:
-        rid: -2
-      SkillIndex: 0
-      ReactionSkillTarget: 0
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 8081819941751750737
-      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+    - rid: 2064475022841610378
+      type: {class: AutoBattle_Atk, ns: , asm: Assembly-CSharp}
       data:
-        damage: 0
-        currentLevel: 0
-        _skillData: {fileID: 11400000, guid: 9cffa0d32b8017147b8af7dfd003f972, type: 2}
-    - rid: 8081819941751750738
+        isPlayable: 0
+    - rid: 2064475022841610379
       type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
       data:
         damage: 0
         currentLevel: 0
         _skillData: {fileID: 11400000, guid: 858bd87259958fa44a02098d804ba1c2, type: 2}
-    - rid: 8081819941751750739
+    - rid: 2064475022841610380
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: 5f5a58ba5e5135443b2a5d651d523f55, type: 2}
+    - rid: 2064475022841610381
       type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
       data:
         damage: 0
         currentLevel: 0
         _skillData: {fileID: 11400000, guid: 123903391a58c1d40965ebb84691dc53, type: 2}
-    - rid: 8081819941751750740
+    - rid: 2064475022841610382
       type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
       data:
         damage: 0
         currentLevel: 0
         _skillData: {fileID: 11400000, guid: 7f1a3001486938949bfd35b67465fb4c, type: 2}
-    - rid: 8081819941751750746
+    - rid: 2064475022841610383
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
-        Conditions:
-        - rid: 8081819941751750812
-        - rid: 8081819941751750813
-        - rid: 8081819941751750814
-        - rid: 8081819941751750821
-    - rid: 8081819941751750747
+        _condition:
+          Additional:
+          - rid: 2064475022841610387
+          - rid: 2064475022841610388
+          - rid: 2064475022841610389
+    - rid: 2064475022841610384
+      type: {class: CompositeReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data: 
+    - rid: 2064475022841610385
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
-        Conditions:
-        - rid: 8081819941751750809
-        - rid: 8081819941751750810
-        - rid: 8081819941751750811
-    - rid: 8081819941751750808
-      type: {class: AutoBattle_Atk, ns: , asm: Assembly-CSharp}
-      data:
-        isPlayable: 0
-    - rid: 8081819941751750809
+        _condition:
+          Additional:
+          - rid: 2064475022841610390
+          - rid: 2064475022841610391
+    - rid: 2064475022841610386
+      type: {class: CompositeReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data: 
+    - rid: 2064475022841610387
       type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
         Filter: 2
-    - rid: 8081819941751750810
+    - rid: 2064475022841610388
+      type: {class: HpBelowCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Threshold: 0.3
+    - rid: 2064475022841610389
       type: {class: SkillTypeCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
-        Type: 1
-    - rid: 8081819941751750811
-      type: {class: EvadeCondition, ns: Reactions, asm: Assembly-CSharp}
-      data: 
-    - rid: 8081819941751750812
+        Types: 0100000003000000
+    - rid: 2064475022841610390
       type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
         Filter: 1
-    - rid: 8081819941751750813
-      type: {class: SkillTypeCondition, ns: Reactions, asm: Assembly-CSharp}
-      data:
-        Type: 1
-    - rid: 8081819941751750814
-      type: {class: CritCondition, ns: Reactions, asm: Assembly-CSharp}
-      data: 
-    - rid: 8081819941751750821
-      type: {class: HitCondition, ns: Reactions, asm: Assembly-CSharp}
+    - rid: 2064475022841610391
+      type: {class: EvadeCondition, ns: Reactions, asm: Assembly-CSharp}
       data: 

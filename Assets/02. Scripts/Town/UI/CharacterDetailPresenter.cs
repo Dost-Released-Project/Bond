@@ -527,7 +527,7 @@ namespace Bond.UI
                 return;
             }
 
-            _reactionReactionVals[i].text = def?.DisplayName ?? "(정의 없음)";
+            _reactionReactionVals[i].text = def?.Description ?? "(정의 없음)";
             _reactionReactionVals[i].RemoveFromClassList("char-detail__slot-part-val--placeholder");
 
             bool hasObserve = _controller.HasObserveEditable(i);
@@ -587,7 +587,7 @@ namespace Bond.UI
             }
 
             _reactionSlots[i].RemoveFromClassList("char-detail__reaction-slot--locked");
-            _reactionReactionVals[i].text = def?.DisplayName ?? "(정의 없음)";
+            _reactionReactionVals[i].text = def?.Description ?? "(정의 없음)";
             _reactionReactionVals[i].RemoveFromClassList("char-detail__slot-part-val--placeholder");
 
             bool hasObserve = _controller.HasObserveEditable(i);
@@ -651,24 +651,24 @@ namespace Bond.UI
             var pool = _reactionPools[slotIndex];
             if (pool == null) return;
 
-            var header = new VisualElement();
-            header.AddToClassList("char-detail__pool-header");
-
-            var title = new Label(part switch
-            {
-                "reaction" => "리액션",
-                "observe"  => "관찰 대상",
-                "skill"    => "행동",
-                _ => ""
-            });
-            title.AddToClassList("char-detail__pool-title");
-            header.Add(title);
-
-            var closeBtn = new Button(CloseAllPools);
-            closeBtn.AddToClassList("char-detail__pool-close-btn");
-            closeBtn.text = "닫기 ×";
-            header.Add(closeBtn);
-            pool.Add(header);
+            // var header = new VisualElement();
+            // header.AddToClassList("char-detail__pool-header");
+            //
+            // var title = new Label(part switch
+            // {
+            //     "reaction" => "리액션",
+            //     "observe"  => "관찰 대상",
+            //     "skill"    => "행동",
+            //     _ => ""
+            // });
+            // title.AddToClassList("char-detail__pool-title");
+            // header.Add(title);
+            //
+            // var closeBtn = new Button(CloseAllPools);
+            // closeBtn.AddToClassList("char-detail__pool-close-btn");
+            // closeBtn.text = "닫기 ×";
+            // header.Add(closeBtn);
+            // pool.Add(header);
 
             var chips = new VisualElement();
             chips.AddToClassList("char-detail__pool-chips");
