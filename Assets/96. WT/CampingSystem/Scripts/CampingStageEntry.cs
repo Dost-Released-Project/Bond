@@ -93,9 +93,6 @@ namespace Bond.WT.Camping
                     }
                 }
             }
-
-            // 캠핑 시작
-            _campingSystem.StartCamping();
         }
     }
 }

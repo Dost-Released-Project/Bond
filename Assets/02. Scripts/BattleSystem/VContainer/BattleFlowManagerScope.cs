@@ -27,6 +27,10 @@ namespace BattleSystem.VContainer
             // 캐릭터 선택 지정
             builder.Register<CharacterSelector>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             
+            // 퇴각(도주) 컨트롤러 및 뷰
+            builder.Register<BattleRetreatController>(Lifetime.Scoped);
+            builder.RegisterComponentInHierarchy<BattleRetreatView>();
+            
             // 탐사 인벤토리 UI
             builder.RegisterComponentInHierarchy<ExpeditionInventoryView>();
             // 캐릭터 슬롯과 캐릭터 셀렉터 연결용
