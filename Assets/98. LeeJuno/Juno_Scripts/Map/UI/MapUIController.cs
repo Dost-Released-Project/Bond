@@ -34,6 +34,7 @@ public class MapUIController : MonoBehaviour
     private IJournalVisualizer _journalView;
     private EventLogAccumulator _logAccumulator;
     private MapData _cachedMapData;
+    private Bond.Expedition.ExpeditionPayload _expeditionPayload;
 
     /// <summary>VContainer가 의존성을 주입하는 메서드.</summary>
     [Inject]
@@ -44,7 +45,8 @@ public class MapUIController : MonoBehaviour
         JournalSystem journalSystem,
         JournalModel journalModel,
         IJournalVisualizer journalView,
-        EventLogAccumulator logAccumulator)
+        EventLogAccumulator logAccumulator,
+        Bond.Expedition.ExpeditionPayload expeditionPayload)
     {
         _navigator = navigator;
         _stageLoader = stageLoader;
@@ -53,6 +55,7 @@ public class MapUIController : MonoBehaviour
         _journalModel = journalModel;
         _journalView = journalView;
         _logAccumulator = logAccumulator;
+        _expeditionPayload = expeditionPayload;
         _navigator.OnNodeEntered += OnNodeEntered;
         _stageLoader.OnStageCompleted += HandleStageCompleted;
     }
@@ -271,6 +274,11 @@ public class MapUIController : MonoBehaviour
                 // 언로드 실패 시에도 마을 복귀를 시도한다
             }
         }
+
+        // 수동 퇴각은 탐사 실패(Failure)로 기록한다.
+        // ExpeditionPayload.Outcome을 마을 씬에서 읽어 귀환 결과를 처리한다.
+        if (_expeditionPayload != null)
+            _expeditionPayload.SetResult(Bond.Expedition.ExpeditionOutcome.Failure);
 
         SceneLoader.Load("Town");
     }
