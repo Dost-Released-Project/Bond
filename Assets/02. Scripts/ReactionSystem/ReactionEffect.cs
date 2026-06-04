@@ -172,4 +172,100 @@ namespace Reactions
             Modifiers = CloneModifiers(Modifiers)
         };
     }
+
+    /// <summary>
+    /// 리액션 봉인: 대상(자기=리액터 / 관찰 대상)의 리액션을 일정 턴 동안 못 쓰게 한다.
+    /// DesignedOnly 로 역할(설계) 리액션을 봉인하면 "설계 리액션 무시"의 지속 버전이 된다.
+    /// </summary>
+    [Serializable][AddTypeMenu("Seal Reactions", -300)]
+    public class SealReactionEffect : ReactionEffect
+    {
+        [Tooltip("자기(리액터)를 봉인할지. false면 관찰 대상(Observed)을 봉인.")]
+        public bool TargetSelf = true;
+
+        [Tooltip("봉인 범위. All=전체 / DesignedOnly=역할(설계) 리액션 / Slots=무작위 N개")]
+        public SealKind Kind = SealKind.All;
+
+        [Tooltip("Kind==Slots 일 때 봉인할 슬롯 수")]
+        public int Count = 1;
+
+        [Tooltip("지속(봉인 대상의 자기 턴 수). 1=이번 라운드, 2=다음 턴까지")]
+        public int DurationTurns = 1;
+
+        public override UniTask Apply(BaseCharacter reactor, ReactionExecution execution, BattleContext originalContext)
+        {
+            var target = TargetSelf ? reactor : FirstObserved(execution) ?? reactor;
+            if (target == null) return UniTask.CompletedTask;
+
+            var seal = new ReactionSeal { Kind = Kind, RemainingTurns = DurationTurns };
+            if (Kind == SealKind.Slots) seal.Slots = PickRandomSlots(target, Count);
+
+            target.ApplySeal(seal);
+            return UniTask.CompletedTask;
+        }
+
+        private static BaseCharacter FirstObserved(ReactionExecution execution)
+            => (execution.MatchedSubjects != null && execution.MatchedSubjects.Count > 0)
+                ? execution.MatchedSubjects[0] : null;
+
+        private static HashSet<Reaction> PickRandomSlots(BaseCharacter c, int count)
+        {
+            var pool = new List<Reaction>();
+            foreach (var r in c.Reactions) if (r != null) pool.Add(r);
+
+            var picked = new HashSet<Reaction>();
+            for (int i = 0; i < count && pool.Count > 0; i++)
+            {
+                int idx = UnityEngine.Random.Range(0, pool.Count);
+                picked.Add(pool[idx]);
+                pool.RemoveAt(idx);
+            }
+            return picked;
+        }
+
+        public override string Description =>
+            (TargetSelf ? "자신" : "대상") + $" 리액션 봉인 ({Kind}, {DurationTurns}턴)";
+
+        public override ReactionEffect Clone() => new SealReactionEffect
+        {
+            TargetSelf = TargetSelf, Kind = Kind, Count = Count, DurationTurns = DurationTurns
+        };
+    }
+
+    /// <summary>
+    /// 여러 ReactionEffect 를 순차 실행. 리액션 1개당 Effect 가 하나뿐인 제약을 풀어
+    /// "행동 + 봉인 + 스트레스" 같은 조합을 한 리액션에 담는다.
+    /// </summary>
+    [Serializable][AddTypeMenu("Composite", -200)]
+    public class CompositeReactionEffect : ReactionEffect
+    {
+        [SerializeReference, SubclassSelector]
+        public List<ReactionEffect> Effects = new List<ReactionEffect>();
+
+        public override async UniTask Apply(BaseCharacter reactor, ReactionExecution execution, BattleContext originalContext)
+        {
+            if (Effects == null) return;
+            foreach (var e in Effects)
+                if (e != null) await e.Apply(reactor, execution, originalContext);
+        }
+
+        public override string Description
+        {
+            get
+            {
+                if (Effects == null || Effects.Count == 0) return "Composite(비어 있음)";
+                var parts = new List<string>(Effects.Count);
+                foreach (var e in Effects) parts.Add(e?.Description ?? "-");
+                return string.Join(" + ", parts);
+            }
+        }
+
+        public override ReactionEffect Clone()
+        {
+            var clone = new CompositeReactionEffect();
+            if (Effects != null)
+                foreach (var e in Effects) clone.Effects.Add(e?.Clone());
+            return clone;
+        }
+    }
 }

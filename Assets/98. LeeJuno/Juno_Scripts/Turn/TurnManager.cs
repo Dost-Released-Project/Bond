@@ -124,8 +124,8 @@ public class TurnManager : ITurnManager, IStartable, IDisposable
                     _selector.Deselect(); // 플레이어가 아닌 유닛 턴일 때 기존 선택 해제
                 }
                 
-                // 자기 턴 시작: 활성 버프 지속(자기 턴 수)을 1 감소시키고 만료분을 제거
-                (unit as BaseCharacter)?.TickBuffs();
+                // 자기 턴 시작: 버프·봉인 지속(자기 턴 수)을 1 감소시키고 만료분을 제거
+                if (unit is BaseCharacter ownerChar) { ownerChar.TickBuffs(); ownerChar.TickSeals(); }
 
                 await unit.TakeTurnAsync();
                 

@@ -68,6 +68,7 @@ namespace Reactions
                     if (reaction.Phase == E_ReactionPhase.None) continue;
                     if (reaction.Phase != phase) continue;
                     if (reaction.Trigger == null) continue;
+                    if (owner.IsReactionSealed(reaction)) continue; // 봉인된 리액션은 발화 후보에서 제외
 
                     var matched = new List<BaseCharacter>();
                     foreach (var candidate in ResolveCandidates(reaction, owner, context, phase))

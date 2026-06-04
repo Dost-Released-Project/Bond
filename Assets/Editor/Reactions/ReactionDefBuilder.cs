@@ -50,7 +50,14 @@ namespace Reactions.Authoring
         public ReactionDefBuilder Phase(E_ReactionPhase phase) { _template.Phase = phase; return this; }
         public ReactionDefBuilder Observe(E_ObserveFilter filter) { _template.ObserveFilter = filter; return this; }
         public ReactionDefBuilder When(params ICondition[] conditions) { if (conditions != null) _conditions.AddRange(conditions); return this; }
-        public ReactionDefBuilder Do(ReactionEffect effect) { _template.Effect = effect; return this; }
+        /// <summary>행동을 지정. 여러 개를 주면 CompositeReactionEffect 로 묶는다.</summary>
+        public ReactionDefBuilder Do(params ReactionEffect[] effects)
+        {
+            _template.Effect = (effects == null || effects.Length == 0) ? null
+                : effects.Length == 1 ? effects[0]
+                : new CompositeReactionEffect { Effects = effects.ToList() };
+            return this;
+        }
         public ReactionDefBuilder Editable(ReactionEditableSlot slot) { if (slot != null) _slots.Add(slot); return this; }
 
         // ── 조건 단축 팩토리 ──────────────────────────────────
@@ -82,6 +89,14 @@ namespace Reactions.Authoring
         /// <summary>리액터의 장착 스킬을 발동. skillIndex 가 -1 이면 ActionSkill 편집슬롯으로 런타임에 채운다.</summary>
         public static ReactionEffect CastSkill(E_TargetFilter to, int skillIndex = -1)
             => new SkillCastReactionEffect { SkillTarget = to, SkillIndex = skillIndex };
+
+        /// <summary>리액션 봉인. self=true 면 리액터 자신, false 면 관찰 대상(Observed)을 봉인.</summary>
+        public static ReactionEffect Seal(SealKind kind = SealKind.All, int turns = 1, int count = 1, bool self = true)
+            => new SealReactionEffect { Kind = kind, DurationTurns = turns, Count = count, TargetSelf = self };
+
+        /// <summary>여러 효과를 순차 실행하는 묶음.</summary>
+        public static ReactionEffect Composite(params ReactionEffect[] effects)
+            => new CompositeReactionEffect { Effects = effects != null ? effects.ToList() : new List<ReactionEffect>() };
 
         // ── 편집 슬롯 단축 팩토리 ─────────────────────────────
         public static ReactionEditableSlot ObserveTarget(string label, bool excludeSelf = true)
