@@ -1,8 +1,8 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/97.%20Moon/V2/Scripts/UI/Inventory/InventoryStyle.uss?fileID=7433441132597879392&amp;guid=2d9b46e0e3f6b80438edfeb73b2d389a&amp;type=3#InventoryStyle"/>
     <Style src="project://database/Assets/97.%20Moon/V2/Scripts/UI/USS/ExpeditionInventoryViewStyle.uss?fileID=7433441132597879392&amp;guid=28a2b5a52958d9b478b9ae747ebca52e&amp;type=3#ExpeditionInventoryViewStyle"/>
-    <ui:VisualElement name="VisualElement" style="position: absolute; top: auto; left: auto; right: 0; bottom: 0;">
+    <ui:VisualElement name="VisualElement" style="position: absolute; top: auto; left: auto; right: 0; bottom: 0; height: 300px; border-left-color: rgba(0, 0, 0, 0); border-right-color: rgba(0, 0, 0, 0); border-top-color: rgba(0, 0, 0, 0); border-bottom-color: rgba(0, 0, 0, 0); border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;">
         <ui:VisualElement name="expedition-container" style="flex-grow: 1; align-self: auto; justify-content: flex-start; flex-direction: row; flex-wrap: wrap; align-items: flex-start; align-content: flex-start; transform-origin: center;"/>
-        <ui:Image name="Image" style="background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/trash-bin.png?fileID=21300000&amp;guid=0e92270c933ea094ba5b030853071d79&amp;type=3#trash-bin&quot;);"/>
+        <ui:Image name="Image" style="background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/trash-bin.png?fileID=21300000&amp;guid=0e92270c933ea094ba5b030853071d79&amp;type=3#trash-bin&quot;); height: 300px; border-left-color: rgba(142, 112, 69, 0); border-right-color: rgba(142, 112, 69, 0); border-top-color: rgba(142, 112, 69, 0); border-bottom-color: rgba(142, 112, 69, 0);"/>
     </ui:VisualElement>
 </ui:UXML>
