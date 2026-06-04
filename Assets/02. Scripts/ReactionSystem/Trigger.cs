@@ -13,6 +13,7 @@ namespace Reactions
         None,      // 미지정 — 발화하지 않음 (의식적 선택 강제)
         PreApply,  // ApplyStep 이전 (원본 행동에 영향)
         PostApply, // ApplyStep 이후 (원본 행동의 후속)
+        OnSelfTurn,// 자기 턴 시작 (돌발 행동 — 계획 행동 대체). 파이프라인 ReactionCall 에선 발화하지 않음.
     }
 
     public enum E_ObserveFilter

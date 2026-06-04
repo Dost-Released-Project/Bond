@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using BattleSystem;
-using BattleSystem.Interface;
 
 /// <summary>
 /// BaseCharacter 의 진영 이동 편의 메서드. 자신이 보유한 FormationManager 로 이동을 수행한다.
