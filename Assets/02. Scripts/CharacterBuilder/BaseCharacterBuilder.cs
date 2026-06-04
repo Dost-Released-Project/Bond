@@ -90,6 +90,7 @@ public partial class BaseCharacter
             chara.Profession = pro;
 
             SetImageAddress(data.IconId);
+            SetName(data.DisplayName);
             chara.IdleImageAddress = data.IdleImageId;
             chara.AttackImageAddress = data.BattleImageId;
             

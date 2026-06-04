@@ -1,119 +1,99 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements">
-    <Style src="project://database/Assets/UI/Themes/EoB_Theme_DarkAmber.uss" />
-    <ui:Style src="CharacterCombatPanel.uss" />
-    <Style src="project://database/Assets/UI/Shared/EquipSlots.uss" />
-    <ui:Template name="EquipSlots" src="../Shared/EquipSlots.uxml" />
-
-    <ui:VisualElement class="character-combat-panel">
-
-        <!-- 좌측: 아이콘 + 이름 -->
-        <ui:VisualElement class="combat-panel__identity">
-            <ui:VisualElement name="combat-panel__char-icon" class="combat-panel__char-icon">
-                <!-- TODO: 캐릭터 초상화 에셋 연결 필요 -->
-                <ui:Label name="combat-panel__icon-text" class="combat-panel__icon-text" text="?" />
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Template name="EquipSlots" src="project://database/Assets/UI/Shared/EquipSlots.uxml?fileID=9197481963319205126&amp;guid=0afe954fcb08c654b84cafa7c98f94d5&amp;type=3#EquipSlots"/>
+    <Style src="project://database/Assets/UI/Themes/EoB_Theme_DarkAmber.uss?fileID=7433441132597879392&amp;guid=fa8c2ca04fc0ab24991530664bb55c09&amp;type=3#EoB_Theme_DarkAmber"/>
+    <Style src="project://database/Assets/UI/Battle/CharacterCombatPanel.uss?fileID=7433441132597879392&amp;guid=3a69cf69806f52b41b4375f0b6c4e1c6&amp;type=3#CharacterCombatPanel"/>
+    <Style src="project://database/Assets/UI/Shared/EquipSlots.uss?fileID=7433441132597879392&amp;guid=33c57ec0ad856974abe818e36e15d6f0&amp;type=3#EquipSlots"/>
+    <ui:VisualElement class="character-combat-panel" style="left: 0; bottom: 0; height: 300px; width: 1100px;">
+        <ui:VisualElement class="combat-panel__identity" style="width: 205px;">
+            <ui:VisualElement name="combat-panel__char-icon" class="combat-panel__char-icon" style="width: 100px; height: 100px;">
+                <ui:Label name="combat-panel__icon-text" text="?" class="combat-panel__icon-text" style="font-size: 30px;"/>
             </ui:VisualElement>
-            <ui:Label name="combat-panel__char-name" class="combat-panel__char-name" text="이름" />
-            <ui:Label name="combat-panel__char-job"  class="combat-panel__char-job"  text="직업" />
-            <ui:Label name="combat-panel__char-role" class="combat-panel__char-role" text="역할" />
+            <ui:Label name="combat-panel__char-name" text="이름" class="combat-panel__char-name" style="font-size: 25px;"/>
+            <ui:Label name="combat-panel__char-job" text="직업" class="combat-panel__char-job" style="font-size: 20px;"/>
+            <ui:Label name="combat-panel__char-role" text="역할" class="combat-panel__char-role" style="font-size: 20px;"/>
         </ui:VisualElement>
-
-        <ui:VisualElement class="combat-panel__divider" />
-
-        <!-- 중앙: 상태 게이지 + 스탯 -->
-        <ui:VisualElement class="combat-panel__status">
-
-            <ui:VisualElement class="combat-panel__status-section">
-                <ui:Label class="combat-panel__section-label" text="상태" />
-
+        <ui:VisualElement name="VisualElement" class="combat-panel__divider"/>
+        <ui:VisualElement class="combat-panel__status" style="width: 530px;">
+            <ui:VisualElement class="combat-panel__status-section" style="height: 129px;">
+                <ui:Label text="상태" class="combat-panel__section-label" style="font-size: 25px;"/>
                 <ui:VisualElement class="combat-panel__hp-row">
-                    <ui:Label class="combat-panel__hp-label" text="HP" />
-                    <ui:VisualElement class="combat-panel__hp-track">
-                        <ui:VisualElement name="combat-panel__hp-fill" class="combat-panel__hp-fill" />
+                    <ui:Label text="HP" class="combat-panel__hp-label" style="font-size: 20px; width: 50px;"/>
+                    <ui:VisualElement class="combat-panel__hp-track" style="height: 10px;">
+                        <ui:VisualElement name="combat-panel__hp-fill" class="combat-panel__hp-fill"/>
                     </ui:VisualElement>
-                    <ui:Label name="combat-panel__hp-value" class="combat-panel__hp-value" text="0/0" />
+                    <ui:Label name="combat-panel__hp-value" text="0/0" class="combat-panel__hp-value" style="font-size: 20px;"/>
                 </ui:VisualElement>
-
                 <ui:VisualElement class="combat-panel__insanity-row">
-                    <ui:Label class="combat-panel__insanity-label" text="광기" />
-                    <ui:VisualElement class="combat-panel__insanity-track">
-                        <ui:VisualElement name="combat-panel__insanity-fill" class="combat-panel__insanity-fill" />
+                    <ui:Label text="광기" class="combat-panel__insanity-label" style="font-size: 20px; width: 50px;"/>
+                    <ui:VisualElement class="combat-panel__insanity-track" style="height: 10px;">
+                        <ui:VisualElement name="combat-panel__insanity-fill" class="combat-panel__insanity-fill"/>
                     </ui:VisualElement>
-                    <ui:Label name="combat-panel__insanity-value" class="combat-panel__insanity-value" text="0/100" />
+                    <ui:Label name="combat-panel__insanity-value" text="0/100" class="combat-panel__insanity-value" style="font-size: 20px;"/>
                 </ui:VisualElement>
             </ui:VisualElement>
-
-            <ui:VisualElement class="combat-panel__stat-section">
-                <ui:Label class="combat-panel__section-label" text="스탯" />
+            <ui:VisualElement class="combat-panel__stat-section" style="height: 145px;">
+                <ui:Label text="스탯" class="combat-panel__section-label" style="font-size: 25px;"/>
                 <ui:VisualElement class="combat-panel__stat-grid">
-                    <ui:VisualElement class="combat-panel__stat-cell">
-                        <ui:Label class="combat-panel__stat-key" text="ATK" />
-                        <ui:Label name="stat-atk-value" class="combat-panel__stat-value" text="0" />
+                    <ui:VisualElement class="combat-panel__stat-cell" style="width: 85px; height: 90px;">
+                        <ui:Label text="ATK" class="combat-panel__stat-key" style="font-size: 20px;"/>
+                        <ui:Label name="stat-atk-value" text="0" class="combat-panel__stat-value" style="font-size: 20px;"/>
                     </ui:VisualElement>
-                    <ui:VisualElement class="combat-panel__stat-cell">
-                        <ui:Label class="combat-panel__stat-key" text="DEF" />
-                        <ui:Label name="stat-def-value" class="combat-panel__stat-value" text="0" />
+                    <ui:VisualElement class="combat-panel__stat-cell" style="width: 85px; height: 90px;">
+                        <ui:Label text="DEF" class="combat-panel__stat-key" style="font-size: 20px;"/>
+                        <ui:Label name="stat-def-value" text="0" class="combat-panel__stat-value" style="font-size: 20px;"/>
                     </ui:VisualElement>
-                    <ui:VisualElement class="combat-panel__stat-cell">
-                        <ui:Label class="combat-panel__stat-key" text="SpAtk" />
-                        <ui:Label name="stat-spatk-value" class="combat-panel__stat-value combat-panel__stat-value--accent" text="0" />
+                    <ui:VisualElement class="combat-panel__stat-cell" style="width: 85px; height: 90px;">
+                        <ui:Label text="SpAtk" class="combat-panel__stat-key" style="font-size: 20px;"/>
+                        <ui:Label name="stat-spatk-value" text="0" class="combat-panel__stat-value combat-panel__stat-value--accent" style="font-size: 20px;"/>
                     </ui:VisualElement>
-                    <ui:VisualElement class="combat-panel__stat-cell">
-                        <ui:Label class="combat-panel__stat-key" text="SPD" />
-                        <ui:Label name="stat-spd-value" class="combat-panel__stat-value" text="0" />
+                    <ui:VisualElement class="combat-panel__stat-cell" style="width: 85px; height: 90px;">
+                        <ui:Label text="SPD" class="combat-panel__stat-key" style="font-size: 20px;"/>
+                        <ui:Label name="stat-spd-value" text="0" class="combat-panel__stat-value" style="font-size: 20px;"/>
                     </ui:VisualElement>
-                    <ui:VisualElement class="combat-panel__stat-cell">
-                        <ui:Label class="combat-panel__stat-key" text="CRT" />
-                        <ui:Label name="stat-crt-value" class="combat-panel__stat-value combat-panel__stat-value--accent" text="0%" />
+                    <ui:VisualElement class="combat-panel__stat-cell" style="width: 85px; height: 90px;">
+                        <ui:Label text="CRT" class="combat-panel__stat-key" style="font-size: 20px;"/>
+                        <ui:Label name="stat-crt-value" text="0%" class="combat-panel__stat-value combat-panel__stat-value--accent" style="font-size: 20px;"/>
                     </ui:VisualElement>
-                    <ui:VisualElement class="combat-panel__stat-cell">
-                        <ui:Label class="combat-panel__stat-key" text="ACC" />
-                        <ui:Label name="stat-acc-value" class="combat-panel__stat-value" text="0%" />
+                    <ui:VisualElement class="combat-panel__stat-cell" style="width: 85px; height: 90px;">
+                        <ui:Label text="ACC" class="combat-panel__stat-key" style="font-size: 20px;"/>
+                        <ui:Label name="stat-acc-value" text="0%" class="combat-panel__stat-value" style="font-size: 20px;"/>
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
-
         </ui:VisualElement>
-
-        <ui:VisualElement class="combat-panel__divider" />
-
-        <!-- 우측: 스킬 + 장비 -->
-        <ui:VisualElement class="combat-panel__right">
-
+        <ui:VisualElement class="combat-panel__divider"/>
+        <ui:VisualElement class="combat-panel__right" style="position: absolute; right: 10px; bottom: 10px; top: 10px;">
             <ui:VisualElement class="combat-panel__skill-section">
-                <ui:Label class="combat-panel__section-label" text="스킬" />
-                <!-- TODO: 캠핑 진입 시 캠핑 스킬로 전환 — 정책 확정 후 수정 필요 -->
-                <ui:VisualElement class="combat-panel__skill-row">
-                    <ui:VisualElement name="skill-slot-0" class="combat-panel__skill-slot combat-panel__skill-slot--inactive">
-                        <ui:Label class="combat-panel__skill-num" text="1" />
-                        <ui:VisualElement class="combat-panel__skill-icon" />
-                        <ui:Label class="combat-panel__skill-name" text="-" />
+                <ui:Label text="스킬" class="combat-panel__section-label" style="font-size: 25px;"/>
+                <ui:VisualElement class="combat-panel__skill-row" style="height: 65px;">
+                    <ui:VisualElement name="skill-slot-0" class="combat-panel__skill-slot combat-panel__skill-slot--inactive" style="height: 65px;">
+                        <ui:Label text="1" class="combat-panel__skill-num"/>
+                        <ui:VisualElement class="combat-panel__skill-icon"/>
+                        <ui:Label text="-" class="combat-panel__skill-name"/>
                     </ui:VisualElement>
-                    <ui:VisualElement name="skill-slot-1" class="combat-panel__skill-slot combat-panel__skill-slot--inactive">
-                        <ui:Label class="combat-panel__skill-num" text="2" />
-                        <ui:VisualElement class="combat-panel__skill-icon" />
-                        <ui:Label class="combat-panel__skill-name" text="-" />
+                    <ui:VisualElement name="skill-slot-1" class="combat-panel__skill-slot combat-panel__skill-slot--inactive" style="height: 65px;">
+                        <ui:Label text="2" class="combat-panel__skill-num"/>
+                        <ui:VisualElement class="combat-panel__skill-icon"/>
+                        <ui:Label text="-" class="combat-panel__skill-name"/>
                     </ui:VisualElement>
-                    <ui:VisualElement name="skill-slot-2" class="combat-panel__skill-slot combat-panel__skill-slot--inactive">
-                        <ui:Label class="combat-panel__skill-num" text="3" />
-                        <ui:VisualElement class="combat-panel__skill-icon" />
-                        <ui:Label class="combat-panel__skill-name" text="-" />
+                    <ui:VisualElement name="skill-slot-2" class="combat-panel__skill-slot combat-panel__skill-slot--inactive" style="height: 65px;">
+                        <ui:Label text="3" class="combat-panel__skill-num"/>
+                        <ui:VisualElement class="combat-panel__skill-icon"/>
+                        <ui:Label text="-" class="combat-panel__skill-name"/>
                     </ui:VisualElement>
-                    <ui:VisualElement name="skill-slot-3" class="combat-panel__skill-slot combat-panel__skill-slot--inactive">
-                        <ui:Label class="combat-panel__skill-num" text="4" />
-                        <ui:VisualElement class="combat-panel__skill-icon" />
-                        <ui:Label class="combat-panel__skill-name" text="-" />
+                    <ui:VisualElement name="skill-slot-3" class="combat-panel__skill-slot combat-panel__skill-slot--inactive" style="height: 65px;">
+                        <ui:Label text="4" class="combat-panel__skill-num"/>
+                        <ui:VisualElement class="combat-panel__skill-icon"/>
+                        <ui:Label text="-" class="combat-panel__skill-name"/>
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
-
             <ui:VisualElement class="combat-panel__equip-section">
-                <ui:Label class="combat-panel__section-label" text="장비" />
+                <ui:Label text="장비" class="combat-panel__section-label" style="font-size: 25px;"/>
                 <ui:VisualElement name="combat-panel__equip-mount" class="combat-panel__equip-mount">
-                    <ui:Instance template="EquipSlots" />
+                    <ui:Instance template="EquipSlots"/>
                 </ui:VisualElement>
             </ui:VisualElement>
-
         </ui:VisualElement>
-
     </ui:VisualElement>
 </ui:UXML>
