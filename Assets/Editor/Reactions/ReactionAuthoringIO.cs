@@ -25,12 +25,12 @@ namespace Reactions.Authoring
         /// folder/{id}.asset 으로 영속화. 이미 있으면 CopySerialized 로 제자리 덮어써 GUID(외부 참조)를 보존한다.
         /// 재실행해도 안전(idempotent).
         /// </summary>
-        public static ReactionDefinitionSO Persist(ReactionDefinitionSO so, string folder, string id)
+        public static T Persist<T>(T so, string folder, string id) where T : ScriptableObject
         {
             EnsureFolder(folder);
             string path = $"{folder}/{id}.asset";
 
-            var existing = AssetDatabase.LoadAssetAtPath<ReactionDefinitionSO>(path);
+            var existing = AssetDatabase.LoadAssetAtPath<T>(path);
             if (existing != null)
             {
                 EditorUtility.CopySerialized(so, existing); // _id 포함 전 필드 복사, 기존 GUID 유지
@@ -44,47 +44,47 @@ namespace Reactions.Authoring
             return so;
         }
 
-        /// <summary>"ReactionDefinitionDataBase" DB 에셋을 찾고, 없으면 folder 에 생성.</summary>
-        public static ReactionDefinitionDataBaseSO FindOrCreateDatabase(string folder)
+        /// <summary>지정 타입 DB 에셋을 찾고, 없으면 folder/{assetName}.asset 로 생성.</summary>
+        public static T FindOrCreateDatabase<T>(string folder, string assetName) where T : DataBaseSO
         {
-            var guids = AssetDatabase.FindAssets("t:ReactionDefinitionDataBaseSO");
+            var guids = AssetDatabase.FindAssets($"t:{typeof(T).Name}");
             if (guids.Length > 0)
             {
                 if (guids.Length > 1)
-                    Debug.LogWarning($"[ReactionAuthoring] ReactionDefinitionDataBaseSO 가 {guids.Length}개입니다. 첫 번째를 사용합니다.");
-                return AssetDatabase.LoadAssetAtPath<ReactionDefinitionDataBaseSO>(AssetDatabase.GUIDToAssetPath(guids[0]));
+                    Debug.LogWarning($"[ReactionAuthoring] {typeof(T).Name} 가 {guids.Length}개입니다. 첫 번째를 사용합니다.");
+                return AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GUIDToAssetPath(guids[0]));
             }
 
             EnsureFolder(folder);
-            var db = ScriptableObject.CreateInstance<ReactionDefinitionDataBaseSO>();
-            AssetDatabase.CreateAsset(db, $"{folder}/ReactionDefinitionDataBase.asset");
-            Debug.Log($"[ReactionAuthoring] DB 에셋이 없어 새로 생성: {folder}/ReactionDefinitionDataBase.asset");
+            var db = ScriptableObject.CreateInstance<T>();
+            AssetDatabase.CreateAsset(db, $"{folder}/{assetName}.asset");
+            Debug.Log($"[ReactionAuthoring] DB 에셋이 없어 새로 생성: {folder}/{assetName}.asset");
             return db;
         }
 
-        /// <summary>DB 의 _soList 에 정의들을 등록(Id 기준 중복 시 교체, null 정리).</summary>
-        public static void RegisterInDatabase(ReactionDefinitionDataBaseSO db, IEnumerable<ReactionDefinitionSO> defs)
+        /// <summary>DB 의 _soList 에 항목들을 등록(Id 기준 중복 시 교체, null 정리).</summary>
+        public static void RegisterInDatabase(DataBaseSO db, IEnumerable<BaseSO> items)
         {
             var sob = new SerializedObject(db);
             var list = sob.FindProperty("_soList");
 
-            foreach (var def in defs)
+            foreach (var item in items)
             {
-                if (def == null) continue;
+                if (item == null) continue;
 
                 int found = -1;
                 for (int i = 0; i < list.arraySize; i++)
                 {
-                    var cur = list.GetArrayElementAtIndex(i).objectReferenceValue as ReactionDefinitionSO;
-                    if (cur != null && cur.Id == def.Id) { found = i; break; }
+                    var cur = list.GetArrayElementAtIndex(i).objectReferenceValue as BaseSO;
+                    if (cur != null && cur.Id == item.Id) { found = i; break; }
                 }
 
                 if (found >= 0)
-                    list.GetArrayElementAtIndex(found).objectReferenceValue = def;
+                    list.GetArrayElementAtIndex(found).objectReferenceValue = item;
                 else
                 {
                     list.arraySize++;
-                    list.GetArrayElementAtIndex(list.arraySize - 1).objectReferenceValue = def;
+                    list.GetArrayElementAtIndex(list.arraySize - 1).objectReferenceValue = item;
                 }
             }
 

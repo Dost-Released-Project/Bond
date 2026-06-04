@@ -82,7 +82,7 @@ namespace Reactions.Authoring
                     .Build(Folder));
 
             // ── 등록 + 저장 ──────────────────────────────────
-            var db = ReactionAuthoringIO.FindOrCreateDatabase(Folder);
+            var db = ReactionAuthoringIO.FindOrCreateDatabase<ReactionDefinitionDataBaseSO>(Folder, "ReactionDefinitionDataBase");
             ReactionAuthoringIO.RegisterInDatabase(db, defs);
 
             AssetDatabase.SaveAssets();
