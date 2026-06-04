@@ -21,3 +21,5 @@ EVT_REST_VIEW	{0} 너머로 {1}의 풍경이 보입니다. ; 잠시 쉬어가는
 EVT_BATTLE_END	{0}명의 동료들과 함께 {1}마리의 적을 처치했다.	ACTION_RETURN_MAP:맵으로 돌아가기 	
 EVT_CAMP_START	탐사 중 휴식을 취할 시간입니다.	CAMP_ACTION_USEITEM;사용한다	
 EVT_CAMP_END		CAMP_END:맵으로 돌아가기 	
+EVT_BATTLE_RETREAT	퇴각 하시겠습니까?	ACTION_RETURN_MAP:맵으로 돌아가기 	
+EVT_BATTLE_END_DEFEAT	전투에서 패배했다.	ACTION_RETURN_MAP_DEFEAT:맵으로 돌아가기 	

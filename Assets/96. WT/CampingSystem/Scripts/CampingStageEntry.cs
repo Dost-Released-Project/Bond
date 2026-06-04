@@ -36,6 +36,7 @@ namespace Bond.WT.Camping
             // 캠핑 시스템 및 핸들러 등록
             builder.Register<CampingSystem>(Lifetime.Scoped);
             builder.Register<CampingJournalActionHandler>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
+            builder.RegisterComponentInHierarchy<CampingJournalTriggerView>();
 
             // 진영(포메이션) 등록
             builder.Register<FormationManager>(Lifetime.Scoped).As<IFormationManager>();
@@ -93,9 +94,6 @@ namespace Bond.WT.Camping
                     }
                 }
             }
-
-            // 캠핑 시작
-            _campingSystem.StartCamping();
         }
     }
 }

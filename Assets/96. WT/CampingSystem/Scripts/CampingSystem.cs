@@ -22,11 +22,6 @@ namespace Bond.WT.Camping
             _journalDB = journalDB;
         }
 
-        public void StartCamping()
-        {
-            GenerateCampingReport();
-        }
-
         public void AddHander(IJournalActionHandler handler)
         {
             _journalSystem.AddActionHandler(handler);

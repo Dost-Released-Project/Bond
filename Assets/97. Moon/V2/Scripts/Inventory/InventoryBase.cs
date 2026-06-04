@@ -103,94 +103,86 @@ public abstract class InventoryBase : IInventory
     
     public void SortById() { _slots = _slots.OrderBy(s => s.item?.id ?? "ZZZ").ToList(); OnChanged?.Invoke(); }
     public abstract int AddItemAuto(BaseItem item, int quantity);
-    //public abstract Task<int> AddItemId(string id, int quantity);
-    
-    public async Task<int> AddItemId(string id, int quantity)
-{
-    if (quantity <= 0) return 0;
 
-    // 1. 어드레서블 아이템 DB 로드 및 대기 (기존 구조 보존)
-    var conHandle = Addressables.LoadAssetAsync<ConsumableDataBaseSO>("ConsumableDataBase");
-    var accHandle = Addressables.LoadAssetAsync<AccessoryDataBaseSO>("AccessoryDataBase");
-    await System.Threading.Tasks.Task.WhenAll(conHandle.Task, accHandle.Task);
-    
-    var accDB = accHandle.Result;
-    var conDB = conHandle.Result;
-    
-    BaseItem item = accDB.GetSO<BaseItem>(id) ?? conDB.GetSO<BaseItem>(id);
-    if (item == null)
+    public int AddItemId(string id, int quantity)
     {
-        Debug.LogWarning($"[인벤토리] DB에서 아이템 ID [{id}]를 찾을 수 없습니다.");
-        return quantity;
-    }
+        if (quantity <= 0) return 0;
 
-    // 2. 리더님의 기획 가이드 반영: 인벤토리 타입 및 카테고리별 분할 여부 결정
-    // 이 스스크립트가 붙은 실제 인스턴스 타입 명칭을 확인합니다.
-    bool isTotalInventory = this is TotalInventory; 
-    bool shouldSplit = true;
-
-    if (isTotalInventory)
-    {
-        // 토탈 인벤토리일 때는 오직 '장신구(Accessories)'만 분할 처리 규칙 적용
-        shouldSplit = (item.category == ItemCategory.Accessories);
-    }
-    // 탐사 인벤토리(ExpeditionInventory)일 때는 필터 없이 소모품/장신구 둘 다 true 유지
-
-    // 분할 처리를 하지 않는 대상이라면 기존처럼 통째로 한 번에 던지고 끝냅니다.
-    if (!shouldSplit)
-    {
-        return AddItemAuto(item, quantity);
-    }
-
-    // 3. 한 칸당 최대치 제한 규격 파악
-    int slotMax = item.expeditionSlotMax;
-    if (slotMax <= 0) slotMax = 1;
-
-    int remainingQuantity = quantity;
-
-    // 4. [치명적 버그 수정] 기존에 이미 가방에 존재하는 같은 아이템의 '잔여 공간' 먼저 채우기
-    // 자식 인벤토리가 가진 현재 누적 수량이나 슬롯을 검사하여 기존 자리를 먼저 채워 줍니다.
-    // 인벤토리 코어 클래스에 현재 특정 아이템의 총 소지 개수를 가져오는 함수가 있다면 매칭합니다.
-    // 없거나 계산이 복잡하다면, 안전하게 1개씩이 아니라 기존 슬롯의 빈 틈을 채우도록 유도합니다.
-    
-    int currentItemTotalCount = this.GetItemCount(item.id); // (자식 인벤토리에 구현되어 있는 소지량 체크 함수 호출)
-    if (currentItemTotalCount > 0)
-    {
-        int currentOccupiedSlots = Mathf.CeilToInt((float)currentItemTotalCount / slotMax);
-        int totalCapacityOfOccupiedSlots = currentOccupiedSlots * slotMax;
-        int currentResidualRoom = totalCapacityOfOccupiedSlots - currentItemTotalCount; // 기존 슬롯의 남은 빈틈
-
-        // 채워넣을 빈 틈이 있다면 그만큼 먼저 채워넣어 증발 예외를 원천 차단!
-        if (currentResidualRoom > 0 && remainingQuantity > 0)
+        // // 1. 아이템 DB 로드
+        BaseItem item = DBSORegistry.GetSO<BaseItem>(id);
+        if (item == null)
         {
-            int fillQty = Mathf.Min(currentResidualRoom, remainingQuantity);
-            int remainFromFill = AddItemAuto(item, fillQty);
-            
-            // 정상적으로 들어간 수량만큼 전체 차감
-            remainingQuantity -= (fillQty - remainFromFill);
-
-            // 가방이 완전 풀이라 아예 튕겨나왔다면 즉시 남은 수량 반환 후 종료
-            if (remainFromFill >= fillQty) return remainingQuantity;
-        }
-    }
-
-    // 5. 기존 자리를 다 채우고도 남은 수량이 있다면, 새 슬롯을 열어가며 slotMax 단위로 안전 분할 수납
-    while (remainingQuantity > 0)
-    {
-        int chunkQty = Mathf.Min(slotMax, remainingQuantity);
-        int remainFromAuto = AddItemAuto(item, chunkQty);
-
-        // 가방이 더 이상 새 슬롯을 열 공간(Capacity 한도)이 없다면 무한루프 방지 탈출
-        if (remainFromAuto >= chunkQty)
-        {
-            break;
+            Debug.LogWarning($"[인벤토리] DB에서 아이템 ID [{id}]를 찾을 수 없습니다.");
+            return quantity;
         }
 
-        remainingQuantity -= (chunkQty - remainFromAuto);
-    }
+        // 2. 기획 가이드 반영: 인벤토리 타입 및 카테고리별 분할 여부 결정
+        // 이 스스크립트가 붙은 실제 인스턴스 타입 명칭을 확인합니다.
+        bool isTotalInventory = this is TotalInventory;
+        bool shouldSplit = true;
 
-    return remainingQuantity;
-}
+        if (isTotalInventory)
+        {
+            // 토탈 인벤토리일 때는 오직 '장신구(Accessories)'만 분할 처리 규칙 적용
+            shouldSplit = (item.category == ItemCategory.Accessories);
+        }
+        // 탐사 인벤토리(ExpeditionInventory)일 때는 필터 없이 소모품/장신구 둘 다 true 유지
+
+        // 분할 처리를 하지 않는 대상이라면 기존처럼 통째로 한 번에 던지고 끝냅니다.
+        if (!shouldSplit)
+        {
+            return AddItemAuto(item, quantity);
+        }
+
+        // 3. 한 칸당 최대치 제한 규격 파악
+        int slotMax = item.expeditionSlotMax;
+        if (slotMax <= 0) slotMax = 1;
+
+        int remainingQuantity = quantity;
+
+        // 4. [치명적 버그 수정] 기존에 이미 가방에 존재하는 같은 아이템의 '잔여 공간' 먼저 채우기
+        // 자식 인벤토리가 가진 현재 누적 수량이나 슬롯을 검사하여 기존 자리를 먼저 채워 줍니다.
+        // 인벤토리 코어 클래스에 현재 특정 아이템의 총 소지 개수를 가져오는 함수가 있다면 매칭합니다.
+        // 없거나 계산이 복잡하다면, 안전하게 1개씩이 아니라 기존 슬롯의 빈 틈을 채우도록 유도합니다.
+
+        int currentItemTotalCount = this.GetItemCount(item.id); // (자식 인벤토리에 구현되어 있는 소지량 체크 함수 호출)
+        if (currentItemTotalCount > 0)
+        {
+            int currentOccupiedSlots = Mathf.CeilToInt((float)currentItemTotalCount / slotMax);
+            int totalCapacityOfOccupiedSlots = currentOccupiedSlots * slotMax;
+            int currentResidualRoom = totalCapacityOfOccupiedSlots - currentItemTotalCount; // 기존 슬롯의 남은 빈틈
+
+            // 채워넣을 빈 틈이 있다면 그만큼 먼저 채워넣어 증발 예외를 원천 차단!
+            if (currentResidualRoom > 0 && remainingQuantity > 0)
+            {
+                int fillQty = Mathf.Min(currentResidualRoom, remainingQuantity);
+                int remainFromFill = AddItemAuto(item, fillQty);
+
+                // 정상적으로 들어간 수량만큼 전체 차감
+                remainingQuantity -= (fillQty - remainFromFill);
+
+                // 가방이 완전 풀이라 아예 튕겨나왔다면 즉시 남은 수량 반환 후 종료
+                if (remainFromFill >= fillQty) return remainingQuantity;
+            }
+        }
+
+        // 5. 기존 자리를 다 채우고도 남은 수량이 있다면, 새 슬롯을 열어가며 slotMax 단위로 안전 분할 수납
+        while (remainingQuantity > 0)
+        {
+            int chunkQty = Mathf.Min(slotMax, remainingQuantity);
+            int remainFromAuto = AddItemAuto(item, chunkQty);
+
+            // 가방이 더 이상 새 슬롯을 열 공간(Capacity 한도)이 없다면 무한루프 방지 탈출
+            if (remainFromAuto >= chunkQty)
+            {
+                break;
+            }
+
+            remainingQuantity -= (chunkQty - remainFromAuto);
+        }
+
+        return remainingQuantity;
+    }
 
     public virtual bool ConsumeItem(string itemId, int quantity)
     {

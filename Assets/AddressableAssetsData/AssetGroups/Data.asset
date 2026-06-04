@@ -45,6 +45,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - DBSO
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5882e7480da550c44adccb94efd7eff6
+    m_Address: ReactionDefinitionDataBase
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DBSO
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5d489f423e31aee4bbada1cd1e83daa4
     m_Address: ClassDataBase
     m_ReadOnly: 0
@@ -65,6 +71,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d278c20e489ff9f4599c6835ad9fcb44
     m_Address: EventDataBase
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DBSO
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4be4a8fbba353749a4af0d0181ce7f1
+    m_Address: TraitDataBase
     m_ReadOnly: 0
     m_SerializedLabels:
     - DBSO

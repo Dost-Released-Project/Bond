@@ -15,9 +15,9 @@ public class MonsterFactory
     // MonsterSO에 직업 데이터가 없으므로 팩토리 내부에 고정값으로 정의한다.
     private const float HpMultiplier           = 5f;  // STR 계열: max_Hp
     private const float AtkMultiplier          = 2f;  // STR 계열: atk
-    private const float DefMultiplier          = 1f;  // AGI 계열: def
+    private const float DefMultiplier          = 2f;  // AGI 계열: def
     private const float SpeedMultiplier        = 3f;  // AGI 계열: speed
-    private const float CriMultiplier          = 1f;  // AGI 계열: crt
+    private const float CriMultiplier          = 2f;  // AGI 계열: crt
     private const float AccMultiplier          = 2f;  // AGI 계열: acc
     private const float EvaMultiplier          = 1f;  // AGI 계열: eva
     private const float ReactionCtrlMultiplier = 1f;  // INT 계열: Reaction_Ctrl
@@ -161,19 +161,19 @@ public class MonsterFactory
         float finalINT = controller.ApplyModifiers(StatType.INT, stat.INT);
 
         // STR 계열
-        stat.max_Hp = Mathf.RoundToInt(controller.ApplyModifiers(StatType.MaxHP, finalSTR * HpMultiplier));
-        stat.atk    = Mathf.RoundToInt(controller.ApplyModifiers(StatType.Atk,   finalSTR * AtkMultiplier));
+        stat.max_Hp = Mathf.FloorToInt(controller.ApplyModifiers(StatType.MaxHP, finalSTR * HpMultiplier));
+        stat.atk    = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Atk,   finalSTR * AtkMultiplier));
 
         // AGI 계열
-        stat.def   = Mathf.RoundToInt(controller.ApplyModifiers(StatType.Def,   finalAGI * DefMultiplier));
-        stat.speed = Mathf.RoundToInt(controller.ApplyModifiers(StatType.Speed, finalAGI * SpeedMultiplier));
-        stat.crt   = Mathf.RoundToInt(controller.ApplyModifiers(StatType.Cri,   finalAGI * CriMultiplier));
-        stat.acc   = Mathf.RoundToInt(controller.ApplyModifiers(StatType.Acc,   finalAGI * AccMultiplier));
-        stat.eva = Mathf.RoundToInt(controller.ApplyModifiers(StatType.Eva, finalINT * EvaMultiplier));
+        stat.def   = controller.ApplyModifiers(StatType.Def,   finalAGI * DefMultiplier) * 0.01f;
+        stat.speed = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Speed, finalAGI * SpeedMultiplier));
+        stat.crt   = controller.ApplyModifiers(StatType.Cri,   finalAGI * CriMultiplier) * 0.01f;
+        stat.acc   = (controller.ApplyModifiers(StatType.Acc,   finalAGI * AccMultiplier) * 0.01f) + 0.5f;
+        stat.eva   = controller.ApplyModifiers(StatType.Eva, finalINT * EvaMultiplier) * 0.01f;
 
         // INT 계열
-        stat.Reaction_Ctrl = Mathf.RoundToInt(controller.ApplyModifiers(StatType.ReactionCtrl, finalINT * ReactionCtrlMultiplier));
-        stat.Sp_Atk        = Mathf.RoundToInt(controller.ApplyModifiers(StatType.SpAtk,        finalINT * SpAtkMultiplier));
+        stat.Reaction_Ctrl = controller.ApplyModifiers(StatType.ReactionCtrl, finalINT * ReactionCtrlMultiplier) * 0.01f;
+        stat.Sp_Atk        = Mathf.FloorToInt(controller.ApplyModifiers(StatType.SpAtk,        finalINT * SpAtkMultiplier));
 
         // 현재 체력을 최대 체력으로 초기화
         stat.current_Hp = stat.max_Hp;

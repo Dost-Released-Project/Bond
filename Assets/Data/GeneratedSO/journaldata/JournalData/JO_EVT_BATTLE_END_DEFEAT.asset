@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5749328eeb9677b4ab026fe783bb09f2, type: 3}
+  m_Name: JO_EVT_BATTLE_END_DEFEAT
+  m_EditorClassIdentifier: Assembly-CSharp::Bond.WT.Journal.JournalDataSO
+  _id: EVT_BATTLE_END_DEFEAT
+  _displayName: EVT_BATTLE_END_DEFEAT
+  _description: 
+  _paragraphs:
+  - "\uC804\uD22C\uC5D0\uC11C \uD328\uBC30\uD588\uB2E4."
+  _options:
+  - text: "\uB9F5\uC73C\uB85C \uB3CC\uC544\uAC00\uAE30"
+    actionKey: ACTION_RETURN_MAP_DEFEAT
+    _isDisabled: 0
+  _entryIconId: 

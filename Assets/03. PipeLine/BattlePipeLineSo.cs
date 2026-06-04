@@ -109,7 +109,19 @@ namespace PipeLine
 
             float skillValue = context.runtimeSkill.Data.Value;
             context.value = characterStat + skillValue;
-            
+
+            // 공격 계열 스킬에 한해 시전자의 데미지 증가 비율(DamageMultiplier; 버프/장비 모디파이어 합산)을 적용
+            if (skillType == SkillType.OFFENSIVE || skillType == SkillType.SPELL)
+            {
+                // base 1(=100%)로 읽고 1을 빼면 Flat/Percent 모디파이어가 모두 "추가 비율"로 합산된다.
+                float damageMultiplier = context.caster.StatController.ApplyModifiers(StatType.DamageMultiplier, 1f) - 1f;
+                if (!Mathf.Approximately(damageMultiplier, 0f))
+                {
+                    context.value *= (1f + damageMultiplier);
+                    Debug.Log($"[EntryStep] 데미지 증가 {damageMultiplier:P0} 적용 → {context.value}");
+                }
+            }
+
             Debug.Log($"[EntryStep] 최종 산출 수치: {context.value} (스탯 {characterStat} + 스킬 위력 {skillValue})");
             return UniTask.FromResult(context);
         }
@@ -141,11 +153,11 @@ namespace PipeLine
 
             if (context.isEvaded)
             {
-                Debug.Log($"<color=white><b>[회피]</b></color> {context.target.Name}이(가) {context.caster.Name}의 공격을 피했습니다! (명중률: {hitRate}%)");
+                Debug.Log($"<color=white><b>[회피]</b></color> {context.target.Name}이(가) {context.caster.Name}의 공격을 피했습니다! (명중률: {hitRate:P0})");
             }
             else
             {
-                Debug.Log($"[EvasionStep] 타겟: {context.target.Name}, 명중률: {hitRate}%, 회피 발생 여부: {context.isEvaded}");
+                Debug.Log($"[EvasionStep] 타겟: {context.target.Name}, 명중률: {hitRate:P0}, 회피 발생 여부: {context.isEvaded}");
             }
             return UniTask.FromResult(context);
         }
@@ -193,8 +205,12 @@ namespace PipeLine
                 // 방어 제한선 설정 (예: 방어력이 아무리 높아도 데미지의 90%까지만 감소 가능)
                 targetDefPercent = Mathf.Min(0.9f, targetDefPercent);
 
-                // 데미지 감소 계산: 원래 데미지 * (1 - 방어율)
-                float reducedValue = context.value * (1f - targetDefPercent);
+                // 받는 데미지 감소 비율(DamageReduction; 버프/장비 모디파이어 합산)을 방어율과 함께 적용.
+                // base 1 로 읽고 1을 빼 Flat/Percent 모두 비율로 합산. 음수면 취약(피해 증가)으로 동작하며, 과도한 감소는 말미의 Max(0)이 막는다.
+                float damageReduction = context.target.StatController.ApplyModifiers(StatType.DamageReduction, 1f) - 1f;
+
+                // 데미지 감소 계산: 원래 데미지 * (1 - 방어율) * (1 - 데미지 감소율)
+                float reducedValue = context.value * (1f - targetDefPercent) * (1f - damageReduction);
 
                 // [요구사항] 반올림을 지양하고 소수점을 남기지 않도록 버림(FloorToInt) 처리
                 int finalDamage = Mathf.FloorToInt(reducedValue);

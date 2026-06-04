@@ -24,7 +24,7 @@ namespace Bond.WT.Journal
             return actionKey == "Take";
         }
 
-        public async UniTask ExecuteAction(string actionKey, JournalReport report)
+        public UniTask ExecuteAction(string actionKey, JournalReport report)
         {
             if (report.Metadata.TryGetValue("ItemId", out string itemId))
             {
@@ -34,14 +34,16 @@ namespace Bond.WT.Journal
                     quantity = parsedQuantity;
                 }
 
-                // 탐사용 인벤토리에 아이템을 추가 (비동기 대기)
-                await _payload.Supplies.AddItemId(itemId, quantity);
+                // 탐사용 인벤토리에 아이템을 추가
+                _payload.Supplies.AddItemId(itemId, quantity);
                 Debug.Log($"<color=green>[JournalInventoryActionHandler]</color> 일지 선택에 의해 탐사용 인벤토리에 아이템 추가 완료: {itemId} x {quantity}");
             }
             else
             {
                 Debug.LogWarning($"<color=yellow>[JournalInventoryActionHandler]</color> 'Take' 액션이 호출되었으나, 리포트 메타데이터에 'ItemId'가 없습니다. Title: {report.Title}");
             }
+
+            return UniTask.CompletedTask;
         }
     }
 }
