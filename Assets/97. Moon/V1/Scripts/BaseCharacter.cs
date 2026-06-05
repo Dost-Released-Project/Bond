@@ -54,6 +54,9 @@ public partial class BaseCharacter : ITurnUseUnit
 
     public void Init()
     {
+        // 로드 시엔 OnEquip 이 호출되지 않으므로, 장착 중인 장신구 모디파이어를 CalcStat 전에 재적용한다.
+        ReapplyAccessoryModifiers();
+
         CalcStat();
         // 저장된 HP 가 있으면 복원(max 로 클램프), 없으면(신규 캐릭터) 풀피.
         if (_loadedHp.HasValue)
@@ -62,6 +65,12 @@ public partial class BaseCharacter : ITurnUseUnit
             SetHpFull();
         SyncTraitReactions();
         Dict[Id] = this;
+        void ReapplyAccessoryModifiers()
+        {
+            if (Accessories == null) return;
+            foreach (var acc in Accessories)
+                acc?.OnEquip(this);
+        }
     }
     
     /// <summary>TraitIds[i] 를 카탈로그에서 해석한 TraitSO. 미설정/미로드면 null.</summary>
