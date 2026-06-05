@@ -12,6 +12,7 @@ using UnityEngine;
 public class EventLogAccumulator
 {
     private readonly List<JournalReport> _allLogs = new List<JournalReport>();
+    private readonly List<string> _pendingDeathLines = new List<string>();
     private readonly MapConfigCache _mapConfigCache;
 
     /// <summary>
@@ -328,6 +329,46 @@ public class EventLogAccumulator
         }
 
         return string.Empty;
+    }
+
+    public void RecordCharacterDeath(string characterName, StageType? stageType)
+    {
+        string context;
+        if (stageType == null)
+            context = "탐사 중";
+        else if (stageType == StageType.Normal)
+            context = "전투에서";
+        else
+            context = "이벤트에서";
+
+        _pendingDeathLines.Add($"{characterName}가 {context} 전사하였습니다.");
+    }
+
+    public void RecordRetreat(bool isWipeout)
+    {
+        string title   = isWipeout ? "파티 전멸" : "탐사 퇴각";
+        string summary = isWipeout
+            ? "모든 파티원이 전사하여 탐사를 중단하였습니다."
+            : "탐사대가 스스로 퇴각을 결정하였습니다.";
+
+        List<string> paragraphs = new List<string> { title };
+
+        foreach (string deathLine in _pendingDeathLines)
+            paragraphs.Add(deathLine);
+
+        paragraphs.Add(summary);
+
+        JournalReport report = new JournalReport
+        {
+            Title      = title,
+            Paragraphs = paragraphs,
+            IconId     = string.Empty,
+            Options    = new List<JournalOption>(),
+            ProviderId = "Retreat",
+        };
+
+        _allLogs.Add(report);
+        _pendingDeathLines.Clear();
     }
 
     /// <summary>

@@ -106,6 +106,17 @@ public class StageLoader : IStageLoader
     /// </summary>
     public bool IsLoading => _isLoading;
 
+    public StageType? CurrentStageType
+    {
+        get
+        {
+            if (_hasLoadedScene == false)
+                return null;
+
+            return _isBattleStage ? StageType.Normal : StageType.Event;
+        }
+    }
+
     /// <summary>
     /// 지정한 StageType에 대응하는 씬을 Additive로 비동기 로드한다.
     /// 이미 씬이 로드되어 있으면 언로드 후 새 씬을 로드한다.
