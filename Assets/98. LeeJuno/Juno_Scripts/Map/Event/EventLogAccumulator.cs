@@ -344,6 +344,31 @@ public class EventLogAccumulator
         _pendingDeathLines.Add($"{characterName}가 {context} 전사하였습니다.");
     }
 
+    public void RecordExpeditionSuccess()
+    {
+        string title   = "탐사 성공";
+        string summary = "모든 적을 물리치고 탐사를 성공적으로 마쳤습니다.";
+
+        List<string> paragraphs = new List<string> { title };
+
+        foreach (string deathLine in _pendingDeathLines)
+            paragraphs.Add(deathLine);
+
+        paragraphs.Add(summary);
+
+        JournalReport report = new JournalReport
+        {
+            Title      = title,
+            Paragraphs = paragraphs,
+            IconId     = string.Empty,
+            Options    = new List<JournalOption>(),
+            ProviderId = "ExpeditionSuccess",
+        };
+
+        _allLogs.Add(report);
+        _pendingDeathLines.Clear();
+    }
+
     public void RecordRetreat(bool isWipeout)
     {
         string title   = isWipeout ? "파티 전멸" : "탐사 퇴각";

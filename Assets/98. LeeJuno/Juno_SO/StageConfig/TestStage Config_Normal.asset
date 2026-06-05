@@ -17,6 +17,6 @@ MonoBehaviour:
   _description: 
   Type: 0
   Icon: {fileID: 0}
-  IconAddress: 
+  IconAddress: Battle_Stage
   SceneAddress: Stage_Battle
   NodeColor: {r: 1, g: 1, b: 1, a: 1}

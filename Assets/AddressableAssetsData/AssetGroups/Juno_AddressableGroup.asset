@@ -20,6 +20,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 06a783f93fb7bd2468311578825fed70
+    m_Address: Camp_Stage
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0ba10cda619beee4980074fdfc93dbbc
     m_Address: Map
     m_ReadOnly: 0
@@ -35,6 +40,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 43f729b11cd35ff4db75dd86d1d66ca7
+    m_Address: Run_Icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 497e20e9361da434a85e53d0072be087
     m_Address: MonsterGroupConfig
     m_ReadOnly: 0
@@ -47,6 +57,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5829dfea3bf92414cabef2f0b3188982
     m_Address: Map_Camping
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 583ff7ce6450a6343a0af9ff63143cf8
+    m_Address: Battle_Stage
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 65002edc61b1b494185f99c0bb795fc3
+    m_Address: Boss_Stage
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -72,6 +92,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 93cf7406a56a157468bd2aed65a57560
     m_Address: Map_Elite
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 94510a880bd1f8c4f95c50c4eb3ca43b
+    m_Address: Event_Stage
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

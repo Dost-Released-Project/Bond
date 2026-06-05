@@ -17,6 +17,6 @@ MonoBehaviour:
   _description: 
   Type: 4
   Icon: {fileID: 0}
-  IconAddress: 
+  IconAddress: Event_Stage
   SceneAddress: EventTestScene
   NodeColor: {r: 1, g: 1, b: 1, a: 1}
