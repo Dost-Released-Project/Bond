@@ -4,10 +4,8 @@ using Buffs;
 using Newtonsoft.Json;
 using UnityEngine;
 
-/// <summary>
-/// BaseCharacter 의 전투 버프 파트. 활성 버프 보관·적용·만료를 담당한다.
-/// 버프는 전투 런타임 한정이라 세이브에 직렬화하지 않는다([JsonIgnore]).
-/// </summary>
+// BaseCharacter 의 전투 버프 파트. 활성 버프 보관·적용·만료를 담당한다.
+// 버프는 전투 런타임 한정이라 세이브에 직렬화하지 않는다([JsonIgnore]).
 public partial class BaseCharacter
 {
     [JsonIgnore] private readonly List<ActiveBuff> _activeBuffs = new List<ActiveBuff>();
