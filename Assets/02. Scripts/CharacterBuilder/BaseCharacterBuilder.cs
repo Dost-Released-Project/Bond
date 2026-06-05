@@ -38,11 +38,8 @@ public partial class BaseCharacter
         public BaseCharacter Build()
         {
             SetRoleAuto();
-            chara.CalcStat();
-            chara.SetHpFull();
             chara.Id = System.Guid.NewGuid().ToString();
-            chara.SyncTraitReactions();
-            Dict[chara.Id] = chara;
+            chara.Init();
             return chara;
         }
         

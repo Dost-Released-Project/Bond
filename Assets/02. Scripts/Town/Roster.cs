@@ -60,5 +60,10 @@ public class Roster : ISaveable<List<BaseCharacter>>
     public void Restore(List<BaseCharacter> data)
     {
         Characters = data;
+
+        foreach (var ch in Characters)
+        {
+            ch.Init();
+        }
     }
 }

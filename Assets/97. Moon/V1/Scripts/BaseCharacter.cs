@@ -52,6 +52,14 @@ public partial class BaseCharacter : ITurnUseUnit
     public Reaction[] TraitReactions = new Reaction[4];
     [JsonIgnore] public Reaction[] Reactions => RoleReactions.Concat(TraitReactions).ToArray();
 
+    public void Init()
+    {
+        CalcStat();
+        SetHpFull();
+        SyncTraitReactions();
+        Dict[Id] = this;
+    }
+    
     /// <summary>TraitIds[i] 를 카탈로그에서 해석한 TraitSO. 미설정/미로드면 null.</summary>
     public TraitSO GetTrait(int index)
     {

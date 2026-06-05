@@ -5,6 +5,8 @@ using System.Linq;
 using BattleSystem;
 using Bond.Embark;
 using Bond.Expedition;
+using Bond.Persistence;
+using Newtonsoft.Json;
 using PipeLine;
 using Reactions;
 using UnityEditor;
@@ -38,6 +40,27 @@ namespace _90._HA.Temp.Test
             //FillRosterFromPreset();
         }
 
+        private void Update()
+        {
+            if (Keyboard.current.numpad0Key.wasPressedThisFrame)
+                Depart();
+        }
+
+        public void CharacterToJson()
+        {
+            BaseCharacter chara = new StageCoach().GetRandomCharacter();
+            string output = JsonConvert.SerializeObject(chara, Formatting.Indented, SaveLoadSystem.Settings);
+            File.WriteAllText("Assets/90. HA/Temp/characterJsonTest.json", output, System.Text.Encoding.UTF8);
+            Debug.Log(output);
+        }
+        public void JsonToCharacter()
+        {
+            string json = File.ReadAllText("Assets/90. HA/Temp/characterJsonTest.json", System.Text.Encoding.UTF8);
+            BaseCharacter chara = JsonConvert.DeserializeObject<BaseCharacter>(json, SaveLoadSystem.Settings);
+            Debug.Log(chara);
+            roster.Hire(chara);
+        }
+        
         public void CreateCharacterPresets()
         {
             var db = professionDb.Query<ClassSO>(so => true);
@@ -67,13 +90,7 @@ namespace _90._HA.Temp.Test
             EditorUtility.SetDirty(so);
             AssetDatabase.SaveAssetIfDirty(so);
         }
-
-        private void Update()
-        {
-            if (Keyboard.current.numpad0Key.wasPressedThisFrame)
-                Depart();
-        }
-
+        
         public void Depart()
         {
             FillRosterFromPreset();
