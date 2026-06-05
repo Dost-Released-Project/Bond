@@ -148,7 +148,7 @@ public partial class BaseCharacter : ITurnUseUnit
         Accessories[index]?.OnUnequip(this);
         Accessories[index] = item;
         Accessories[index]?.OnEquip(this);
-        CalcStat();
+        CalcStat();                          // max 변경 시 비율 보존 + OnHpChanged 까지 내부 처리
         OnAccessoriesChanged?.Invoke(this);
     }
 
@@ -164,6 +164,26 @@ public partial class BaseCharacter : ITurnUseUnit
         Armor = armor;
         CalcStat();
         OnEquipmentChanged?.Invoke(this);
+    }
+
+    /// <summary>
+    /// max_Hp 가 바뀌었을 때 현재 체력 "비율"을 보존하도록 current_Hp 를 재계산한다(+오버플로 클램프).
+    /// CalcStat 내부에서 호출되므로 max 를 바꾸는 모든 경로(장비·향후 레벨업/버프 등)가 자동 적용된다.
+    /// 로드(Init)는 fresh Stat(max=0)이라 여기선 0 으로 클램프될 뿐이고, 직후 저장된 절대 HP 로 덮어쓴다.
+    /// 반환: current_Hp 가 실제로 바뀌었으면 true (CalcStat 이 OnHpChanged 발화 여부 판단).
+    /// </summary>
+    private bool RescaleCurrentHp(int oldMax)
+    {
+        if (Stat.max_Hp == oldMax) return false;            // 변화 없음
+        int before = Stat.current_Hp;
+        if (oldMax <= 0)                                    // 비율 산정 불가 → 클램프만
+            Stat.current_Hp = Mathf.Min(Stat.current_Hp, Stat.max_Hp);
+        else
+        {
+            float ratio = (float)Stat.current_Hp / oldMax;
+            Stat.current_Hp = Mathf.Clamp(Mathf.RoundToInt(ratio * Stat.max_Hp), 0, Stat.max_Hp);
+        }
+        return Stat.current_Hp != before;
     }
 
     /// <summary>역할 슬롯(0~1)에 런타임 리액션 할당</summary>
@@ -209,9 +229,12 @@ public partial class BaseCharacter : ITurnUseUnit
 
     public void CalcStat()
     {
-        // Profession에게 "데이터와 모디파이어를 전달한 뒤 스탯 계산 요청
+        int oldMax = Stat.max_Hp;
+        // Profession에게 데이터와 모디파이어를 전달한 뒤 스탯 계산 요청
         Profession.CalculateStat(this, StatController);
+        bool hpChanged = RescaleCurrentHp(oldMax);   // max 가 바뀌면 현재 체력 비율 보존(+오버플로 클램프)
         OnStatRecalculated?.Invoke(this);
+        if (hpChanged) OnHpChanged?.Invoke(this);
     }
 
     public float HpRatio => Stat.max_Hp <= 0 ? 0f : (float)Stat.current_Hp / Stat.max_Hp;
