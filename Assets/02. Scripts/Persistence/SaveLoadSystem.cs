@@ -46,6 +46,8 @@ namespace Bond.Persistence
         public static JsonSerializerSettings Settings = new JsonSerializerSettings()
         {
             TypeNameHandling = TypeNameHandling.Auto,
+            // BaseSO(카탈로그 SO)는 Id로만 직렬화 → 로드 시 DBSORegistry에서 재해석.
+            Converters = { new BaseSORefConverter() },
         };
 
         private static string GetPath(string saveKey)

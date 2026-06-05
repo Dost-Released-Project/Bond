@@ -1,7 +1,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Bond.Persistence;
+using UnityEngine;
 
 public class Roster : ISaveable<List<BaseCharacter>>
 {
@@ -14,6 +16,20 @@ public class Roster : ISaveable<List<BaseCharacter>>
     public Roster()
     {
         SaveLoadSystem.Load(this);
+
+        if (Characters.Count == 0)
+        {
+            var stageCoach = new StageCoach();
+            var db = DBSORegistry.GetDb<ClassDataBaseSO>().Query<ClassSO>(so => true);
+
+            Debug.Assert(db.Count() >= 4);
+
+            for (int i = 0; i < 4; i++)
+            {
+                var chara = stageCoach.GetCharacter(db.ElementAt(i));
+                Hire(chara);
+            }
+        }
     }
     
     public bool Hire(BaseCharacter character)
