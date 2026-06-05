@@ -19,8 +19,7 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     
     [Inject] private SmithyUIController _smithyUI; 
     [Inject] private CharacterSelector _characterSelector;
-
-
+    
     [Inject]
     public void Construct(BuildingService bs, ResourceManager rm, InventoryView iv, SupplyView supply, ITotalInventory total, IExpeditionInventory exp)
     {
@@ -86,7 +85,6 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     
     private void Update()
     {
-        if (Keyboard.current.tKey.wasPressedThisFrame) _resourceManager.Admin_AddAllResources(1000);
         if (Keyboard.current.pKey.wasPressedThisFrame) OnExpeditionReturned(); // 치트 테스트
     }
     
@@ -99,7 +97,7 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         }
 
         // 💥 [핵심 기획 교정 분기]
-        // 주점, 여관, 길드는 클릭 즉시 실행하지 않고, 리더님 기획대로 상세 확인 팝업창을 먼저 띄웁니다.
+        // 주점, 여관, 길드는 클릭 즉시 실행하지 않고, 상세 확인 팝업창을 먼저 띄웁니다.
         switch (building.Data.buildingType)
         {
             case BuildingType.Tavern:
@@ -117,7 +115,7 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
             case BuildingType.Supply: 
                 _smithyUI.Close();
                 _constructionUI.Show(false);
-                _supplyView.Open();
+                _supplyView.Open(building);
                 break;
             case BuildingType.Smithy:
                 _constructionUI.Show(false);
