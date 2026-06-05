@@ -393,15 +393,61 @@ public partial class BaseCharacter : ITurnUseUnit
         }
     }
     
-    public async UniTask ExecuteReaction(ReactionExecution execution, BattleContext context)
+    public async UniTask ExecuteReaction(ReactionExecution execution, BattleContext context, IBattleManager battleManager = null)
     {
         if (execution?.Reaction?.Effect == null) return;
 
         Debug.Log($"<color=lightblue>{Name} 리액션 시작!</color>");
+
+        List<CharacterSlot> targetSlots = new List<CharacterSlot>();
+        if (execution.MatchedSubjects != null)
+        {
+            foreach (var target in execution.MatchedSubjects)
+            {
+                if (target != null && target.CurrentSlot != null)
+                {
+                    targetSlots.Add(target.CurrentSlot);
+                    target.CurrentSlot.SetTargeted(true);
+                    target.CurrentSlot.SetImageType(SlotImageType.Attack);
+                }
+            }
+        }
+
+        if (CurrentSlot != null)
+        {
+            CurrentSlot.SetActing(true);
+            CurrentSlot.SetImageType(SlotImageType.Attack);
+        }
+
+        if (battleManager != null)
+        {
+            await battleManager.StartFocusEffect(CurrentSlot, targetSlots);
+            await UniTask.Delay(500); // 연출 감상 대기 (기존 공격 연출 딜레이와 동일하게)
+        }
+
         await execution.Reaction.Effect.Apply(this, execution, context);
+        
         Debug.Log($"<color=lightblue>{Name} 리액션 완료!</color>");
 
-        await UniTask.Delay(1000); // 연출 마무리 — 한 리액션 당 1회
+        if (CurrentSlot != null)
+        {
+            CurrentSlot.SetActing(false);
+            CurrentSlot.SetImageType(SlotImageType.Idle);
+        }
+
+        foreach (var slot in targetSlots)
+        {
+            if (slot != null)
+            {
+                slot.SetTargeted(false);
+                slot.SetImageType(SlotImageType.Idle);
+            }
+        }
+
+        if (battleManager != null)
+        {
+            await battleManager.EndFocusEffect(CurrentSlot, targetSlots);
+        }
     }
 
     private BattleContext CreateBattleContext(SkillBase skill)

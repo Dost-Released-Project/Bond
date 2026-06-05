@@ -46,7 +46,21 @@ namespace BattleSystem
         private void Init()
         {
             m_skillApplyPipeline.SetReactionSystem(m_reactionSystem);
+            m_reactionSystem.SetBattleManager(this);
         }
+
+        public async UniTask StartFocusEffect(CharacterSlot caster, List<CharacterSlot> targets)
+        {
+            if (m_presentationManager != null)
+                await m_presentationManager.StartFocusEffect(caster, targets);
+        }
+
+        public async UniTask EndFocusEffect(CharacterSlot caster, List<CharacterSlot> targets)
+        {
+            if (m_presentationManager != null)
+                await m_presentationManager.EndFocusEffect(caster, targets);
+        }
+
         private void Battle(BaseCharacter[] players, BaseCharacter[] enemies)
         {
             // 모든 캐릭터 구독 / 해제

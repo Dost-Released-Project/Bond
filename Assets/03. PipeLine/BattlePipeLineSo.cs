@@ -256,7 +256,7 @@ namespace PipeLine
                 {
                     Debug.Log($"<color=lightblue>Reaction:\n" +
                               $"{execution.ToString()}</color>");
-                    await execution.Agent.ExecuteReaction(execution, context);
+                    await execution.Agent.ExecuteReaction(execution, context, reactionSystem.BattleManager);
                     execution.Agent.IncrementReactionCount(); // '연속' 리액션 카운트 증가 (자기 턴에 리셋)
                     if (execution.Result == ReactionResult.Anomaly)
                         execution.Agent.MarkAnomaly(); // 아군 돌발 관찰용 플래그
