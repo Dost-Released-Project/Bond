@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using Bond.Persistence;
 
@@ -7,6 +8,8 @@ public class Roster : ISaveable<List<BaseCharacter>>
     public List<BaseCharacter> Characters = new List<BaseCharacter>();
     public int Max = 20;
     public bool IsFull => Characters.Count >= Max;
+    public event Action<BaseCharacter> OnCharacterAdded;
+    public event Action<BaseCharacter> OnCharacterRemoved;
 
     public bool Hire(BaseCharacter character)
     {
@@ -17,13 +20,16 @@ public class Roster : ISaveable<List<BaseCharacter>>
         else
         {
             Characters.Add(character);
+            OnCharacterAdded?.Invoke(character);
             return true;
         }
     }
     
     public bool Fire(BaseCharacter character)
     {
-        return Characters.Remove(character);
+        bool reVal = Characters.Remove(character);
+        OnCharacterRemoved?.Invoke(character);
+        return reVal;
     }
 
     public string Key => "roster";
