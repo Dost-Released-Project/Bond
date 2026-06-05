@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 092b4b4c295be2e4d8bfb38f852b548a, type: 3}
   m_Name: BossGroupConfig
   m_EditorClassIdentifier: Assembly-CSharp::MonsterGroupConfig
-  Groups: []
+  Groups:
+  - {fileID: 11400000, guid: c77ca06491b352f46b2bddbf92b9ccb7, type: 2}

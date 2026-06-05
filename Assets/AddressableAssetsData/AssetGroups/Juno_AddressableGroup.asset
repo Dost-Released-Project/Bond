@@ -120,6 +120,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd39961908a67fe4eac447bd4a0d59d7
+    m_Address: Elite_Stage
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d0a59ea44516d6b4aacc4ce06f8b3dbf
     m_Address: LeeJunoTestScene
     m_ReadOnly: 0

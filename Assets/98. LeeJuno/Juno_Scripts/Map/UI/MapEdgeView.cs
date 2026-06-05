@@ -11,6 +11,7 @@ using UnityEngine.UI;
 public class MapEdgeView : MonoBehaviour
 {
     [SerializeField] private float _lineWidth = 4f;
+    [SerializeField] private float _nodeGap = 30f;
 
     private Image _image;
     private RectTransform _rectTransform;
@@ -39,13 +40,20 @@ public class MapEdgeView : MonoBehaviour
         Vector2 fromLocal = NormalizedToLocal(fromNormalized, mapRect);
         Vector2 toLocal   = NormalizedToLocal(toNormalized, mapRect);
 
-        Vector2 diff     = toLocal - fromLocal;
-        float   distance = diff.magnitude;
-        float   angle    = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
+        Vector2 diff      = toLocal - fromLocal;
+        float   distance  = diff.magnitude;
+        float   angle     = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
+        Vector2 direction = diff.normalized;
 
-        // 중간점에 배치, 너비 = 두 점 사이 거리, 높이 = 선 두께
-        _rectTransform.anchoredPosition = (fromLocal + toLocal) * 0.5f;
-        _rectTransform.sizeDelta        = new Vector2(distance, _lineWidth);
+        // 양 끝을 노드 방향으로 _nodeGap 만큼 당겨 노드와 간격을 만든다
+        float   gap          = Mathf.Min(_nodeGap, distance * 0.5f);
+        Vector2 fromAdjusted = fromLocal + direction * gap;
+        Vector2 toAdjusted   = toLocal   - direction * gap;
+        float   adjustedDist = distance - gap * 2f;
+
+        // 중간점에 배치, 너비 = 조정된 거리, 높이 = 선 두께
+        _rectTransform.anchoredPosition = (fromAdjusted + toAdjusted) * 0.5f;
+        _rectTransform.sizeDelta        = new Vector2(adjustedDist, _lineWidth);
         _rectTransform.localEulerAngles = new Vector3(0f, 0f, angle);
 
         _image.color = isActive ? Color.white : new Color(1f, 1f, 1f, 0.3f);
