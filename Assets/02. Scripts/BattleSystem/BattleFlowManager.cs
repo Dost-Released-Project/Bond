@@ -124,27 +124,37 @@ namespace BattleStage
             // 1. 진행 중인 턴 루프 및 전투 로직 중지 신호 발송 (토글 오프)
             BattleSwitch();
 
-            // 2. 승리/패배 연출 대기 시간
+            if (isRetreat)
+            {
+                // 퇴각 시에는 대기 없이 즉시 맵으로 신호 전송 (콜백이 유효할 때 즉시 실행하여 레이스 컨디션 방지)
+                InvokeStageComplete(isPlayerWin);
+                return;
+            }
+
+            // 2. 승리/패배 연출 대기 시간 (일반 종료 시에만 대기)
             await UniTask.Delay(2000);
 
             // 3. Provider(일지 시스템) 등 외부 구독자에게 전투 종료 및 승패 결과 알림
-            // 단, 퇴각(Retreat)인 경우 이미 일지 창을 거쳤으므로 다시 띄우지 않음.
-            if (OnBattleEnd != null && !isRetreat)
+            if (OnBattleEnd != null)
             {
                 OnBattleEnd.Invoke(isPlayerWin);
             }
             else
             {
-                // 퇴각이거나 구독자가 없을 경우 즉시 맵 복귀
-                StageResult result = new StageResult
-                {
-                    IsSuccess = isPlayerWin,
-                    IsGameOver = !isPlayerWin,
-                    IsBattleTriggered = false,
-                    RewardIds = new System.Collections.Generic.List<string>()
-                };
-                StageCompletionChannel.Invoke(result);
+                InvokeStageComplete(isPlayerWin);
             }
+        }
+
+        private void InvokeStageComplete(bool isPlayerWin)
+        {
+            StageResult result = new StageResult
+            {
+                IsSuccess = isPlayerWin,
+                IsGameOver = !isPlayerWin,
+                IsBattleTriggered = false,
+                RewardIds = new System.Collections.Generic.List<string>()
+            };
+            StageCompletionChannel.Invoke(result);
         }
     }
 }
