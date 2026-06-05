@@ -462,53 +462,86 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1979411111
-GameObject:
+--- !u!1001 &1380322328
+PrefabInstance:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1979411113}
-  - component: {fileID: 1979411112}
-  m_Layer: 0
-  m_Name: MapUIContorl
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1979411112
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 892186823587235033, guid: d68743e1fac709f419c196e7e9fdfa0b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 960
+      objectReference: {fileID: 0}
+    - target: {fileID: 892186823587235033, guid: d68743e1fac709f419c196e7e9fdfa0b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 540
+      objectReference: {fileID: 0}
+    - target: {fileID: 892186823587235033, guid: d68743e1fac709f419c196e7e9fdfa0b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 892186823587235033, guid: d68743e1fac709f419c196e7e9fdfa0b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 892186823587235033, guid: d68743e1fac709f419c196e7e9fdfa0b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 892186823587235033, guid: d68743e1fac709f419c196e7e9fdfa0b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 892186823587235033, guid: d68743e1fac709f419c196e7e9fdfa0b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 892186823587235033, guid: d68743e1fac709f419c196e7e9fdfa0b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 892186823587235033, guid: d68743e1fac709f419c196e7e9fdfa0b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 892186823587235033, guid: d68743e1fac709f419c196e7e9fdfa0b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5558994552886173223, guid: d68743e1fac709f419c196e7e9fdfa0b, type: 3}
+      propertyPath: _mapView
+      value: 
+      objectReference: {fileID: 1988441807}
+    - target: {fileID: 5558994552886173223, guid: d68743e1fac709f419c196e7e9fdfa0b, type: 3}
+      propertyPath: _mapPanel
+      value: 
+      objectReference: {fileID: 2114059061}
+    - target: {fileID: 5558994552886173223, guid: d68743e1fac709f419c196e7e9fdfa0b, type: 3}
+      propertyPath: _retreatButton
+      value: 
+      objectReference: {fileID: 5797608251009159702}
+    - target: {fileID: 7757559049164469938, guid: d68743e1fac709f419c196e7e9fdfa0b, type: 3}
+      propertyPath: m_Name
+      value: MapUIContorl
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d68743e1fac709f419c196e7e9fdfa0b, type: 3}
+--- !u!114 &1380322329 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 5558994552886173223, guid: d68743e1fac709f419c196e7e9fdfa0b, type: 3}
+  m_PrefabInstance: {fileID: 1380322328}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1979411111}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7c38ecb39b9c75e469192143c8031411, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapUIController
-  _mapView: {fileID: 1988441807}
-  _mapPanel: {fileID: 2114059061}
-  _retreatButton: {fileID: 5797608251009159702}
---- !u!4 &1979411113
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1979411111}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 360.43042, y: 0, z: -1179.171}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1988441807 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 712880343002839992, guid: d117bb016b533a24a9f7b2279f2f4d7b, type: 3}
@@ -574,9 +607,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5115941051929461589, guid: dabbe086af4bc514d9bb5f65a195ad8f, type: 3}
-      propertyPath: _mapUIController
+      propertyPath: mapUIController
       value: 
-      objectReference: {fileID: 1979411112}
+      objectReference: {fileID: 1380322329}
     - target: {fileID: 6812611938743058197, guid: dabbe086af4bc514d9bb5f65a195ad8f, type: 3}
       propertyPath: m_Name
       value: MapScope
@@ -700,7 +733,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 584308368}
   - {fileID: 710725398}
-  - {fileID: 1979411113}
-  - {fileID: 5797608251009159701}
+  - {fileID: 1380322328}
   - {fileID: 164198903055600702}
+  - {fileID: 5797608251009159701}
   - {fileID: 1161473469}

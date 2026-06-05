@@ -157,9 +157,17 @@ public class MapUIController : MonoBehaviour
     /// </summary>
     private void HandleStageCompleted(StageResult result)
     {
-        // 결과 연출 (승리/패배) 판단은 추후 FlowManager 혹은 상위 레벨에서 처리
-
         _mapView.RefreshNodeStates();
+
+        bool isLastNode = _navigator.CurrentNode != null
+                       && _navigator.CurrentNode.NextNodeIds.Count == 0;
+
+        if (isLastNode && result.IsSuccess)
+        {
+            CompleteExpeditionAsync().Forget();
+            return;
+        }
+
         UnloadAndShowMapAsync().Forget();
     }
 
@@ -281,6 +289,36 @@ public class MapUIController : MonoBehaviour
 
         if (_journalModel != null && _logAccumulator != null && _logAccumulator.HasLogs)
         {
+            _mapPanel.SetActive(true);
+            await ShowJournalAndWaitAsync();
+        }
+
+        SceneLoader.Load("Town");
+    }
+
+    private async UniTaskVoid CompleteExpeditionAsync()
+    {
+        if (_stageLoader.IsLoading == false)
+        {
+            try
+            {
+                await _stageLoader.UnloadCurrentStage();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[MapUIController] 탐사 성공 처리 중 씬 언로드 실패: {e.Message}");
+            }
+        }
+
+        if (_expeditionPayload != null)
+            _expeditionPayload.SetResult(Bond.Expedition.ExpeditionOutcome.Success);
+
+        if (_logAccumulator != null)
+            _logAccumulator.RecordExpeditionSuccess();
+
+        if (_journalModel != null && _logAccumulator != null && _logAccumulator.HasLogs)
+        {
+            _mapPanel.SetActive(true);
             await ShowJournalAndWaitAsync();
         }
 
