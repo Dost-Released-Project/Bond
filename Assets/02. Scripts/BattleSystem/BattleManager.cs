@@ -233,6 +233,10 @@ namespace BattleSystem
 
                 // 전투 집중 연출 종료 (Dim 해제 및 원복)
                 await m_presentationManager.EndFocusEffect(casterSlot, targetSlots);
+
+                // 8. 연출 종료 후 진영 내 빈 공간 채우기 (캐릭터 사망 대비)
+                m_formationManager.ConsolidationFormation(E_BattleSide.Player);
+                m_formationManager.ConsolidationFormation(E_BattleSide.Enemy);
             }
         }
 
