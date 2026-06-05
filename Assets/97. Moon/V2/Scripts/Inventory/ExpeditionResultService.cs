@@ -8,21 +8,27 @@ public class ExpeditionResultService
     private ITotalInventory _totalInventory;
     private ExpeditionPayload _payload;
     private InventoryTransferService _transferService;
+    private Roster _roster;
 
     [Inject]
     public ExpeditionResultService(
-        ITotalInventory total, 
-        ExpeditionPayload payload, 
-        InventoryTransferService transfer)
+        ITotalInventory total,
+        ExpeditionPayload payload,
+        InventoryTransferService transfer,
+        Roster roster)
     {
         _totalInventory = total;
         _payload = payload;
         _transferService = transfer;
+        _roster = roster;
     }
 
     // 마을 씬 로드 후 호출될 메서드
     public void ProcessExpeditionReturn()
-    { ;
+    {
+        // 원정 동안 파티가 입은 HP/광기 등 세션 변경을 디스크에 플러시.
+        _roster.SaveNow();
+
         if (_payload.Supplies == null) return;
 
         // 1. 탐사 인벤토리의 모든 아이템을 토탈 인벤토리로 이동

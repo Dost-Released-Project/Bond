@@ -55,7 +55,11 @@ public partial class BaseCharacter : ITurnUseUnit
     public void Init()
     {
         CalcStat();
-        SetHpFull();
+        // 저장된 HP 가 있으면 복원(max 로 클램프), 없으면(신규 캐릭터) 풀피.
+        if (_loadedHp.HasValue)
+            Stat.current_Hp = Mathf.Clamp(_loadedHp.Value, 0, Stat.max_Hp);
+        else
+            SetHpFull();
         SyncTraitReactions();
         Dict[Id] = this;
     }
@@ -100,6 +104,17 @@ public partial class BaseCharacter : ITurnUseUnit
     
     [JsonIgnore] public Stat Stat { get; } = new Stat();
     [JsonIgnore] public StatController StatController { get; } = new StatController();
+
+    // current_Hp 직렬화 미러. Stat 은 [JsonIgnore] 라 HP 가 안 실리므로,
+    // 저장 시엔 런타임 실제값을 굽고(get), 로드 시엔 값을 보관(set)했다가 Init 에서 복원한다.
+    // max_Hp 는 CalcStat 으로 재계산되므로 저장하지 않는다. 신규 캐릭터(미저장)는 _loadedHp 가 null.
+    [JsonProperty("CurrentHp")]
+    private int CurrentHpSerialized
+    {
+        get => Stat.current_Hp;
+        set => _loadedHp = value;
+    }
+    [JsonIgnore] private int? _loadedHp;
     
     [JsonIgnore] public bool isPlayable { get; set; }
 
@@ -115,6 +130,8 @@ public partial class BaseCharacter : ITurnUseUnit
     public event Action<BaseCharacter> OnStatRecalculated;
     public event Action<BaseCharacter> OnRoleChanged;
     public event Action<BaseCharacter> OnAccessoriesChanged;
+    public event Action<BaseCharacter> OnEquipmentChanged;   // 무기/방어구 변경 (영속 트리거)
+    public event Action<BaseCharacter> OnReactionsChanged;    // 역할/성향 리액션 편집 (영속 트리거)
 
     public void SetAccessory(int index, AccessoryItem item)
     {
@@ -125,6 +142,39 @@ public partial class BaseCharacter : ITurnUseUnit
         CalcStat();
         OnAccessoriesChanged?.Invoke(this);
     }
+
+    public void SetWeapon(Equipment weapon)
+    {
+        Weapon = weapon;
+        CalcStat();
+        OnEquipmentChanged?.Invoke(this);
+    }
+
+    public void SetArmor(Equipment armor)
+    {
+        Armor = armor;
+        CalcStat();
+        OnEquipmentChanged?.Invoke(this);
+    }
+
+    /// <summary>역할 슬롯(0~1)에 런타임 리액션 할당</summary>
+    public void SetRoleReaction(int index, Reaction reaction)
+    {
+        if (index < 0 || index >= RoleReactions.Length) return;
+        RoleReactions[index] = reaction;
+        OnReactionsChanged?.Invoke(this);
+    }
+
+    /// <summary>역할 슬롯 비우기</summary>
+    public void ClearRoleReaction(int index)
+    {
+        if (index < 0 || index >= RoleReactions.Length) return;
+        RoleReactions[index] = null;
+        OnReactionsChanged?.Invoke(this);
+    }
+
+    /// <summary>리액션 내부 편집슬롯(관찰대상/행동스킬)을 제자리 수정한 뒤 호출 — 영속 트리거.</summary>
+    public void RaiseReactionsChanged() => OnReactionsChanged?.Invoke(this);
 
     private IFormationManager m_formationManager;
 

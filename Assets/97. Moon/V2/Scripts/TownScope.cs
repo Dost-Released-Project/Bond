@@ -34,7 +34,7 @@ public class TownScope : LifetimeScope
         builder.Register<EmbarkController>(Lifetime.Scoped);
         //builder.Register<PartyController>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
         builder.Register<StageCoach>(Lifetime.Scoped);
-        builder.Register<Roster>(Lifetime.Scoped);
+        // Roster 는 RootScope Singleton 으로 승격(ConfigureRoster) — 씬 전환 간 인스턴스 유지.
         builder.Register<CharacterSelector>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
         builder.Register<CharacterDetailController>(Lifetime.Scoped).WithParameter("skillDb", skillDb);
         builder.RegisterComponentInHierarchy<CharacterDetailPresenter>();
