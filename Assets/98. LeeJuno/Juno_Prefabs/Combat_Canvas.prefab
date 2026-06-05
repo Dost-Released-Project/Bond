@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 9078333816197698050}
   - component: {fileID: 2056413712046027917}
   - component: {fileID: 2998969141867531512}
-  - component: {fileID: -8609277308416775930}
+  - component: {fileID: 3204936964680678060}
   m_Layer: 5
   m_Name: Combat_Canvas
   m_TagString: Untagged
@@ -180,7 +180,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &-8609277308416775930
+--- !u!114 &3204936964680678060
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -189,9 +189,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 676461989679478675}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b3d5faaff65e3d949aac1dabe60c20b8, type: 3}
+  m_Script: {fileID: 11500000, guid: 369b74d9d6dbef44aa2ae084f7399dae, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BattleBgLoader
+  m_EditorClassIdentifier: Assembly-CSharp::SceneBgLoader
   _bgImage: {fileID: 8004178338331398444}
 --- !u!1 &1196670311615114383
 GameObject:

@@ -161,7 +161,7 @@ public class StageLoader : IStageLoader
             }
 
             // ARCH-04: SetNormalStageContext 직전 잔류 데이터 제거
-            if (stageType == StageType.Normal)
+            if (stageType == StageType.Normal || stageType == StageType.Elite)
             {
                 _stageMonsterContext.Clear();
                 SetNormalStageContext(node);

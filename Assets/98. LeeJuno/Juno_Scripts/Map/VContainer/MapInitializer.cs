@@ -78,8 +78,8 @@ public class MapInitializer : IAsyncStartable, IDisposable
         if (_accessoryDBHandle.IsValid())
             Addressables.Release(_accessoryDBHandle);
 
-        // BattleMapBgChannel 참조 초기화 후 핸들 해제
-        BattleMapBgChannel.Clear();
+        // MapBgChannel 참조 초기화 후 핸들 해제
+        MapBgChannel.Clear();
         if (_bgSpriteHandle.IsValid())
             Addressables.Release(_bgSpriteHandle);
 
@@ -172,7 +172,7 @@ public class MapInitializer : IAsyncStartable, IDisposable
 
             if (_bgSpriteHandle.Status == AsyncOperationStatus.Succeeded)
             {
-                BattleMapBgChannel.Set(_bgSpriteHandle.Result);
+                MapBgChannel.Set(_bgSpriteHandle.Result);
             }
             else
             {
