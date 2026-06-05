@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4054174448109281854}
   - component: {fileID: 2762466585204160982}
   m_Layer: 0
-  m_Name: "\u2020 DEATH \u2020"
+  m_Name: " \u2020 [DEATH] \u2020"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

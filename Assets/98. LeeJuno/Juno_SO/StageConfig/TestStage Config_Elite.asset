@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f8a22d5c065efe4db0f627b89d38849, type: 3}
   m_Name: TestStage Config_Elite
   m_EditorClassIdentifier: Assembly-CSharp::StageConfig
+  _id: 
+  _displayName: 
+  _description: 
   Type: 1
-  DisplayName: Elite
-  Icon: {fileID: 21300000, guid: c6031a44864e33d4a9fbe6f57002dc1b, type: 3}
-  IconAddress: 
-  SceneAddress: 
+  Icon: {fileID: 0}
+  IconAddress: Elite_Stage
+  SceneAddress: Stage_Battle
   NodeColor: {r: 1, g: 1, b: 1, a: 1}
-  BaseWeight: 0

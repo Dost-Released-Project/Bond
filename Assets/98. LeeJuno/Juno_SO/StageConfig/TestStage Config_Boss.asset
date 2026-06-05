@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f8a22d5c065efe4db0f627b89d38849, type: 3}
   m_Name: TestStage Config_Boss
   m_EditorClassIdentifier: Assembly-CSharp::StageConfig
+  _id: 
+  _displayName: 
+  _description: 
   Type: 2
-  DisplayName: Boss
   Icon: {fileID: 0}
-  IconAddress: Wildboar
-  SceneAddress: 
+  IconAddress: Boss_Stage
+  SceneAddress: Stage_Battle
   NodeColor: {r: 1, g: 1, b: 1, a: 1}

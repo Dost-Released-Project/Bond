@@ -74,6 +74,12 @@ public class MapConfigLoader : IMapConfigLoader
             throw new InvalidOperationException("EventBattleConfigAddress 가 설정되지 않았습니다.");
         }
 
+        if (string.IsNullOrEmpty(_settings.BossGroupConfigAddress))
+        {
+            Debug.LogError("[MapConfigLoader] BossGroupConfigAddress 가 비어 있습니다.");
+            throw new InvalidOperationException("BossGroupConfigAddress 가 설정되지 않았습니다.");
+        }
+
         if (_settings.StageConfigAddresses == null || _settings.StageConfigAddresses.Count == 0)
         {
             Debug.LogError("[MapConfigLoader] StageConfigAddresses 가 비어 있습니다.");
@@ -92,7 +98,8 @@ public class MapConfigLoader : IMapConfigLoader
 
             AsyncOperationHandle<MonsterGroupConfig> monsterHandle =
                 Addressables.LoadAssetAsync<MonsterGroupConfig>(_settings.MonsterGroupConfigAddress);
-
+            AsyncOperationHandle<MonsterGroupConfig> bossMonsterHandle =
+                Addressables.LoadAssetAsync<MonsterGroupConfig>(_settings.BossGroupConfigAddress);
             AsyncOperationHandle<EventConfig> eventHandle =
                 Addressables.LoadAssetAsync<EventConfig>(_settings.EventConfigAddress);
 
@@ -101,6 +108,7 @@ public class MapConfigLoader : IMapConfigLoader
 
             _handles.Add(generatorHandle);
             _handles.Add(monsterHandle);
+            _handles.Add(bossMonsterHandle);
             _handles.Add(eventHandle);
             _handles.Add(eventBattleHandle);
 
@@ -116,10 +124,10 @@ public class MapConfigLoader : IMapConfigLoader
                 _handles.Add(stageHandle);
             }
 
-            // 병렬 대기 — 4개 Config 를 동시에 로드하며 취소 토큰을 전달한다
             await UniTask.WhenAll(
                 generatorHandle.ToUniTask(cancellationToken: cancellation),
                 monsterHandle.ToUniTask(cancellationToken: cancellation),
+                bossMonsterHandle.ToUniTask(cancellationToken: cancellation),
                 eventHandle.ToUniTask(cancellationToken: cancellation),
                 eventBattleHandle.ToUniTask(cancellationToken: cancellation)
             );
@@ -134,11 +142,12 @@ public class MapConfigLoader : IMapConfigLoader
             List<StageConfig> stageConfigs = new List<StageConfig>(stageResults);
 
             _package = new MapConfigPackage(
-                generatorConfig:    generatorHandle.Result,
-                stageConfigs:       stageConfigs,
-                monsterGroupConfig: monsterHandle.Result,
-                eventConfig:        eventHandle.Result,
-                eventBattleConfig:  eventBattleHandle.Result
+                generatorConfig:        generatorHandle.Result,
+                stageConfigs:           stageConfigs,
+                monsterGroupConfig:     monsterHandle.Result,
+                bossMonsterGroupConfig: bossMonsterHandle.Result,
+                eventConfig:            eventHandle.Result,
+                eventBattleConfig:      eventBattleHandle.Result
             );
 
             _isLoaded = true;

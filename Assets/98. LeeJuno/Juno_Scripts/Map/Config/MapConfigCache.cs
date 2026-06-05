@@ -23,6 +23,8 @@ public class MapConfigCache
     /// <summary>몬스터 그룹 목록 Config. IsReady == false 이면 null.</summary>
     public MonsterGroupConfig MonsterGroupConfig { get; private set; }
 
+    public MonsterGroupConfig BossMonsterGroupConfig { get; private set; }
+
     /// <summary>이벤트 목록 Config. IsReady == false 이면 null.</summary>
     public EventConfig EventConfig { get; private set; }
 
@@ -49,17 +51,19 @@ public class MapConfigCache
         MapGeneratorConfig generatorConfig,
         List<StageConfig> stageConfigs,
         MonsterGroupConfig monsterGroupConfig,
+        MonsterGroupConfig bossMonsterGroupConfig,
         EventConfig eventConfig,
         EventBattleConfig eventBattleConfig,
         AccessoryDataBaseSO accessoryDB)
     {
-        GeneratorConfig    = generatorConfig;
-        StageConfigs       = stageConfigs;
-        MonsterGroupConfig = monsterGroupConfig;
-        EventConfig        = eventConfig;
-        EventBattleConfig  = eventBattleConfig;
-        AccessoryDB        = accessoryDB;
-        IsReady            = true;
+        GeneratorConfig        = generatorConfig;
+        StageConfigs           = stageConfigs;
+        MonsterGroupConfig     = monsterGroupConfig;
+        BossMonsterGroupConfig = bossMonsterGroupConfig;
+        EventConfig            = eventConfig;
+        EventBattleConfig      = eventBattleConfig;
+        AccessoryDB            = accessoryDB;
+        IsReady                = true;
     }
 
     /// <summary>
@@ -68,12 +72,13 @@ public class MapConfigCache
     /// </summary>
     public void Clear()
     {
-        GeneratorConfig    = null;
-        StageConfigs       = null;
-        MonsterGroupConfig = null;
-        EventConfig        = null;
-        EventBattleConfig  = null;
-        AccessoryDB        = null;
-        IsReady            = false;
+        GeneratorConfig        = null;
+        StageConfigs           = null;
+        MonsterGroupConfig     = null;
+        BossMonsterGroupConfig = null;
+        EventConfig            = null;
+        EventBattleConfig      = null;
+        AccessoryDB            = null;
+        IsReady                = false;
     }
 }
