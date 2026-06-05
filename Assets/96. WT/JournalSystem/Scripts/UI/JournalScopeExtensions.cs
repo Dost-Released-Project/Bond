@@ -35,7 +35,7 @@ namespace Bond.WT.Journal
                 }
             }
             // Binder는 씬 스코프 단위로 등록되어 씬 파괴 시 함께 Dispose() 됨 -> 구독 안전 해제
-            builder.RegisterEntryPoint<JournalBinder>(Lifetime.Scoped).AsSelf();
+            builder.RegisterEntryPoint<JournalBinder>(Lifetime.Singleton).AsSelf();
             }
     }
 }
