@@ -1,77 +1,134 @@
-.root-panel {
+/* ── Journal.uss ── */
+/* 에코즈 오브 본드 UI 스타일 가이드 v0.2 준수 */
+
+.journal-overlay {
     flex-grow: 1;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+    background-color: var(--bg-deep);
 }
 
-.journal-container {
+.journal-panel {
     width: 80%;
     height: 80%;
-    background-color: rgb(245, 245, 245); /* 일지 배경색 (임시) */
-    border-radius: 20px;
+    background-color: var(--bg-surface);
+    border-width: 1px;
+    border-color: var(--border-default);
+    border-radius: 4px;
     padding: 40px;
     flex-direction: column;
 }
 
-.top-area {
+.journal-panel__top {
     flex-grow: 1;
     flex-direction: row;
     margin-bottom: 20px;
 }
 
-.icon-image {
+.journal-panel__icon {
     width: 200px;
     height: 200px;
-    background-color: rgb(200, 200, 200); /* 아이콘 자리 표시 (임시) */
+    background-color: var(--bg-raised);
     margin-right: 30px;
-    border-radius: 10px;
+    border-radius: 4px;
+    border-width: 1px;
+    border-color: var(--border-default);
 }
 
-.content-scroll {
+.journal-panel__scroll {
     flex-grow: 1;
+    background-color: var(--bg-surface);
 }
 
-.content-label {
-    white-space: normal; /* 텍스트 줄바꿈 허용 */
-    font-size: 26px;
-    color: rgb(50, 50, 50);
+.journal-panel__content {
+    white-space: normal;
+    font-size: var(--font-size-body);
+    color: var(--text-primary);
+    letter-spacing: 0.5px;
+    -unity-font-style: italic; /* 일지 본문 규칙 적용 */
 }
 
-.option-container {
+/* Scrollbar styles */
+.journal-panel__scroll .unity-scroller {
+    background-color: var(--bg-surface);
+}
+
+.journal-panel__scroll .unity-scroller__low-button,
+.journal-panel__scroll .unity-scroller__high-button {
+    display: none;
+}
+
+.journal-panel__scroll .unity-scroller .unity-base-slider {
+    flex-grow: 1;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.journal-panel__scroll .unity-scroller .unity-base-slider__tracker {
+    border-width: 1px;
+    border-color: var(--bg-divider);
+    background-color: var(--bg-surface);
+}
+
+.journal-panel__scroll .unity-scroller .unity-base-slider__dragger {
+    background-color: var(--bg-raised);
+    border-width: 1px;
+    border-color: var(--border-default);
+}
+
+.journal-panel__options {
     flex-direction: row;
     justify-content: center;
     align-items: center;
     margin-bottom: 20px;
-    /* 기본적으로 활성화, 스크립트에서 내용이 없으면 display: none 처리 */
 }
 
-.navigation-area {
+.journal-panel__nav {
     flex-direction: row;
     justify-content: space-between;
     height: 60px;
 }
 
-.nav-button {
+.journal-panel__btn {
     width: 160px;
     height: 100%;
-    font-size: 24px;
-    border-radius: 10px;
+    font-size: var(--font-size-button);
+    color: var(--text-accent); /* 버튼 텍스트 규칙 */
+    background-color: var(--btn-primary-bg);
+    border-width: 1px;
+    border-color: var(--btn-primary-border);
+    border-radius: 4px;
+    -unity-text-align: middle-center;
+    letter-spacing: 3px; /* 버튼 텍스트 자간 규칙 */
 }
 
-.nav-button:disabled {
-    background-image: none;
-    background-color: rgb(180, 180, 180);
-    color: rgb(130, 130, 130);
+.journal-panel__btn:disabled {
+    background-color: var(--bg-divider);
+    color: var(--text-disabled);
+    border-color: var(--border-default);
     opacity: 0.5;
 }
 
+.journal-panel__btn:hover {
+    border-color: var(--border-highlight);
+    background-color: var(--bg-raised);
+}
+
 /* JournalChoice Button Style */
-.journal-choice-button {
+.journal-panel__choice-btn {
     width: 60px;
     height: 60px;
     margin: 0 10px;
-    border-radius: 10px;
-    font-size: 24px;
-    /* 텍스트나 이미지가 들어갈 단일 버튼 */
+    border-radius: 4px;
+    font-size: var(--font-size-button);
+    color: var(--text-accent);
+    background-color: var(--btn-primary-bg);
+    border-width: 1px;
+    border-color: var(--btn-primary-border);
+    letter-spacing: 3px;
+}
+
+.journal-panel__choice-btn:hover {
+    border-color: var(--border-highlight);
+    background-color: var(--bg-raised);
 }

@@ -1,4 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Themes/EoB_Variables.uss?fileID=7433441132597879392&amp;guid=665e7fc1f237eb845a720614a938c4c3&amp;type=3#EoB_Variables"/>
+    <Style src="project://database/Assets/UI/Themes/EoB_Theme_DarkAmber.uss?fileID=7433441132597879392&amp;guid=fa8c2ca04fc0ab24991530664bb55c09&amp;type=3#EoB_Theme_DarkAmber"/>
     <Style src="project://database/Assets/96.%20WT/Journal.uss?fileID=7433441132597879392&amp;guid=f45e93971af71524ea0cd2c0fa45cec9&amp;type=3#Journal"/>
-    <ui:Button name="ChoiceButton" class="journal-choice-button"/>
+    <ui:Button name="ChoiceButton" class="journal-panel__choice-btn"/>
 </ui:UXML>
