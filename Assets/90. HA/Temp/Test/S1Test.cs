@@ -35,7 +35,7 @@ namespace _90._HA.Temp.Test
             professionDb = DBSORegistry.GetDb<DataBaseSO>("ClassDataBase");
             
             payload.Clear();
-            FillRosterFromPreset();
+            //FillRosterFromPreset();
         }
 
         public void CreateCharacterPresets()

@@ -11,6 +11,11 @@ public class Roster : ISaveable<List<BaseCharacter>>
     public event Action<BaseCharacter> OnCharacterAdded;
     public event Action<BaseCharacter> OnCharacterRemoved;
 
+    public Roster()
+    {
+        SaveLoadSystem.Load(this);
+    }
+    
     public bool Hire(BaseCharacter character)
     {
         if (IsFull || Characters.Contains(character))
@@ -21,6 +26,7 @@ public class Roster : ISaveable<List<BaseCharacter>>
         {
             Characters.Add(character);
             OnCharacterAdded?.Invoke(character);
+            SaveLoadSystem.Save(this);
             return true;
         }
     }
@@ -29,6 +35,7 @@ public class Roster : ISaveable<List<BaseCharacter>>
     {
         bool reVal = Characters.Remove(character);
         OnCharacterRemoved?.Invoke(character);
+        SaveLoadSystem.Save(this);
         return reVal;
     }
 

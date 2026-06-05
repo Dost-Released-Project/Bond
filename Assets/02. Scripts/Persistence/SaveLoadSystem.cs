@@ -82,17 +82,31 @@ namespace Bond.Persistence
 
         public static void Load(ISaveable saveable)
         {
-            string json = File.ReadAllText(GetPath(saveable.Key));
-            Type type = saveable.Data.GetType();
-            var obj = JsonConvert.DeserializeObject(json, type, Settings);
-            saveable.Restore(obj);
+            try
+            {
+                string json = File.ReadAllText(GetPath(saveable.Key));
+                Type type = saveable.Data.GetType();
+                var obj = JsonConvert.DeserializeObject(json, type, Settings);
+                saveable.Restore(obj);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning(e.Message);
+            }
         }
 
         public static void Load<T>(ISaveable<T> saveable)
         {
-            string json = File.ReadAllText(GetPath(saveable.Key));
-            var obj = JsonConvert.DeserializeObject<T>(json, Settings);
-            saveable.Restore(obj);
+            try
+            {
+                string json = File.ReadAllText(GetPath(saveable.Key));
+                var obj = JsonConvert.DeserializeObject<T>(json, Settings);
+                saveable.Restore(obj);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning(e.Message);
+            }
         }
     }
 }
