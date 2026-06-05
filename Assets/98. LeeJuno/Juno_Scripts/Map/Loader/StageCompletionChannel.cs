@@ -36,7 +36,8 @@ public static class StageCompletionChannel
     {
         if (_onCompleted == null)
         {
-            Debug.LogError("[StageCompletionChannel] 콜백이 등록되지 않았습니다. StageLoader.LoadStage() 이전에 Register()가 호출되었는지 확인하십시오.");
+            // 강제 퇴각(파티 전멸) 등으로 이미 언로드가 진행된 경우 콜백이 없을 수 있다 — 정상 흐름이므로 Warning 으로만 기록한다
+            Debug.LogWarning("[StageCompletionChannel] 콜백이 등록되지 않았습니다. 강제 퇴각 중이면 정상입니다.");
             return;
         }
 
