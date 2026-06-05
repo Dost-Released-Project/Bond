@@ -7,9 +7,9 @@
 	05								0906	Carriage
 (string)	(int)	(int)	(int)	(int)	(int)	(int)	(int)	(int)	(int)	
 ID	Level	FrontierCost	WoodCost	OreCost	EffectValue	SlotExpansion	FrontierCapAdd	MaterialCapAdd	MaxUses	
-09000000	1	100	0	0	0	4	1000	100	0	
-09000000	2	1000	50	50	0	8	3000	100	0	
-09000000	3	5000	200	200	0	16	5000	200	0	
+09000000	1	100	0	0	0	4	10000	1000	0	
+09000000	2	1000	50	50	0	8	15000	1500	0	
+09000000	3	5000	200	200	0	16	20000	2000	0	
 09010000	1	100	0	0	10	0	0	0	1	
 09010000	2	1000	50	50	25	0	0	0	1	
 09010000	3	5000	200	200	75	0	0	0	2	

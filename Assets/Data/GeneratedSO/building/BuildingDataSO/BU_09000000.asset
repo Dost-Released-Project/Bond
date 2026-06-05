@@ -25,8 +25,8 @@ MonoBehaviour:
     oreCost: 0
     effectValue: 0
     slotExpansion: 4
-    frontierCapAdd: 1000
-    materialCapAdd: 100
+    frontierCapAdd: 10000
+    materialCapAdd: 1000
     maxUses: 0
   - level: 2
     frontierCost: 1000
@@ -34,8 +34,8 @@ MonoBehaviour:
     oreCost: 50
     effectValue: 0
     slotExpansion: 8
-    frontierCapAdd: 3000
-    materialCapAdd: 100
+    frontierCapAdd: 15000
+    materialCapAdd: 1500
     maxUses: 0
   - level: 3
     frontierCost: 5000
@@ -43,6 +43,6 @@ MonoBehaviour:
     oreCost: 200
     effectValue: 0
     slotExpansion: 16
-    frontierCapAdd: 5000
-    materialCapAdd: 200
+    frontierCapAdd: 20000
+    materialCapAdd: 2000
     maxUses: 0
