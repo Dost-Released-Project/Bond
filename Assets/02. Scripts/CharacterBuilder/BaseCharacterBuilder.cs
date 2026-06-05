@@ -37,13 +37,33 @@ public partial class BaseCharacter
 
         public BaseCharacter Build()
         {
-            chara.SetRole(RandomUtil.GetRandom(RoleType.None));
+            SetRoleAuto();
             chara.CalcStat();
             chara.SetHpFull();
             chara.Id = System.Guid.NewGuid().ToString();
             chara.SyncTraitReactions();
             Dict[chara.Id] = chara;
             return chara;
+        }
+        
+        private void SetRoleAuto()
+        {
+            switch (chara.Profession.Id)
+            {
+                case 0:
+                    chara.SetRole(RoleType.Tanker);
+                    break;
+                case 1:
+                case 2:
+                    chara.SetRole(RoleType.Dealer);
+                    break;
+                case 3:
+                    chara.SetRole(RoleType.Supporter);
+                    break;
+                default:
+                    chara.SetRole(RoleType.None);
+                    break;
+            }
         }
 
         public Builder SetId(string id)
