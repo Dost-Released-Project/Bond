@@ -172,8 +172,7 @@ namespace PipeLine
             if (context.isEvaded || context.target == null || context.target.IsDead) return UniTask.FromResult(context);
 
             // TODO: 개별 타겟 치명타 확률 로직 (현재는 임시로 시전자 crt 사용)
-            //context.isCritical = Random.Range(0f, 100f) < context.caster.Stat.crt;
-            context.isCritical = false;
+            context.isCritical = Random.value < context.caster.Stat.crt;
             
             if (context.isCritical)
             {
