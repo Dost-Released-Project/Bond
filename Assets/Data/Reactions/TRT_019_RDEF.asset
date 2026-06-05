@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24f60b15841d2dc42bda3a5d4be67068, type: 3}
+  m_Name: TRT_019_RDEF
+  m_EditorClassIdentifier: Assembly-CSharp::Reactions.ReactionDefinitionSO
+  _id: TRT_019_RDEF
+  _displayName: "\uBB34\uBAA8\uD55C \u2014 \uACFC\uC2E0\uD55C \uB3CC\uC9C4"
+  _description: "\uBCF8\uC778 HP 70% \uC774\uC0C1(\uC5EC\uC720 \uC788\uC744 \uC2DC)\t\uC124\uACC4
+    \uC2A4\uD0AC \uBB34\uC2DC, \uAC00\uC7A5 \uBA3C \uC801\uC5D0\uAC8C \uB2E8\uB3C5
+    \uB3CC\uC9C4. \uC801 \uBC18\uACA9 \uB9AC\uC561\uC158 100% \uC720\uB3C4"
+  Role: 0
+  Template:
+    Phase: 3
+    ObserveFilter: 0
+    SubjectCharacterId: 
+    DefinitionId: 
+    Trigger:
+      rid: 2064475022841610303
+    Effect:
+      rid: 2064475022841610304
+  EditableSlots: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 2064475022841610303
+      type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        _condition:
+          Additional:
+          - rid: 2064475022841610305
+    - rid: 2064475022841610304
+      type: {class: CompositeReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data: 
+    - rid: 2064475022841610305
+      type: {class: HpAboveCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Threshold: 0.7

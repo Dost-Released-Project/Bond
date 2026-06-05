@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24f60b15841d2dc42bda3a5d4be67068, type: 3}
+  m_Name: TRT_006_RDEF
+  m_EditorClassIdentifier: Assembly-CSharp::Reactions.ReactionDefinitionSO
+  _id: TRT_006_RDEF
+  _displayName: "\uD5C8\uC138 \u2014 \uB07C\uC5B4\uB4E4\uAE30"
+  _description: "\uC544\uAD70\uC774 \uCE58\uBA85\uD0C0 \uBC1C\uC0DD \uC2DC\t\uC544\uAD70\uC758
+    \uC5F0\uC1C4\uB97C \uAC00\uB85C\uCC44 \uC790\uC2E0\uC774 \uB9C8\uBB34\uB9AC \uD0C0\uACA9
+    \uC2DC\uC804. \uC5F0\uC1C4 \uCE74\uC6B4\uD2B8 \uB9AC\uC14B"
+  Role: 0
+  Template:
+    Phase: 2
+    ObserveFilter: 2
+    SubjectCharacterId: 
+    DefinitionId: 
+    Trigger:
+      rid: 2064475022841610278
+    Effect:
+      rid: 2064475022841610279
+  EditableSlots: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 2064475022841610278
+      type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        _condition:
+          Additional:
+          - rid: 2064475022841610280
+          - rid: 2064475022841610281
+    - rid: 2064475022841610279
+      type: {class: CompositeReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data: 
+    - rid: 2064475022841610280
+      type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Filter: 1
+    - rid: 2064475022841610281
+      type: {class: CritCondition, ns: Reactions, asm: Assembly-CSharp}
+      data: 

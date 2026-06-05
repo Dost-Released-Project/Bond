@@ -13,37 +13,30 @@ MonoBehaviour:
   m_Name: CharacterPreset_1
   m_EditorClassIdentifier: Assembly-CSharp::_90._HA.CharacterPreset
   BaseCharacter:
-    Id: 12c65b3a-efef-405e-b6fd-98e360b245ed
-    ImageAddress: GodOfWar
+    Id: b8b2a613-0ba7-4db6-9bae-1185cf6e50f6
+    ImageAddress: Assassin_Icon
+    IdleImageAddress: Assassin_Idle
+    AttackImageAddress: Assassin_Battle
     Name: GodOfWar
     Profession:
       _classData: {fileID: 11400000, guid: b8de67576ddb60c4eb3dcccb2e641b32, type: 2}
     Level: 0
-    Insanity: 50
+    Insanity: 0
     RoleType: 2
     <battleType>k__BackingField:
-      rid: 8081819941751750731
+      rid: 2064475022841610367
     Skills:
-    - rid: 8081819941751750732
-    - rid: 8081819941751750733
-    - rid: 8081819941751750734
-    - rid: 8081819941751750735
-    Traits:
-    - Type: 0
-      Name: A
-      Description: aaa
-    - Type: 0
-      Name: C
-      Description: ccc
-    - Type: 0
-      Name: Missing
-      Description: Missing
-    - Type: 0
-      Name: Missing
-      Description: Missing
+    - rid: 2064475022841610368
+    - rid: 2064475022841610369
+    - rid: 2064475022841610370
+    - rid: 2064475022841610371
+    TraitIds:
+    - TRT_019
+    - TRT_009
+    - 
+    - 
     Weapon:
-      itemName: 
-      type: 0
+      itemName: "\uC554\uC0B4\uC790\uC758 \uB2E8\uB3C4"
       upgradeLevel: 0
       baseSTR: 0
       baseAGI: 2
@@ -52,8 +45,7 @@ MonoBehaviour:
       upAGI: 2
       upINT: 0
     Armor:
-      itemName: 
-      type: 0
+      itemName: "\uC554\uC0B4\uC790\uC758 \uCC9C\uC637"
       upgradeLevel: 0
       baseSTR: 1
       baseAGI: 0
@@ -65,24 +57,43 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     RoleReactions:
-    - Phase: 2
+    - Phase: 0
       ObserveFilter: 0
       SubjectCharacterId: 
+      DefinitionId: 
       Trigger:
-        rid: 8081820094143922315
+        rid: -2
       Effect:
-        rid: 8081820094143922318
-    - Phase: 2
+        rid: -2
+    - Phase: 0
       ObserveFilter: 0
       SubjectCharacterId: 
+      DefinitionId: 
       Trigger:
-        rid: 8081820094143922331
+        rid: -2
       Effect:
-        rid: 8081820094143922336
+        rid: -2
     TraitReactions:
+    - Phase: 3
+      ObserveFilter: 0
+      SubjectCharacterId: 
+      DefinitionId: TRT_019_RDEF
+      Trigger:
+        rid: 2064475022841610372
+      Effect:
+        rid: 2064475022841610373
+    - Phase: 3
+      ObserveFilter: 0
+      SubjectCharacterId: 
+      DefinitionId: TRT_009_RDEF
+      Trigger:
+        rid: 2064475022841610374
+      Effect:
+        rid: 2064475022841610375
     - Phase: 0
       ObserveFilter: 0
       SubjectCharacterId: 
+      DefinitionId: 
       Trigger:
         rid: -2
       Effect:
@@ -90,20 +101,7 @@ MonoBehaviour:
     - Phase: 0
       ObserveFilter: 0
       SubjectCharacterId: 
-      Trigger:
-        rid: -2
-      Effect:
-        rid: -2
-    - Phase: 0
-      ObserveFilter: 0
-      SubjectCharacterId: 
-      Trigger:
-        rid: -2
-      Effect:
-        rid: -2
-    - Phase: 0
-      ObserveFilter: 0
-      SubjectCharacterId: 
+      DefinitionId: 
       Trigger:
         rid: -2
       Effect:
@@ -113,83 +111,58 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 8081819941751750731
+    - rid: 2064475022841610367
       type: {class: AutoBattle_Atk, ns: , asm: Assembly-CSharp}
       data:
         isPlayable: 0
-    - rid: 8081819941751750732
-      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
-      data:
-        damage: 0
-        currentLevel: 0
-        _skillData: {fileID: 11400000, guid: 1601c6c3cbf849d48814fa216a44e153, type: 2}
-    - rid: 8081819941751750733
-      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
-      data:
-        damage: 0
-        currentLevel: 0
-        _skillData: {fileID: 11400000, guid: 4fc73c819bd461b4eb823e24ced1104a, type: 2}
-    - rid: 8081819941751750734
-      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
-      data:
-        damage: 0
-        currentLevel: 0
-        _skillData: {fileID: 11400000, guid: 6dad1ff08f6b8d742870a02e408b0965, type: 2}
-    - rid: 8081819941751750735
+    - rid: 2064475022841610368
       type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
       data:
         damage: 0
         currentLevel: 0
         _skillData: {fileID: 11400000, guid: 4a98f320f02106149807140a6cb71a87, type: 2}
-    - rid: 8081820094143922315
+    - rid: 2064475022841610369
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: c3800a5157df56746b6faaabe18004a8, type: 2}
+    - rid: 2064475022841610370
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: 4fc73c819bd461b4eb823e24ced1104a, type: 2}
+    - rid: 2064475022841610371
+      type: {class: SampleSkill, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 0
+        currentLevel: 0
+        _skillData: {fileID: 11400000, guid: 1601c6c3cbf849d48814fa216a44e153, type: 2}
+    - rid: 2064475022841610372
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
         _condition:
           Additional:
-          - rid: 8081820094143922328
-          - rid: 8081820094143922317
-          - rid: 8081820094143922316
-    - rid: 8081820094143922316
-      type: {class: EvadeCondition, ns: Reactions, asm: Assembly-CSharp}
+          - rid: 2064475022841610376
+    - rid: 2064475022841610373
+      type: {class: CompositeReactionEffect, ns: Reactions, asm: Assembly-CSharp}
       data: 
-    - rid: 8081820094143922317
-      type: {class: SkillTypeCondition, ns: Reactions, asm: Assembly-CSharp}
-      data:
-        Types: 0100000003000000
-    - rid: 8081820094143922318
-      type: {class: SkillCastReactionEffect, ns: Reactions, asm: Assembly-CSharp}
-      data:
-        SkillIndex: 1
-        SkillTarget: 1
-    - rid: 8081820094143922328
-      type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
-      data:
-        Filter: 2
-    - rid: 8081820094143922331
+    - rid: 2064475022841610374
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
         _condition:
           Additional:
-          - rid: 8081820094143922332
-          - rid: 8081820094143922333
-          - rid: 8081820094143922334
-          - rid: 8081820094143922335
-    - rid: 8081820094143922332
-      type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
+          - rid: 2064475022841610377
+    - rid: 2064475022841610375
+      type: {class: FormationMoveReactionEffect, ns: Reactions, asm: Assembly-CSharp}
       data:
-        Filter: 1
-    - rid: 8081820094143922333
-      type: {class: SkillTypeCondition, ns: Reactions, asm: Assembly-CSharp}
+        To: 0
+    - rid: 2064475022841610376
+      type: {class: HpAboveCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
-        Types: 0100000003000000
-    - rid: 8081820094143922334
-      type: {class: CritCondition, ns: Reactions, asm: Assembly-CSharp}
-      data: 
-    - rid: 8081820094143922335
-      type: {class: HitCondition, ns: Reactions, asm: Assembly-CSharp}
-      data: 
-    - rid: 8081820094143922336
-      type: {class: SkillCastReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+        Threshold: 0.7
+    - rid: 2064475022841610377
+      type: {class: PartyStressAverageCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
-        SkillIndex: 1
-        SkillTarget: 2
+        Threshold: 60

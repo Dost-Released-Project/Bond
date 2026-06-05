@@ -1,6 +1,4 @@
 
-using System;
-using System.Collections.Generic;
 using UnityEngine.AddressableAssets;
 
 public class StageCoach
@@ -11,15 +9,7 @@ public class StageCoach
     
     public BaseCharacter GetRandomCharacter()
     {
-        BaseCharacter.Builder builder = new BaseCharacter.Builder(professionDb, skillDb, equipDb);
-
-        builder
-            .SetRandomName()
-            .SetRandomProfession()
-            .AddRandomTrait()
-            .AddRandomTrait();
-        
-        return builder.Build();
+        return GetCharacter(professionDb.GetRandom<ClassSO>());
     }
 
     public BaseCharacter GetCharacter(ClassSO classSO)
@@ -31,7 +21,30 @@ public class StageCoach
             .SetProfession(classSO)
             .AddRandomTrait()
             .AddRandomTrait();
+
+        var ch = builder.Build();
+        SetRoleAuto(ch);
         
-        return builder.Build();
+        return ch;
+    }
+
+    private void SetRoleAuto(BaseCharacter chara)
+    {
+        switch (chara.Profession.Id)
+        {
+            case 0:
+                chara.SetRole(RoleType.Tanker);
+                break;
+            case 1:
+            case 2:
+                chara.SetRole(RoleType.Dealer);
+                break;
+            case 3:
+                chara.SetRole(RoleType.Supporter);
+                break;
+            default:
+                chara.SetRole(RoleType.None);
+                break;
+        }
     }
 }

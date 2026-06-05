@@ -150,16 +150,16 @@ public class BuildingTooltipView : MonoBehaviour
             var levelData = data.GetLevelData(i);
             if (levelData.level != 0)
             {
-                totalMaterialCap += levelData.materialCapAdd;
-                totalFrontierCap += levelData.frontierCapAdd;
+                totalMaterialCap = levelData.materialCapAdd;
+                totalFrontierCap = levelData.frontierCapAdd;
                 totalSlotExpansion += levelData.slotExpansion;
                 totalEffectValue = levelData.effectValue;
             }
         }
 
         string effectText = "[현재 적용 효과]\n";
-        if (totalMaterialCap > 0) effectText += $"- 자원 보관 한도: {totalMaterialCap} 증가\n";
-        if (totalFrontierCap > 0) effectText += $"- 개척 가능 한도: {totalFrontierCap} 증가\n";
+        if (totalMaterialCap > 0) effectText += $"- 자원 보관 한도: {totalMaterialCap}\n";
+        if (totalFrontierCap > 0) effectText += $"- 개척 가능 한도: {totalFrontierCap}\n";
         if (totalSlotExpansion > 0) effectText += $"- 탐사 인벤토리 슬롯: {totalSlotExpansion}칸 증가\n";
         if (totalEffectValue > 0) effectText += $"- 건물 고유 효과 수치: {totalEffectValue} 증가\n";
         
@@ -175,18 +175,18 @@ public class BuildingTooltipView : MonoBehaviour
         {
             var nextLevelData = data.GetLevelData(nextLevel);
 
-            int nextMaterialCap = totalMaterialCap + nextLevelData.materialCapAdd;
-            int nextFrontierCap = totalFrontierCap + nextLevelData.frontierCapAdd;
+            int nextMaterialCap = nextLevelData.materialCapAdd;
+            int nextFrontierCap = nextLevelData.frontierCapAdd;
             int nextSlotExpansion = totalSlotExpansion + nextLevelData.slotExpansion;
             int nextEffectValue = nextLevelData.effectValue;
 
             string upText = "[업그레이드 시 최종 변경값]\n";
             bool hasChanges = false;
 
-            if (nextLevelData.materialCapAdd > 0) { upText += $" 자원 보관 한도: {totalMaterialCap} ➔ {nextMaterialCap} 증가\n"; hasChanges = true; }
-            if (nextLevelData.frontierCapAdd > 0) { upText += $" 개척 가능 한도: {totalFrontierCap} ➔ {nextFrontierCap} 증가\n"; hasChanges = true; }
-            if (nextLevelData.slotExpansion > 0) { upText += $" 인벤토리 슬롯: {totalSlotExpansion}칸 ➔ {nextSlotExpansion}칸 증가\n"; hasChanges = true; }
-            if (nextLevelData.effectValue > 0) { upText += $" 효과 고유 수치: {totalEffectValue} ➔ {nextEffectValue} 증가\n"; hasChanges = true; }
+            if (nextLevelData.materialCapAdd > 0) { upText += $" 자원 보관 한도: {totalMaterialCap} ➔ {nextMaterialCap}\n"; hasChanges = true; }
+            if (nextLevelData.frontierCapAdd > 0) { upText += $" 개척 가능 한도: {totalFrontierCap} ➔ {nextFrontierCap}\n"; hasChanges = true; }
+            if (nextLevelData.slotExpansion > 0) { upText += $" 인벤토리 슬롯: {totalSlotExpansion}칸 ➔ {nextSlotExpansion}칸\n"; hasChanges = true; }
+            if (nextLevelData.effectValue > 0) { upText += $" 효과 고유 수치: {totalEffectValue} ➔ {nextEffectValue}\n"; hasChanges = true; }
             if (data.buildingType == BuildingType.Smithy || data.name.Contains("Smithy")) { upText += $" 장비 최고 강화 한도: {curLevel}단계 ➔ {nextLevel}단계 제한 확장\n"; hasChanges = true; }
 
             // =========================================================================
