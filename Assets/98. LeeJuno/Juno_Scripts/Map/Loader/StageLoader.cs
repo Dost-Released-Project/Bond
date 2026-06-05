@@ -171,6 +171,11 @@ public class StageLoader : IStageLoader
                 _eventContext.Clear();
                 SetEventContext(node);
             }
+            else if (stageType == StageType.Boss)
+            {
+                _stageMonsterContext.Clear();
+                SetBossStageContext(node);
+            }
 
             // 씬 로드 직전 콜백을 채널에 등록한다
             StageCompletionChannel.Register(NotifyStageCompleted);
@@ -429,6 +434,49 @@ public class StageLoader : IStageLoader
 
         // TODO: 검증 완료 후 제거
         Debug.Log($"[StageLoader] SetNormalStageContext — group.Id='{group.Id}', MonsterIds={group.MonsterIds.Count}");
+        _pendingBattleGroupId = group.Id;
+        _stageMonsterContext.Set(group.Id, group.MonsterIds);
+    }
+
+    private void SetBossStageContext(MapNode node)
+    {
+        _isBattleStage = true;
+        _isEventBattle = false;
+
+        if (string.IsNullOrEmpty(node.AssignedMonsterGroupId))
+        {
+            _pendingBattleGroupId = string.Empty;
+            _stageMonsterContext.Set(string.Empty, new List<string>());
+            return;
+        }
+
+        MonsterGroupConfig bossConfig = _mapConfigCache.BossMonsterGroupConfig;
+
+        if (bossConfig == null || bossConfig.Groups == null)
+        {
+            Debug.LogWarning("[StageLoader] BossMonsterGroupConfig 가 비어 있습니다.");
+            _pendingBattleGroupId = string.Empty;
+            _stageMonsterContext.Set(string.Empty, new List<string>());
+            return;
+        }
+
+        MonsterGroupData group = null;
+        foreach (MonsterGroupData g in bossConfig.Groups)
+        {
+            if (g != null && g.Id == node.AssignedMonsterGroupId)
+            {
+                group = g;
+                break;
+            }
+        }
+
+        if (group == null)
+        {
+            _pendingBattleGroupId = string.Empty;
+            _stageMonsterContext.Set(string.Empty, new List<string>());
+            return;
+        }
+
         _pendingBattleGroupId = group.Id;
         _stageMonsterContext.Set(group.Id, group.MonsterIds);
     }

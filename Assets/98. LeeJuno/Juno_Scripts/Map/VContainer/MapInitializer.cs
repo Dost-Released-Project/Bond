@@ -133,6 +133,7 @@ public class MapInitializer : IAsyncStartable, IDisposable
             package.GeneratorConfig,
             package.StageConfigs,
             package.MonsterGroupConfig,
+            package.BossMonsterGroupConfig,
             package.EventConfig,
             package.EventBattleConfig,
             accessoryDB);

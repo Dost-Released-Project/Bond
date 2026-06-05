@@ -45,6 +45,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 459aff33b4b77dd439eac804f4790604
+    m_Address: BossGroupConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 497e20e9361da434a85e53d0072be087
     m_Address: MonsterGroupConfig
     m_ReadOnly: 0

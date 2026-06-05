@@ -5,7 +5,7 @@ using VContainer;
 
 /// <summary>
 /// 테스트용 고정 맵 생성기.
-/// Normal(Layer 0) → Event(Layer 1) → Camping(Layer 2) 3노드를 항상 반환한다.
+/// Normal(Layer 0) → Event(Layer 1) → Elite(Layer 2) → Camping(Layer 3) → Boss(Layer 4) 5노드를 항상 반환한다.
 /// IMapGenerator를 구현하므로 TestMapLifetimeScope의 DI 바인딩만 교체하면
 /// MapInitializer 파이프라인 전체가 동일하게 동작한다.
 /// </summary>
@@ -32,7 +32,7 @@ public class FixedMapGenerator : IMapGenerator
         MapData data = new MapData
         {
             Seed = seed,
-            TotalLayers = 3,
+            TotalLayers = 5,
             MaxNodesPerLayer = 1,
         };
 
@@ -44,23 +44,41 @@ public class FixedMapGenerator : IMapGenerator
         // Layer 1: Event
         MapNode eventNode = new MapNode(1, 0);
         eventNode.StageType = StageType.Event;
-        eventNode.NormalizedPosition = new Vector2(0.5f, 0.5f);
+        eventNode.NormalizedPosition = new Vector2(0.5f, 0.25f);
 
-        // Layer 2: Camping — 마지막 노드
-        MapNode campingNode = new MapNode(2, 0);
+        // Layer 2: Elite
+        MapNode eliteNode = new MapNode(2, 0);
+        eliteNode.StageType = StageType.Elite;
+        eliteNode.NormalizedPosition = new Vector2(0.5f, 0.5f);
+
+        // Layer 3: Camping
+        MapNode campingNode = new MapNode(3, 0);
         campingNode.StageType = StageType.Camping;
-        campingNode.NormalizedPosition = new Vector2(0.5f, 1f);
+        campingNode.NormalizedPosition = new Vector2(0.5f, 0.75f);
 
-        // 단선 연결: Normal → Event → Camping
+        // Layer 4: Boss — 마지막 노드
+        MapNode bossNode = new MapNode(4, 0);
+        bossNode.StageType = StageType.Boss;
+        bossNode.NormalizedPosition = new Vector2(0.5f, 1f);
+
+        // 단선 연결: Normal → Event → Elite → Camping → Boss
         normalNode.NextNodeIds.Add(eventNode.Id);
         eventNode.PrevNodeIds.Add(normalNode.Id);
 
-        eventNode.NextNodeIds.Add(campingNode.Id);
-        campingNode.PrevNodeIds.Add(eventNode.Id);
+        eventNode.NextNodeIds.Add(eliteNode.Id);
+        eliteNode.PrevNodeIds.Add(eventNode.Id);
+
+        eliteNode.NextNodeIds.Add(campingNode.Id);
+        campingNode.PrevNodeIds.Add(eliteNode.Id);
+
+        campingNode.NextNodeIds.Add(bossNode.Id);
+        bossNode.PrevNodeIds.Add(campingNode.Id);
 
         data.Nodes.Add(normalNode);
         data.Nodes.Add(eventNode);
+        data.Nodes.Add(eliteNode);
         data.Nodes.Add(campingNode);
+        data.Nodes.Add(bossNode);
 
         // NodeById, NodesByLayer 딕셔너리 구성
         data.BuildLookups();
@@ -76,6 +94,12 @@ public class FixedMapGenerator : IMapGenerator
 
         // Event 노드에 이벤트 배정
         AssignEvent(eventNode, seed);
+
+        // Elite 노드에 엘리트 그룹 배정
+        AssignEliteGroup(eliteNode, seed + 1);
+
+        // Boss 노드에 보스 그룹 배정
+        AssignBossGroup(bossNode, seed + 2);
 
         return data;
     }
@@ -111,6 +135,73 @@ public class FixedMapGenerator : IMapGenerator
                 continue;
 
             // DungeonType.None / All 이면 모든 던전에 등장, 특정 타입이면 현재 던전과 일치해야 등장
+            bool dungeonMatch = group.DungeonType == DungeonType.None
+                             || group.DungeonType == DungeonType.All
+                             || group.DungeonType == currentDungeon;
+            if (dungeonMatch == false)
+                continue;
+
+            candidates.Add(group);
+        }
+
+        if (candidates.Count == 0)
+            return;
+
+        System.Random rng = new System.Random(seed);
+        node.AssignedMonsterGroupId = candidates[rng.Next(candidates.Count)].Id;
+    }
+
+    private void AssignEliteGroup(MapNode node, int seed)
+    {
+        MonsterGroupConfig monsterGroupConfig = _mapConfigCache.MonsterGroupConfig;
+
+        if (monsterGroupConfig == null || monsterGroupConfig.Groups == null || monsterGroupConfig.Groups.Count == 0)
+            return;
+
+        List<MonsterGroupData> candidates = new List<MonsterGroupData>();
+
+        DungeonType currentDungeon = _expeditionPayload?.DungeonType ?? DungeonType.None;
+
+        foreach (MonsterGroupData group in monsterGroupConfig.Groups)
+        {
+            if (group == null)
+                continue;
+
+            if (group.IsElite == false)
+                continue;
+
+            bool dungeonMatch = group.DungeonType == DungeonType.None
+                             || group.DungeonType == DungeonType.All
+                             || group.DungeonType == currentDungeon;
+            if (dungeonMatch == false)
+                continue;
+
+            candidates.Add(group);
+        }
+
+        if (candidates.Count == 0)
+            return;
+
+        System.Random rng = new System.Random(seed);
+        node.AssignedMonsterGroupId = candidates[rng.Next(candidates.Count)].Id;
+    }
+
+    private void AssignBossGroup(MapNode node, int seed)
+    {
+        MonsterGroupConfig bossGroupConfig = _mapConfigCache.BossMonsterGroupConfig;
+
+        if (bossGroupConfig == null || bossGroupConfig.Groups == null || bossGroupConfig.Groups.Count == 0)
+            return;
+
+        List<MonsterGroupData> candidates = new List<MonsterGroupData>();
+
+        DungeonType currentDungeon = _expeditionPayload?.DungeonType ?? DungeonType.None;
+
+        foreach (MonsterGroupData group in bossGroupConfig.Groups)
+        {
+            if (group == null)
+                continue;
+
             bool dungeonMatch = group.DungeonType == DungeonType.None
                              || group.DungeonType == DungeonType.All
                              || group.DungeonType == currentDungeon;

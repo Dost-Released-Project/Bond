@@ -17,6 +17,6 @@ MonoBehaviour:
   _description: 
   Type: 2
   Icon: {fileID: 0}
-  IconAddress: Wildboar
-  SceneAddress: 
+  IconAddress: Boss_Stage
+  SceneAddress: Stage_Battle
   NodeColor: {r: 1, g: 1, b: 1, a: 1}
