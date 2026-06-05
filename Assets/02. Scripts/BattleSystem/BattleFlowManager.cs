@@ -59,10 +59,14 @@ namespace BattleStage
             }
         }
         
+        private bool m_isBattleActive = false;
+
         public void BattleSwitch()
         {
+            m_isBattleActive = !m_isBattleActive;
+
             // 전투 시작 시 종료 플래그 초기화
-            if (m_playerUnits != null && m_enemyUnits != null)
+            if (m_isBattleActive)
             {
                 m_isBattleEnding = false;
             }
@@ -104,14 +108,30 @@ namespace BattleStage
             }
         }
 
-        private async UniTask ProcessBattleEndAsync(bool isPlayerWin)
+        public void HandleRetreat()
         {
-            Debug.Log($"<color=green>[BattleFlowManager] 전투 종료 처리 시작. (플레이어 승리: {isPlayerWin})</color>");
+            if (m_isBattleEnding) return;
+            
+            Debug.Log("<color=yellow>[BattleFlowManager] 전투 퇴각(도주) 요청 수신.</color>");
+            m_isBattleEnding = true;
+            ProcessBattleEndAsync(false, true).Forget();
+        }
+
+        private async UniTask ProcessBattleEndAsync(bool isPlayerWin, bool isRetreat = false)
+        {
+            Debug.Log($"<color=green>[BattleFlowManager] 전투 종료 처리 시작. (플레이어 승리: {isPlayerWin}, 퇴각 여부: {isRetreat})</color>");
             
             // 1. 진행 중인 턴 루프 및 전투 로직 중지 신호 발송 (토글 오프)
             BattleSwitch();
 
-            // 2. 승리/패배 연출 대기 시간
+            if (isRetreat)
+            {
+                // 퇴각 시에는 대기 없이 즉시 맵으로 신호 전송 (콜백이 유효할 때 즉시 실행하여 레이스 컨디션 방지)
+                InvokeStageComplete(isPlayerWin);
+                return;
+            }
+
+            // 2. 승리/패배 연출 대기 시간 (일반 종료 시에만 대기)
             await UniTask.Delay(2000);
 
             // 3. Provider(일지 시스템) 등 외부 구독자에게 전투 종료 및 승패 결과 알림
@@ -121,16 +141,20 @@ namespace BattleStage
             }
             else
             {
-                // 구독자가 없을 경우 즉시 맵 복귀 (안전 장치)
-                StageResult result = new StageResult
-                {
-                    IsSuccess = isPlayerWin,
-                    IsGameOver = !isPlayerWin,
-                    IsBattleTriggered = false,
-                    RewardIds = new System.Collections.Generic.List<string>()
-                };
-                StageCompletionChannel.Invoke(result);
+                InvokeStageComplete(isPlayerWin);
             }
+        }
+
+        private void InvokeStageComplete(bool isPlayerWin)
+        {
+            StageResult result = new StageResult
+            {
+                IsSuccess = isPlayerWin,
+                IsGameOver = !isPlayerWin,
+                IsBattleTriggered = false,
+                RewardIds = new System.Collections.Generic.List<string>()
+            };
+            StageCompletionChannel.Invoke(result);
         }
     }
 }

@@ -29,8 +29,8 @@ MonoBehaviour:
   SpAtk: 1
   DefaultArmorId: 03040000
   DefaultWeaponId: 03000000
-  IconId: 
-  IdleImageId: 123
-  BattleImageId: 1234
+  IconId: Warrior_Icon
+  IdleImageId: Warrior_Idle
+  BattleImageId: Warrior_Battle
   ClassType: 00
   LV: 0

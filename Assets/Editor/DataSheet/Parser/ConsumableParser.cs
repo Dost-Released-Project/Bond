@@ -34,7 +34,13 @@ public class ConsumableParser : TSVParserBase<ConsumableDTO, ConsumableItem>
         
         if (!string.IsNullOrEmpty(dto.IconPath))
         {
-            so.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/{dto.IconPath}.png");
+            var op = Addressables.LoadAssetAsync<Sprite>(dto.IconPath);
+            so.icon = op.WaitForCompletion();
+        
+            if (so.icon == null)
+            {
+                Debug.LogWarning($"[ConsumableParser] 어드레서블 에셋을 찾을 수 없습니다: {dto.IconPath}");
+            }
         }
     }
 

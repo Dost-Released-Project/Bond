@@ -12,5 +12,7 @@ namespace BattleSystem.Interface
         void EnemySetting(BaseCharacter[] enemyUnits);
     
         void BattleSwitch();
+
+        void HandleRetreat();
     }
 }

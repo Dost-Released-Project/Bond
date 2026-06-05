@@ -29,8 +29,8 @@ MonoBehaviour:
   SpAtk: 3
   DefaultArmorId: 03070000
   DefaultWeaponId: 03030000
-  IconId: 
-  IdleImageId: 123
-  BattleImageId: 1234
+  IconId: Cleric_Icon
+  IdleImageId: Cleric_Idle
+  BattleImageId: Cleric_Battle
   ClassType: 03
   LV: 0

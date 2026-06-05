@@ -13,6 +13,7 @@ namespace Reactions
         None,      // 미지정 — 발화하지 않음 (의식적 선택 강제)
         PreApply,  // ApplyStep 이전 (원본 행동에 영향)
         PostApply, // ApplyStep 이후 (원본 행동의 후속)
+        OnSelfTurn,// 자기 턴 시작 (돌발 행동 — 계획 행동 대체). 파이프라인 ReactionCall 에선 발화하지 않음.
     }
 
     public enum E_ObserveFilter
@@ -30,6 +31,9 @@ namespace Reactions
         Caster,
         Target,
         Observed,   // 조건을 만족시킨 관찰 대상
+        Self,       // 리액터 자신 (효과 대상 지정용. 조건 필터로는 미사용)
+        FrontmostEnemy, // 가장 가까운(최전열) 적 — 효과 대상 지정용
+        BackmostEnemy,  // 가장 먼(최후열) 적 — 효과 대상 지정용
     }
     
     public interface ITrigger

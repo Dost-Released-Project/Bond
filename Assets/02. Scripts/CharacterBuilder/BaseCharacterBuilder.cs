@@ -68,7 +68,7 @@ public partial class BaseCharacter
         {
             var name = names.GetRandom();
             SetName(name);
-            SetImageAddress(name);
+            //SetImageAddress(name);
             return this;
         }
 
@@ -88,7 +88,8 @@ public partial class BaseCharacter
         {
             Profession pro = new Profession(data);
             chara.Profession = pro;
-            
+
+            SetImageAddress(data.IconId);
             chara.IdleImageAddress = data.IdleImageId;
             chara.AttackImageAddress = data.BattleImageId;
             

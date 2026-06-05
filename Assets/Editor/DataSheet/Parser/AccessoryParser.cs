@@ -31,7 +31,13 @@ public class AccessoryParser : TSVParserBase<AccessoryDTO, AccessoryItem>
         
         if (!string.IsNullOrEmpty(dto.IconPath))
         {
-            so.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/{dto.IconPath}.png");
+            var op = Addressables.LoadAssetAsync<Sprite>(dto.IconPath);
+            so.icon = op.WaitForCompletion(); 
+        
+            if (so.icon == null)
+            {
+                Debug.LogWarning($"[AccessoryParser] 어드레서블 에셋을 찾을 수 없습니다: {dto.IconPath}");
+            }
         }
         
         // [중요] 스탯 모디파이어 연결 로직

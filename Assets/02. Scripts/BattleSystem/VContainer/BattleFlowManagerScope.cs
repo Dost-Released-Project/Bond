@@ -29,6 +29,7 @@ namespace BattleSystem.VContainer
             
             // 퇴각(도주) 컨트롤러 및 뷰
             builder.Register<BattleRetreatController>(Lifetime.Scoped);
+            builder.Register<BattleRetreatJournalHandler>(Lifetime.Scoped).AsImplementedInterfaces().AsSelf();
             builder.RegisterComponentInHierarchy<BattleRetreatView>();
             
             // 탐사 인벤토리 UI

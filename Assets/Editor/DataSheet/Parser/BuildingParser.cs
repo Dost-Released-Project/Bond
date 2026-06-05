@@ -5,6 +5,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class BuildingDTO
 {
@@ -102,7 +103,13 @@ public class BuildingParser : TSVParserBase<BuildingDTO, BuildingData>
         Sprite sprite = null;
         if (!string.IsNullOrEmpty(dto.SpritePath))
         {
-            sprite = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/{dto.SpritePath}.png");
+            var op = Addressables.LoadAssetAsync<Sprite>(dto.SpritePath);
+            sprite = op.WaitForCompletion();
+        
+            if (sprite == null)
+            {
+                Debug.LogWarning($"[BuildingParser] 어드레서블 에셋을 찾을 수 없습니다: {dto.SpritePath}");
+            }
         }
 
         List<BuildingLevelData> myLevels = new List<BuildingLevelData>();

@@ -75,8 +75,15 @@ namespace Bond.WT.Camping
 
         public void ExecuteFinalExit()
         {
-            UnityEngine.Debug.Log("<color=cyan>[CampingSystem]</color> 최종 퇴장. Test_3_Node 씬으로 이동.");
-            SceneLoader.Load("Test_3_Node");
+            UnityEngine.Debug.Log("<color=cyan>[CampingSystem]</color> 최종 퇴장. 씬 언로드를 위해 StageCompletionChannel 호출.");
+            StageResult result = new StageResult
+            {
+                IsSuccess = true,
+                IsGameOver = false,
+                IsBattleTriggered = false,
+                RewardIds = new List<string>()
+            };
+            StageCompletionChannel.Invoke(result);
         }
 
         private int GetItemCountByType(ConsumableType type)
