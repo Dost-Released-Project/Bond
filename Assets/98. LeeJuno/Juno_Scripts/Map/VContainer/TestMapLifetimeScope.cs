@@ -1,5 +1,6 @@
 using Bond.WT.Journal;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VContainer;
 using VContainer.Unity;
 
@@ -19,7 +20,7 @@ using VContainer.Unity;
 /// </summary>
 public class TestMapLifetimeScope : LifetimeScope
 {
-    [SerializeField] private MapUIController _mapUIController;
+    [SerializeField] private MapUIController mapUIController;
     [SerializeField] private JournalUIView _journalUIPrefab;
 
     protected override void Configure(IContainerBuilder builder)
@@ -39,8 +40,8 @@ public class TestMapLifetimeScope : LifetimeScope
         builder.Register<BattleEventEffectHandler>(Lifetime.Singleton).AsImplementedInterfaces();
 
         // 씬에 배치된 MonoBehaviour 를 DI 대상으로 등록
-        if (_mapUIController != null)
-            builder.RegisterComponent(_mapUIController);
+        if (mapUIController != null)
+            builder.RegisterComponent(mapUIController);
         else
             Debug.LogError("[TestMapLifetimeScope] _mapUIController 가 연결되지 않았습니다.", this);
 

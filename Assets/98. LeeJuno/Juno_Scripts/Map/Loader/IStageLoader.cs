@@ -20,6 +20,8 @@ public interface IStageLoader
     /// </summary>
     public bool IsLoading { get; }
 
+    public StageType? CurrentStageType { get; }
+
     /// <summary>
     /// 지정한 스테이지 타입에 해당하는 씬을 Additive 방식으로 비동기 로드한다.
     /// 이전에 로드된 씬이 있으면 먼저 언로드한 후 새 씬을 로드한다.
