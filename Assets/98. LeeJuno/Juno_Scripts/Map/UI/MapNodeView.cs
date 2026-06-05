@@ -23,8 +23,7 @@ public class MapNodeView : MonoBehaviour
     [SerializeField] private Image _background;
     [SerializeField] private GameObject _availableIndicator;
     [Range(0, 1)] [SerializeField] private float _fadeLerpAmount = 0.75f;
-
-    private static readonly Color _mapBackgroundColor = new Color(142f / 255f, 130f / 255f, 108f / 255f, 1f);
+    [SerializeField] private Color _mapBackgroundColor = new Color(142f / 255f, 130f / 255f, 108f / 255f, 1f);
 
 
     private MapNode _node;
