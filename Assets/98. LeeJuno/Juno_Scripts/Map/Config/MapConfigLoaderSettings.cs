@@ -12,6 +12,7 @@ public class MapConfigLoaderSettings : ScriptableObject
     [Header("Addressables 키")]
     [SerializeField] private string _mapGeneratorConfigAddress;
     [SerializeField] private string _monsterGroupConfigAddress;
+    [SerializeField] private string _bossGroupConfigAddress;
     [SerializeField] private string _eventConfigAddress;
     [SerializeField] private string _eventBattleConfigAddress;
 
@@ -24,6 +25,7 @@ public class MapConfigLoaderSettings : ScriptableObject
     /// <summary>MonsterGroupConfig Addressables 키.</summary>
     public string MonsterGroupConfigAddress => _monsterGroupConfigAddress;
 
+    public string BossGroupConfigAddress => _bossGroupConfigAddress;
     /// <summary>EventConfig Addressables 키.</summary>
     public string EventConfigAddress => _eventConfigAddress;
 

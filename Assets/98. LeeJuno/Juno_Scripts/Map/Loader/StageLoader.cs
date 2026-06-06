@@ -106,6 +106,17 @@ public class StageLoader : IStageLoader
     /// </summary>
     public bool IsLoading => _isLoading;
 
+    public StageType? CurrentStageType
+    {
+        get
+        {
+            if (_hasLoadedScene == false)
+                return null;
+
+            return _isBattleStage ? StageType.Normal : StageType.Event;
+        }
+    }
+
     /// <summary>
     /// 지정한 StageType에 대응하는 씬을 Additive로 비동기 로드한다.
     /// 이미 씬이 로드되어 있으면 언로드 후 새 씬을 로드한다.
@@ -150,7 +161,7 @@ public class StageLoader : IStageLoader
             }
 
             // ARCH-04: SetNormalStageContext 직전 잔류 데이터 제거
-            if (stageType == StageType.Normal)
+            if (stageType == StageType.Normal || stageType == StageType.Elite)
             {
                 _stageMonsterContext.Clear();
                 SetNormalStageContext(node);
@@ -159,6 +170,11 @@ public class StageLoader : IStageLoader
             {
                 _eventContext.Clear();
                 SetEventContext(node);
+            }
+            else if (stageType == StageType.Boss)
+            {
+                _stageMonsterContext.Clear();
+                SetBossStageContext(node);
             }
 
             // 씬 로드 직전 콜백을 채널에 등록한다
@@ -418,6 +434,49 @@ public class StageLoader : IStageLoader
 
         // TODO: 검증 완료 후 제거
         Debug.Log($"[StageLoader] SetNormalStageContext — group.Id='{group.Id}', MonsterIds={group.MonsterIds.Count}");
+        _pendingBattleGroupId = group.Id;
+        _stageMonsterContext.Set(group.Id, group.MonsterIds);
+    }
+
+    private void SetBossStageContext(MapNode node)
+    {
+        _isBattleStage = true;
+        _isEventBattle = false;
+
+        if (string.IsNullOrEmpty(node.AssignedMonsterGroupId))
+        {
+            _pendingBattleGroupId = string.Empty;
+            _stageMonsterContext.Set(string.Empty, new List<string>());
+            return;
+        }
+
+        MonsterGroupConfig bossConfig = _mapConfigCache.BossMonsterGroupConfig;
+
+        if (bossConfig == null || bossConfig.Groups == null)
+        {
+            Debug.LogWarning("[StageLoader] BossMonsterGroupConfig 가 비어 있습니다.");
+            _pendingBattleGroupId = string.Empty;
+            _stageMonsterContext.Set(string.Empty, new List<string>());
+            return;
+        }
+
+        MonsterGroupData group = null;
+        foreach (MonsterGroupData g in bossConfig.Groups)
+        {
+            if (g != null && g.Id == node.AssignedMonsterGroupId)
+            {
+                group = g;
+                break;
+            }
+        }
+
+        if (group == null)
+        {
+            _pendingBattleGroupId = string.Empty;
+            _stageMonsterContext.Set(string.Empty, new List<string>());
+            return;
+        }
+
         _pendingBattleGroupId = group.Id;
         _stageMonsterContext.Set(group.Id, group.MonsterIds);
     }

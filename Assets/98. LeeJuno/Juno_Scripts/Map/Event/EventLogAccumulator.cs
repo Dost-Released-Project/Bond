@@ -11,7 +11,10 @@ using UnityEngine;
 /// </summary>
 public class EventLogAccumulator
 {
+    #region 필드 / 생성자 / 프로퍼티
+
     private readonly List<JournalReport> _allLogs = new List<JournalReport>();
+    private readonly List<string> _pendingDeathLines = new List<string>();
     private readonly MapConfigCache _mapConfigCache;
 
     /// <summary>
@@ -51,69 +54,10 @@ public class EventLogAccumulator
     public IReadOnlyList<JournalReport> AllLogs => _allLogs;
 
     public bool HasLogs => _allLogs.Count > 0;
-    
 
-    /// <summary>
-    /// ItemReward 효과 적용 직전에 이벤트 이름을 예약한다.
-    /// EventSceneController 가 RecordChoice() 호출 직전에 설정한다.
-    /// </summary>
-    /// <param name="eventName">현재 이벤트의 표시 이름.</param>
-    public void SetPendingEventName(string eventName)
-    {
-        _pendingEventName = eventName ?? string.Empty;
-    }
+    #endregion
 
-    /// <summary>
-    /// 아이템 획득이 확정된 시점에 호출한다.
-    /// "{이벤트명}에서 {아이템이름}을 획득하였습니다." 형식의 로그를 AllLogs 에 추가한다.
-    /// 호출 후 _pendingEventName 을 초기화한다.
-    /// </summary>
-    /// <param name="itemDisplayName">AccessoryDataBaseSO 에서 조회한 아이템 표시 이름.</param>
-    private void FlushItemRewardLog(string itemDisplayName)
-    {
-        string eventName = string.IsNullOrEmpty(_pendingEventName) ? "알 수 없는 이벤트" : _pendingEventName;
-        string logText   = $"{eventName}에서 {itemDisplayName}을 획득하였습니다.";
-
-        // 별도 Report 를 만들지 않고 진행 중인 이벤트 기록 Pending Report 에 추가한다
-        // CommitPendingReport() 는 ApplyEffectAndCompleteAsync 또는 ExecuteSecondaryActionAndCompleteAsync 에서 호출한다
-        AppendToPendingReport(logText);
-        _pendingEventName = string.Empty;
-    }
-
-    /// <summary>
-    /// itemId로 AccessoryDB에서 아이템 이름을 조회해 로그를 기록한다.
-    /// 1차/2차 선택지 경로 모두에서 호출된다.
-    /// </summary>
-    /// <param name="itemId">획득한 아이템 ID.</param>
-    public void FlushItemRewardLogById(string itemId)
-    {
-        string itemDisplayName = itemId;
-
-        AccessoryDataBaseSO accessoryDB = _mapConfigCache?.AccessoryDB;
-        if (accessoryDB != null)
-        {
-            BaseSO itemSO = accessoryDB.GetSO(itemId);
-            if (itemSO != null)
-                itemDisplayName = itemSO.DisplayName;
-            else
-                Debug.LogWarning($"[EventLogAccumulator] AccessoryDB에서 '{itemId}'를 찾을 수 없습니다.");
-        }
-        else
-        {
-            Debug.LogWarning("[EventLogAccumulator] AccessoryDB가 아직 로드되지 않았습니다.");
-        }
-
-        FlushItemRewardLog(itemDisplayName);
-    }
-
-    /// <summary>
-    /// 아이템 미획득 시 예약된 이벤트 이름을 수동으로 초기화한다.
-    /// Probability 실패 또는 ItemPool 이 비어있는 경우 HandleAsync() 에서 호출한다.
-    /// </summary>
-    public void ClearPendingEventName()
-    {
-        _pendingEventName = string.Empty;
-    }
+    #region 이벤트 선택 기록 (Pending Report)
 
     /// <summary>
     /// 이벤트 선택 시점에 Pending Report 를 열고 선택지 텍스트를 기록한다.
@@ -201,6 +145,25 @@ public class EventLogAccumulator
     }
 
     /// <summary>
+    /// ChooseOne 효과 처리 후 선택지 Label 단락에 대상 이름을 덧붙인다.
+    /// BeginPendingReport() 의 Fallback 경로에서 Label 단락이 기록된 경우에만 동작한다.
+    /// </summary>
+    /// <param name="targetName">선택된 대상 캐릭터 이름.</param>
+    public void AppendChoiceLabelTarget(string targetName)
+    {
+        if (_pendingReport == null)
+            return;
+
+        if (string.IsNullOrEmpty(targetName))
+            return;
+
+        if (_pendingChoiceLabelIndex < 0 || _pendingChoiceLabelIndex >= _pendingReport.Paragraphs.Count)
+            return;
+
+        _pendingReport.Paragraphs[_pendingChoiceLabelIndex] += $" → {targetName}";
+    }
+
+    /// <summary>
     /// Pending Report 를 _allLogs 에 추가하고 초기화한다.
     /// 모든 효과 적용이 끝난 시점(ApplyEffectAndCompleteAsync, HandleBattleChoice 등)에 호출한다.
     /// </summary>
@@ -224,24 +187,75 @@ public class EventLogAccumulator
         _pendingChoiceLabelIndex = -1;
     }
 
+    #endregion
+
+    #region 아이템 보상 기록
+
     /// <summary>
-    /// ChooseOne 효과 처리 후 선택지 Label 단락에 대상 이름을 덧붙인다.
-    /// BeginPendingReport() 의 Fallback 경로에서 Label 단락이 기록된 경우에만 동작한다.
+    /// ItemReward 효과 적용 직전에 이벤트 이름을 예약한다.
+    /// EventSceneController 가 RecordChoice() 호출 직전에 설정한다.
     /// </summary>
-    /// <param name="targetName">선택된 대상 캐릭터 이름.</param>
-    public void AppendChoiceLabelTarget(string targetName)
+    /// <param name="eventName">현재 이벤트의 표시 이름.</param>
+    public void SetPendingEventName(string eventName)
     {
-        if (_pendingReport == null)
-            return;
-
-        if (string.IsNullOrEmpty(targetName))
-            return;
-
-        if (_pendingChoiceLabelIndex < 0 || _pendingChoiceLabelIndex >= _pendingReport.Paragraphs.Count)
-            return;
-
-        _pendingReport.Paragraphs[_pendingChoiceLabelIndex] += $" → {targetName}";
+        _pendingEventName = eventName ?? string.Empty;
     }
+
+    /// <summary>
+    /// 아이템 미획득 시 예약된 이벤트 이름을 수동으로 초기화한다.
+    /// Probability 실패 또는 ItemPool 이 비어있는 경우 HandleAsync() 에서 호출한다.
+    /// </summary>
+    public void ClearPendingEventName()
+    {
+        _pendingEventName = string.Empty;
+    }
+
+    /// <summary>
+    /// itemId로 AccessoryDB에서 아이템 이름을 조회해 로그를 기록한다.
+    /// 1차/2차 선택지 경로 모두에서 호출된다.
+    /// </summary>
+    /// <param name="itemId">획득한 아이템 ID.</param>
+    public void FlushItemRewardLogById(string itemId)
+    {
+        string itemDisplayName = itemId;
+
+        AccessoryDataBaseSO accessoryDB = _mapConfigCache?.AccessoryDB;
+        if (accessoryDB != null)
+        {
+            BaseSO itemSO = accessoryDB.GetSO(itemId);
+            if (itemSO != null)
+                itemDisplayName = itemSO.DisplayName;
+            else
+                Debug.LogWarning($"[EventLogAccumulator] AccessoryDB에서 '{itemId}'를 찾을 수 없습니다.");
+        }
+        else
+        {
+            Debug.LogWarning("[EventLogAccumulator] AccessoryDB가 아직 로드되지 않았습니다.");
+        }
+
+        FlushItemRewardLog(itemDisplayName);
+    }
+
+    /// <summary>
+    /// 아이템 획득이 확정된 시점에 호출한다.
+    /// "{이벤트명}에서 {아이템이름}을 획득하였습니다." 형식의 로그를 AllLogs 에 추가한다.
+    /// 호출 후 _pendingEventName 을 초기화한다.
+    /// </summary>
+    /// <param name="itemDisplayName">AccessoryDataBaseSO 에서 조회한 아이템 표시 이름.</param>
+    private void FlushItemRewardLog(string itemDisplayName)
+    {
+        string eventName = string.IsNullOrEmpty(_pendingEventName) ? "알 수 없는 이벤트" : _pendingEventName;
+        string logText   = $"{eventName}에서 {itemDisplayName}을 획득하였습니다.";
+
+        // 별도 Report 를 만들지 않고 진행 중인 이벤트 기록 Pending Report 에 추가한다
+        // CommitPendingReport() 는 ApplyEffectAndCompleteAsync 또는 ExecuteSecondaryActionAndCompleteAsync 에서 호출한다
+        AppendToPendingReport(logText);
+        _pendingEventName = string.Empty;
+    }
+
+    #endregion
+
+    #region 전투 기록
 
     /// <summary>
     /// 이벤트 전투 결과를 열려있는 Pending Report 에 덧붙이고 확정한다.
@@ -296,6 +310,19 @@ public class EventLogAccumulator
         _allLogs.Add(report);
     }
 
+    public void RecordCharacterDeath(string characterName, StageType? stageType)
+    {
+        string context;
+        if (stageType == null)
+            context = "탐사 중";
+        else if (stageType == StageType.Normal)
+            context = "전투에서";
+        else
+            context = "이벤트에서";
+
+        _pendingDeathLines.Add($"{characterName}가 {context} 전사하였습니다.");
+    }
+
     /// <summary>
     /// monsterGroupId 에 대응하는 MonsterGroupData 의 DisplayName 을 반환한다.
     /// 찾지 못하면 string.Empty 를 반환한다.
@@ -330,6 +357,62 @@ public class EventLogAccumulator
         return string.Empty;
     }
 
+    #endregion
+
+    #region 탐사 종료 기록
+
+    public void RecordExpeditionSuccess()
+    {
+        string title   = "탐사 성공";
+        string summary = "모든 적을 물리치고 탐사를 성공적으로 마쳤습니다.";
+
+        List<string> paragraphs = new List<string> { title };
+
+        foreach (string deathLine in _pendingDeathLines)
+            paragraphs.Add(deathLine);
+
+        paragraphs.Add(summary);
+
+        JournalReport report = new JournalReport
+        {
+            Title      = title,
+            Paragraphs = paragraphs,
+            IconId     = string.Empty,
+            Options    = new List<JournalOption>(),
+            ProviderId = "ExpeditionSuccess",
+        };
+
+        _allLogs.Add(report);
+        _pendingDeathLines.Clear();
+    }
+
+    public void RecordRetreat(bool isWipeout)
+    {
+        string title   = isWipeout ? "파티 전멸" : "탐사 퇴각";
+        string summary = isWipeout
+            ? "모든 파티원이 전사하여 탐사를 중단하였습니다."
+            : "탐사대가 스스로 퇴각을 결정하였습니다.";
+
+        List<string> paragraphs = new List<string> { title };
+
+        foreach (string deathLine in _pendingDeathLines)
+            paragraphs.Add(deathLine);
+
+        paragraphs.Add(summary);
+
+        JournalReport report = new JournalReport
+        {
+            Title      = title,
+            Paragraphs = paragraphs,
+            IconId     = string.Empty,
+            Options    = new List<JournalOption>(),
+            ProviderId = "Retreat",
+        };
+
+        _allLogs.Add(report);
+        _pendingDeathLines.Clear();
+    }
+
     /// <summary>
     /// 런 종료 시 외부에서 명시적으로 호출한다.
     /// 자동 Clear는 하지 않는다.
@@ -338,4 +421,6 @@ public class EventLogAccumulator
     {
         _allLogs.Clear();
     }
+
+    #endregion
 }

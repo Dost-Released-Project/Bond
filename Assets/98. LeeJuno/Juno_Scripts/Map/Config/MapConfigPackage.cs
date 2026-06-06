@@ -16,6 +16,8 @@ public class MapConfigPackage
     /// <summary>몬스터 그룹 목록 Config.</summary>
     public MonsterGroupConfig MonsterGroupConfig { get; private set; }
 
+    public MonsterGroupConfig BossMonsterGroupConfig { get; private set; }
+
     /// <summary>이벤트 목록 Config.</summary>
     public EventConfig EventConfig { get; private set; }
 
@@ -30,13 +32,15 @@ public class MapConfigPackage
         MapGeneratorConfig generatorConfig,
         List<StageConfig> stageConfigs,
         MonsterGroupConfig monsterGroupConfig,
+        MonsterGroupConfig bossMonsterGroupConfig,
         EventConfig eventConfig,
         EventBattleConfig eventBattleConfig)
     {
-        GeneratorConfig    = generatorConfig;
-        StageConfigs       = stageConfigs;
-        MonsterGroupConfig = monsterGroupConfig;
-        EventConfig        = eventConfig;
-        EventBattleConfig  = eventBattleConfig;
+        GeneratorConfig        = generatorConfig;
+        StageConfigs           = stageConfigs;
+        MonsterGroupConfig     = monsterGroupConfig;
+        BossMonsterGroupConfig = bossMonsterGroupConfig;
+        EventConfig            = eventConfig;
+        EventBattleConfig      = eventBattleConfig;
     }
 }

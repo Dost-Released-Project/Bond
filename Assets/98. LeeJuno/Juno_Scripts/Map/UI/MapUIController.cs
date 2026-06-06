@@ -20,6 +20,7 @@ using VContainer;
 ///   _mapView   — MapView 컴포넌트
 ///   _mapPanel  — 맵 전체 패널 GameObject (SetActive 제어)
 /// </summary>
+
 public class MapUIController : MonoBehaviour
 {
     [SerializeField] private MapView _mapView;
@@ -71,6 +72,23 @@ public class MapUIController : MonoBehaviour
         else
         {
             Debug.LogWarning("[MapUIController] _retreatButton 이 연결되지 않았습니다.");
+        }
+    }
+
+    /// <summary>
+    /// 디버그용 키 입력 처리.
+    /// '1' 키: JournalModel에 적재된 리포트를 JournalUIView로 표시한다.
+    /// </summary>
+    private void Update()
+    {
+        if (UnityEngine.InputSystem.Keyboard.current == null)
+        {
+            return;
+        }
+
+        if (UnityEngine.InputSystem.Keyboard.current.digit1Key.wasPressedThisFrame)
+        {
+            TryShowJournalUI();
         }
     }
 
@@ -139,40 +157,26 @@ public class MapUIController : MonoBehaviour
     /// </summary>
     private void HandleStageCompleted(StageResult result)
     {
-        // 결과 연출 (승리/패배) 판단은 추후 FlowManager 혹은 상위 레벨에서 처리
-
         _mapView.RefreshNodeStates();
-        UnloadAndShowMapAsync().Forget();
-    }
 
-    /// <summary>
-    /// 디버그용 키 입력 처리.
-    /// '1' 키: JournalModel에 적재된 리포트를 JournalUIView로 표시한다.
-    /// </summary>
-    private void Update()
-    {
-        if (UnityEngine.InputSystem.Keyboard.current == null)
+        bool isLastNode = _navigator.CurrentNode != null
+                       && _navigator.CurrentNode.NextNodeIds.Count == 0;
+
+        if (isLastNode && result.IsSuccess)
         {
+            CompleteExpeditionAsync().Forget();
             return;
         }
 
-        if (UnityEngine.InputSystem.Keyboard.current.digit1Key.wasPressedThisFrame)
-        {
-            TryShowJournalUI();
-        }
+        UnloadAndShowMapAsync().Forget();
     }
 
-    /// <summary>
-    /// 1번 키 입력 시 호출.
-    /// EventLogAccumulator에 누적된 전체 이벤트 이력을 처음부터 JournalUIView로 표시한다.
-    /// 열람 후에도 누적 이력은 지워지지 않는다.
-    /// </summary>
+
     private void TryShowJournalUI()
     {
         if (_journalModel == null)
             return;
 
-        // 이미 일지 팝업이 열려 있는 경우 중복 열기를 방지한다
         if (_journalModel.IsJournalComplete.Value == false)
             return;
 
@@ -182,17 +186,21 @@ public class MapUIController : MonoBehaviour
             return;
         }
 
-        // ObservableValue equality 방어:
-        // 이전과 동일한 텍스트가 CurrentParagraph에 남아 있을 경우 Observer가 발동하지 않으므로
-        // 먼저 빈 문자열로 리셋한다. JournalBinder는 빈 문자열에는 반응하지 않으므로 안전하다.
+        // 람다식: 비동기 예외를 void 컨텍스트에서 명시적으로 기록하기 위해 사용한다
+        ShowJournalAndWaitAsync().Forget(e => Debug.LogError($"[MapUIController] 일지 표시 중 예외: {e}"));
+    }
+
+    private async UniTask ShowJournalAndWaitAsync()
+    {
         _journalModel.CurrentParagraph.Value = string.Empty;
 
-        // AllLogs를 JournalModel에 재적재하고 첫 페이지부터 표시한다.
-        // SetReports()가 IsJournalComplete를 false로 설정하고,
-        // TryNextReport()가 UpdatePageState()를 통해 CurrentParagraph를 갱신한다.
-        // JournalBinder._paragraphObserver가 발동해 SetVisible(true)와 ShowText()를 처리한다.
         _journalModel.SetReports(_logAccumulator.AllLogs);
         _journalModel.TryNextReport();
+
+        await UniTask.WaitUntil(
+            () => _journalModel.IsJournalComplete.Value,
+            PlayerLoopTiming.Update
+        );
     }
 
     /// <summary>
@@ -261,7 +269,6 @@ public class MapUIController : MonoBehaviour
 
     private async UniTaskVoid RetreatToTownAsync()
     {
-        // 스테이지 씬이 로드 중이거나 로드된 상태면 먼저 언로드한다
         if (_stageLoader.IsLoading == false)
         {
             try
@@ -271,14 +278,49 @@ public class MapUIController : MonoBehaviour
             catch (Exception e)
             {
                 Debug.LogError($"[MapUIController] 퇴각 중 씬 언로드 실패: {e.Message}");
-                // 언로드 실패 시에도 마을 복귀를 시도한다
             }
         }
 
-        // 수동 퇴각은 탐사 실패(Failure)로 기록한다.
-        // ExpeditionPayload.Outcome을 마을 씬에서 읽어 귀환 결과를 처리한다.
         if (_expeditionPayload != null)
             _expeditionPayload.SetResult(Bond.Expedition.ExpeditionOutcome.Failure);
+
+        if (_logAccumulator != null)
+            _logAccumulator.RecordRetreat(isWipeout: false);
+
+        if (_journalModel != null && _logAccumulator != null && _logAccumulator.HasLogs)
+        {
+            _mapPanel.SetActive(true);
+            await ShowJournalAndWaitAsync();
+        }
+
+        SceneLoader.Load("Town");
+    }
+
+    private async UniTaskVoid CompleteExpeditionAsync()
+    {
+        if (_stageLoader.IsLoading == false)
+        {
+            try
+            {
+                await _stageLoader.UnloadCurrentStage();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[MapUIController] 탐사 성공 처리 중 씬 언로드 실패: {e.Message}");
+            }
+        }
+
+        if (_expeditionPayload != null)
+            _expeditionPayload.SetResult(Bond.Expedition.ExpeditionOutcome.Success);
+
+        if (_logAccumulator != null)
+            _logAccumulator.RecordExpeditionSuccess();
+
+        if (_journalModel != null && _logAccumulator != null && _logAccumulator.HasLogs)
+        {
+            _mapPanel.SetActive(true);
+            await ShowJournalAndWaitAsync();
+        }
 
         SceneLoader.Load("Town");
     }

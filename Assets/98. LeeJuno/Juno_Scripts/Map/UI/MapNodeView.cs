@@ -22,13 +22,17 @@ public class MapNodeView : MonoBehaviour
     [SerializeField] private Image _icon;
     [SerializeField] private Image _background;
     [SerializeField] private GameObject _availableIndicator;
+    [Range(0, 1)] [SerializeField] private float _fadeLerpAmount = 0.75f;
+    [SerializeField] private Color _mapBackgroundColor = new Color(142f / 255f, 130f / 255f, 108f / 255f, 1f);
+
 
     private MapNode _node;
     private System.Action<int> _onClickCallback;
     private AsyncOperationHandle<Sprite> _iconHandle; // 로드 핸들 — OnDestroy에서 Release
-    private bool _iconHandleValid;                    // 핸들 유효 여부 플래그
+    private bool _iconHandleValid; // 핸들 유효 여부 플래그
     private ISpriteLoader _spriteLoader;
-    private CancellationTokenSource _loadCts;          // 비동기 로드 취소용 — Setup 재호출 시 이전 작업 취소
+    private CancellationTokenSource _loadCts; // 비동기 로드 취소용 — Setup 재호출 시 이전 작업 취소
+    private Color _originalBackgroundColor = Color.white;
 
     /// <summary>
     /// 노드 데이터와 시각 정보(주소 기반)를 받아 이 뷰를 초기화한다.
@@ -39,7 +43,8 @@ public class MapNodeView : MonoBehaviour
     /// <param name="fallbackIcon">iconAddress 로드 실패 또는 빈 경우 사용할 스프라이트</param>
     /// <param name="onClickCallback">버튼 클릭 시 호출할 콜백 (인자: 노드 Id)</param>
     /// <param name="spriteLoader">Addressables Sprite 비동기 로드 서비스. 호출자(MapView)가 DI로 전달한다.</param>
-    public void Setup(MapNode node, string iconAddress, Sprite fallbackIcon, System.Action<int> onClickCallback, ISpriteLoader spriteLoader)
+    public void Setup(MapNode node, string iconAddress, Sprite fallbackIcon, System.Action<int> onClickCallback,
+        ISpriteLoader spriteLoader)
     {
         _spriteLoader = spriteLoader;
 
@@ -63,6 +68,11 @@ public class MapNodeView : MonoBehaviour
         // fallback 먼저 적용 — 로드 완료 전까지 표시할 아이콘
         if (_icon != null && fallbackIcon != null)
             _icon.sprite = fallbackIcon;
+
+        // Button 자동 틴팅을 무력화한다 — 색상 제어를 RefreshState에서 직접 처리한다
+        ColorBlock colorBlock = _button.colors;
+        colorBlock.disabledColor = Color.white;
+        _button.colors = colorBlock;
 
         // 중복 등록 방지 후 클릭 이벤트 연결
         _button.onClick.RemoveAllListeners();
@@ -90,12 +100,26 @@ public class MapNodeView : MonoBehaviour
         if (_node == null)
             return;
 
-        bool isInteractable = _node.State == NodeState.Available;
-        _button.interactable = isInteractable;
+        bool isAvailable = _node.State == NodeState.Available;
+        _button.interactable = isAvailable;
 
-        // 선택 가능한 노드에만 강조 인디케이터 표시
+        if (isAvailable)
+        {
+            if (_background != null)
+                _background.color = _originalBackgroundColor;
+            if (_icon != null)
+                _icon.color = Color.white;
+        }
+        else
+        {
+            if (_background != null)
+                _background.color = Color.Lerp(_originalBackgroundColor, _mapBackgroundColor, _fadeLerpAmount);
+            if (_icon != null)
+                _icon.color = Color.Lerp(Color.white, _mapBackgroundColor, _fadeLerpAmount);
+        }
+
         if (_availableIndicator != null)
-            _availableIndicator.SetActive(isInteractable);
+            _availableIndicator.SetActive(isAvailable);
     }
 
     /// <summary>
@@ -103,8 +127,8 @@ public class MapNodeView : MonoBehaviour
     /// </summary>
     public void SetColor(Color color)
     {
-        if (_background != null)
-            _background.color = color;
+        _originalBackgroundColor = color;
+        RefreshState();
     }
 
     private void OnDestroy()
@@ -137,6 +161,7 @@ public class MapNodeView : MonoBehaviour
                 Addressables.Release(_iconHandle);
                 _iconHandleValid = false;
             }
+
             return;
         }
 
@@ -153,6 +178,7 @@ public class MapNodeView : MonoBehaviour
                 Addressables.Release(_iconHandle);
                 _iconHandleValid = false;
             }
+
             return;
         }
 

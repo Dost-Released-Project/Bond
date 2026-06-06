@@ -17,6 +17,7 @@ using VContainer;
 ///   7. InitializeNodeStates — 초기 노드 상태 설정 (0층만 Available)
 ///   8. AssignMonsterGroups  — Normal 노드에 몬스터 그룹 랜덤 배정
 ///   9. AssignEvents         — Event 노드에 이벤트 랜덤 배정
+///  10. AssignBossGroups     — Boss 노드에 보스 그룹 랜덤 배정
 /// </summary>
 public class MapGenerator : IMapGenerator
 {
@@ -69,8 +70,9 @@ public class MapGenerator : IMapGenerator
         AssignStageTypes(data, rng, config);
         ApplyPlacementRules(data, rng, config);
         InitializeNodeStates(data);
-        AssignMonsterGroups(data, rng, monsterGroupConfig); // Step 8: Normal/Elite 노드에 몬스터 그룹 랜덤 배정
-        AssignEvents(data, rng, eventConfig);               // Step 9: Event 노드에 이벤트 랜덤 배정
+        AssignMonsterGroups(data, rng, monsterGroupConfig);            // Step 8: Normal/Elite 노드에 몬스터 그룹 랜덤 배정
+        AssignEvents(data, rng, eventConfig);                          // Step 9: Event 노드에 이벤트 랜덤 배정
+        AssignBossGroups(data, rng, _mapConfigCache.BossMonsterGroupConfig); // Step 10: Boss 노드에 보스 그룹 랜덤 배정
 
         return data;
     }
@@ -694,5 +696,44 @@ public class MapGenerator : IMapGenerator
         }
 
         return candidates;
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // Step 10: Boss 노드 보스 그룹 배정
+    // ─────────────────────────────────────────────────────────
+
+    private void AssignBossGroups(MapData data, System.Random rng, MonsterGroupConfig bossMonsterGroupConfig)
+    {
+        if (bossMonsterGroupConfig == null || bossMonsterGroupConfig.Groups == null || bossMonsterGroupConfig.Groups.Count == 0)
+            return;
+
+        DungeonType currentDungeon = _expeditionPayload?.DungeonType ?? DungeonType.None;
+
+        foreach (MapNode node in data.Nodes)
+        {
+            if (node.StageType != StageType.Boss)
+                continue;
+
+            List<MonsterGroupData> candidates = new List<MonsterGroupData>();
+
+            foreach (MonsterGroupData group in bossMonsterGroupConfig.Groups)
+            {
+                if (group == null)
+                    continue;
+
+                bool dungeonMatch = group.DungeonType == DungeonType.None
+                                 || group.DungeonType == DungeonType.All
+                                 || group.DungeonType == currentDungeon;
+                if (dungeonMatch == false)
+                    continue;
+
+                candidates.Add(group);
+            }
+
+            if (candidates.Count == 0)
+                continue;
+
+            node.AssignedMonsterGroupId = candidates[rng.Next(candidates.Count)].Id;
+        }
     }
 }

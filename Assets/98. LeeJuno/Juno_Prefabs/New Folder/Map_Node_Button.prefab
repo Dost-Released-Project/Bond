@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8715710863448433259}
   - component: {fileID: 5192192572506245546}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Map_Node_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 960.00024, y: 577.49475}
-  m_SizeDelta: {x: 30, y: 30}
+  m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5621673213374055109
 CanvasRenderer:
