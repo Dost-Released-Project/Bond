@@ -545,7 +545,7 @@ public partial class BaseCharacter : ITurnUseUnit
         BattleContext battleContext = new BattleContext(
             this, 
             skill, 
-            true);
+            false);
         // 플레이어가 직접 선택한 타겟이 있다면 초기 설정 (없다면 AI용으로 BattleManager에서 처리)
         if (_selectedTarget != null)
         {

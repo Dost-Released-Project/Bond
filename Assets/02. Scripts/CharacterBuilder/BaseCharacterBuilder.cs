@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Reactions;
 using UnityEngine;
 
 public partial class BaseCharacter
@@ -43,6 +44,7 @@ public partial class BaseCharacter
 
 #if UNITY_EDITOR
             chara.isPlayable = true;
+            chara.TraitIds = new string[4];
 #endif
             
             return chara;
