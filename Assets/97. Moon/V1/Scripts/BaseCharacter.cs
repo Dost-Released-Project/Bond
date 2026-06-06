@@ -125,7 +125,7 @@ public partial class BaseCharacter : ITurnUseUnit
     }
     [JsonIgnore] private int? _loadedHp;
     
-    [JsonIgnore] public bool isPlayable { get; set; }
+    public bool isPlayable { get; set; }
 
     public BaseCharacter sup_Character { get; set; } // 지원 선택 대상. 대상이 행동할 때 역할군에 따른 지원. 탱커: 피격 시 엄호, 서포터: 피격 후 치유, 딜러: 공격 시 지원 공격.\
     

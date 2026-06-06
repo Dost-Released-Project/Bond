@@ -40,6 +40,11 @@ public partial class BaseCharacter
             SetRoleAuto();
             chara.Id = System.Guid.NewGuid().ToString();
             chara.Init();
+
+#if UNITY_EDITOR
+            chara.isPlayable = true;
+#endif
+            
             return chara;
         }
         
