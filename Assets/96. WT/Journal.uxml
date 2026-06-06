@@ -1,25 +1,27 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Themes/EoB_Variables.uss?fileID=7433441132597879392&amp;guid=665e7fc1f237eb845a720614a938c4c3&amp;type=3#EoB_Variables"/>
+    <Style src="project://database/Assets/UI/Themes/EoB_Theme_DarkAmber.uss?fileID=7433441132597879392&amp;guid=fa8c2ca04fc0ab24991530664bb55c09&amp;type=3#EoB_Theme_DarkAmber"/>
     <Style src="project://database/Assets/96.%20WT/Journal.uss?fileID=7433441132597879392&amp;guid=f45e93971af71524ea0cd2c0fa45cec9&amp;type=3#Journal"/>
-    <ui:VisualElement name="RootPanel" class="root-panel">
-        <ui:VisualElement name="JournalContainer" class="journal-container">
+    <ui:VisualElement name="RootPanel" class="journal-overlay">
+        <ui:VisualElement name="JournalContainer" class="journal-panel">
             
             <!-- 상단 영역: 아이콘 및 일지 텍스트 -->
-            <ui:VisualElement name="TopArea" class="top-area">
-                <ui:VisualElement name="IconImage" class="icon-image" />
-                <ui:ScrollView name="ContentScroll" class="content-scroll">
-                    <ui:Label text="일지 내용이 여기에 표시됩니다..." name="ContentLabel" class="content-label"/>
+            <ui:VisualElement name="TopArea" class="journal-panel__top">
+                <ui:VisualElement name="IconImage" class="journal-panel__icon" />
+                <ui:ScrollView name="ContentScroll" class="journal-panel__scroll">
+                    <ui:Label text="일지 내용이 여기에 표시됩니다..." name="ContentLabel" class="journal-panel__content"/>
                 </ui:ScrollView>
             </ui:VisualElement>
             
             <!-- 중간 영역: 선택지 컨테이너 (스크립트에서 display 제어) -->
-            <ui:VisualElement name="OptionContainer" class="option-container">
+            <ui:VisualElement name="OptionContainer" class="journal-panel__options">
                 <!-- JournalChoice.uxml 템플릿 인스턴스가 동적으로 추가됩니다 -->
             </ui:VisualElement>
             
             <!-- 하단 영역: 네비게이션 버튼 -->
-            <ui:VisualElement name="NavigationArea" class="navigation-area">
-                <ui:Button text="이전 장" name="PrevButton" class="nav-button"/>
-                <ui:Button text="다음 장" name="NextButton" class="nav-button"/>
+            <ui:VisualElement name="NavigationArea" class="journal-panel__nav">
+                <ui:Button text="이전 장" name="PrevButton" class="journal-panel__btn"/>
+                <ui:Button text="다음 장" name="NextButton" class="journal-panel__btn"/>
             </ui:VisualElement>
             
         </ui:VisualElement>

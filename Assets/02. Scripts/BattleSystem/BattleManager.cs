@@ -46,7 +46,21 @@ namespace BattleSystem
         private void Init()
         {
             m_skillApplyPipeline.SetReactionSystem(m_reactionSystem);
+            m_reactionSystem.SetBattleManager(this);
         }
+
+        public async UniTask StartFocusEffect(CharacterSlot caster, List<CharacterSlot> targets)
+        {
+            if (m_presentationManager != null)
+                await m_presentationManager.StartFocusEffect(caster, targets);
+        }
+
+        public async UniTask EndFocusEffect(CharacterSlot caster, List<CharacterSlot> targets)
+        {
+            if (m_presentationManager != null)
+                await m_presentationManager.EndFocusEffect(caster, targets);
+        }
+
         private void Battle(BaseCharacter[] players, BaseCharacter[] enemies)
         {
             // 모든 캐릭터 구독 / 해제
@@ -233,6 +247,10 @@ namespace BattleSystem
 
                 // 전투 집중 연출 종료 (Dim 해제 및 원복)
                 await m_presentationManager.EndFocusEffect(casterSlot, targetSlots);
+
+                // 8. 연출 종료 후 진영 내 빈 공간 채우기 (캐릭터 사망 대비)
+                m_formationManager.ConsolidationFormation(E_BattleSide.Player);
+                m_formationManager.ConsolidationFormation(E_BattleSide.Enemy);
             }
         }
 
