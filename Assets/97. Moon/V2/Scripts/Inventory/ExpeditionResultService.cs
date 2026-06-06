@@ -7,23 +7,42 @@ public class ExpeditionResultService
 {
     private ITotalInventory _totalInventory;
     private ExpeditionPayload _payload;
-    private InventoryTransferService _transferService;
+    private ResourceManager _resourceManager;
+
 
     [Inject]
     public ExpeditionResultService(
         ITotalInventory total, 
-        ExpeditionPayload payload, 
-        InventoryTransferService transfer)
+        ExpeditionPayload payload, ResourceManager resource)
     {
         _totalInventory = total;
         _payload = payload;
-        _transferService = transfer;
+        _resourceManager = resource;
     }
 
     // 마을 씬 로드 후 호출될 메서드
     public void ProcessExpeditionReturn()
-    { ;
+    {
         if (_payload.Supplies == null) return;
+        
+        // =========================================================================
+        // 💥 [신규 자원 정산] 탐사 전용 인벤토리에 박혀있던 누적 자원을 본진 자원에 주입
+        // =========================================================================
+        if (_payload.Supplies is ExpeditionInventory expInv)
+        {
+            int fAmt = expInv.AccumulatedFrontier;
+            int wAmt = expInv.AccumulatedWood;
+            int oAmt = expInv.AccumulatedOre;
+
+            if (fAmt > 0) _resourceManager.AddResource(ResourceType.Frontier, fAmt);
+            if (wAmt > 0) _resourceManager.AddResource(ResourceType.Wood, wAmt);
+            if (oAmt > 0) _resourceManager.AddResource(ResourceType.Ore, oAmt);
+
+            Debug.Log($"<color=orange>[원정 정산]</color> 탐사 자원 회수 완료 (개척: +{fAmt} / 목재: +{wAmt} / 광석: +{oAmt})");
+
+            // 정산이 완전히 끝났으므로 가방의 임시 누적값들을 전부 0으로 마감 처리
+            expInv.ClearAccumulatedResources();
+        }
 
         // 1. 탐사 인벤토리의 모든 아이템을 토탈 인벤토리로 이동
         for (int i = 0; i < _payload.Supplies.Capacity; i++)

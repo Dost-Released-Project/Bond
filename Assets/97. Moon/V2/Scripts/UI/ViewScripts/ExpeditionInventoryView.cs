@@ -91,7 +91,7 @@ public class ExpeditionInventoryView : MonoBehaviour
     {
         if (Keyboard.current.eKey.wasPressedThisFrame)
         {
-            ToggleWindow();
+            _payload.Supplies.AddAccumulatedResource(100,10,10);
         }
     }
 
