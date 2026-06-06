@@ -142,8 +142,10 @@
     background-color: var(--bg-raised);
 }
 
-.embark__region-card--selected {
-    border-color: var(--border-accent);
+/* 선택 상태는 호버보다 우선 (:hover 의사클래스의 특이도(0,2,0)를 이기도록 --selected:hover 명시(0,3,0)) */
+.embark__region-card--selected,
+.embark__region-card--selected:hover {
+    border-color: var(--text-accent);
     background-color: var(--bg-raised);
 }
 
