@@ -42,6 +42,26 @@ namespace Bond.Expedition
         // 탐사 결과 (귀환 후 마을 씬이 읽음)
         public ExpeditionOutcome Outcome { get; private set; }
 
+        // 누적 보상 자원 (가상 계좌)
+        public int AccumulatedFrontier { get; private set; } = 0;
+        public int AccumulatedWood { get; private set; } = 0;
+        public int AccumulatedOre { get; private set; } = 0;
+
+        public void AddReward(int frontier, int wood, int ore)
+        {
+            AccumulatedFrontier += frontier;
+            AccumulatedWood += wood;
+            AccumulatedOre += ore;
+            Debug.Log($"<color=cyan>[ExpeditionPayload] 전투 승리 보상 적립: 개척 {frontier}, 목재 {wood}, 광석 {ore} (현재 누적: 개척 {AccumulatedFrontier}, 목재 {AccumulatedWood}, 광석 {AccumulatedOre})</color>");
+        }
+
+        public void ClearAccumulatedResources()
+        {
+            AccumulatedFrontier = 0;
+            AccumulatedWood = 0;
+            AccumulatedOre = 0;
+        }
+
         public void SetContents(
             IReadOnlyList<BaseCharacter> party,
             ExpeditionInventory supplies,
