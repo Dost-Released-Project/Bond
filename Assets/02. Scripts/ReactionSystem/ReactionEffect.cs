@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace Reactions
 {
+    [Serializable]
     public abstract class ReactionEffect
     {
         /// <summary>
