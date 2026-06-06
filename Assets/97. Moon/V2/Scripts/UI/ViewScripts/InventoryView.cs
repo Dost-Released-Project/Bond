@@ -18,7 +18,6 @@ public class InventoryView : MonoBehaviour
 
     private ITotalInventory _totalInventory;
     private InventoryTransferService _transferService;
-    private InventoryUIService _uiService;     // 추가된 서비스
     private ExpeditionResultService _expeditionResultService;
     
     private string _currentSearch = "";
@@ -27,11 +26,10 @@ public class InventoryView : MonoBehaviour
     private VisualElement _tooltip; // 상세 정보를 띄울 최상위 레이어
 
     [Inject]
-    public void Construct(ITotalInventory total, InventoryTransferService service, 
-        InventoryUIService uiService, ExpeditionResultService expeditionResultService)
+    public void Construct(ITotalInventory total, InventoryTransferService service, ExpeditionResultService expeditionResultService)
     {
         _totalInventory = total;
-        _transferService = service; _uiService = uiService;
+        _transferService = service;
         _expeditionResultService = expeditionResultService;
     }
 
@@ -125,7 +123,6 @@ public class InventoryView : MonoBehaviour
         // 1. 툴팁 & 드래그 고스트 초기화
         _tooltip = CreateOverlayElement("inventory-tooltip");
         _dragGhost = CreateOverlayElement(null, 60);
-        _root.RegisterCallback<PointerMoveEvent>(OnPointerMove);
 
         // 2. 버튼 및 검색 필드 (기존 로직 유지)
         _searchField = _root.Q<TextField>("inventory-search");
@@ -206,7 +203,7 @@ public class InventoryView : MonoBehaviour
 
     private void ShowTooltip(InventorySlot slot, Vector2 position)
     {
-        if (slot.IsEmpty || _uiService.CurrentSourceInventory != null) return;
+        if (slot.IsEmpty || _transferService.CurrentSourceInventory != null) return;
 
         _tooltip.Clear();
         _tooltip.Add(new Label(slot.item.DisplayName) { name = "title" });
@@ -270,21 +267,17 @@ public class InventoryView : MonoBehaviour
         if (evt.button == 0 && !inv.GetSlot(index).IsEmpty)
         {
             HideTooltip();
-            _uiService.StartDrag(inv, index, inv.GetSlot(index).item.icon, _dragGhost, evt.position, new Vector2(30, 30));
+            _transferService.StartDrag(inv, index);
         }
     }
 
     private void OnPointerUp(PointerUpEvent evt, IInventory targetInv, int targetIndex)
     {
-        if (_uiService.CurrentSourceInventory != null)
+        if (_transferService.CurrentSourceInventory != null)
         {
-            _transferService.ExecuteDragDrop(_uiService.CurrentSourceInventory, _uiService.CurrentDraggingIndex, targetInv, targetIndex);
-            _uiService.ResetDrag();
+            _transferService.ExecuteDragDrop(_transferService.CurrentSourceInventory, _transferService.CurrentDraggingIndex, targetInv, targetIndex);
+            _transferService.ResetDrag();
         }
-    }
-
-    private void OnPointerMove(PointerMoveEvent evt) {
-        if (_uiService.CurrentSourceInventory != null) _uiService.UpdateGhostPosition(evt.position, new Vector2(30, 30));
     }
     
     public void ToggleWindow(bool show)

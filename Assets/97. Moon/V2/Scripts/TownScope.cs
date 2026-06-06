@@ -23,7 +23,6 @@ public class TownScope : LifetimeScope
         builder.RegisterInstance(payload.Supplies).AsImplementedInterfaces().AsSelf();
         builder.Register<TotalInventory>(Lifetime.Scoped).WithParameter("capacity", 16).AsImplementedInterfaces().AsSelf();
         builder.Register<InventoryTransferService>(Lifetime.Singleton);
-        builder.Register<InventoryUIService>(Lifetime.Singleton);
         builder.Register<CharacterItemService>(Lifetime.Singleton);
         builder.Register<ExpeditionResultService>(Lifetime.Singleton);
         // 자원 및 건물
