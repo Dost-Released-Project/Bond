@@ -116,4 +116,4 @@ MonoBehaviour:
   - {fileID: 1739514254, guid: 2657781da5ffc32499e174d1b5ac606f, type: 3}
   _fps: 15
   _loop: 0
-  _playOnStart: 0
+  _playOnStart: 1
