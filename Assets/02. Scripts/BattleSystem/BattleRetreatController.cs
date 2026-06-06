@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Bond.WT.Journal;
@@ -5,18 +6,25 @@ using UnityEngine;
 
 namespace BattleSystem
 {
-    public class BattleRetreatController
+    public class BattleRetreatController : IDisposable
     {
         private readonly JournalSystem _journalSystem;
         private readonly JournalDataBaseSO _journalDB;
+        private readonly BattleRetreatJournalHandler _retreatHandler;
 
         public BattleRetreatController(JournalSystem journalSystem, JournalDataBaseSO journalDB, BattleRetreatJournalHandler retreatHandler)
         {
             _journalSystem = journalSystem;
             _journalDB = journalDB;
+            _retreatHandler = retreatHandler;
             
             // 캠프 시스템과 동일한 방식: 지역 스코프 핸들러를 수동으로 글로벌 JournalSystem에 등록
-            _journalSystem?.AddActionHandler(retreatHandler);
+            _journalSystem?.AddActionHandler(_retreatHandler);
+        }
+
+        public void Dispose()
+        {
+            _journalSystem?.RemoveActionHandler(_retreatHandler);
         }
 
         public void ShowRetreatConfirm()

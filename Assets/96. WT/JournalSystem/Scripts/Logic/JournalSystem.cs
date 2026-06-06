@@ -32,9 +32,17 @@ namespace Bond.WT.Journal
         // 동적 추가 메서드
         public void AddActionHandler(IJournalActionHandler handler)
         {
-            if (handler != null)
+            if (handler != null && !_actionHandlers.Contains(handler))
             {
                 _actionHandlers.Add(handler);
+            }
+        }
+
+        public void RemoveActionHandler(IJournalActionHandler handler)
+        {
+            if (handler != null && _actionHandlers.Contains(handler))
+            {
+                _actionHandlers.Remove(handler);
             }
         }
 
@@ -83,6 +91,11 @@ namespace Bond.WT.Journal
             }
         }
 
+        public void ClearJournal()
+        {
+            _model.Clear();
+        }
+
         /// <summary>
         /// 외부에서 특정 리포트를 직접 주입하여 일지를 바로 시작합니다.
         /// 전투 종료 등 특정 이벤트 직후에 단일 리포트를 보여줄 때 사용합니다.
@@ -116,7 +129,7 @@ namespace Bond.WT.Journal
         {
             var tasks = new List<UniTask>();
 
-            foreach (var report in _model.Reports)
+            foreach (var report in _model.Reports.ToArray())
             {
                 if (report.SelectedOption.HasValue)
                 {
@@ -127,7 +140,7 @@ namespace Bond.WT.Journal
                     // 등록된 외부 핸들러들에게 액션 실행 위임
                     if (_actionHandlers != null)
                     {
-                        foreach (var handler in _actionHandlers)
+                        foreach (var handler in _actionHandlers.ToArray())
                         {
                             if (handler.CanHandle(opt.actionKey))
                             {

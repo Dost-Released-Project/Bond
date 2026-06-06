@@ -834,10 +834,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1127401137}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b3d5faaff65e3d949aac1dabe60c20b8, type: 3}
+  m_Script: {fileID: 11500000, guid: 6931035e8ad935041847ba5379011893, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BattleBgLoader
-  _bgImage: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::Bond.WT.Camping.CampingJournalTriggerView
+  m_journalButton: {fileID: 1395806746}
 --- !u!1 &1194974102
 GameObject:
   m_ObjectHideFlags: 0
@@ -1047,7 +1047,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1191516520164895594, guid: e972ad374caaa0443aa796b971b1ffc9, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5424114377719390827, guid: e972ad374caaa0443aa796b971b1ffc9, type: 3}
       propertyPath: m_LocalPosition.x

@@ -38,6 +38,11 @@ namespace BattleSystem
 
         private void OnRetreatButtonClicked()
         {
+            if (m_retreatButton != null)
+            {
+                m_retreatButton.interactable = false; // 중복 클릭 차단
+            }
+
             if (m_retreatController != null)
             {
                 m_retreatController.ShowRetreatConfirm();
