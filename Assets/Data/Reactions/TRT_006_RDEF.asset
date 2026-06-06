@@ -14,9 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Reactions.ReactionDefinitionSO
   _id: TRT_006_RDEF
   _displayName: "\uD5C8\uC138 \u2014 \uB07C\uC5B4\uB4E4\uAE30"
-  _description: "\uC544\uAD70\uC774 \uCE58\uBA85\uD0C0 \uBC1C\uC0DD \uC2DC \uC544\uAD70\uC758
-    \uC5F0\uC1C4\uB97C \uAC00\uB85C\uCC44 \uC790\uC2E0\uC774 \uB9C8\uBB34\uB9AC \uD0C0\uACA9
-    \uC2DC\uC804. \uC5F0\uC1C4 \uCE74\uC6B4\uD2B8 \uB9AC\uC14B"
+  _description: "\uC544\uAD70 \uCE58\uBA85\uD0C0 \u2192 \uADF8 \uB300\uC0C1\uC5D0
+    \uB9C8\uBB34\uB9AC + \uC5F0\uC1C4 \uB9AC\uC14B"
   Role: 0
   Template:
     Phase: 2
@@ -24,27 +23,38 @@ MonoBehaviour:
     SubjectCharacterId: 
     DefinitionId: 
     Trigger:
-      rid: 2064475022841610278
+      rid: 2064475061108867299
     Effect:
-      rid: 2064475022841610279
+      rid: 2064475061108867300
   EditableSlots: []
   references:
     version: 2
     RefIds:
-    - rid: 2064475022841610278
+    - rid: 2064475061108867299
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
         _condition:
           Additional:
-          - rid: 2064475022841610280
-          - rid: 2064475022841610281
-    - rid: 2064475022841610279
+          - rid: 2064475061108867301
+          - rid: 2064475061108867302
+    - rid: 2064475061108867300
       type: {class: CompositeReactionEffect, ns: Reactions, asm: Assembly-CSharp}
-      data: 
-    - rid: 2064475022841610280
+      data:
+        Effects:
+        - rid: 2064475061108867303
+        - rid: 2064475061108867304
+    - rid: 2064475061108867301
       type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
         Filter: 1
-    - rid: 2064475022841610281
+    - rid: 2064475061108867302
       type: {class: CritCondition, ns: Reactions, asm: Assembly-CSharp}
+      data: 
+    - rid: 2064475061108867303
+      type: {class: SkillCastReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        SkillIndex: 0
+        SkillTarget: 2
+    - rid: 2064475061108867304
+      type: {class: ResetChainCountReactionEffect, ns: Reactions, asm: Assembly-CSharp}
       data: 

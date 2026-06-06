@@ -14,10 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Reactions.ReactionDefinitionSO
   _id: TRT_003_RDEF
   _displayName: "\uD76C\uC0DD\uC801 \u2014 \uBB34\uACC4\uD68D \uBC29\uC5B4"
-  _description: "HP 30% \uC774\uD558 \uC544\uAD70 \uD53C\uACA9 \uC608\uACE0 \uC2DC
-    \uC5ED\uD560 \uC2A4\uD0AC \uBB34\uC2DC, \uD53C\uACA9 \uB300\uC0C1 \uC55E\uC73C\uB85C
-    \uAC15\uC81C \uC774\uB3D9\uD574 \uB300\uC2E0 \uB9DE\uC74C. \uBCF8\uC778 \uC2A4\uD2B8\uB808\uC2A4
-    +20"
+  _description: "HP30%\u2193 \uC544\uAD70 \uD53C\uACA9\uC608\uACE0 \u2192 \uB300\uC2E0
+    \uB9DE\uAE30 + \uBCF8\uC778 \uC2A4\uD2B8\uB808\uC2A4+20"
   Role: 0
   Template:
     Phase: 1
@@ -25,33 +23,44 @@ MonoBehaviour:
     SubjectCharacterId: 
     DefinitionId: 
     Trigger:
-      rid: 2064475022841610265
+      rid: 2064475061108867282
     Effect:
-      rid: 2064475022841610266
+      rid: 2064475061108867283
   EditableSlots: []
   references:
     version: 2
     RefIds:
-    - rid: 2064475022841610265
+    - rid: 2064475061108867282
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
         _condition:
           Additional:
-          - rid: 2064475022841610267
-          - rid: 2064475022841610268
-          - rid: 2064475022841610269
-    - rid: 2064475022841610266
+          - rid: 2064475061108867284
+          - rid: 2064475061108867285
+          - rid: 2064475061108867286
+    - rid: 2064475061108867283
       type: {class: CompositeReactionEffect, ns: Reactions, asm: Assembly-CSharp}
-      data: 
-    - rid: 2064475022841610267
+      data:
+        Effects:
+        - rid: 2064475061108867287
+        - rid: 2064475061108867288
+    - rid: 2064475061108867284
       type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
         Filter: 2
-    - rid: 2064475022841610268
+    - rid: 2064475061108867285
       type: {class: HpBelowCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
         Threshold: 0.3
-    - rid: 2064475022841610269
+    - rid: 2064475061108867286
       type: {class: SkillTypeCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
         Types: 0100000003000000
+    - rid: 2064475061108867287
+      type: {class: InterceptReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data: 
+    - rid: 2064475061108867288
+      type: {class: StressReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Delta: 20
+        Target: 4

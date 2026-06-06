@@ -14,10 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Reactions.ReactionDefinitionSO
   _id: TRT_002_RDEF
   _displayName: "\uD638\uC804\uC801 \u2014 \uBB34\uACC4\uD68D \uCD94\uACA9"
-  _description: "\uC801 \uCC98\uCE58 \uC2DC \uCC98\uCE58 \uC9C1\uD6C4 \uAC00\uC7A5
-    \uAC00\uAE4C\uC6B4 \uC801\uC5D0\uAC8C \uCFE8\uB2E4\uC6B4 \uBB34\uC2DC\uD558\uC5EC
-    \uCD94\uAC00 \uACF5\uACA9. \uB2E4\uC74C \uD134 \uB9AC\uC561\uC158 \uC2AC\uB86F
-    \uBD09\uC778"
+  _description: "\uC801 \uCC98\uCE58 \u2192 \uAC00\uC7A5 \uAC00\uAE4C\uC6B4 \uC801
+    \uCD94\uAC00\uACF5\uACA9 + \uB2E4\uC74C \uD134 \uBD09\uC778"
   Role: 0
   Template:
     Phase: 2
@@ -25,27 +23,42 @@ MonoBehaviour:
     SubjectCharacterId: 
     DefinitionId: 
     Trigger:
-      rid: 2064475022841610261
+      rid: 2064475061108867276
     Effect:
-      rid: 2064475022841610262
+      rid: 2064475061108867277
   EditableSlots: []
   references:
     version: 2
     RefIds:
-    - rid: 2064475022841610261
+    - rid: 2064475061108867276
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
         _condition:
           Additional:
-          - rid: 2064475022841610263
-          - rid: 2064475022841610264
-    - rid: 2064475022841610262
+          - rid: 2064475061108867278
+          - rid: 2064475061108867279
+    - rid: 2064475061108867277
       type: {class: CompositeReactionEffect, ns: Reactions, asm: Assembly-CSharp}
-      data: 
-    - rid: 2064475022841610263
+      data:
+        Effects:
+        - rid: 2064475061108867280
+        - rid: 2064475061108867281
+    - rid: 2064475061108867278
       type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
         Filter: 1
-    - rid: 2064475022841610264
+    - rid: 2064475061108867279
       type: {class: KillCondition, ns: Reactions, asm: Assembly-CSharp}
       data: 
+    - rid: 2064475061108867280
+      type: {class: SkillCastReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        SkillIndex: 0
+        SkillTarget: 5
+    - rid: 2064475061108867281
+      type: {class: SealReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        TargetSelf: 1
+        Kind: 0
+        Count: 1
+        DurationTurns: 2
