@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UIElements;
 using VContainer;
+using BattleSystem.UI;
 
 public class CharacterCombatPanelPresenter : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
     private CharacterDetailPresenter _detailPresenter;
     private ICharacterSelector _selector;
     private EquipSlotsPresenter _equipSlots;
+    private SkillTooltipView _skillTooltipView;
 
     private VisualElement _root;
     private VisualElement _charIcon;
@@ -50,6 +52,8 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
 
     private void Start()
     {
+        _skillTooltipView = gameObject.AddComponent<SkillTooltipView>();
+
         _controller = new CharacterCombatPanelController();
 
         _root = _document.rootVisualElement;
@@ -79,6 +83,7 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
             {
                 _skillNames[i] = _skillSlots[i].Q<Label>(className: "combat-panel__skill-name");
                 _skillIcons[i] = _skillSlots[i].Q(className: "combat-panel__skill-icon");
+                RegisterSkillTooltip(_skillSlots[i], i);
             }
         }
 
@@ -103,6 +108,20 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
 
         RegisterRightClickOnIcon();
         RegisterSkillSlotClicks();
+    }
+
+    private void RegisterSkillTooltip(VisualElement slot, int index)
+    {
+        slot.RegisterCallback<MouseEnterEvent>(evt => 
+        {
+            if (_character == null || _character.Skills == null || index >= _character.Skills.Length || _character.Skills[index] == null) return;
+            _skillTooltipView.ShowTooltip(_character.Skills[index], evt.mousePosition);
+        });
+
+        slot.RegisterCallback<MouseLeaveEvent>(evt => 
+        {
+            _skillTooltipView.HideTooltip();
+        });
     }
 
     public void SetCharacter(BaseCharacter character) => _controller.SetCharacter(character);
