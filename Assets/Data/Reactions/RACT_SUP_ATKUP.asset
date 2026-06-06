@@ -62,4 +62,4 @@ MonoBehaviour:
     - rid: 2064474984977793118
       type: {class: SkillTypeCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
-        Types: 01000000
+        Types: 0100000003000000

@@ -1,12 +1,15 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
+
 
 public class ExpeditionInventory : InventoryBase, IExpeditionInventory
 {
+    // 💥 [신규] 탐사 중 획득한 임시 자원 수량 저장소
+    public int AccumulatedFrontier { get; private set; }
+    public int AccumulatedWood { get; private set; }
+    public int AccumulatedOre { get; private set; }
+    
     public ExpeditionInventory(int capacity) : base(capacity) { }
     protected override int GetStackLimit(BaseItem item) => item.expeditionSlotMax;
 
@@ -20,6 +23,22 @@ public class ExpeditionInventory : InventoryBase, IExpeditionInventory
         int emptyIdx = _slots.FindIndex(s => s.IsEmpty);
         if (emptyIdx != -1) return AddItemAt(emptyIdx, item, quantity);
         return quantity;
+    }
+    
+    // 💥 [신규] 탐사 중 자원을 안전하게 누적하는 인터페이스 메서드
+    public void AddAccumulatedResource(int frontier = 0, int wood = 0, int ore = 0)
+    { 
+        AccumulatedFrontier += frontier;
+        AccumulatedWood += wood;
+        AccumulatedOre += ore;
+    }
+
+    // 💥 [신규] 마을 정산 완료 후 누적 수량을 완전 공백(0) 상태로 복구하는 청소 포트
+    public void ClearAccumulatedResources()
+    {
+        AccumulatedFrontier = 0;
+        AccumulatedWood = 0;
+        AccumulatedOre = 0;
     }
     
     /// <summary>

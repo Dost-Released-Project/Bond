@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 24f60b15841d2dc42bda3a5d4be67068, type: 3}
-  m_Name: RACT_TANK_COVER
+  m_Name: RACT_TANK_COVER_FOCUS
   m_EditorClassIdentifier: Assembly-CSharp::Reactions.ReactionDefinitionSO
-  _id: RACT_TANK_COVER
-  _displayName: "\uC5C4\uD638"
+  _id: RACT_TANK_COVER_FOCUS
+  _displayName: "\uC9D1\uC911 \uBCF4\uD638"
   _description: "\uC9C0\uC815\uD55C \uC544\uAD70\uC774 \uACF5\uACA9 \uB300\uC0C1\uC774
     \uB418\uBA74 \uB300\uC2E0 \uB9DE\uB294\uB2E4"
   Role: 1

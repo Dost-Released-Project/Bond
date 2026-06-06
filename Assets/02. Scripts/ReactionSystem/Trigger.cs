@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 using PipeLine;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -54,11 +55,11 @@ namespace Reactions
             [SerializeReference, SubclassSelector]
             public List<ICondition> Additional = new List<ICondition>();
             
-            public List<ICondition> Whole => Essential.Concat(Additional).ToList();
+            [JsonIgnore] public List<ICondition> Whole => Essential.Concat(Additional).ToList();
         }
 
-        [SerializeField] protected Condition _condition = new Condition();
-        public List<ICondition> Conditions => _condition.Whole;
+        [JsonProperty][SerializeField] protected Condition _condition = new Condition();
+        [JsonIgnore] public List<ICondition> Conditions => _condition.Whole;
 
         public Trigger() { }
 
@@ -104,7 +105,7 @@ namespace Reactions
             }
         }
 
-        public string Description
+        [JsonIgnore] public string Description
         {
             get
             {

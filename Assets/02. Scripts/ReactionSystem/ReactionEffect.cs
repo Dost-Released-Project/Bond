@@ -41,7 +41,7 @@ namespace Reactions
             {
                 if (target == null || target.IsDead) continue;
 
-                var bc = new BattleContext(reactor, skill, true)
+                var bc = new BattleContext(reactor, skill, false)
                 {
                     isReaction = true,
                     target = target

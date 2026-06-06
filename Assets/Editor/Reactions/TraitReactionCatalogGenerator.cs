@@ -35,7 +35,7 @@ namespace Reactions.Authoring
 
             // 001 겁쟁이: 자기 턴 HP30%↓ → 후열 이탈 + 전체 봉인
             Add("TRT_001", "겁쟁이", E_TraitType.Negative,
-                Def("TRT_001_RDEF", RoleType.None).Name("겁쟁이 — 후방 이탈")
+                Def("TRT_001_RDEF", RoleType.None).Name("겁쟁이 — 후방 이탈", "본인 HP 30% 이하 시 설계 스킬 무시, 후열로 강제 이동. 해당 턴 리액션 슬롯 전부 봉인")
                     .Phase(E_ReactionPhase.OnSelfTurn).Observe(E_ObserveFilter.Self)
                     .When(HpBelow(0.3f))
                     .Do(MoveBack(), Seal(SealKind.All, turns: 1)));

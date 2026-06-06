@@ -55,6 +55,7 @@ namespace RootVContainer
             builder.Register<IEventContext, EventContextService>(Lifetime.Singleton);
 
             ConfigureJournal(builder);
+            ConfigureRoster(builder);
         }
     }
 }

@@ -46,6 +46,8 @@ namespace Bond.Persistence
         public static JsonSerializerSettings Settings = new JsonSerializerSettings()
         {
             TypeNameHandling = TypeNameHandling.Auto,
+            // BaseSO(카탈로그 SO)는 Id로만 직렬화 → 로드 시 DBSORegistry에서 재해석.
+            Converters = { new BaseSORefConverter() },
         };
 
         private static string GetPath(string saveKey)
@@ -82,17 +84,31 @@ namespace Bond.Persistence
 
         public static void Load(ISaveable saveable)
         {
-            string json = File.ReadAllText(GetPath(saveable.Key));
-            Type type = saveable.Data.GetType();
-            var obj = JsonConvert.DeserializeObject(json, type, Settings);
-            saveable.Restore(obj);
+            try
+            {
+                string json = File.ReadAllText(GetPath(saveable.Key));
+                Type type = saveable.Data.GetType();
+                var obj = JsonConvert.DeserializeObject(json, type, Settings);
+                saveable.Restore(obj);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning(e.Message);
+            }
         }
 
         public static void Load<T>(ISaveable<T> saveable)
         {
-            string json = File.ReadAllText(GetPath(saveable.Key));
-            var obj = JsonConvert.DeserializeObject<T>(json, Settings);
-            saveable.Restore(obj);
+            try
+            {
+                string json = File.ReadAllText(GetPath(saveable.Key));
+                var obj = JsonConvert.DeserializeObject<T>(json, Settings);
+                saveable.Restore(obj);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning(e.Message);
+            }
         }
     }
 }
