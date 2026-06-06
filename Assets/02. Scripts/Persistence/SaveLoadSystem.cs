@@ -62,6 +62,11 @@ namespace Bond.Persistence
 
         private static void Save(string key, object data)
         {
+            if (!Directory.Exists(SAVE_ROOT))
+            {
+                Directory.CreateDirectory(SAVE_ROOT);
+            }
+
             string json = JsonConvert.SerializeObject(data, Formatting.Indented, Settings);
             string path = GetPath(key);
             File.WriteAllText(path, json);

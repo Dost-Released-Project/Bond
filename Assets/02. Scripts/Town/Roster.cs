@@ -32,14 +32,28 @@ public class Roster : ISaveable<List<BaseCharacter>>, IDisposable
         if (Characters.Count == 0)
         {
             var stageCoach = new StageCoach();
-            var db = DBSORegistry.GetDb<ClassDataBaseSO>().Query<ClassSO>(_ => true).ToList();
-
-            Debug.Assert(db.Count >= 4);
-
-            for (int i = 0; i < 4; i++)
+            var classDb = DBSORegistry.GetDb<ClassDataBaseSO>();
+            
+            // 데이터베이스 로드 실패 방어 코드
+            if (classDb == null)
             {
-                var chara = stageCoach.GetCharacter(db[i]);
-                Hire(chara);   // Hire 가 구독까지 처리
+                Debug.LogError("[Roster] ClassDataBaseSO가 로드되지 않았습니다. 기본 캐릭터를 생성할 수 없습니다.");
+                return;
+            }
+
+            var dbList = classDb.Query<ClassSO>(_ => true).ToList();
+
+            if (dbList.Count >= 4)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    var chara = stageCoach.GetCharacter(dbList[i]);
+                    Hire(chara);   // Hire 가 구독까지 처리
+                }
+            }
+            else
+            {
+                Debug.LogError($"[Roster] ClassSO 데이터가 부족합니다. (현재: {dbList.Count}개, 필요: 4개)");
             }
         }
         else

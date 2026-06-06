@@ -18,7 +18,7 @@ public class TownScope : LifetimeScope
         // Manager & Service (싱글톤처럼 유지)
         // 인벤토리
         var payload = Parent.Container.Resolve<ExpeditionPayload>();
-        var skillDb = Addressables.LoadAssetAsync<DataBaseSO>("SkillDataBase").WaitForCompletion();
+        var skillDb = DBSORegistry.LoadSync<SkillDataBaseSO>("SkillDataBase");
     
         builder.RegisterInstance(payload.Supplies).AsImplementedInterfaces().AsSelf();
         builder.Register<TotalInventory>(Lifetime.Scoped).WithParameter("capacity", 16).AsImplementedInterfaces().AsSelf();

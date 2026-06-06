@@ -188,9 +188,7 @@ public class MonsterFactory
         if (m_monsterDb == null == false)
             return;
 
-        m_monsterDb = Addressables
-            .LoadAssetAsync<MonsterDataBaseSO>("MonsterDataBase")
-            .WaitForCompletion();
+        m_monsterDb = DBSORegistry.LoadSync<MonsterDataBaseSO>("MonsterDataBase");
 
         if (m_monsterDb == null)
             Debug.LogError("[MonsterFactory] MonsterDataBase Addressable 로드 실패. Addressables에 'MonsterDataBase' 키가 등록되어 있는지 확인한다.");

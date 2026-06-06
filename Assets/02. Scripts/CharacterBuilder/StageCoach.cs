@@ -3,9 +3,9 @@ using UnityEngine.AddressableAssets;
 
 public class StageCoach
 {
-    DataBaseSO professionDb = Addressables.LoadAssetAsync<DataBaseSO>("ClassDataBase").WaitForCompletion();
-    DataBaseSO skillDb = Addressables.LoadAssetAsync<DataBaseSO>("SkillDataBase").WaitForCompletion();
-    DataBaseSO equipDb = Addressables.LoadAssetAsync<DataBaseSO>("DefaultEquipDataBase").WaitForCompletion();
+    DataBaseSO professionDb = DBSORegistry.LoadSync<ClassDataBaseSO>("ClassDataBase");
+    DataBaseSO skillDb = DBSORegistry.LoadSync<SkillDataBaseSO>("SkillDataBase");
+    DataBaseSO equipDb = DBSORegistry.LoadSync<DefaultEquipDataBaseSO>("DefaultEquipDataBase");
     
     public BaseCharacter GetRandomCharacter()
     {
