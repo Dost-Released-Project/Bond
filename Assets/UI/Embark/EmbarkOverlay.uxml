@@ -78,7 +78,7 @@
 
             <ui:VisualElement name="embark__footer--step1" class="embark__footer-row">
                 <ui:Button name="btn-cancel" class="embark__btn-secondary" text="← 취소" />
-                <ui:Label class="embark__footer-hint" text="대원을 선택하고 다음 단계로 이동하세요." />
+                <ui:Label class="embark__footer-hint" text="탐사 지역과 대원을 선택하고 다음 단계로 이동하세요." />
                 <ui:Button name="btn-next" class="embark__btn-action" text="다음 단계 →" />
             </ui:VisualElement>
 
