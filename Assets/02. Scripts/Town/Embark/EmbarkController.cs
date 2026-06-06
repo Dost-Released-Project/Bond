@@ -21,10 +21,15 @@ namespace Bond.Embark
         private readonly IPartyController _partyManager;
         private readonly ExpeditionResultService _expeditionResultService;
         private readonly InventoryTransferService _transferService;
+        private readonly IExpeditionRegionProvider _regionProvider;
+
+        public ExpeditionRegion SelectedRegion { get; private set; }
 
         public event Action OnOverlayOpened;
         public event Action OnOverlayClosed;
         public event Action<EmbarkData> OnDataChanged;
+        public event Action<ExpeditionRegion> OnRegionChanged;
+        public event Action OnEmbarkBlocked;
 
         public EmbarkController(
             ExpeditionPayload payload,
@@ -32,7 +37,8 @@ namespace Bond.Embark
             ExpeditionInventory expeditionInventory,
             IPartyController partyManager,
             ExpeditionResultService expeditionResultService,
-            InventoryTransferService transferService)
+            InventoryTransferService transferService,
+            IExpeditionRegionProvider regionProvider)
         {
             _payload = payload;
             _totalInventory = totalInventory;
@@ -40,6 +46,7 @@ namespace Bond.Embark
             _partyManager = partyManager;
             _expeditionResultService = expeditionResultService;
             _transferService = transferService;
+            _regionProvider = regionProvider;
         }
 
         public void Open()
@@ -87,15 +94,29 @@ namespace Bond.Embark
             NotifyChanged();
         }
 
+        public IReadOnlyList<ExpeditionRegion> GetRegions() => _regionProvider.GetRegions();
+
+        public void SelectRegion(ExpeditionRegion region)
+        {
+            if (region == null || ReferenceEquals(region, SelectedRegion)) return;
+            SelectedRegion = region;
+            OnRegionChanged?.Invoke(region);
+        }
+
         public void ConfirmEmbark()
         {
+            if (SelectedRegion == null)
+            {
+                OnEmbarkBlocked?.Invoke();
+                return;
+            }
             SavePayload();
             SceneLoader.Load("Test_3_Node");
         }
 
         public void SavePayload()
         {
-            _payload.SetContents(_partyManager.GetCurrentParty(), _expeditionInventory, DungeonType.Ruin);
+            _payload.SetContents(_partyManager.GetCurrentParty(), _expeditionInventory, SelectedRegion);
         }
 
         private void NotifyChanged()
