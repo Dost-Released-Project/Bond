@@ -69,6 +69,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - DBSO
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5cb0cab78c9dd2458b277f1771d521a
+    m_Address: SupplyDataBase
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DBSO
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d278c20e489ff9f4599c6835ad9fcb44
     m_Address: EventDataBase
     m_ReadOnly: 0

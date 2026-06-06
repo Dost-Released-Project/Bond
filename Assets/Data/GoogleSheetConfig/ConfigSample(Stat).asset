@@ -16,3 +16,5 @@ MonoBehaviour:
   Entries:
   - SheetName: StatModifier
     Gid: 1741562393
+  - SheetName: Supply
+    Gid: 1438716660

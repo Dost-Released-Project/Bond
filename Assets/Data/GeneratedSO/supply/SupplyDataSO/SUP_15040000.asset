@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4118dd090f1f74e48af0cc8e43314954, type: 3}
+  m_Name: SUP_15040000
+  m_EditorClassIdentifier: Assembly-CSharp::SupplyDataSO
+  _id: 15040000
+  _displayName: "\uC77C\uBC18 \uBCF4\uAE09 \uAD6C\uC131 F"
+  _description: 
+  _rate: 3.3
+  _bundleItems:
+  - itemId: 08000000
+    count: 1
