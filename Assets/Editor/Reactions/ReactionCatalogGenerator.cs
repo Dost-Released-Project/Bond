@@ -66,7 +66,7 @@ namespace Reactions.Authoring
             defs.Add(
                 Def("RACT_SUP_ATKUP", RoleType.Supporter).Name("지원 공격 강화", "지정 아군이 공격할 때 공격력 버프 부여")
                     .Phase(E_ReactionPhase.PreApply).Observe(E_ObserveFilter.Specific)
-                    .When(SubjectIs(E_TargetFilter.Caster), SkillTypeIs(SkillType.OFFENSIVE))
+                    .When(SubjectIs(E_TargetFilter.Caster), SkillTypeIs(SkillType.OFFENSIVE, SkillType.SPELL))
                     .Do(Buff(StatType.DamageMultiplier, 0.3f, turns: 2, to: E_TargetFilter.Observed, buffId: "atk_up"))
                     .Editable(ObserveTarget("지원 대상"))
                     .Build(Folder));

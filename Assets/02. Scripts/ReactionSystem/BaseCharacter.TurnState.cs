@@ -1,7 +1,6 @@
-/// <summary>
-/// BaseCharacter 의 턴 스킵 상태. SkipTurnReactionEffect 가 설정하고
-/// TurnManager 가 자기 턴 시작(버프/봉인 tick 직후)에 소비한다.
-/// </summary>
+
+// BaseCharacter 의 턴 스킵 상태. SkipTurnReactionEffect 가 설정하고
+// TurnManager 가 자기 턴 시작(버프/봉인 tick 직후)에 소비한다.
 public partial class BaseCharacter
 {
     private int _skipTurns;

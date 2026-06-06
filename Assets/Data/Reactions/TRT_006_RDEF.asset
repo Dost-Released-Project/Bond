@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Reactions.ReactionDefinitionSO
   _id: TRT_006_RDEF
   _displayName: "\uD5C8\uC138 \u2014 \uB07C\uC5B4\uB4E4\uAE30"
-  _description: "\uC544\uAD70\uC774 \uCE58\uBA85\uD0C0 \uBC1C\uC0DD \uC2DC\t\uC544\uAD70\uC758
+  _description: "\uC544\uAD70\uC774 \uCE58\uBA85\uD0C0 \uBC1C\uC0DD \uC2DC \uC544\uAD70\uC758
     \uC5F0\uC1C4\uB97C \uAC00\uB85C\uCC44 \uC790\uC2E0\uC774 \uB9C8\uBB34\uB9AC \uD0C0\uACA9
     \uC2DC\uC804. \uC5F0\uC1C4 \uCE74\uC6B4\uD2B8 \uB9AC\uC14B"
   Role: 0

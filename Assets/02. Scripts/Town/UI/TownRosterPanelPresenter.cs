@@ -43,6 +43,8 @@ namespace Bond.UI.Town
             scroll.contentViewport.style.backgroundColor = StyleKeyword.None;
 
             root.Q<Button>("roster-panel__close-btn").clicked += Hide;
+            roster.OnCharacterAdded += AddCard;
+            roster.OnCharacterRemoved += RemoveCard;
         }
 
         public void Show()
@@ -72,6 +74,25 @@ namespace Bond.UI.Town
                 _list.Add(vm.Root);
             }
 
+            _countLabel.text = $"{_roster.Characters.Count}명";
+        }
+
+        private void AddCard(BaseCharacter character)
+        {
+            var vm = BuildCard(character);
+            _cards.Add(vm);
+            _list.Add(vm.Root);
+            _countLabel.text = $"{_roster.Characters.Count}명";
+        }
+        
+        private void RemoveCard(BaseCharacter character)
+        {
+            var vm = _cards.FirstOrDefault(model => model.Character == character);
+            if (vm != null)
+            {
+                _list.Remove(vm.Root);
+                _cards.Remove(vm);
+            }
             _countLabel.text = $"{_roster.Characters.Count}명";
         }
 

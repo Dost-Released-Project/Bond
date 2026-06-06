@@ -47,7 +47,7 @@ namespace Bond.UI
                 var def = DBSORegistry.GetSO<ReactionDefinitionSO>(reaction.DefinitionId);
                 if (def != null && def.Role != role)
                 {
-                    _character.RoleReactions[i] = null;
+                    _character.ClearRoleReaction(i);
                     OnReactionChanged?.Invoke(i);
                 }
             }
@@ -114,7 +114,7 @@ namespace Bond.UI
         {
             if (_character == null || definition == null) return;
             if (roleSlotIndex < 0 || roleSlotIndex >= _character.RoleReactions.Length) return;
-            _character.RoleReactions[roleSlotIndex] = definition.CreateRuntimeReaction();
+            _character.SetRoleReaction(roleSlotIndex, definition.CreateRuntimeReaction());
             OnReactionChanged?.Invoke(roleSlotIndex);
         }
 
@@ -123,7 +123,7 @@ namespace Bond.UI
         {
             if (_character == null) return;
             if (roleSlotIndex < 0 || roleSlotIndex >= _character.RoleReactions.Length) return;
-            _character.RoleReactions[roleSlotIndex] = null;
+            _character.ClearRoleReaction(roleSlotIndex);
             OnReactionChanged?.Invoke(roleSlotIndex);
         }
 
@@ -163,6 +163,7 @@ namespace Bond.UI
             var slot = GetObserveSlot(slotIndex);
             if (reaction == null || slot == null) return;
             slot.Apply(reaction, allyId);
+            _character.RaiseReactionsChanged();
             OnReactionChanged?.Invoke(slotIndex);
         }
 
@@ -181,6 +182,7 @@ namespace Bond.UI
             var slot = GetActionSkillSlot(slotIndex);
             if (reaction == null || slot == null) return;
             slot.Apply(reaction, skillIndex);
+            _character.RaiseReactionsChanged();
             OnReactionChanged?.Invoke(slotIndex);
         }
 

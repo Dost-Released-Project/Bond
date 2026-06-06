@@ -8,25 +8,29 @@ public class ExpeditionResultService
     private ITotalInventory _totalInventory;
     private ExpeditionPayload _payload;
     private ResourceManager _resourceManager;
-
+    private Roster _roster;
 
     [Inject]
     public ExpeditionResultService(
-        ITotalInventory total, 
-        ExpeditionPayload payload, ResourceManager resource)
+        ITotalInventory total,
+        ExpeditionPayload payload,
+        ResourceManager resourceManager,
+        Roster roster)
     {
         _totalInventory = total;
         _payload = payload;
-        _resourceManager = resource;
+        _resourceManager = resourceManager;
+        _roster = roster;
     }
 
     // 마을 씬 로드 후 호출될 메서드
     public void ProcessExpeditionReturn()
     {
-        if (_payload.Supplies == null) return;
+        // 원정 동안 파티가 입은 HP/광기 등 세션 변경을 디스크에 플러시.
+        _roster.SaveNow();
         
         // =========================================================================
-        // 💥 [신규 자원 정산] 탐사 전용 인벤토리에 박혀있던 누적 자원을 본진 자원에 주입
+        // [신규 자원 정산] 탐사 전용 인벤토리에 박혀있던 누적 자원을 본진 자원에 주입
         // =========================================================================
         if (_payload.Supplies is ExpeditionInventory expInv)
         {
@@ -43,6 +47,8 @@ public class ExpeditionResultService
             // 정산이 완전히 끝났으므로 가방의 임시 누적값들을 전부 0으로 마감 처리
             expInv.ClearAccumulatedResources();
         }
+
+        if (_payload.Supplies == null) return;
 
         // 1. 탐사 인벤토리의 모든 아이템을 토탈 인벤토리로 이동
         for (int i = 0; i < _payload.Supplies.Capacity; i++)

@@ -1,32 +1,11 @@
 ﻿{
-  "Id": "d75a02da-a2ce-4f99-9500-a47c4f858501",
-  "ImageAddress": "RiceSummoner",
-  "Name": "RiceSummoner",
+  "Id": "69ab9e21-483e-484e-a5dd-5c77702b17cb",
+  "ImageAddress": "Warrior_Icon",
+  "IdleImageAddress": "Warrior_Idle",
+  "AttackImageAddress": "Warrior_Battle",
+  "Name": "전사",
   "Profession": {
-    "_classData": {
-      "STR": 1,
-      "AGI": 2,
-      "INT": 3,
-      "HP": 10,
-      "Def": 5,
-      "Atk": 5,
-      "Speed": 5,
-      "Cri": 5,
-      "Acc": 5,
-      "InsanityCtrl": 10,
-      "ReactionCtrl": 10,
-      "SpAtk": 10,
-      "DefaultArmorId": "03070000",
-      "DefaultWeaponId": "03030000",
-      "IconId": "",
-      "ClassType": "03",
-      "LV": 0,
-      "Id": "02030000",
-      "DisplayName": "03",
-      "Description": "",
-      "name": "CL_02030000",
-      "hideFlags": 0
-    }
+    "_classData": "02000000"
   },
   "Level": 0,
   "Insanity": 0,
@@ -35,127 +14,55 @@
     {
       "$type": "SampleSkill, Assembly-CSharp",
       "SkillCooldown": 0.0,
-      "Data": {
-        "Type": 2,
-        "Target": 1,
-        "Value": 25.0,
-        "CoolTime": 0,
-        "Duration": 2,
-        "UseableClasses": 3,
-        "UseableSlots": 14,
-        "EnemyTargetMask": 0,
-        "AllyTargetMask": 14,
-        "IconAddress": "010B",
-        "Id": "01030300",
-        "DisplayName": "",
-        "Description": "",
-        "name": "SK_01030300",
-        "hideFlags": 0
-      }
+      "Data": "01010000"
     },
     {
       "$type": "SampleSkill, Assembly-CSharp",
       "SkillCooldown": 0.0,
-      "Data": {
-        "Type": 4,
-        "Target": 1,
-        "Value": 20.0,
-        "CoolTime": 0,
-        "Duration": 4,
-        "UseableClasses": 3,
-        "UseableSlots": 8,
-        "EnemyTargetMask": 0,
-        "AllyTargetMask": 15,
-        "IconAddress": "0113",
-        "Id": "01050300",
-        "DisplayName": "",
-        "Description": "",
-        "name": "SK_01050300",
-        "hideFlags": 0
-      }
+      "Data": "01050000"
     },
     {
       "$type": "SampleSkill, Assembly-CSharp",
       "SkillCooldown": 0.0,
-      "Data": {
-        "Type": 3,
-        "Target": 0,
-        "Value": 22.0,
-        "CoolTime": 0,
-        "Duration": 2,
-        "UseableClasses": 3,
-        "UseableSlots": 12,
-        "EnemyTargetMask": 15,
-        "AllyTargetMask": 0,
-        "IconAddress": "0107",
-        "Id": "01020300",
-        "DisplayName": "",
-        "Description": "",
-        "name": "SK_01020300",
-        "hideFlags": 0
-      }
+      "Data": "01030000"
     },
     {
       "$type": "SampleSkill, Assembly-CSharp",
       "SkillCooldown": 0.0,
-      "Data": {
-        "Type": 4,
-        "Target": 1,
-        "Value": 18.0,
-        "CoolTime": 0,
-        "Duration": 3,
-        "UseableClasses": 3,
-        "UseableSlots": 15,
-        "EnemyTargetMask": 0,
-        "AllyTargetMask": 15,
-        "IconAddress": "010F",
-        "Id": "01040300",
-        "DisplayName": "",
-        "Description": "",
-        "name": "SK_01040300",
-        "hideFlags": 0
-      }
+      "Data": "01040000"
     }
   ],
-  "Traits": [
-    {
-      "Name": "A",
-      "Description": "aaa"
-    },
-    {
-      "Name": "B",
-      "Description": "bbb"
-    },
+  "TraitIds": [
+    "TRT_003",
+    "TRT_004",
     null,
     null
   ],
   "Weapon": {
-    "itemName": null,
-    "type": 0,
+    "itemName": "전사의 대검",
     "upgradeLevel": 0,
-    "baseSTR": 0,
+    "baseSTR": 2,
     "baseAGI": 0,
-    "baseINT": 2,
-    "upSTR": 0,
+    "baseINT": 0,
+    "upSTR": 2,
     "upAGI": 0,
-    "upINT": 2,
-    "bonusSTR": 0,
+    "upINT": 0,
+    "bonusSTR": 2,
     "bonusAGI": 0,
-    "bonusINT": 2
+    "bonusINT": 0
   },
   "Armor": {
-    "itemName": null,
-    "type": 0,
+    "itemName": "전사의 판금 갑옷",
     "upgradeLevel": 0,
-    "baseSTR": 1,
+    "baseSTR": 0,
     "baseAGI": 1,
-    "baseINT": 0,
-    "upSTR": 1,
+    "baseINT": 1,
+    "upSTR": 0,
     "upAGI": 1,
-    "upINT": 0,
-    "bonusSTR": 1,
+    "upINT": 1,
+    "bonusSTR": 0,
     "bonusAGI": 1,
-    "bonusINT": 0
+    "bonusINT": 1
   },
   "Accessories": [
     null,
@@ -163,50 +70,88 @@
   ],
   "Relation": {},
   "RoleReactions": [
-    {
-      "Id": "45f23a85-9828-4b4e-b886-42c177b5c725",
-      "Source": 0,
-      "Trigger": null,
-      "SkillIndex": 0
-    },
-    {
-      "Id": "9f8dca88-add7-46c7-886b-cfb51580ffaa",
-      "Source": 0,
-      "Trigger": null,
-      "SkillIndex": 0
-    }
+    null,
+    null
   ],
   "TraitReactions": [
     {
-      "Id": "48fc0024-0086-4b89-b220-82a66f7b2ad4",
-      "Source": 0,
-      "Trigger": null,
-      "SkillIndex": 0
+      "Phase": 1,
+      "ObserveFilter": 2,
+      "SubjectCharacterId": "",
+      "DefinitionId": "TRT_003_RDEF",
+      "Trigger": {
+        "$type": "Reactions.Trigger, Assembly-CSharp",
+        "Conditions": [
+          {
+            "$type": "Reactions.SubjectCondition, Assembly-CSharp",
+            "Filter": 2,
+            "Description": "관찰 대상이 스킬의 대상일 때"
+          },
+          {
+            "$type": "Reactions.HpBelowCondition, Assembly-CSharp",
+            "Threshold": 0.3,
+            "Description": "관찰 대상의 Hp 비율이 0.3 이하일 때"
+          },
+          {
+            "$type": "Reactions.SkillTypeCondition, Assembly-CSharp",
+            "Types": [
+              1,
+              3
+            ],
+            "Description": "스킬 타입이 OFFENSIVE or SPELL일 때"
+          }
+        ],
+        "Description": "관찰 대상이 스킬의 대상일 때\r\n && 관찰 대상의 Hp 비율이 0.3 이하일 때\r\n && 스킬 타입이 OFFENSIVE or SPELL일 때\r\n"
+      },
+      "Effect": {
+        "$type": "Reactions.CompositeReactionEffect, Assembly-CSharp",
+        "Effects": [],
+        "Description": "Composite(비어 있음)"
+      }
     },
     {
-      "Id": "fd0fcc08-739d-418f-a685-0d009d75cb9e",
-      "Source": 0,
-      "Trigger": null,
-      "SkillIndex": 0
+      "Phase": 2,
+      "ObserveFilter": 2,
+      "SubjectCharacterId": "",
+      "DefinitionId": "TRT_004_RDEF",
+      "Trigger": {
+        "$type": "Reactions.Trigger, Assembly-CSharp",
+        "Conditions": [
+          {
+            "$type": "Reactions.SubjectCondition, Assembly-CSharp",
+            "Filter": 1,
+            "Description": "관찰 대상이 스킬의 주체일 때"
+          },
+          {
+            "$type": "Reactions.EvadeCondition, Assembly-CSharp",
+            "Description": "스킬에 회피가 발생했을 때"
+          }
+        ],
+        "Description": "관찰 대상이 스킬의 주체일 때\r\n && 스킬에 회피가 발생했을 때\r\n"
+      },
+      "Effect": {
+        "$type": "Reactions.SealReactionEffect, Assembly-CSharp",
+        "TargetSelf": true,
+        "Kind": 0,
+        "Count": 1,
+        "DurationTurns": 1,
+        "Description": "자신 리액션 봉인 (All, 1턴)"
+      }
     },
-    {
-      "Id": "ce245ca0-ebb1-449a-bddd-a42abf001f33",
-      "Source": 0,
-      "Trigger": null,
-      "SkillIndex": 0
-    },
-    {
-      "Id": "67bf9534-d973-4bd6-8d0d-b14a3e19a678",
-      "Source": 0,
-      "Trigger": null,
-      "SkillIndex": 0
-    }
+    null,
+    null
   ],
+  "HasRecentAnomaly": false,
+  "ReactionsFiredCount": 0,
+  "ActiveSeals": {
+    "$type": "System.Collections.Generic.List`1[[Reactions.ReactionSeal, Assembly-CSharp]], mscorlib",
+    "$values": []
+  },
   "battleType": {
     "$type": "AutoBattle_Def, Assembly-CSharp",
     "isPlayable": false
   },
   "sup_Character": null,
-  "HpRatio": 0.0,
+  "HpRatio": 1.0,
   "RandomSpeed": 0
 }

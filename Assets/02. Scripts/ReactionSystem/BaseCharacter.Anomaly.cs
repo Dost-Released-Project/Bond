@@ -5,12 +5,10 @@ using PipeLine;
 using Reactions;
 using UnityEngine;
 
-/// <summary>
-/// BaseCharacter 의 자기 턴 돌발 행동(Anomaly) 파트.
-/// OnSelfTurn 페이즈 트레잇은 자기 턴 시작에 평가되며, 발동 시 계획된 행동(스킬)을 대체한다.
-/// 트리거 조건은 Subject(자신) 기반(HpBelow/HpAbove/StressAbove/PartyStressAverage 등)만 사용해야 한다
-/// — 자기 턴에는 원본 스킬 컨텍스트가 없어 SkillType/Crit/Evade 등 BattleContext 의존 조건은 의미가 없다.
-/// </summary>
+// BaseCharacter 의 자기 턴 돌발 행동(Anomaly) 파트.
+// OnSelfTurn 페이즈 트레잇은 자기 턴 시작에 평가되며, 발동 시 계획된 행동(스킬)을 대체한다.
+// 트리거 조건은 Subject(자신) 기반(HpBelow/HpAbove/StressAbove/PartyStressAverage 등)만 사용해야 한다
+// — 자기 턴에는 원본 스킬 컨텍스트가 없어 SkillType/Crit/Evade 등 BattleContext 의존 조건은 의미가 없다.
 public partial class BaseCharacter
 {
     /// <summary>

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: RACT_TANK_COVER_LOWHP
   m_EditorClassIdentifier: Assembly-CSharp::Reactions.ReactionDefinitionSO
   _id: RACT_TANK_COVER_LOWHP
-  _displayName: "\uC704\uAE30 \uC5C4\uD638"
+  _displayName: "\uC704\uAE30 \uBCF4\uD638"
   _description: "\uCCB4\uB825 20% \uC774\uD558 \uC544\uAD70\uC774 \uACF5\uACA9 \uB300\uC0C1\uC774
     \uB418\uBA74 \uB300\uC2E0 \uB9DE\uB294\uB2E4"
   Role: 1
