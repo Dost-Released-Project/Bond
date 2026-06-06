@@ -36,7 +36,10 @@ namespace Bond.Expedition
         public IReadOnlyList<BaseCharacter> Party => GetCurrentParty();
         public ExpeditionInventory Supplies { get; private set; } =
             new ExpeditionInventory(ExpeditionInventory.PeekInventoryCapacity("exp_inv", 2));
-        public DungeonType DungeonType { get; private set; }
+        public ExpeditionRegion Region { get; private set; }
+
+        // LeeJuno 맵 시스템 호환용 passthrough — 선택된 지역의 DungeonType 을 그대로 노출
+        public DungeonType DungeonType => Region != null ? Region.DungeonType : DungeonType.None;
 
         public IReadOnlyList<BaseCharacter> EnemyParty { get; private set; }
         // 탐사 결과 (귀환 후 마을 씬이 읽음)
@@ -65,11 +68,11 @@ namespace Bond.Expedition
         public void SetContents(
             IReadOnlyList<BaseCharacter> party,
             ExpeditionInventory supplies,
-            DungeonType dungeonType)
+            ExpeditionRegion region)
         {
             //Party = party;
             Supplies = supplies;
-            DungeonType = dungeonType;
+            Region = region;
         }
 
         public void SetSuplies(ExpeditionInventory supplies)
@@ -85,7 +88,7 @@ namespace Bond.Expedition
         public void Clear()
         {
             _partyController.Clear();
-            DungeonType = DungeonType.None;
+            Region = null;
             Outcome = ExpeditionOutcome.None;
         }
 

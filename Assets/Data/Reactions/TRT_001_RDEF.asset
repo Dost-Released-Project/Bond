@@ -14,9 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Reactions.ReactionDefinitionSO
   _id: TRT_001_RDEF
   _displayName: "\uAC81\uC7C1\uC774 \u2014 \uD6C4\uBC29 \uC774\uD0C8"
-  _description: "\uBCF8\uC778 HP 30% \uC774\uD558 \uC2DC \uC124\uACC4 \uC2A4\uD0AC
-    \uBB34\uC2DC, \uD6C4\uC5F4\uB85C \uAC15\uC81C \uC774\uB3D9. \uD574\uB2F9 \uD134
-    \uB9AC\uC561\uC158 \uC2AC\uB86F \uC804\uBD80 \uBD09\uC778"
+  _description: "\uC790\uAE30 \uD134 HP30%\u2193 \u2192 \uD6C4\uC5F4 \uC774\uD0C8
+    + \uC804\uCCB4 \uBD09\uC778"
   Role: 0
   Template:
     Phase: 3
@@ -24,23 +23,37 @@ MonoBehaviour:
     SubjectCharacterId: 
     DefinitionId: 
     Trigger:
-      rid: 2064475022841610258
+      rid: 2064475061108867271
     Effect:
-      rid: 2064475022841610259
+      rid: 2064475061108867272
   EditableSlots: []
   references:
     version: 2
     RefIds:
-    - rid: 2064475022841610258
+    - rid: 2064475061108867271
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
         _condition:
           Additional:
-          - rid: 2064475022841610260
-    - rid: 2064475022841610259
+          - rid: 2064475061108867273
+    - rid: 2064475061108867272
       type: {class: CompositeReactionEffect, ns: Reactions, asm: Assembly-CSharp}
-      data: 
-    - rid: 2064475022841610260
+      data:
+        Effects:
+        - rid: 2064475061108867274
+        - rid: 2064475061108867275
+    - rid: 2064475061108867273
       type: {class: HpBelowCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
         Threshold: 0.3
+    - rid: 2064475061108867274
+      type: {class: FormationMoveReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        To: 1
+    - rid: 2064475061108867275
+      type: {class: SealReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        TargetSelf: 1
+        Kind: 0
+        Count: 1
+        DurationTurns: 1

@@ -14,10 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Reactions.ReactionDefinitionSO
   _id: TRT_018_RDEF
   _displayName: "\uC644\uBCBD\uC8FC\uC758 \u2014 \uC790\uAE30 \uCC98\uBC8C"
-  _description: "\uBCF8\uC778\uC758 \uACF5\uACA9\uC774 \uBE57\uB098\uAC08 \uC2DC\t\uB2E4\uC74C
-    \uC790\uC2E0\uC758 \uD134\uC5D0 \uC2A4\uC2A4\uB85C \uB9AC\uC561\uC158 \uC2AC\uB86F
-    1\uAC1C\uB97C \uBD09\uC778(\uBC18\uC131 \uBA85\uBAA9). \uBCF8\uC778 \uC2A4\uD2B8\uB808\uC2A4
-    +10"
+  _description: "\uBCF8\uC778 \uACF5\uACA9 \uBE57\uB098\uAC10 \u2192 \uB2E4\uC74C
+    \uD134 1\uAC1C \uBD09\uC778 + \uC2A4\uD2B8\uB808\uC2A4+10"
   Role: 0
   Template:
     Phase: 2
@@ -25,27 +23,42 @@ MonoBehaviour:
     SubjectCharacterId: 
     DefinitionId: 
     Trigger:
-      rid: 2064475022841610299
+      rid: 2064475061108867324
     Effect:
-      rid: 2064475022841610300
+      rid: 2064475061108867325
   EditableSlots: []
   references:
     version: 2
     RefIds:
-    - rid: 2064475022841610299
+    - rid: 2064475061108867324
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
         _condition:
           Additional:
-          - rid: 2064475022841610301
-          - rid: 2064475022841610302
-    - rid: 2064475022841610300
+          - rid: 2064475061108867326
+          - rid: 2064475061108867327
+    - rid: 2064475061108867325
       type: {class: CompositeReactionEffect, ns: Reactions, asm: Assembly-CSharp}
-      data: 
-    - rid: 2064475022841610301
+      data:
+        Effects:
+        - rid: 2064475061108867328
+        - rid: 2064475061108867329
+    - rid: 2064475061108867326
       type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
         Filter: 1
-    - rid: 2064475022841610302
+    - rid: 2064475061108867327
       type: {class: EvadeCondition, ns: Reactions, asm: Assembly-CSharp}
       data: 
+    - rid: 2064475061108867328
+      type: {class: SealReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        TargetSelf: 1
+        Kind: 2
+        Count: 1
+        DurationTurns: 2
+    - rid: 2064475061108867329
+      type: {class: StressReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Delta: 10
+        Target: 4
