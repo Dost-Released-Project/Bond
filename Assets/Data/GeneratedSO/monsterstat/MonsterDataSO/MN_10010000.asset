@@ -20,9 +20,14 @@ MonoBehaviour:
   ImageAddress: Assassin_Icon
   IdleImageId: Assassin_Idle
   BattleImageId: Assassin_Battle
-  STR: 1
-  AGI: 1
-  INT: 1
+  MaxHP: 30
+  Atk: 7
+  Def: 0
+  Speed: 15
+  Cri: 40
+  Acc: 35
+  Eva: 20
+  SpAtk: 3
   SkillIds:
   - 01010000
   - 01010000

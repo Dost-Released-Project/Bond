@@ -20,9 +20,14 @@ MonoBehaviour:
   ImageAddress: Warrior_Icon
   IdleImageId: Warrior_Idle
   BattleImageId: Warrior_Battle
-  STR: 1
-  AGI: 1
-  INT: 1
+  MaxHP: 60
+  Atk: 10
+  Def: 40
+  Speed: 1
+  Cri: 0
+  Acc: 20
+  Eva: 0
+  SpAtk: 5
   SkillIds:
   - 01010000
   - 01020000
