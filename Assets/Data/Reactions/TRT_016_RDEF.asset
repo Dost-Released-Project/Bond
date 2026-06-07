@@ -14,10 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Reactions.ReactionDefinitionSO
   _id: TRT_016_RDEF
   _displayName: "\uADDC\uC728\uC801 \u2014 \uC790\uAE30 \uD1B5\uC81C"
-  _description: "\uC544\uAD70 \uB3CC\uBC1C \uD589\uB3D9(Anomaly) \uBC1C\uC0DD \uC2DC
-    \uBCF8\uC778\uC758 \uB2E4\uC74C \uD310\uC815 Fail_Chance -20 \uACE0\uC815 \uC801\uC6A9.
-    \uB2E8, \uD574\uB2F9 \uD134 \uB9AC\uC561\uC158 1\uAC1C \uBD09\uC778(\uC9D1\uC911
-    \uC18C\uBAA8)"
+  _description: "\uC544\uAD70 \uB3CC\uBC1C \uD6C4 \uB0B4 \uD134 \u2192 \uC790\uAE30\uD1B5\uC81C(\uB9AC\uC561\uC158
+    1\uAC1C \uBD09\uC778)"
   Role: 0
   Template:
     Phase: 3
@@ -25,26 +23,26 @@ MonoBehaviour:
     SubjectCharacterId: 
     DefinitionId: 
     Trigger:
-      rid: 2064475022841610296
+      rid: 2064475061108867321
     Effect:
-      rid: 2064475022841610297
+      rid: 2064475061108867322
   EditableSlots: []
   references:
     version: 2
     RefIds:
-    - rid: 2064475022841610296
+    - rid: 2064475061108867321
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
         _condition:
           Additional:
-          - rid: 2064475022841610298
-    - rid: 2064475022841610297
+          - rid: 2064475061108867323
+    - rid: 2064475061108867322
       type: {class: SealReactionEffect, ns: Reactions, asm: Assembly-CSharp}
       data:
         TargetSelf: 1
         Kind: 2
         Count: 1
         DurationTurns: 1
-    - rid: 2064475022841610298
+    - rid: 2064475061108867323
       type: {class: AllyAnomalyCondition, ns: Reactions, asm: Assembly-CSharp}
       data: 

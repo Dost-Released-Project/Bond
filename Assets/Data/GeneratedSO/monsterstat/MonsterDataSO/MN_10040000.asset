@@ -17,9 +17,9 @@ MonoBehaviour:
   _description: 
   RoleType: 1
   Level: 1
-  ImageAddress: GodOfNormalization
-  IdleImageId: 
-  BattleImageId: 
+  ImageAddress: Warrior_Icon
+  IdleImageId: Warrior_Idle
+  BattleImageId: Warrior_Battle
   STR: 6
   AGI: 4
   INT: 2

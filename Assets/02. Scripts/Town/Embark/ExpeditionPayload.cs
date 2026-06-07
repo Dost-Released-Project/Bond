@@ -36,20 +36,43 @@ namespace Bond.Expedition
         public IReadOnlyList<BaseCharacter> Party => GetCurrentParty();
         public ExpeditionInventory Supplies { get; private set; } =
             new ExpeditionInventory(ExpeditionInventory.PeekInventoryCapacity("exp_inv", 2));
-        public DungeonType DungeonType { get; private set; }
+        public ExpeditionRegion Region { get; private set; }
+
+        // LeeJuno 맵 시스템 호환용 passthrough — 선택된 지역의 DungeonType 을 그대로 노출
+        public DungeonType DungeonType => Region != null ? Region.DungeonType : DungeonType.None;
 
         public IReadOnlyList<BaseCharacter> EnemyParty { get; private set; }
         // 탐사 결과 (귀환 후 마을 씬이 읽음)
         public ExpeditionOutcome Outcome { get; private set; }
 
+        // 누적 보상 자원 (가상 계좌)
+        public int AccumulatedFrontier { get; private set; } = 0;
+        public int AccumulatedWood { get; private set; } = 0;
+        public int AccumulatedOre { get; private set; } = 0;
+
+        public void AddReward(int frontier, int wood, int ore)
+        {
+            AccumulatedFrontier += frontier;
+            AccumulatedWood += wood;
+            AccumulatedOre += ore;
+            Debug.Log($"<color=cyan>[ExpeditionPayload] 전투 승리 보상 적립: 개척 {frontier}, 목재 {wood}, 광석 {ore} (현재 누적: 개척 {AccumulatedFrontier}, 목재 {AccumulatedWood}, 광석 {AccumulatedOre})</color>");
+        }
+
+        public void ClearAccumulatedResources()
+        {
+            AccumulatedFrontier = 0;
+            AccumulatedWood = 0;
+            AccumulatedOre = 0;
+        }
+
         public void SetContents(
             IReadOnlyList<BaseCharacter> party,
             ExpeditionInventory supplies,
-            DungeonType dungeonType)
+            ExpeditionRegion region)
         {
             //Party = party;
             Supplies = supplies;
-            DungeonType = dungeonType;
+            Region = region;
         }
 
         public void SetSuplies(ExpeditionInventory supplies)
@@ -65,7 +88,7 @@ namespace Bond.Expedition
         public void Clear()
         {
             _partyController.Clear();
-            DungeonType = DungeonType.None;
+            Region = null;
             Outcome = ExpeditionOutcome.None;
         }
 

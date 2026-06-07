@@ -44,6 +44,8 @@ namespace _90._HA.Temp.Test
         {
             if (Keyboard.current.numpad0Key.wasPressedThisFrame)
                 Depart();
+            if (Keyboard.current.numpad9Key.wasPressedThisFrame)
+                SaveLoadSystem.Load(roster);
         }
 
         public void CharacterToJson()

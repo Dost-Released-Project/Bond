@@ -16,15 +16,17 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     private ITotalInventory _totalInv;
     private IExpeditionInventory _expeditionInv;
     private ConstructionUI _constructionUI;
+    private Bond.Expedition.ExpeditionPayload _expeditionPayload;
     
     [Inject] private SmithyUIController _smithyUI; 
     [Inject] private CharacterSelector _characterSelector;
     
     [Inject]
-    public void Construct(BuildingService bs, ResourceManager rm, InventoryView iv, SupplyView supply, ITotalInventory total, IExpeditionInventory exp)
+    public void Construct(BuildingService bs, ResourceManager rm, InventoryView iv, SupplyView supply, ITotalInventory total, IExpeditionInventory exp, Bond.Expedition.ExpeditionPayload expeditionPayload)
     {
         _buildingService = bs; _resourceManager = rm; _inventoryView = iv;
         _supplyView = supply; _totalInv = total; _expeditionInv = exp;
+        _expeditionPayload = expeditionPayload;
     }
     
     private void Awake()
@@ -47,6 +49,9 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         }
 
         _constructionUI = FindAnyObjectByType<ConstructionUI>();
+
+        // 타 씬(전투, 캠핑 등)에서 마을로 복귀 시 즉시 정산 및 건물 턴 리셋 실행
+        OnExpeditionReturned();
     }
 
     private void OnDestroy()
@@ -174,6 +179,24 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
             if (bObj != null && bObj.Counter != null)
             {
                 bObj.Counter.ResetTurnUses();
+            }
+        }
+
+        // 💥 전투 승리 누적 보상 정산
+        if (_expeditionPayload != null && _resourceManager != null)
+        {
+            int frontier = _expeditionPayload.AccumulatedFrontier;
+            int wood = _expeditionPayload.AccumulatedWood;
+            int ore = _expeditionPayload.AccumulatedOre;
+
+            if (frontier > 0 || wood > 0 || ore > 0)
+            {
+                Debug.Log($"<color=orange>[보상 정산]</color> 탐사 중 획득한 누적 보상 지급: 개척 {frontier}, 목재 {wood}, 광석 {ore}");
+                
+                _resourceManager.AddFrontierData(frontier);
+                _resourceManager.AddMaterials(wood, ore);
+                
+                _expeditionPayload.ClearAccumulatedResources();
             }
         }
     }

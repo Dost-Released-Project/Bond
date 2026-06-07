@@ -12,16 +12,36 @@ public class TitleSceneController : MonoBehaviour
     // 리더님이 지정하신 세이브 데이터 경로
     private string _saveFolderPath;
 
-    private async void Awake()
+    private async void Start()
     {
-        await DBSORegistry.PreloadByLabelAsync("DBSO");
-    }
-
-    private void Start()
-    {
+#if UNITY_EDITOR
         _saveFolderPath = Path.Combine(Application.dataPath, "Data", "Save");
+#else
+        _saveFolderPath = Path.Combine(Application.persistentDataPath, "Save");
+#endif
 
-        // 세이브 파일이 없으면 '이어하기' 버튼을 비활성화하는 방어 코드
+        // 프리로드가 완료될 때까지 버튼 상호작용을 차단하여 데드락 및 예외 방지
+        if (_btnNewGame != null) _btnNewGame.SetEnabled(false);
+        if (_btnContinue != null) _btnContinue.SetEnabled(false);
+
+        // 라벨을 통한 전체 프리로드
+        await DBSORegistry.PreloadByLabelAsync("DBSO");
+        
+        // 라벨이 누락되어 있을 경우를 대비해 Town 씬과 캐릭터 생성에 필수적인 DB들을 명시적으로 비동기 로드
+        await DBSORegistry.PreloadAsync(
+            "SkillDataBase", 
+            "ClassDataBase", 
+            "DefaultEquipDataBase", 
+            "MonsterDataBase",
+            "JournalDataBase",
+            "BuildingDataBase",
+            "AccessoryDataBase",
+            "ReactionDefinitionDataBase",
+            "StatModifierDataBase"
+        );
+
+        // 프리로드 완료 후 '새 게임' 버튼 활성화 및 세이브 존재 여부 체크
+        if (_btnNewGame != null) _btnNewGame.SetEnabled(true);
         CheckSaveDataExistence();
     }
 

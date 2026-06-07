@@ -14,10 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Reactions.ReactionDefinitionSO
   _id: TRT_014_RDEF
   _displayName: "\uACFC\uC2DC\uC695 \u2014 \uB3C5\uBB34\uB300"
-  _description: "\uBCF8\uC778 \uCE58\uBA85\uD0C0 \uBC1C\uC0DD \uC2DC\t\uCE58\uBA85\uD0C0
-    \uC9C1\uD6C4 \uCD94\uAC00 \uACF5\uACA9 \uC5C6\uC774 \uC2B9\uB9AC \uD3EC\uC988
-    \uC5F0\uCD9C. \uD574\uB2F9 \uD134 \uB0A8\uC740 \uB9AC\uC561\uC158 \uC2AC\uB86F
-    \uC804\uBD80 \uC18C\uBAA8"
+  _description: "\uBCF8\uC778 \uCE58\uBA85\uD0C0 \u2192 \uB0A8\uC740 \uB9AC\uC561\uC158
+    \uBD09\uC778"
   Role: 0
   Template:
     Phase: 2
@@ -25,31 +23,31 @@ MonoBehaviour:
     SubjectCharacterId: 
     DefinitionId: 
     Trigger:
-      rid: 2064475022841610292
+      rid: 2064475061108867317
     Effect:
-      rid: 2064475022841610293
+      rid: 2064475061108867318
   EditableSlots: []
   references:
     version: 2
     RefIds:
-    - rid: 2064475022841610292
+    - rid: 2064475061108867317
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
         _condition:
           Additional:
-          - rid: 2064475022841610294
-          - rid: 2064475022841610295
-    - rid: 2064475022841610293
+          - rid: 2064475061108867319
+          - rid: 2064475061108867320
+    - rid: 2064475061108867318
       type: {class: SealReactionEffect, ns: Reactions, asm: Assembly-CSharp}
       data:
         TargetSelf: 1
         Kind: 0
         Count: 1
         DurationTurns: 1
-    - rid: 2064475022841610294
+    - rid: 2064475061108867319
       type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
         Filter: 1
-    - rid: 2064475022841610295
+    - rid: 2064475061108867320
       type: {class: CritCondition, ns: Reactions, asm: Assembly-CSharp}
       data: 

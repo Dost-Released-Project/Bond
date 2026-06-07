@@ -12,13 +12,13 @@ namespace RootVContainer
         private void ConfigureJournal(IContainerBuilder builder)
         {
             #region 일지
-            // DataBaseSO 로드 및 등록 (Addressables 동기 로드 방식)
-            var journalDBHandle = UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<JournalDataBaseSO>("JournalDataBase");
-            var journalDB = journalDBHandle.WaitForCompletion();
+            // DataBaseSO 로드 및 등록 (RootScope는 Start 이전 앱 초기화 단계에 실행되므로 동기 로드 필요)
+            // LoadSync를 사용하면 내부적으로 WaitForCompletion을 안전하게 호출하며, 이후 비동기 프리로드 시에는 캐시를 재사용합니다.
+            var journalDB = DBSORegistry.LoadSync<JournalDataBaseSO>("JournalDataBase");
             if (journalDB != null)
                 builder.RegisterInstance(journalDB);
             else
-                Debug.LogError("[RootScope] JournalDataBase 를 로드할 수 없습니다. Addressables Group을 확인하세요.", this);
+                Debug.LogError("[RootScope] JournalDataBase 를 로드할 수 없습니다. Addressables Group 라벨 및 키를 확인하세요.", this);
 
             // Data & Logic (Global Core)
             builder.Register<JournalModel>(Lifetime.Singleton);

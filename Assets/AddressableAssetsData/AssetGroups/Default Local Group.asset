@@ -15,8 +15,48 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 748404ed84ce7834994ae89f0b5c7ee0
   m_SerializeEntries:
+  - m_GUID: 0150afc63abc60145b54f2ec08c8657f
+    m_Address: Assets/Data/GeneratedSO/monsterstat/MonsterDataSO/MN_10080000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 02517c88d54515b4682829fcae8f9e99
+    m_Address: Assets/Data/GeneratedSO/building/BuildingDataSO/BU_09050000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 06ee8c2b857abfe45af047177aff094c
+    m_Address: Assets/Data/GeneratedSO/journaldata/JournalData/JO_EVT_FIND_ITEM.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 11194843f39533141b9e076385ea4a67
+    m_Address: Assets/Data/GoogleSheetConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 121fcfa83ebb6b349990e92f76b23cb6
+    m_Address: Assets/Data/GeneratedSO/eventdata/EventDataSO/EV_12010000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 123903391a58c1d40965ebb84691dc53
+    m_Address: Assets/Data/GeneratedSO/skill/SkillDataSO/SK_01030200.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 12a01d9d8e07f334cbcbecd635bd6d6c
     m_Address: Map_Ruin
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 138f8e494809e674191de0c692c9020d
+    m_Address: Assets/Data/GeneratedSO/monsterstat/MonsterDataSO/MN_10130000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1601c6c3cbf849d48814fa216a44e153
+    m_Address: Assets/Data/GeneratedSO/skill/SkillDataSO/SK_01040100.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -25,8 +65,313 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e95f98d5ffb52b48a2ad9a4293fbb1d
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13170000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 20eac227e48225344b68636b42318d38
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13110000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 213838092e958c6428cffbc2caeb22a0
+    m_Address: Assets/Data/GeneratedSO/skill/SkillDataSO/SK_01050300.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2168ec6edc6110f4f9667b7e376bd352
+    m_Address: Assets/Data/GeneratedSO/skill/SkillDataSO/SK_01010000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 21f034762438ff44fb81ec17bcaf6eb7
+    m_Address: Assets/Data/GeneratedSO/journaldata/JournalData/JO_EVT_CAMP_START.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2246ed9b245ab404689fbc63ea08658b
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13100000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 26faf076711018144a472f95e86ea810
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13200000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2aa5773f5b84eb6468eecfc1e317446a
+    m_Address: Assets/Data/GeneratedSO/journaldata/JournalData/JO_EVT_BATTLE_END.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b0673ddd35a58a45bb66bc80bd9f880
+    m_Address: Assets/Data/GeneratedSO/journaldata/JournalData/JO_EVT_FIND_OLD_ITEM.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b5cc15b795283443925b57b1e426092
+    m_Address: Assets/Data/GeneratedSO/journaldata/JournalData/JO_EVT_MEET_HELPER.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d37152c4d21f1940ac73dc3eb5701d0
+    m_Address: Assets/Data/GeneratedSO/class/ClassDataSO/CL_02030000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d3f2983dbf3cc241ad0beeaeff23d34
+    m_Address: Assets/Data/GeneratedSO/monsterstat/MonsterDataSO/MN_10070000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e4001282a8f7a545b4541311e5faad5
+    m_Address: Assets/Data/GeneratedSO/accessory/AccessoryDataSO/AC_08020000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30d2e2169d3cf41488b20e0cc323e1bb
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13060000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 31b0515c8f781944091c3425a9a1cbd4
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13160000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3488bc8e9a850c14ea1830be4ee11cc8
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13000000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35a56d12c342f0a40a7161200bdbb304
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13140000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3b674c7940c3c9a48af559b4db59c988
+    m_Address: Assets/Data/GeneratedSO/building/BuildingDataSO/BU_09010000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a98f320f02106149807140a6cb71a87
+    m_Address: Assets/Data/GeneratedSO/skill/SkillDataSO/SK_01030100.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4d2037eb598c8b54db474e7844a72fa1
+    m_Address: Assets/Data/GeneratedSO/monsterstat/MonsterDataSO/MN_10120000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ea1576186f32c34a8860a9856a690e2
+    m_Address: Assets/Data/GeneratedSO/monsterstat/MonsterDataSO/MN_10030000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ee518319fc220e46958ec8871590a30
+    m_Address: Assets/Data/GeneratedSO/journaldata/JournalData/JO_EVT_BATTLE_RETREAT.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4fc73c819bd461b4eb823e24ced1104a
+    m_Address: Assets/Data/GeneratedSO/skill/SkillDataSO/SK_01010100.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5040080801ce41d4d84e88b819bd9908
     m_Address: Stage_Camp
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 50ebcaf7dc8e79840a98931427427510
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13120000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 526f596c3cc9ad3428014c59db463311
+    m_Address: Assets/Data/GeneratedSO/consumable/ConsumableDataSO/CO_07030000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54d40868a9fe33446ae2a024148b7263
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13080000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 58426c1785a68bc408b4c93ad404fc76
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13090000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5a9914d6adc46a04182f6d0d21259741
+    m_Address: Assets/Data/GeneratedSO/monsterstat/MonsterDataSO/MN_10010000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f5a58ba5e5135443b2a5d651d523f55
+    m_Address: Assets/Data/GeneratedSO/skill/SkillDataSO/SK_01010200.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 612003cbdf5c1bc4bbf53f55d7d1322f
+    m_Address: Assets/Data/GeneratedSO/journaldata/JournalData/JO_EVT_SHOP_BROWSE.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 61f62dbac8e3b264d863f23f33dcb377
+    m_Address: Assets/Data/GeneratedSO/accessory/AccessoryDataSO/AC_08000000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 647308cf23038ee4198cfb4bee64e844
+    m_Address: Assets/Data/GeneratedSO/defaultequip/DefaultEquipDataSO/DE_03030000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6adca2e2aedc9934688a4ccbca4cdd4b
+    m_Address: Assets/Data/GeneratedSO/defaultequip/DefaultEquipDataSO/DE_03020000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6aee7df868eba574ca5f72928c170b89
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13020000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d3b3e2511b34344e8a6d51485eab6f3
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13070000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6dad1ff08f6b8d742870a02e408b0965
+    m_Address: Assets/Data/GeneratedSO/skill/SkillDataSO/SK_01050100.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 727141f091fa5594d802c2536f8165f4
+    m_Address: Assets/Data/GeneratedSO/monstergroup/MonsterGroupDataSO/MG_11020000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7593945cdb660b34fa2b747a81873bde
+    m_Address: Assets/Data/GeneratedSO/building/BuildingDataSO/BU_09060000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 777699eef18dc6f43a997dca1837ec17
+    m_Address: Assets/Data/GeneratedSO/building/BuildingDataSO/BU_09040000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 777b4154769871c4f94056e753c4d4bb
+    m_Address: Assets/Data/GeneratedSO/journaldata/JournalData/JO_EVT_FIND_SHINY.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7897d6c6d05537842a9d658a7b6aa534
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13190000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7d1e93aef3c816642a94d515292cf2fd
+    m_Address: Assets/Data/GeneratedSO/class/ClassDataSO/CL_02000000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7d2fad5c74b7f244288b21ca463bedb4
+    m_Address: Assets/Data/GeneratedSO/journaldata/JournalData/JO_EVT_TALK_NPC.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f1a3001486938949bfd35b67465fb4c
+    m_Address: Assets/Data/GeneratedSO/skill/SkillDataSO/SK_01050200.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 81a88050c49c8d84090bc0b2015e5345
+    m_Address: Assets/Data/GeneratedSO/monstergroup/MonsterGroupDataSO/MG_11010000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 858bd87259958fa44a02098d804ba1c2
+    m_Address: Assets/Data/GeneratedSO/skill/SkillDataSO/SK_01040200.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 882c9a6a095033b4cbc0f6a76636911d
+    m_Address: Assets/Data/GeneratedSO/journaldata/JournalData/JO_EVT_REST_VIEW.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89a3e9c9daec7f447a6cfe11cda1a0b4
+    m_Address: Assets/Data/GeneratedSO/journaldata/JournalData/JO_EVT_MONSTER_ENCOUNTER.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a822e3b68cced248bf7a58c104e7428
+    m_Address: Assets/Data/GeneratedSO/skill/SkillDataSO/SK_01020300.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8baa60735c2f2704f86b42b9d81405e3
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13050000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 903120641103a4b47841aef23abc6caf
+    m_Address: Assets/Data/GeneratedSO/journaldata/JournalData/JO_EVT_DECODE_WALL.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 93d6daee45fc5f0408dbd43aaff7a593
+    m_Address: Assets/Data/GeneratedSO/defaultequip/DefaultEquipDataSO/DE_03010000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 93ec41f217850c54db13edfd45a54f61
+    m_Address: Assets/Data/GeneratedSO/monsterstat/MonsterDataSO/MN_10150000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 963dbd7ea6fa9bc46ac9daf74cf1f1d8
+    m_Address: Assets/Data/GeneratedSO/skill/SkillDataSO/SK_01040000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9cde60c6b35d5334993d28cda89e0b23
+    m_Address: Assets/Data/GeneratedSO/defaultequip/DefaultEquipDataSO/DE_03060000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9cffa0d32b8017147b8af7dfd003f972
+    m_Address: Assets/Data/GeneratedSO/skill/SkillDataSO/SK_01020200.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a021c2d1e435f7944a070b7fc06d86b7
+    m_Address: Assets/Data/GeneratedSO/defaultequip/DefaultEquipDataSO/DE_03000000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a07971b7932dc5f408fe48c831b4d42d
+    m_Address: Assets/Data/GeneratedSO/consumable/ConsumableDataSO/CO_07010000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a2186d5727d219c448ffe65c1d9b6051
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13210000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a2453b491f42c1b459cfe282a80b6c4c
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13030000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a26119c47e046ce4eabbd0055c368f68
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13130000.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -35,8 +380,253 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a4b6f4111c42fe7459ddb6e4f51dc85b
+    m_Address: Assets/Data/GeneratedSO/monsterstat/MonsterDataSO/MN_10040000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7bab70175cf19148b20188dfdb2a97a
+    m_Address: Assets/Data/GeneratedSO/journaldata/JournalData/JO_EVT_BATTLE_END_DEFEAT.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ab4d0199116484d4e9f8f5c4a01e2b03
+    m_Address: Assets/Data/GeneratedSO/monsterstat/MonsterDataSO/MN_10020000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: adee6140c3d85474e94af746e82e9fe3
+    m_Address: Assets/Data/GeneratedSO/accessory/AccessoryDataSO/AC_08030000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae8ffbbc7d0930941b0199144bb2edbb
+    m_Address: Assets/Data/GeneratedSO/eventdata/EventDataSO/EV_12040000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b30678fd126824443ba7a8db63e59690
+    m_Address: Assets/Data/GeneratedSO/eventdata/EventDataSO/EV_12030000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b53dc4377cead604b85bb1ea7f78fb02
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13230000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b55ce591e648bed41918bf385a337388
+    m_Address: Assets/Data/GeneratedSO/skill/SkillDataSO/SK_01040300.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6d8a8be766f3e645b6bc1950567cf95
+    m_Address: Assets/Data/GeneratedSO/journaldata/JournalData/JO_EVT_HEAR_CRY.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8dae8dc088c9c648a3a2be3e736f55e
+    m_Address: Assets/Data/GeneratedSO/building/BuildingDataSO/BU_09030000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8de67576ddb60c4eb3dcccb2e641b32
+    m_Address: Assets/Data/GeneratedSO/class/ClassDataSO/CL_02010000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b92e19dd7aa8ce749a136708ffabdc0e
+    m_Address: Assets/Data/GeneratedSO/skill/SkillDataSO/SK_01050000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba42e3fe7734f944081006a516eda656
+    m_Address: Assets/Data/GeneratedSO/monsterstat/MonsterDataSO/MN_10090000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bada5bf2fa18e694fa1e8ef6f1e71d73
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13220000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb0d63c640847c243a37d39019edf022
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13180000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb457c00298b33640a844832e03f6134
+    m_Address: Assets/Data/GeneratedSO/accessory/AccessoryDataSO/AC_08010000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bbd5a61291490c24eb86e63fc80a1deb
+    m_Address: Assets/Data/GeneratedSO/monsterstat/MonsterDataSO/MN_10060000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd50cfe1949db1f4488b6a8d0efd7cfc
+    m_Address: Assets/Data/GeneratedSO/monsterstat/MonsterDataSO/MN_10050000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: be65a9d9ae07ba1419032de04759ab0a
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13150000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: be86240fff44d0c4bbf1a26cc4c78871
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13240000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: be9027a2dfbfccb49969b49ccefe3230
+    m_Address: Assets/Data/GeneratedSO/class/ClassDataSO/CL_02020000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2f642e837354254688840aab79abfad
+    m_Address: Assets/Data/GeneratedSO/monsterstat/MonsterDataSO/MN_10100000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c3800a5157df56746b6faaabe18004a8
+    m_Address: Assets/Data/GeneratedSO/skill/SkillDataSO/SK_01020100.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c389be68ec90ed149a01bf16ee633e15
+    m_Address: Assets/Data/GeneratedSO/building/BuildingDataSO/BU_09000000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c77ca06491b352f46b2bddbf92b9ccb7
+    m_Address: Assets/Data/GeneratedSO/monstergroup/MonsterGroupDataSO/MG_11030000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c7afa3bae4149e849b6e99716a30f3c8
     m_Address: 123
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cc0dd5f363f0db64b83855360d8d7d4a
+    m_Address: Assets/Data/GeneratedSO/consumable/ConsumableDataSO/CO_07020000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1a09baac2fa6fd4588b2c53325154a5
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13040000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d26e0fb98694cbe4aaaadd2812f05a5a
+    m_Address: Assets/Data/Save
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d638a3178865817449f192ac8a4d34d0
+    m_Address: Assets/Data/GeneratedSO/defaultequip/DefaultEquipDataSO/DE_03070000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d8c197dcdb5e9c2479cec0546afe89c2
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13010000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da29988b0f168f34c9d6f4c365551e46
+    m_Address: Assets/Data/GeneratedSO/journaldata/JournalData/JO_EVT_INSPECT_PEDESTAL.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dd6f63bc46c742b47a67fe14bf51acb0
+    m_Address: Assets/Data/GeneratedSO/consumable/ConsumableDataSO/CO_07040000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: df17a16a55f1c7b43ae72e618b43d22c
+    m_Address: Assets/Data/GeneratedSO/eventdata/EventDataSO/EV_12050000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dfd9f88fe6f85884c820fe3a926bc0ae
+    m_Address: Assets/Data/GeneratedSO/monsterstat/MonsterDataSO/MN_10110000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e140d0a3f66776349b579e49437fe8c3
+    m_Address: Assets/Data/GeneratedSO/skill/SkillDataSO/SK_01020000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e5b044ff92aa7594485a4ee27ba2c18a
+    m_Address: Assets/Data/GeneratedSO/skill/SkillDataSO/SK_01010300.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e622aa1faa2b8c04883a1d5e07dcc22d
+    m_Address: Assets/Data/GeneratedSO/consumable/ConsumableDataSO/CO_07000000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e67a588bac4d42b4c80b76a2b6638ba7
+    m_Address: Assets/Data/Traits
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e73d259169838aa41886cdace3fef658
+    m_Address: Assets/Data/GeneratedSO/journaldata/JournalData/JO_EVT_CAMP_END.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e9be7e6977298594e8df59b47f86fbbb
+    m_Address: Assets/Data/Reactions
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eaf39bd0a8559994397205f36d211bab
+    m_Address: Assets/Data/GeneratedSO/defaultequip/DefaultEquipDataSO/DE_03050000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ebbce47f9a7317e4d92d633455cd1a35
+    m_Address: Assets/Data/GeneratedSO/defaultequip/DefaultEquipDataSO/DE_03040000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec8139169be20474fbaf27162af07f48
+    m_Address: Assets/Data/GeneratedSO/monsterstat/MonsterDataSO/MN_10140000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: efc57f736ae37d241a8cab48bd3e9d67
+    m_Address: Assets/Data/GeneratedSO/skill/SkillDataSO/SK_01030000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f039bb88de6e1964ea066d40ccfedf62
+    m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13250000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f21b33a2d0272e841881c54acd0a9b6e
+    m_Address: Assets/Data/GeneratedSO
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f4607a17da42ef3418cec8f3eb7d07c2
+    m_Address: Assets/Data/GeneratedSO/building/BuildingDataSO/BU_09020000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f82e37bef9adc3a4fbca561887836071
+    m_Address: Assets/Data/GeneratedSO/eventdata/EventDataSO/EV_12020000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f9924a6342a6d424498fbaf32b886003
+    m_Address: Assets/Data/GeneratedSO/skill/SkillDataSO/SK_01030300.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

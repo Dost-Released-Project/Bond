@@ -20,9 +20,25 @@ namespace Bond.WT.Journal
         public readonly ObservableValue<bool> HasPrevPage = new ObservableValue<bool>(false);
         public readonly ObservableValue<bool> IsLastPage = new ObservableValue<bool>(false);
 
-        public void SetReports(IEnumerable<JournalReport> reports)
+        public void Clear()
         {
             _reports.Clear();
+            _currentReportIndex = 0;
+
+            // 상태 강제 초기화 (이벤트 강제 발생을 위해 값 리셋)
+            // ObservableValue가 동일한 값일 경우 이벤트를 발생시키지 않는 것을 우회하기 위함
+            CurrentReport.Value = null;
+            CurrentParagraph.Value = null; 
+            CurrentOptions.Value = null;
+            HasPrevPage.Value = false;
+            IsLastPage.Value = false;
+            IsJournalComplete.Value = true;
+        }
+
+        public void SetReports(IEnumerable<JournalReport> reports)
+        {
+            Clear();
+            
             _reports.AddRange(reports);
             IsJournalComplete.Value = false;
         }

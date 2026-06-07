@@ -237,7 +237,7 @@ public partial class BaseCharacter : ITurnUseUnit
         if (hpChanged) OnHpChanged?.Invoke(this);
     }
 
-    public float HpRatio => Stat.max_Hp <= 0 ? 0f : (float)Stat.current_Hp / Stat.max_Hp;
+    [JsonIgnore] public float HpRatio => Stat.max_Hp <= 0 ? 0f : (float)Stat.current_Hp / Stat.max_Hp;
 
     public void SetHpFull()
     {

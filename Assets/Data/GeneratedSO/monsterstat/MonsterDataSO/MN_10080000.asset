@@ -17,9 +17,9 @@ MonoBehaviour:
   _description: 
   RoleType: 2
   Level: 3
-  ImageAddress: GodOfWar
-  IdleImageId: 
-  BattleImageId: 
+  ImageAddress: Assassin_Icon
+  IdleImageId: Assassin_Idle
+  BattleImageId: Assassin_Battle
   STR: 7
   AGI: 15
   INT: 4

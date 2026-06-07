@@ -34,6 +34,7 @@ namespace Reactions.Authoring
             if (existing != null)
             {
                 EditorUtility.CopySerialized(so, existing); // _id 포함 전 필드 복사, 기존 GUID 유지
+                existing.name = id;                         // CopySerialized 가 빈 m_Name 까지 덮어쓰므로 파일명과 일치하게 복원
                 EditorUtility.SetDirty(existing);
                 Object.DestroyImmediate(so); // 임시 인스턴스 정리
                 return existing;
