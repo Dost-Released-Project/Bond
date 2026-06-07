@@ -66,6 +66,17 @@ namespace BattleSystem
             // DOTween으로 alpha 트위닝
             DOTween.To(() => focusLevel.dimVisualizer.alpha, x => focusLevel.dimVisualizer.alpha = x, 0.7f, 0.3f);
 
+            // 레이아웃 이동 전에 모든 타겟의 원본 데이터를 먼저 캐싱 (siblingIndex 꼬임 방지)
+            if (caster != null) CacheSlotData(caster, focusLevel);
+            if (targets != null && targets.Count > 0)
+            {
+                foreach (var t in targets)
+                {
+                    if (t != null && !focusLevel.restoreData.ContainsKey(t)) 
+                        CacheSlotData(t, focusLevel);
+                }
+            }
+
             var seq = DOTween.Sequence();
 
             // 2. Caster 처리 (껐다 켜서 Dim보다 뒤의 순서로, 즉 최상단에 렌더링되게 만듦)
@@ -116,12 +127,11 @@ namespace BattleSystem
             }
         }
 
-        private void MoveSlotToCenter(CharacterSlot slot, Vector3 targetLocalPos, Sequence seq, FocusLevel level)
+        private void CacheSlotData(CharacterSlot slot, FocusLevel level)
         {
             var rectTransform = slot.GetComponent<RectTransform>();
             if (rectTransform == null) return;
 
-            // 원본 데이터 캐싱 (현재 레벨에 저장)
             level.restoreData[slot] = new SlotRestoreData
             {
                 parent = rectTransform.parent,
@@ -130,6 +140,12 @@ namespace BattleSystem
                 localPosition = rectTransform.localPosition,
                 localScale = rectTransform.localScale
             };
+        }
+
+        private void MoveSlotToCenter(CharacterSlot slot, Vector3 targetLocalPos, Sequence seq, FocusLevel level)
+        {
+            var rectTransform = slot.GetComponent<RectTransform>();
+            if (rectTransform == null) return;
 
             // 레이아웃 그룹에서 분리하기 위해 캔버스 최상단으로 이동 (화면 위치 유지)
             rectTransform.SetParent(m_shapesCanvas.transform, true);
@@ -194,7 +210,13 @@ namespace BattleSystem
             if (rectTransform == null) return;
 
             seq.Join(rectTransform.DOScale(data.localScale, 0.3f).SetEase(Ease.OutQuad));
-            // Dim FadeOut과 함께 크기만 줄어들게 처리. 위치는 Layout 복원 시 즉시 돌아감.
+            
+            if (data.parent != null)
+            {
+                Vector3 targetWorldPos = data.parent.TransformPoint(data.localPosition);
+                Vector3 targetLocalPos = rectTransform.parent.InverseTransformPoint(targetWorldPos);
+                seq.Join(rectTransform.DOLocalMove(targetLocalPos, 0.3f).SetEase(Ease.OutQuad));
+            }
         }
 
         private void RestoreSlotLayout(CharacterSlot slot, FocusLevel level)
