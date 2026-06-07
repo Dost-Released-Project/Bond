@@ -20,9 +20,9 @@ MonoBehaviour:
   ImageAddress: Assassin_Icon
   IdleImageId: Assassin_Idle
   BattleImageId: Assassin_Battle
-  STR: 7
-  AGI: 15
-  INT: 4
+  STR: 1
+  AGI: 1
+  INT: 1
   SkillIds:
   - 01010000
   - 01020000

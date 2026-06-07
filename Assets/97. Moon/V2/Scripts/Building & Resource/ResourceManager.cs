@@ -22,9 +22,8 @@ public class ResourceManager
         
         var loadData = new ResourceSaveData();
         string saveKey = loadData.Key;
-        string path = Path.Combine(Application.dataPath, "Data", "Save", $"{saveKey}.json");
 
-        if (File.Exists(path))
+        if (SaveLoadSystem.HasSave(saveKey))
         {
             try 
             {

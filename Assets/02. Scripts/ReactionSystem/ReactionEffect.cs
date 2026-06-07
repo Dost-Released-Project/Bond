@@ -53,25 +53,44 @@ namespace Reactions
 
         private IEnumerable<BaseCharacter> ResolveTargets(BaseCharacter reactor, ReactionExecution execution, BattleContext context)
         {
+            IEnumerable<BaseCharacter> baseTargets;
             switch (SkillTarget)
             {
-                case E_TargetFilter.Caster:
-                    yield return context.caster;
-                    yield break;
-                case E_TargetFilter.Target:
-                    yield return context.target;
-                    yield break;
-                case E_TargetFilter.FrontmostEnemy:
-                    yield return reactor?.GetOpposingByRank(true);
-                    yield break;
-                case E_TargetFilter.BackmostEnemy:
-                    yield return reactor?.GetOpposingByRank(false);
-                    yield break;
-                default: // Observed / None → 매치된 관찰 대상
-                    if (execution.MatchedSubjects != null)
-                        foreach (var s in execution.MatchedSubjects)
-                            yield return s;
-                    yield break;
+                case E_TargetFilter.Caster: baseTargets = new[] { context.caster }; break;
+                case E_TargetFilter.Target: baseTargets = new[] { context.target }; break;
+                case E_TargetFilter.FrontmostEnemy: baseTargets = new[] { reactor?.GetOpposingByRank(true) }; break;
+                case E_TargetFilter.BackmostEnemy: baseTargets = new[] { reactor?.GetOpposingByRank(false) }; break;
+                default: 
+                    baseTargets = execution.MatchedSubjects ?? Array.Empty<BaseCharacter>(); 
+                    break;
+            }
+
+            if (reactor == null || SkillIndex < 0 || SkillIndex >= reactor.Skills.Length) yield break;
+            var skill = reactor.Skills[SkillIndex];
+            if (skill == null) yield break;
+
+            foreach (var t in baseTargets)
+            {
+                if (t == null) continue;
+
+                // 팀킬 방지: 스킬의 타겟 속성과 실제 타겟의 진영 관계 검증
+                bool isSameSide = (t.CurrentSlot?.side == reactor.CurrentSlot?.side);
+                
+                // 적군 대상 스킬인데 아군인 경우 제외
+                if (skill.Data.Target == global::SkillTarget.Enemy && isSameSide)
+                {
+                    Debug.Log($"<color=orange>[Reaction 방어]</color> 적군 대상 스킬({skill.Data.DisplayName})이나 타겟({t.Name})이 아군이라 리액션을 취소합니다.");
+                    continue;
+                }
+                
+                // 아군 대상 스킬인데 적군인 경우 제외
+                if (skill.Data.Target == global::SkillTarget.Party && !isSameSide)
+                {
+                    Debug.Log($"<color=orange>[Reaction 방어]</color> 아군 대상 스킬({skill.Data.DisplayName})이나 타겟({t.Name})이 적군이라 리액션을 취소합니다.");
+                    continue;
+                }
+
+                yield return t;
             }
         }
 

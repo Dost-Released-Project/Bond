@@ -55,6 +55,11 @@ namespace Bond.Persistence
             return Path.Combine(SAVE_ROOT, $"{saveKey}.json");
         }
 
+        public static bool HasSave(string key)
+        {
+            return File.Exists(GetPath(key));
+        }
+
         public static void Save(ISaveable saveable)
         {
             Save(saveable.Key, saveable.Data);
@@ -78,6 +83,11 @@ namespace Bond.Persistence
 
         public static IEnumerable<ISaveable> ReadAll()
         {
+            if (!Directory.Exists(SAVE_ROOT))
+            {
+                yield break;
+            }
+
             foreach (var filePath in Directory.EnumerateFiles(SAVE_ROOT, "*.json"))
             {
                 string json = File.ReadAllText(filePath);

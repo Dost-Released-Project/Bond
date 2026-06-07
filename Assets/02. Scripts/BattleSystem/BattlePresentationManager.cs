@@ -233,6 +233,12 @@ namespace BattleSystem
             rectTransform.anchoredPosition = data.anchoredPosition;
             rectTransform.localPosition = data.localPosition;
             rectTransform.localScale = data.localScale;
+
+            // 리액션 등 연출 중첩 시 부모 복귀 후 LayoutGroup이 즉시 갱신되지 않아 빈칸이 생기는 현상 방지
+            if (data.parent != null)
+            {
+                UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(data.parent.GetComponent<RectTransform>());
+            }
         }
     }
 }

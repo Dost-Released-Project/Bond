@@ -134,8 +134,15 @@ namespace PipeLine
         {
             if (context.target == null || context.target.IsDead) return UniTask.FromResult(context);
             
-            // 지원/힐 스킬은 회피 판정을 생략
-            if (context.runtimeSkill.Data.Type == SkillType.SUPPORT)
+            // 시전자와 타겟이 같은 진영(아군 대상 스킬)인지 확인
+            bool isFriendly = false;
+            if (context.caster?.CurrentSlot != null && context.target?.CurrentSlot != null)
+            {
+                isFriendly = context.caster.CurrentSlot.side == context.target.CurrentSlot.side;
+            }
+
+            // 지원/힐 스킬이거나, 시전자와 타겟이 같은 진영(아군)일 경우 회피 판정 생략
+            if (context.runtimeSkill.Data.Type == SkillType.SUPPORT || isFriendly)
             {
                 context.isEvaded = false;
                 return UniTask.FromResult(context);
