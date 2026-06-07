@@ -80,6 +80,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d762ef8e3c970a4fa9b0329551661bf
+    m_Address: Awake
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a122b9577d181434b9dd55528515f129
     m_Address: Supply
     m_ReadOnly: 0

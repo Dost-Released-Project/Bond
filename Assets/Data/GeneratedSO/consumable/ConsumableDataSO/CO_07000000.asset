@@ -15,7 +15,7 @@ MonoBehaviour:
   _id: 07000000
   _displayName: "\uBE75"
   _description: "\uC624\uC9C1 \uC7A5\uC2DC\uAC04 \uBCF4\uC874\uC744 \uC704\uD574\uC11C\uB9CC
-    \uC81C\uC791\uB41C \uBE75. \uB9DB\uC740 \uC5C6\uB2E4. \uCCB4\uB825\uC744 10 \uD68C\uBCF5\uD55C\uB2E4."
+    \uC81C\uC791\uB41C \uBE75. \uB9DB\uC740 \uC5C6\uB2E4. \uCCB4\uB825\uC744 \uD68C\uBCF5\uD55C\uB2E4."
   category: 0
   icon: {fileID: 21300000, guid: 7a1be7952d911a4479e67872ddfd623e, type: 3}
   totalGlobalMax: 15
