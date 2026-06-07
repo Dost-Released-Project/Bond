@@ -14,6 +14,10 @@
                     <ui:Image name="char-detail__portrait" class="char-detail__portrait"/>
                     <ui:VisualElement class="char-detail__identity">
                         <ui:Label name="char-detail__class-level" text="" class="char-detail__class-level"/>
+                        <ui:VisualElement name="control-mode" class="char-detail__control-seg">
+                            <ui:Button name="control-seg-manual" text="수동" class="char-detail__control-seg__opt char-detail__control-seg__opt--manual char-detail__control-seg__opt--active"/>
+                            <ui:Button name="control-seg-auto" text="자동" class="char-detail__control-seg__opt char-detail__control-seg__opt--auto"/>
+                        </ui:VisualElement>
                     </ui:VisualElement>
                     <ui:VisualElement class="char-detail__base-stats">
                         <ui:VisualElement class="char-detail__base-stat-boxes">

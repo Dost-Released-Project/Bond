@@ -141,6 +141,7 @@ public partial class BaseCharacter : ITurnUseUnit
     public event Action<BaseCharacter> OnAccessoriesChanged;
     public event Action<BaseCharacter> OnEquipmentChanged;   // 무기/방어구 변경 (영속 트리거)
     public event Action<BaseCharacter> OnReactionsChanged;    // 역할/성향 리액션 편집 (영속 트리거)
+    public event Action<BaseCharacter> OnPlayableChanged;     // 자동/수동 전투 전환 (영속 트리거)
 
     public void SetAccessory(int index, AccessoryItem item)
     {
@@ -204,6 +205,14 @@ public partial class BaseCharacter : ITurnUseUnit
 
     /// <summary>리액션 내부 편집슬롯(관찰대상/행동스킬)을 제자리 수정한 뒤 호출 — 영속 트리거.</summary>
     public void RaiseReactionsChanged() => OnReactionsChanged?.Invoke(this);
+
+    /// <summary>자동(AI)/수동(플레이어) 전투 전환. 값이 실제로 바뀐 경우에만 영속 트리거를 발화한다.</summary>
+    public void SetPlayable(bool value)
+    {
+        if (isPlayable == value) return;
+        isPlayable = value;
+        OnPlayableChanged?.Invoke(this);
+    }
 
     private IFormationManager m_formationManager;
 

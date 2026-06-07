@@ -97,6 +97,7 @@ public class Roster : ISaveable<List<BaseCharacter>>, IDisposable
         c.OnEquipmentChanged   += MarkDirty;
         c.OnRoleChanged        += MarkDirty;
         c.OnReactionsChanged   += MarkDirty;
+        c.OnPlayableChanged    += MarkDirty;
         // OnHpChanged / OnInsanityChanged 는 세션값 — 구독하지 않는다.
         // (전투 중 매 틱 디스크 저장 방지. 원정 종료 시 SaveNow 로 일괄 플러시.)
     }
@@ -108,6 +109,7 @@ public class Roster : ISaveable<List<BaseCharacter>>, IDisposable
         c.OnEquipmentChanged   -= MarkDirty;
         c.OnRoleChanged        -= MarkDirty;
         c.OnReactionsChanged   -= MarkDirty;
+        c.OnPlayableChanged    -= MarkDirty;
     }
 
     private void MarkDirty(BaseCharacter _)
