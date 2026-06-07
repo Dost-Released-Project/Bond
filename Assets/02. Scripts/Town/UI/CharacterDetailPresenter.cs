@@ -33,6 +33,9 @@ namespace Bond.UI
         private Button        _roleOptTanker, _roleOptDealer, _roleOptSupporter;
         private bool _rolePickerOpen;
 
+        private VisualElement _controlSeg;
+        private Button        _segManualBtn, _segAutoBtn;
+
         private Label _baseStatStr, _baseStatAgi, _baseStatInt;
         private Label _statHp, _statDef, _statAtk, _statSpd;
         private Label _statCrt, _statAcc, _statEva, _statReactionCtrl;
@@ -101,6 +104,12 @@ namespace Bond.UI
             _roleOptTanker.clicked    += () => { _controller.SetRole(RoleType.Tanker);    CloseRolePicker(); };
             _roleOptDealer.clicked    += () => { _controller.SetRole(RoleType.Dealer);    CloseRolePicker(); };
             _roleOptSupporter.clicked += () => { _controller.SetRole(RoleType.Supporter); CloseRolePicker(); };
+
+            _controlSeg   = root.Q("control-mode");
+            _segManualBtn = root.Q<Button>("control-seg-manual");
+            _segAutoBtn   = root.Q<Button>("control-seg-auto");
+            _segManualBtn.clicked += () => SetControlMode(true);
+            _segAutoBtn.clicked   += () => SetControlMode(false);
 
             _baseStatStr = root.Q<Label>("base-stat-str");
             _baseStatAgi = root.Q<Label>("base-stat-agi");
@@ -294,6 +303,10 @@ namespace Bond.UI
             _roleBtnCurrent.pickingMode = fullEdit ? PickingMode.Position : PickingMode.Ignore;
             if (!fullEdit) CloseRolePicker();
 
+            _controlSeg.EnableInClassList("char-detail__control-seg--disabled", !fullEdit);
+            _segManualBtn.pickingMode = fullEdit ? PickingMode.Position : PickingMode.Ignore;
+            _segAutoBtn.pickingMode   = fullEdit ? PickingMode.Position : PickingMode.Ignore;
+
             _equipSlots.SetEditable(canEquip);
 
             for (int i = 0; i < 6; i++)
@@ -339,6 +352,7 @@ namespace Bond.UI
         {
             if (_character == null) return;
             RefreshIdentity();
+            RefreshControlMode();
             RefreshStats();
             RefreshTraits();
             RefreshSkillGrid();
@@ -635,6 +649,22 @@ namespace Bond.UI
         {
             _rolePickerOpen = false;
             _rolePicker.RemoveFromClassList("char-detail__role-picker--open");
+        }
+
+        private void SetControlMode(bool manual)
+        {
+            if (_editMode != CharacterDetailEditMode.FullEdit || _character == null) return;
+            _controller.SetPlayable(manual);
+            RefreshControlMode();
+        }
+
+        /// <summary>현재 캐릭터의 isPlayable 을 세그먼트 활성 칸에 반영. true=수동(플레이어 조작), false=자동(AI 위임).</summary>
+        private void RefreshControlMode()
+        {
+            if (_character == null) return;
+            bool manual = _character.isPlayable;
+            _segManualBtn.EnableInClassList("char-detail__control-seg__opt--active", manual);
+            _segAutoBtn.EnableInClassList("char-detail__control-seg__opt--active", !manual);
         }
 
         private void TogglePool(int slotIndex, string part)

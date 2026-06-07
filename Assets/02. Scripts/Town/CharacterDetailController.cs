@@ -55,6 +55,13 @@ namespace Bond.UI
             OnRoleChanged?.Invoke(role);
         }
 
+        /// <summary>자동(AI)/수동(플레이어) 전투 전환. 영속 트리거는 BaseCharacter 내부에서 발화된다.</summary>
+        public void SetPlayable(bool playable)
+        {
+            if (_character == null) return;
+            _character.SetPlayable(playable);
+        }
+
         // AccessoryItem은 인벤토리에서 관리되므로 목적지 IInventory를 Presenter에서 전달받는다
         public void UnequipAccessory(int index, IInventory targetInventory)
         {

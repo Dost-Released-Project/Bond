@@ -41,9 +41,9 @@ public partial class BaseCharacter
             SetRoleAuto();
             chara.Id = System.Guid.NewGuid().ToString();
             chara.Init();
+            chara.isPlayable = true;
 
 #if UNITY_EDITOR
-            chara.isPlayable = true;
             chara.TraitIds = new string[4];
 #endif
             

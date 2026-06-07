@@ -95,11 +95,13 @@ namespace _90._HA.Temp.Test
         
         public void Depart()
         {
-            FillRosterFromPreset();
             foreach (var rosterCharacter in roster.Characters)
             {
                 _partyManager.TryAddMember(rosterCharacter);
             }
+
+            var region = new ExpeditionRegion("forest_01", "속삭이는 숲", "난이도: 평이 · 권장 4인", DungeonType.Forest);
+            _embarkManager.SelectRegion(region);
             _embarkManager.ConfirmEmbark();
         }
 
