@@ -44,6 +44,20 @@ public class MonsterParser : TSVParserBase<MonsterDTO, MonsterSO>
             }
         }
 
+        string finalIdleImageId = dto.IdleImageID;
+        if (string.IsNullOrWhiteSpace(finalIdleImageId))
+        {
+            finalIdleImageId = string.IsNullOrWhiteSpace(dto.ImageAddress) ? $"MN_{dto.Id}_Idle" : dto.ImageAddress;
+        }
+
+        string finalBattleImageId = dto.BattleImageID;
+        if (string.IsNullOrWhiteSpace(finalBattleImageId))
+        {
+            finalBattleImageId = string.IsNullOrWhiteSpace(dto.ImageAddress) ? $"MN_{dto.Id}_Atk" : dto.ImageAddress;
+        }
+
+        Debug.Log($"[MonsterParser] {dto.Name}({dto.Id}) 임포트 완료 - Idle: {finalIdleImageId}, Battle: {finalBattleImageId}");
+
         so.SetData(
             id:           dto.Id,
             displayName:  dto.Name,
@@ -53,8 +67,8 @@ public class MonsterParser : TSVParserBase<MonsterDTO, MonsterSO>
             agi:          dto.AGI,
             intel:        dto.INT,
             imageAddress: dto.ImageAddress,
-            idleImageId:  dto.IdleImageID,
-            battleImageId: dto.BattleImageID,
+            idleImageId:  finalIdleImageId,
+            battleImageId: finalBattleImageId,
             skillIds:     skillIds
         );
     }

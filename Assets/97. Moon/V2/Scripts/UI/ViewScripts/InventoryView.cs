@@ -33,24 +33,33 @@ public class InventoryView : MonoBehaviour
         _expeditionResultService = expeditionResultService;
     }
 
-    private async void Start()
+    private void Start()
     {
-        // 1. "total_inv" 파일만 로드
-        await LoadTotalInventory();
-        
-        // 2. ID로 테스트 아이템 추가.
-        // 소모품 추가
-        _totalInventory.AddItemId("07000000", 5);
-        _totalInventory.AddItemId("07010000", 5);
-        _totalInventory.AddItemId("07020000", 5);
-        _totalInventory.AddItemId("07030000", 5);
-        _totalInventory.AddItemId("07040000", 5);
-        // 장신구 추가.
-        _totalInventory.AddItemId("08000000", 1);
-        _totalInventory.AddItemId("08010000", 1);
-        _totalInventory.AddItemId("08020000", 1);
-        _totalInventory.AddItemId("08030000", 1);
-        
+        // 1. "total_inv" 파일 로드
+        string savePath = Path.Combine(Application.dataPath, "Data", "Save", "total_inv.json");
+        bool isFirstStart = !File.Exists(savePath);
+
+        LoadTotalInventory();
+    
+        // 2. [개혁] 세이브 파일이 없는 순수 신규 게임("새로하기")일 때만 단 1회 테스트 아이템 추가
+        if (isFirstStart)
+        {
+            Debug.Log("<color=yellow>[최초 실행]</color> 새 게임 시작 초기 아이템을 1회 한정 지급합니다.");
+
+            // 소모품 추가
+            _totalInventory.AddItemId("07000000", 3);
+            _totalInventory.AddItemId("07010000", 3);
+            _totalInventory.AddItemId("07030000", 1);
+            _totalInventory.AddItemId("07040000", 1);
+
+            // 지급된 상태를 즉시 파일로 구워내어 다음 재실행/복귀 시 다시 지급되는 현상 방어
+            SaveTotalInventory(); 
+        }
+        else
+        {
+            Debug.Log("TotalInventory: 기존 세이브 데이터가 존재하므로 초기 아이템 지급을 스킵합니다.");
+        }
+    
         // 3. 탐사 후 타운으로 넘어올 때, 탐사 인벤토리 아이템 모두 토탈 인벤토리로 이동. 파일 로드 이후 적용해야지 적용됨
         _expeditionResultService.ProcessExpeditionReturn();
         SetupUI();
@@ -58,7 +67,7 @@ public class InventoryView : MonoBehaviour
         ToggleWindow(false);
     }
 
-    private Task LoadTotalInventory()
+    private void LoadTotalInventory()
     {
         // 로드 시도
         var save = new InventorySaveData("total_inv");
@@ -95,8 +104,6 @@ public class InventoryView : MonoBehaviour
         {
             Debug.Log("TotalInventory: 기존 세이브 없음. 기본값으로 시작.");
         }
-
-        return Task.CompletedTask;
     }
     
     private void SaveTotalInventory()
