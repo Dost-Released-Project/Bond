@@ -10,7 +10,8 @@
  
 
 ## 실시간 대화
-- 실시간 소통은 디스코드 쓰레드 활용(DM 금지)
-<img width="401" height="515" alt="image" src="https://github.com/user-attachments/assets/e4b985a5-6ee7-43d5-9ee3-b492dd357e6a" />
-- 작업(Task)에 관한 주제로 소통시 해당 쓰레드의 링크를 작업카드에 댓글로 남겨둘 것
+### 쓰레드 활용
+실시간 소통은 디스코드 쓰레드 활용(DM 금지). 작업(Task)에 관한 주제로 소통시 해당 쓰레드의 링크를 작업카드에 댓글로 남겨둘 것
+<img width="401" height="515" alt="image" src="https://github.com/user-attachments/assets/e4b985a5-6ee7-43d5-9ee3-b492dd357e6a" />   
 <img width="578" height="417" alt="image" src="https://github.com/user-attachments/assets/23417c10-aa82-4fcf-a425-7d65a6cb89c5" />
+
