@@ -15,3 +15,8 @@
 <img width="401" height="515" alt="image" src="https://github.com/user-attachments/assets/e4b985a5-6ee7-43d5-9ee3-b492dd357e6a" />   
 <img width="578" height="417" alt="image" src="https://github.com/user-attachments/assets/23417c10-aa82-4fcf-a425-7d65a6cb89c5" />
 
+
+## 음성 대화
+#### 화면공유에 대하여
+- ㄹㅇㄴㅁㄹㅇㄴㅁㄹㅇㄴㅁ
+- -ㄹ ㅇㄴㅁㄹㅇㄴㅁㄹㅇㄴㅁㄹㅇㄴㅁ
