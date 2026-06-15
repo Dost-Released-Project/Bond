@@ -35,7 +35,7 @@ namespace Bond.Expedition
         
         public IReadOnlyList<BaseCharacter> Party => GetCurrentParty();
         public ExpeditionInventory Supplies { get; private set; } =
-            new ExpeditionInventory(ExpeditionInventory.PeekInventoryCapacity("exp_inv", 2));
+            new ExpeditionInventory();
         public ExpeditionRegion Region { get; private set; }
 
         // LeeJuno 맵 시스템 호환용 passthrough — 선택된 지역의 DungeonType 을 그대로 노출
@@ -50,7 +50,9 @@ namespace Bond.Expedition
         public int AccumulatedWood { get; private set; } = 0;
         public int AccumulatedOre { get; private set; } = 0;
 
-        public void AddReward(int frontier, int wood, int ore)
+        // 개척 데이터만 지급되는 상황이 있을 수 있음으로 목재와 광석에 디폴트 추가.
+        // 개척 데이터와 목재 및 광석의 비율은 되도록 1/10으로 권장.
+        public void AddReward(int frontier, int wood = 0, int ore = 0)
         {
             AccumulatedFrontier += frontier;
             AccumulatedWood += wood;

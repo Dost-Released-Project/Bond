@@ -155,7 +155,7 @@ public class MonsterFactory
         stat.def = controller.ApplyModifiers(StatType.Def, stat.def*100) * 0.01f;
         stat.speed = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Speed, stat.speed));
         stat.crt = controller.ApplyModifiers(StatType.Cri, stat.crt*100) * 0.01f;
-        stat.acc = (controller.ApplyModifiers(StatType.Acc, stat.acc*100) * 0.01f) + 0.5f;
+        stat.acc = (controller.ApplyModifiers(StatType.Acc, stat.acc*100) * 0.01f) + 0.7f;
         stat.eva = controller.ApplyModifiers(StatType.Eva, stat.eva*100) * 0.01f;
         stat.Sp_Atk = Mathf.FloorToInt(controller.ApplyModifiers(StatType.SpAtk, stat.Sp_Atk));
     }

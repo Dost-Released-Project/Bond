@@ -63,7 +63,7 @@
 
                 <!-- 탐사 보급품 (우) -->
                 <ui:VisualElement class="embark__inventory-panel">
-                    <ui:Label class="embark__inventory-panel__title" text="탐사 보급품" />
+                    <ui:Label class="embark__inventory-panel__title" text="탐사 보급품" name="embark__exp-name" />
                     <ui:ScrollView class="embark__inventory-scroll">
                         <ui:VisualElement name="embark__raid-supplies__list" class="embark__inventory-list" />
                     </ui:ScrollView>

@@ -5,20 +5,22 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Bond.Expedition;
 using Bond.Persistence;
 using UnityEngine.AddressableAssets;
 using VContainer;
 
 public class InventoryView : MonoBehaviour
 {
-    private VisualElement _root, _totalGrid, _expeditionGrid, _dragGhost;
-    private List<VisualElement> _totalSlotElements = new(), _expeditionSlotElements = new();
+    private VisualElement _root, _totalGrid, _expeditionGrid;
+    private List<VisualElement> _totalSlotElements = new();
     private TextField _searchField;
     private ScrollView _totalScroll;
 
     private ITotalInventory _totalInventory;
     private InventoryTransferService _transferService;
     private ExpeditionResultService _expeditionResultService;
+    [Inject] private ExpeditionPayload _payload;
     
     private string _currentSearch = "";
     private ItemCategory? _currentFilter = null;
@@ -59,6 +61,8 @@ public class InventoryView : MonoBehaviour
         {
             Debug.Log("TotalInventory: 기존 세이브 데이터가 존재하므로 초기 아이템 지급을 스킵합니다.");
         }
+        
+        _payload.Supplies.InitAndLoad();
     
         // 3. 탐사 후 타운으로 넘어올 때, 탐사 인벤토리 아이템 모두 토탈 인벤토리로 이동. 파일 로드 이후 적용해야지 적용됨
         _expeditionResultService.ProcessExpeditionReturn();
@@ -129,7 +133,6 @@ public class InventoryView : MonoBehaviour
 
         // 1. 툴팁 & 드래그 고스트 초기화
         _tooltip = CreateOverlayElement("inventory-tooltip");
-        _dragGhost = CreateOverlayElement(null, 60);
 
         // 2. 버튼 및 검색 필드 (기존 로직 유지)
         _searchField = _root.Q<TextField>("inventory-search");

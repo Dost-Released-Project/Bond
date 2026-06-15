@@ -134,7 +134,7 @@ namespace BattleStage
             // 승리 보상 가상 계좌(Payload) 적립
             if (isPlayerWin && !isRetreat && _payload != null)
             {
-                _payload.AddReward(200, 200, 200);
+                _payload.AddReward(200, 20, 20);
             }
 
             // 1. 진행 중인 턴 루프 및 전투 로직 중지 신호 발송 (토글 오프)

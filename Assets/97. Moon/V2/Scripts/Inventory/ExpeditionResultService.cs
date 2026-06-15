@@ -34,9 +34,9 @@ public class ExpeditionResultService
         // =========================================================================
         if (_payload.Supplies is ExpeditionInventory expInv)
         {
-            int fAmt = expInv.AccumulatedFrontier;
-            int wAmt = expInv.AccumulatedWood;
-            int oAmt = expInv.AccumulatedOre;
+            int fAmt = _payload.AccumulatedFrontier;
+            int wAmt = _payload.AccumulatedWood;
+            int oAmt = _payload.AccumulatedOre;
 
             if (fAmt > 0) _resourceManager.AddResource(ResourceType.Frontier, fAmt);
             if (wAmt > 0) _resourceManager.AddResource(ResourceType.Wood, wAmt);
@@ -45,7 +45,7 @@ public class ExpeditionResultService
             Debug.Log($"<color=orange>[원정 정산]</color> 탐사 자원 회수 완료 (개척: +{fAmt} / 목재: +{wAmt} / 광석: +{oAmt})");
 
             // 정산이 완전히 끝났으므로 가방의 임시 누적값들을 전부 0으로 마감 처리
-            expInv.ClearAccumulatedResources();
+            _payload.ClearAccumulatedResources();
         }
 
         if (_payload.Supplies == null) return;
