@@ -77,7 +77,7 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
                 if (data != null)
                 {
                     LoadBuilding(b.slotIndex, data, b.level);
-                    ApplyBuildingEffect(data, b.level);
+                    if((data.buildingType != BuildingType.Carriage) && (data.buildingType != BuildingType.Storage)) ApplyBuildingEffect(data, b.level);
                 }
             }
             Debug.Log($"<color=lime>[SettlementManager]</color> 세이브 파일로부터 {settSave.buildings.Count}개의 건물을 복원했습니다.");

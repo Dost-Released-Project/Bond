@@ -28,6 +28,7 @@ namespace Bond.UI.Town
         private readonly Label _step2Hint;
         private readonly string _defaultStep2Hint;
         private readonly Dictionary<string, VisualElement> _regionCards = new();
+        private readonly Label _expInvenNameLabel;
 
         private readonly List<BaseCharacter> _partySnapshot = new(4);
 
@@ -45,13 +46,14 @@ namespace Bond.UI.Town
             _footer1 = _overlay.Q("embark__footer--step1");
             _footer2 = _overlay.Q("embark__footer--step2");
             _partyCountLabel = _overlay.Q<Label>("embark__party-count");
+            _expInvenNameLabel = _overlay.Q<Label>("embark__exp-name");
 
             _destNameLabel = _overlay.Q<Label>("dest-info__name");
             _destMetaLabel = _overlay.Q<Label>("dest-info__meta");
 
             for (int i = 0; i < 4; i++)
             {
-                _partySlots[i] = _overlay.Q($"embark__party-slot-{i}");
+                _partySlots[i] = _overlay.Q($"embark__party-slot-{3-i}");
                 int slotIdx = i;
                 _partySlots[i].RegisterCallback<ClickEvent>(_ => OnPartySlotClicked(slotIdx));
             }
@@ -181,6 +183,8 @@ namespace Bond.UI.Town
                 if (raidSlots[i].IsEmpty) continue;
                 _raidSuppliesList.Add(BuildInventoryRow(i, raidSlots[i], isTown: false));
             }
+            
+            _expInvenNameLabel.text = $"탐사 물품 준비. 최대 {raidSlots.Count}칸 적재 가능";
         }
 
         public void SetDestinationInfo(string name, string meta)

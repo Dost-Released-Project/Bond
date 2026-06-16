@@ -27,15 +27,6 @@ public class ExpeditionInventoryView : MonoBehaviour
         _root = GetComponent<UIDocument>().rootVisualElement;
         _slotContainer = _root.Q<VisualElement>("expedition-container");
         
-        SaveExpeditionInventory();
-        
-        // 1. 탐사 중에도 아이템 정보를 알아야 하므로 DB 로드 필요
-        var conDB = DBSORegistry.GetDb<ConsumableDataBaseSO>();
-        var accDB = DBSORegistry.GetDb<AccessoryDataBaseSO>();
-        
-        // 2. "exp_inv" 파일만 로드
-        LoadExpeditionInventory(conDB, accDB);
-
         // [개선] 마우스 커서가 하얀 영역(_slotContainer)을 완전히 벗어났을 때만 버리기 판정
         _root.RegisterCallback<PointerUpEvent>(evt => {
             if (_transferService.IsDragging) 
@@ -91,7 +82,7 @@ public class ExpeditionInventoryView : MonoBehaviour
     {
         if (Keyboard.current.eKey.wasPressedThisFrame)
         {
-            _payload.Supplies.AddAccumulatedResource(100,10,10);
+            _payload.AddReward(100,10,10);
         }
     }
 
@@ -111,8 +102,6 @@ public class ExpeditionInventoryView : MonoBehaviour
                 _slots[i].Add(icon);
             }
         }
-
-        SaveExpeditionInventory();
     }
 
     private void SyncSlots()
@@ -199,21 +188,5 @@ public class ExpeditionInventoryView : MonoBehaviour
         {
             Debug.Log("ExpeditionInventory: 기존 세이브 없음. 기본값으로 시작.");
         }
-    }
-    
-    private void SaveExpeditionInventory()
-    {
-        // 저장할 데이터 객체 생성 (파일명: exp_inv)
-        var save = new InventorySaveData("exp_inv");
-
-        save.capacity = _payload.Supplies.Capacity; // 현재 용량 저장
-        foreach (var slot in _payload.Supplies.GetAll())
-        {
-            if (!slot.IsEmpty)
-                save.slots.Add(new InventorySaveData.SlotData { id = slot.item.id, count = slot.quantity });
-        }
-
-        // 세이브 시스템 실행
-        SaveLoadSystem.Save(save);
     }
 }
