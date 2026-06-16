@@ -85,6 +85,22 @@ public partial class BaseCharacter
     public bool IsTraitReaction(Reaction reaction)
         => reaction != null && TraitReactions != null && System.Array.IndexOf(TraitReactions, reaction) >= 0;
 
+    /// <summary>해당 리액션이 캐릭터의 긍정(Positive) 성향으로부터 유래했는지 여부.</summary>
+    public bool IsPositiveReaction(Reaction reaction)
+    {
+        if (reaction == null || TraitReactions == null) return false;
+        for (int i = 0; i < TraitReactions.Length; i++)
+        {
+            if (TraitReactions[i] == reaction)
+            {
+                var traitSO = GetTrait(i);
+                if (traitSO != null && traitSO.Type == E_TraitType.Positive)
+                    return true;
+            }
+        }
+        return false;
+    }
+
     // ── 최근 돌발 플래그 (아군 돌발 관찰용) ──────────────────────────
     // 돌발 발동 시 set, 자기 턴 시작에 clear → "마지막 자기 턴 이후 돌발했는지"를 나타낸다.
     private bool _hasRecentAnomaly;

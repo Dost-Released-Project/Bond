@@ -307,6 +307,18 @@ namespace BattleSystem
         private void HandleCharacterDeath(BaseCharacter deadCharacter)
         {
             Debug.Log($"<color=grey>[BattleManager] {deadCharacter.Name} 사망 처리: 진영에서 제거 및 타겟팅 제외</color>");
+
+            // [신규] 아군 사망 시 생존 아군 전체 스트레스(Insanity) +20
+            if (deadCharacter.CurrentSlot != null)
+            {
+                var allies = deadCharacter.GetSameSideAllies(false); // 사망한 자신 제외 생존자
+                foreach (var ally in allies)
+                {
+                    ally.ReduceInsanity(20);
+                    Debug.Log($"[Stress] 아군 {deadCharacter.Name}의 사망으로 {ally.Name} 스트레스 +20 누적");
+                }
+            }
+
             m_formationManager.ClearCharacter(deadCharacter);
         }
         #endregion

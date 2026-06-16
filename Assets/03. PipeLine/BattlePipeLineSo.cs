@@ -161,6 +161,10 @@ namespace PipeLine
             if (context.isEvaded)
             {
                 Debug.Log($"<color=white><b>[회피]</b></color> {context.target.Name}이(가) {context.caster.Name}의 공격을 피했습니다! (명중률: {hitRate:P0})");
+                
+                // [신규] 공격 회피당함 시 시전자 스트레스 +5
+                context.caster.ReduceInsanity(5);
+                Debug.Log($"[Stress] {context.caster.Name} 공격 회피당하여 스트레스 +5 누적");
             }
             else
             {
@@ -186,6 +190,10 @@ namespace PipeLine
                 float bonus = context.value * criticalBonus;
                 context.value += bonus;
                 Debug.Log($"<color=yellow><b>[치명타]</b></color> 크리티컬 발생! 보너스: {bonus}, 타겟: {context.target.Name}");
+                
+                // [신규] 치명타 공격 성공 시 시전자 스트레스 -5 (경감)
+                context.caster.RecoverInsanity(5);
+                Debug.Log($"[Stress] {context.caster.Name} 치명타 공격 성공으로 스트레스 -5 경감");
             }
             return UniTask.FromResult(context);
         }
@@ -266,6 +274,16 @@ namespace PipeLine
                     execution.Agent.IncrementReactionCount(); // '연속' 리액션 카운트 증가 (자기 턴에 리셋)
                     if (execution.Result == ReactionResult.Anomaly)
                         execution.Agent.MarkAnomaly(); // 아군 돌발 관찰용 플래그
+
+                    // [신규] 긍정적 리액션 발동 시 아군 전체 스트레스 -5 (경감)
+                    if (execution.Reaction != null && execution.Agent.IsPositiveReaction(execution.Reaction))
+                    {
+                        foreach (var ally in execution.Agent.GetSameSideAllies(true))
+                        {
+                            ally.RecoverInsanity(5);
+                            Debug.Log($"[Stress] 긍정 리액션 발동으로 {ally.Name} 스트레스 -5 경감");
+                        }
+                    }
                 }
             }
             return context;
@@ -287,6 +305,22 @@ namespace PipeLine
 
             // 다형성을 이용한 스킬 실행 위임
             context.runtimeSkill.UseSkill(context);
+
+            // [신규] 피격자의 스트레스(Insanity) 누적
+            var skillType = context.runtimeSkill.Data.Type;
+            if (skillType == SkillType.OFFENSIVE || skillType == SkillType.SPELL)
+            {
+                if (context.isCritical)
+                {
+                    context.target.ReduceInsanity(10); // 치명타 피격
+                    Debug.Log($"[Stress] {context.target.Name} 치명타 피격으로 스트레스 +10 누적");
+                }
+                else
+                {
+                    context.target.ReduceInsanity(3); // 일반 피격
+                    Debug.Log($"[Stress] {context.target.Name} 일반 피격으로 스트레스 +3 누적");
+                }
+            }
 
             // [V] 연출 로직 (Rule 2 준수)
             // 연출(Visual)은 여기서 직접 호출하지 않으며,
