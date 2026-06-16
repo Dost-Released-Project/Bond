@@ -66,7 +66,7 @@ public class EffectSpritePlayer : MonoBehaviour
 
             if (_loop == false)
             {
-                gameObject.SetActive(false);
+                this.enabled = false;
                 return;
             }
         }

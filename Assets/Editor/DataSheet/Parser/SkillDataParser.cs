@@ -51,6 +51,7 @@ public class SkillDataParser : TSVParserBase<SkillDTO, SkillData>
             Description = dto.Description,
             Type = dto.Type,
             Target = dto.Target,
+            TargetingType = dto.TargetingType,
             SkillEffectTypes = dto.SkillEffectTypes,
             Value = dto.Value,
             CoolTime = dto.CoolTime,
@@ -114,7 +115,7 @@ public sealed class SkillDataMap : ClassMap<SkillDTO>
         Map(m => m.Description).Name("Description").Optional();
         Map(m => m.Type).Name("Type").Default(SkillType.OFFENSIVE);
         Map(m => m.Target).Name("Target").Default(SkillTarget.Enemy);
-        Map(m => m.TargetingType).Name("TargetingType").Default(TargetingType.Single);
+        Map(m => m.TargetingType).Name("TargetingType").Default(TargetingType.Single).TypeConverter<TargetingTypeConverter>().Optional();
         
         // Effects 컬럼이 없으면 빈 리스트로 처리하도록 대응 (콤마 구분자 처리)
         Map(m => m.SkillEffectTypes).Name("Effects", "Effect").Optional().TypeConverter<SkillEffectTypeListConverter>();
@@ -213,6 +214,24 @@ public sealed class SkillDataMap : ClassMap<SkillDTO>
             
             if (int.TryParse(cleaned, out int result)) return result;
             return 0;
+        }
+    }
+
+    /// <summary>
+    /// TSV의 "SINGLE" / "AOE" 대소문자 혼용 문자열을 TargetingType Enum으로 변환하는 컨버터
+    /// </summary>
+    private class TargetingTypeConverter : CsvHelper.TypeConversion.DefaultTypeConverter
+    {
+        public override object ConvertFromString(string text, CsvHelper.IReaderRow row, MemberMapData memberMapData)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return TargetingType.Single;
+            
+            string cleaned = text.Trim().Replace("\r", "").Replace("\n", "");
+            if (System.Enum.TryParse<TargetingType>(cleaned, true, out var result))
+            {
+                return result;
+            }
+            return TargetingType.Single;
         }
     }
 }
