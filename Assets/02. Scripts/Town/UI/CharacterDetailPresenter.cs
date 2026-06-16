@@ -16,6 +16,7 @@ namespace Bond.UI
         private CharacterDetailController _controller;
         private EquipSlotsPresenter _equipSlots;
         private ICharacterSelector _selector;
+        private InventoryTransferService _transferService;
 
         // 씬별 연결 이벤트 — 구독 여부는 각 씬 코디네이터가 결정
         public event Action OnCloseRequested;
@@ -67,12 +68,13 @@ namespace Bond.UI
         private BaseCharacter _character;
         private CharacterDetailEditMode _editMode;
         private IInventory _currentInventory;
-
+    
         [Inject]
-        public void Construct(CharacterDetailController controller, ICharacterSelector selector)
+        public void Construct(CharacterDetailController controller, ICharacterSelector selector, InventoryTransferService transfer)
         {
             _controller      = controller;
             _selector        = selector;
+            _transferService = transfer;
 
             _controller.OnCharacterSet += RefreshCharacter;
             _selector.OnSelectionChanged += _controller.SetCharacter;
@@ -183,6 +185,13 @@ namespace Bond.UI
             _equipSlots = new EquipSlotsPresenter(equipRoot, _panel);
             _equipSlots.OnInventoryOpenRequested += () => OnInventoryOpenRequested?.Invoke();
             _equipSlots.OnUnequipRequested       += OnUnequipRequested;
+            
+            // 중복 등록 방지를 위해 배선 연결 전 안전하게 한 번 빼준 뒤 이벤트를 연결합니다. (드래그용 이벤트)
+            _equipSlots.OnDragStartRequested -= HandleEquipSlotDragStart;
+            _equipSlots.OnDragStartRequested += HandleEquipSlotDragStart;
+            
+            _equipSlots.OnDragDropRequested -= HandleEquipSlotDragDrop;
+            _equipSlots.OnDragDropRequested += HandleEquipSlotDragDrop;
 
             _controller.OnRoleChanged      += _ => RefreshIdentity();
             _controller.OnReactionChanged  += idx => { if (idx < 2) RefreshRoleSlot(idx); else RefreshTraitSlot(idx); };
@@ -846,6 +855,38 @@ namespace Bond.UI
         {
             if (_currentInventory == null) return;
             _controller.UnequipAccessory(accIndex, _currentInventory);
+        }
+        
+        // ── 클래스 최하단에 헬퍼 콜백으로 추가 ──
+
+        // [해제 시작] 장신구 슬롯에서 드래그를 시작할 때 전역 트레커 플래그를 흔들어 깨웁니다.
+        private void HandleEquipSlotDragStart(int accSlotIndex)
+        {
+            if (_transferService != null)
+            {
+                // 전역 트레커에 출처 인벤토리(현재 장신구 창이 띄워놓은 가방)와 장착 슬롯 번호를 등록합니다.
+                _transferService.StartEquipmentDrag(accSlotIndex);
+            }
+        }
+
+        // [장착 완료] 가방에서 장신구 슬롯 위로 아이템 드롭 정산이 요청되었을 때
+        private void HandleEquipSlotDragDrop(int accSlotIndex)
+        {
+            // 현재 마우스로 무언가 드래그 중인 상태가 맞는지 검증
+            if (_transferService != null && _transferService.IsDragging)
+            {
+                IInventory sourceInv = _transferService.CurrentSourceInventory;
+                int sourceIdx = _transferService.CurrentDraggingIndex;
+
+                if (sourceInv != null && sourceIdx != -1)
+                {
+                    // 우회 규칙에 따라 주입을 피하고 컨트롤러에게 다이렉트 장착/스왑 처리 명령 하달
+                    _controller.EquipAccessoryFromDrag(sourceInv, sourceIdx, accSlotIndex);
+            
+                    // 정산이 완료되었으므로 트레커 초기화
+                    _transferService.ResetDrag();
+                }
+            }
         }
     }
 }
