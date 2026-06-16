@@ -10,7 +10,6 @@ namespace BattleSystem
 {
     public class BattlePresentationManager
     {
-        private DimPanelVisualizer m_dimVisualizer;
         private ImmediateModeCanvas m_shapesCanvas;
 
         private class SlotRestoreData
@@ -22,11 +21,17 @@ namespace BattleSystem
             public Vector3 localScale;
         }
 
-        private Dictionary<CharacterSlot, SlotRestoreData> m_originalSlotData = new Dictionary<CharacterSlot, SlotRestoreData>();
+        private class FocusLevel
+        {
+            public DimPanelVisualizer dimVisualizer;
+            public Dictionary<CharacterSlot, SlotRestoreData> restoreData = new Dictionary<CharacterSlot, SlotRestoreData>();
+        }
+
+        private Stack<FocusLevel> m_focusStack = new Stack<FocusLevel>();
 
         public void Initialize(CharacterSlot slot)
         {
-            if (m_dimVisualizer != null) return;
+            if (m_shapesCanvas != null) return;
             if (slot == null) return;
 
             // FindObjectOfType 대신 연출을 실행하는 슬롯의 부모 캔버스를 직접 찾음
@@ -36,8 +41,17 @@ namespace BattleSystem
                 Debug.LogError("[BattlePresentationManager] ImmediateModeCanvas not found in parents of CharacterSlot!");
                 return;
             }
+        }
 
-            var dimGo = new GameObject("DimPanelVisualizer");
+        public async UniTask StartFocusEffect(CharacterSlot caster, List<CharacterSlot> targets)
+        {
+            if (m_shapesCanvas == null) Initialize(caster);
+            if (m_shapesCanvas == null) return;
+
+            var focusLevel = new FocusLevel();
+
+            // 1. 개별 Dim 켜기 (현재 레벨용)
+            var dimGo = new GameObject($"DimPanelVisualizer_Level_{m_focusStack.Count}");
             var rect = dimGo.AddComponent<RectTransform>();
             dimGo.transform.SetParent(m_shapesCanvas.transform, false);
             
@@ -46,23 +60,23 @@ namespace BattleSystem
             rect.offsetMin = Vector2.zero;
             rect.offsetMax = Vector2.zero;
 
-            m_dimVisualizer = dimGo.AddComponent<DimPanelVisualizer>();
-            m_dimVisualizer.alpha = 0f;
-            dimGo.SetActive(false); // Initially off
-        }
-
-        public async UniTask StartFocusEffect(CharacterSlot caster, List<CharacterSlot> targets)
-        {
-            if (m_dimVisualizer == null) Initialize(caster);
-            if (m_dimVisualizer == null) return;
-
-            // 1. Dim 켜기 (리스트의 마지막으로 들어감)
-            m_dimVisualizer.gameObject.SetActive(true);
+            focusLevel.dimVisualizer = dimGo.AddComponent<DimPanelVisualizer>();
+            focusLevel.dimVisualizer.alpha = 0f;
             
             // DOTween으로 alpha 트위닝
-            DOTween.To(() => m_dimVisualizer.alpha, x => m_dimVisualizer.alpha = x, 0.7f, 0.3f);
+            DOTween.To(() => focusLevel.dimVisualizer.alpha, x => focusLevel.dimVisualizer.alpha = x, 0.7f, 0.3f);
 
-            m_originalSlotData.Clear();
+            // 레이아웃 이동 전에 모든 타겟의 원본 데이터를 먼저 캐싱 (siblingIndex 꼬임 방지)
+            if (caster != null) CacheSlotData(caster, focusLevel);
+            if (targets != null && targets.Count > 0)
+            {
+                foreach (var t in targets)
+                {
+                    if (t != null && !focusLevel.restoreData.ContainsKey(t)) 
+                        CacheSlotData(t, focusLevel);
+                }
+            }
+
             var seq = DOTween.Sequence();
 
             // 2. Caster 처리 (껐다 켜서 Dim보다 뒤의 순서로, 즉 최상단에 렌더링되게 만듦)
@@ -70,7 +84,7 @@ namespace BattleSystem
             {
                 BringToFront(caster);
                 float casterX = (caster.side == E_BattleSide.Player) ? -250f : 250f;
-                MoveSlotToCenter(caster, new Vector3(casterX, 0, 0), seq);
+                MoveSlotToCenter(caster, new Vector3(casterX, 0, 0), seq, focusLevel);
             }
             
             // 3. Targets 처리
@@ -90,10 +104,12 @@ namespace BattleSystem
                             targetX = (targets[i].side == E_BattleSide.Player) ? -100f : 100f;
                         }
 
-                        MoveSlotToCenter(targets[i], new Vector3(targetX, targetOffsetY + (i * 150f), 0), seq);
+                        MoveSlotToCenter(targets[i], new Vector3(targetX, targetOffsetY + (i * 150f), 0), seq, focusLevel);
                     }
                 }
             }
+
+            m_focusStack.Push(focusLevel);
 
             var tcs = new UniTaskCompletionSource();
             seq.OnComplete(() => tcs.TrySetResult());
@@ -111,13 +127,12 @@ namespace BattleSystem
             }
         }
 
-        private void MoveSlotToCenter(CharacterSlot slot, Vector3 targetLocalPos, Sequence seq)
+        private void CacheSlotData(CharacterSlot slot, FocusLevel level)
         {
             var rectTransform = slot.GetComponent<RectTransform>();
             if (rectTransform == null) return;
 
-            // 원본 데이터 캐싱
-            m_originalSlotData[slot] = new SlotRestoreData
+            level.restoreData[slot] = new SlotRestoreData
             {
                 parent = rectTransform.parent,
                 siblingIndex = rectTransform.GetSiblingIndex(),
@@ -125,6 +140,12 @@ namespace BattleSystem
                 localPosition = rectTransform.localPosition,
                 localScale = rectTransform.localScale
             };
+        }
+
+        private void MoveSlotToCenter(CharacterSlot slot, Vector3 targetLocalPos, Sequence seq, FocusLevel level)
+        {
+            var rectTransform = slot.GetComponent<RectTransform>();
+            if (rectTransform == null) return;
 
             // 레이아웃 그룹에서 분리하기 위해 캔버스 최상단으로 이동 (화면 위치 유지)
             rectTransform.SetParent(m_shapesCanvas.transform, true);
@@ -136,19 +157,24 @@ namespace BattleSystem
 
         public async UniTask EndFocusEffect(CharacterSlot caster, List<CharacterSlot> targets)
         {
-            if (m_dimVisualizer == null) return;
+            if (m_focusStack.Count == 0) return;
+            
+            var currentLevel = m_focusStack.Pop();
 
-            DOTween.To(() => m_dimVisualizer.alpha, x => m_dimVisualizer.alpha = x, 0f, 0.3f);
+            if (currentLevel.dimVisualizer != null)
+            {
+                DOTween.To(() => currentLevel.dimVisualizer.alpha, x => currentLevel.dimVisualizer.alpha = x, 0f, 0.3f);
+            }
 
             var seq = DOTween.Sequence();
 
-            if (caster != null) RestoreSlotAnim(caster, seq);
+            if (caster != null) RestoreSlotAnim(caster, seq, currentLevel);
             
             if (targets != null)
             {
                 foreach (var target in targets)
                 {
-                    if (target != null) RestoreSlotAnim(target, seq);
+                    if (target != null) RestoreSlotAnim(target, seq, currentLevel);
                 }
             }
 
@@ -156,35 +182,46 @@ namespace BattleSystem
             seq.OnComplete(() => 
             {
                 // 애니메이션 종료 후 레이아웃 데이터 복원
-                if (caster != null) RestoreSlotLayout(caster);
+                if (caster != null) RestoreSlotLayout(caster, currentLevel);
                 if (targets != null)
                 {
                     foreach (var target in targets)
                     {
-                        if (target != null) RestoreSlotLayout(target);
+                        if (target != null) RestoreSlotLayout(target, currentLevel);
                     }
                 }
                 
-                m_dimVisualizer.gameObject.SetActive(false);
+                // 해당 레벨의 DimPanel 정리
+                if (currentLevel.dimVisualizer != null)
+                {
+                    Object.Destroy(currentLevel.dimVisualizer.gameObject);
+                }
+                
                 tcs.TrySetResult();
             });
 
             await tcs.Task;
         }
 
-        private void RestoreSlotAnim(CharacterSlot slot, Sequence seq)
+        private void RestoreSlotAnim(CharacterSlot slot, Sequence seq, FocusLevel level)
         {
-            if (!m_originalSlotData.TryGetValue(slot, out var data)) return;
+            if (!level.restoreData.TryGetValue(slot, out var data)) return;
             var rectTransform = slot.GetComponent<RectTransform>();
             if (rectTransform == null) return;
 
             seq.Join(rectTransform.DOScale(data.localScale, 0.3f).SetEase(Ease.OutQuad));
-            // Dim FadeOut과 함께 크기만 줄어들게 처리. 위치는 Layout 복원 시 즉시 돌아감.
+            
+            if (data.parent != null)
+            {
+                Vector3 targetWorldPos = data.parent.TransformPoint(data.localPosition);
+                Vector3 targetLocalPos = rectTransform.parent.InverseTransformPoint(targetWorldPos);
+                seq.Join(rectTransform.DOLocalMove(targetLocalPos, 0.3f).SetEase(Ease.OutQuad));
+            }
         }
 
-        private void RestoreSlotLayout(CharacterSlot slot)
+        private void RestoreSlotLayout(CharacterSlot slot, FocusLevel level)
         {
-            if (!m_originalSlotData.TryGetValue(slot, out var data)) return;
+            if (!level.restoreData.TryGetValue(slot, out var data)) return;
             var rectTransform = slot.GetComponent<RectTransform>();
             if (rectTransform == null) return;
 
@@ -196,6 +233,12 @@ namespace BattleSystem
             rectTransform.anchoredPosition = data.anchoredPosition;
             rectTransform.localPosition = data.localPosition;
             rectTransform.localScale = data.localScale;
+
+            // 리액션 등 연출 중첩 시 부모 복귀 후 LayoutGroup이 즉시 갱신되지 않아 빈칸이 생기는 현상 방지
+            if (data.parent != null)
+            {
+                UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(data.parent.GetComponent<RectTransform>());
+            }
         }
     }
 }

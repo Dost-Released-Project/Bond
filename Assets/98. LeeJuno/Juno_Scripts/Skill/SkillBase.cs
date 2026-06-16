@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 using PipeLine;
 using Skills;
 using UnityEngine;
@@ -12,7 +13,7 @@ public abstract class SkillBase
     [SerializeField] protected int currentLevel;
 
     // Init 이후 참조할 데이터
-    [SerializeField] protected SkillData _skillData;
+    [JsonProperty][SerializeField] protected SkillData _skillData;
     
     // 로직 그룹: 효과 관리자 (정적 인스턴스로 간단히 접근하거나 주입 가능)
     protected static readonly SkillEffectManager _effectManager = new SkillEffectManager();
@@ -29,7 +30,7 @@ public abstract class SkillBase
             SkillCooldown = _skillData.CoolTime;
     }
 
-    public SkillData Data => _skillData;
+    [JsonIgnore] public SkillData Data => _skillData;
 
     public virtual void UseSkill(BattleContext context)
     {

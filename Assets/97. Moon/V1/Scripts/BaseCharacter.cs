@@ -52,6 +52,27 @@ public partial class BaseCharacter : ITurnUseUnit
     public Reaction[] TraitReactions = new Reaction[4];
     [JsonIgnore] public Reaction[] Reactions => RoleReactions.Concat(TraitReactions).ToArray();
 
+    public void Init()
+    {
+        // 로드 시엔 OnEquip 이 호출되지 않으므로, 장착 중인 장신구 모디파이어를 CalcStat 전에 재적용한다.
+        ReapplyAccessoryModifiers();
+
+        CalcStat();
+        // 저장된 HP 가 있으면 복원(max 로 클램프), 없으면(신규 캐릭터) 풀피.
+        if (_loadedHp.HasValue)
+            Stat.current_Hp = Mathf.Clamp(_loadedHp.Value, 0, Stat.max_Hp);
+        else
+            SetHpFull();
+        SyncTraitReactions();
+        Dict[Id] = this;
+        void ReapplyAccessoryModifiers()
+        {
+            if (Accessories == null) return;
+            foreach (var acc in Accessories)
+                acc?.OnEquip(this);
+        }
+    }
+    
     /// <summary>TraitIds[i] 를 카탈로그에서 해석한 TraitSO. 미설정/미로드면 null.</summary>
     public TraitSO GetTrait(int index)
     {
@@ -92,8 +113,19 @@ public partial class BaseCharacter : ITurnUseUnit
     
     [JsonIgnore] public Stat Stat { get; } = new Stat();
     [JsonIgnore] public StatController StatController { get; } = new StatController();
+
+    // current_Hp 직렬화 미러. Stat 은 [JsonIgnore] 라 HP 가 안 실리므로,
+    // 저장 시엔 런타임 실제값을 굽고(get), 로드 시엔 값을 보관(set)했다가 Init 에서 복원한다.
+    // max_Hp 는 CalcStat 으로 재계산되므로 저장하지 않는다. 신규 캐릭터(미저장)는 _loadedHp 가 null.
+    [JsonProperty("CurrentHp")]
+    private int CurrentHpSerialized
+    {
+        get => Stat.current_Hp;
+        set => _loadedHp = value;
+    }
+    [JsonIgnore] private int? _loadedHp;
     
-    [JsonIgnore] public bool isPlayable { get; set; }
+    public bool isPlayable { get; set; }
 
     public BaseCharacter sup_Character { get; set; } // 지원 선택 대상. 대상이 행동할 때 역할군에 따른 지원. 탱커: 피격 시 엄호, 서포터: 피격 후 치유, 딜러: 공격 시 지원 공격.\
     
@@ -107,6 +139,9 @@ public partial class BaseCharacter : ITurnUseUnit
     public event Action<BaseCharacter> OnStatRecalculated;
     public event Action<BaseCharacter> OnRoleChanged;
     public event Action<BaseCharacter> OnAccessoriesChanged;
+    public event Action<BaseCharacter> OnEquipmentChanged;   // 무기/방어구 변경 (영속 트리거)
+    public event Action<BaseCharacter> OnReactionsChanged;    // 역할/성향 리액션 편집 (영속 트리거)
+    public event Action<BaseCharacter> OnPlayableChanged;     // 자동/수동 전투 전환 (영속 트리거)
 
     public void SetAccessory(int index, AccessoryItem item)
     {
@@ -114,8 +149,69 @@ public partial class BaseCharacter : ITurnUseUnit
         Accessories[index]?.OnUnequip(this);
         Accessories[index] = item;
         Accessories[index]?.OnEquip(this);
-        CalcStat();
+        CalcStat();                          // max 변경 시 비율 보존 + OnHpChanged 까지 내부 처리
         OnAccessoriesChanged?.Invoke(this);
+    }
+
+    public void SetWeapon(Equipment weapon)
+    {
+        Weapon = weapon;
+        CalcStat();
+        OnEquipmentChanged?.Invoke(this);
+    }
+
+    public void SetArmor(Equipment armor)
+    {
+        Armor = armor;
+        CalcStat();
+        OnEquipmentChanged?.Invoke(this);
+    }
+
+    /// <summary>
+    /// max_Hp 가 바뀌었을 때 현재 체력 "비율"을 보존하도록 current_Hp 를 재계산한다(+오버플로 클램프).
+    /// CalcStat 내부에서 호출되므로 max 를 바꾸는 모든 경로(장비·향후 레벨업/버프 등)가 자동 적용된다.
+    /// 로드(Init)는 fresh Stat(max=0)이라 여기선 0 으로 클램프될 뿐이고, 직후 저장된 절대 HP 로 덮어쓴다.
+    /// 반환: current_Hp 가 실제로 바뀌었으면 true (CalcStat 이 OnHpChanged 발화 여부 판단).
+    /// </summary>
+    private bool RescaleCurrentHp(int oldMax)
+    {
+        if (Stat.max_Hp == oldMax) return false;            // 변화 없음
+        int before = Stat.current_Hp;
+        if (oldMax <= 0)                                    // 비율 산정 불가 → 클램프만
+            Stat.current_Hp = Mathf.Min(Stat.current_Hp, Stat.max_Hp);
+        else
+        {
+            float ratio = (float)Stat.current_Hp / oldMax;
+            Stat.current_Hp = Mathf.Clamp(Mathf.RoundToInt(ratio * Stat.max_Hp), 0, Stat.max_Hp);
+        }
+        return Stat.current_Hp != before;
+    }
+
+    /// <summary>역할 슬롯(0~1)에 런타임 리액션 할당</summary>
+    public void SetRoleReaction(int index, Reaction reaction)
+    {
+        if (index < 0 || index >= RoleReactions.Length) return;
+        RoleReactions[index] = reaction;
+        OnReactionsChanged?.Invoke(this);
+    }
+
+    /// <summary>역할 슬롯 비우기</summary>
+    public void ClearRoleReaction(int index)
+    {
+        if (index < 0 || index >= RoleReactions.Length) return;
+        RoleReactions[index] = null;
+        OnReactionsChanged?.Invoke(this);
+    }
+
+    /// <summary>리액션 내부 편집슬롯(관찰대상/행동스킬)을 제자리 수정한 뒤 호출 — 영속 트리거.</summary>
+    public void RaiseReactionsChanged() => OnReactionsChanged?.Invoke(this);
+
+    /// <summary>자동(AI)/수동(플레이어) 전투 전환. 값이 실제로 바뀐 경우에만 영속 트리거를 발화한다.</summary>
+    public void SetPlayable(bool value)
+    {
+        if (isPlayable == value) return;
+        isPlayable = value;
+        OnPlayableChanged?.Invoke(this);
     }
 
     private IFormationManager m_formationManager;
@@ -142,12 +238,15 @@ public partial class BaseCharacter : ITurnUseUnit
 
     public void CalcStat()
     {
-        // Profession에게 "데이터와 모디파이어를 전달한 뒤 스탯 계산 요청
+        int oldMax = Stat.max_Hp;
+        // Profession에게 데이터와 모디파이어를 전달한 뒤 스탯 계산 요청
         Profession.CalculateStat(this, StatController);
+        bool hpChanged = RescaleCurrentHp(oldMax);   // max 가 바뀌면 현재 체력 비율 보존(+오버플로 클램프)
         OnStatRecalculated?.Invoke(this);
+        if (hpChanged) OnHpChanged?.Invoke(this);
     }
 
-    public float HpRatio => Stat.max_Hp <= 0 ? 0f : (float)Stat.current_Hp / Stat.max_Hp;
+    [JsonIgnore] public float HpRatio => Stat.max_Hp <= 0 ? 0f : (float)Stat.current_Hp / Stat.max_Hp;
 
     public void SetHpFull()
     {
@@ -393,15 +492,61 @@ public partial class BaseCharacter : ITurnUseUnit
         }
     }
     
-    public async UniTask ExecuteReaction(ReactionExecution execution, BattleContext context)
+    public async UniTask ExecuteReaction(ReactionExecution execution, BattleContext context, IBattleManager battleManager = null)
     {
         if (execution?.Reaction?.Effect == null) return;
 
         Debug.Log($"<color=lightblue>{Name} 리액션 시작!</color>");
+
+        List<CharacterSlot> targetSlots = new List<CharacterSlot>();
+        if (execution.MatchedSubjects != null)
+        {
+            foreach (var target in execution.MatchedSubjects)
+            {
+                if (target != null && target.CurrentSlot != null)
+                {
+                    targetSlots.Add(target.CurrentSlot);
+                    target.CurrentSlot.SetTargeted(true);
+                    target.CurrentSlot.SetImageType(SlotImageType.Attack);
+                }
+            }
+        }
+
+        if (CurrentSlot != null)
+        {
+            CurrentSlot.SetActing(true);
+            CurrentSlot.SetImageType(SlotImageType.Attack);
+        }
+
+        if (battleManager != null)
+        {
+            await battleManager.StartFocusEffect(CurrentSlot, targetSlots);
+            await UniTask.Delay(500); // 연출 감상 대기 (기존 공격 연출 딜레이와 동일하게)
+        }
+
         await execution.Reaction.Effect.Apply(this, execution, context);
+        
         Debug.Log($"<color=lightblue>{Name} 리액션 완료!</color>");
 
-        await UniTask.Delay(1000); // 연출 마무리 — 한 리액션 당 1회
+        if (CurrentSlot != null)
+        {
+            CurrentSlot.SetActing(false);
+            CurrentSlot.SetImageType(SlotImageType.Idle);
+        }
+
+        foreach (var slot in targetSlots)
+        {
+            if (slot != null)
+            {
+                slot.SetTargeted(false);
+                slot.SetImageType(SlotImageType.Idle);
+            }
+        }
+
+        if (battleManager != null)
+        {
+            await battleManager.EndFocusEffect(CurrentSlot, targetSlots);
+        }
     }
 
     private BattleContext CreateBattleContext(SkillBase skill)
@@ -409,7 +554,7 @@ public partial class BaseCharacter : ITurnUseUnit
         BattleContext battleContext = new BattleContext(
             this, 
             skill, 
-            true);
+            false);
         // 플레이어가 직접 선택한 타겟이 있다면 초기 설정 (없다면 AI용으로 BattleManager에서 처리)
         if (_selectedTarget != null)
         {

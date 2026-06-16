@@ -10,9 +10,14 @@ public class MonsterDTO
     public string Name         { get; set; }
     public RoleType RoleType   { get; set; }
     public int Level           { get; set; }
-    public int STR             { get; set; }
-    public int AGI             { get; set; }
-    public int INT             { get; set; }
+    public int MaxHp           { get; set; }
+    public int Atk             { get; set; }
+    public float Def           { get; set; }
+    public int Speed           { get; set; }
+    public float Cri           { get; set; }
+    public float Acc           { get; set; }
+    public float Eva           { get; set; }
+    public int SpAtk           { get; set; }
     public string ImageAddress { get; set; }
     public string IdleImageID  { get; set; }
     public string BattleImageID { get; set; }
@@ -44,17 +49,36 @@ public class MonsterParser : TSVParserBase<MonsterDTO, MonsterSO>
             }
         }
 
+        string finalIdleImageId = dto.IdleImageID;
+        if (string.IsNullOrWhiteSpace(finalIdleImageId))
+        {
+            finalIdleImageId = string.IsNullOrWhiteSpace(dto.ImageAddress) ? $"MN_{dto.Id}_Idle" : dto.ImageAddress;
+        }
+
+        string finalBattleImageId = dto.BattleImageID;
+        if (string.IsNullOrWhiteSpace(finalBattleImageId))
+        {
+            finalBattleImageId = string.IsNullOrWhiteSpace(dto.ImageAddress) ? $"MN_{dto.Id}_Atk" : dto.ImageAddress;
+        }
+
+        Debug.Log($"[MonsterParser] {dto.Name}({dto.Id}) 임포트 완료 - Idle: {finalIdleImageId}, Battle: {finalBattleImageId}");
+
         so.SetData(
             id:           dto.Id,
             displayName:  dto.Name,
             roleType:     dto.RoleType,
             level:        dto.Level,
-            str:          dto.STR,
-            agi:          dto.AGI,
-            intel:        dto.INT,
+            maxHP:        dto.MaxHp,
+            atk:          dto.Atk,
+            def:          dto.Def,
+            speed:        dto.Speed,
+            cri:          dto.Cri,
+            acc:          dto.Acc,
+            eva:          dto.Eva,
+            spAtk:        dto.SpAtk,
             imageAddress: dto.ImageAddress,
-            idleImageId:  dto.IdleImageID,
-            battleImageId: dto.BattleImageID,
+            idleImageId:  finalIdleImageId,
+            battleImageId: finalBattleImageId,
             skillIds:     skillIds
         );
     }
@@ -103,9 +127,14 @@ public class MonsterParser : TSVParserBase<MonsterDTO, MonsterSO>
             Map(m => m.Name).Name("Name");
             Map(m => m.RoleType).Name("RoleType").Default(RoleType.None);
             Map(m => m.Level).Name("Level").Default(0);
-            Map(m => m.STR).Name("STR").Default(0);
-            Map(m => m.AGI).Name("AGI").Default(0);
-            Map(m => m.INT).Name("INT").Default(0);
+            Map(m => m.MaxHp).Name("MaxHP").Default(0);
+            Map(m => m.Atk).Name("Atk").Default(0);
+            Map(m => m.Def).Name("Def").Default(0f);
+            Map(m => m.Speed).Name("Speed").Default(0);
+            Map(m => m.Cri).Name("Cri").Default(0f);
+            Map(m => m.Acc).Name("Acc").Default(0f);
+            Map(m => m.Eva).Name("Eva").Default(0f);
+            Map(m => m.SpAtk).Name("SpAtk").Default(0);
             Map(m => m.ImageAddress).Name("ImageAddress").Default("");
             Map(m => m.IdleImageID).Name("IdleImageID").Default("");
             Map(m => m.BattleImageID).Name("BattleImageID").Default("");

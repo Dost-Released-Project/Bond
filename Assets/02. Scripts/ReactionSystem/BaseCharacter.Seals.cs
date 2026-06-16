@@ -2,10 +2,8 @@ using System.Collections.Generic;
 using Reactions;
 using UnityEngine;
 
-/// <summary>
-/// BaseCharacter 의 리액션 봉인 파트. 버프와 동일하게 전투 런타임 한정 상태이며
-/// 만료 tick(TickSeals)도 자기 턴 시작에 버프와 같은 타이밍으로 돈다.
-/// </summary>
+// BaseCharacter 의 리액션 봉인 파트. 버프와 동일하게 전투 런타임 한정 상태이며
+// 만료 tick(TickSeals)도 자기 턴 시작에 버프와 같은 타이밍으로 돈다.
 public partial class BaseCharacter
 {
     private readonly List<ReactionSeal> _seals = new List<ReactionSeal>();

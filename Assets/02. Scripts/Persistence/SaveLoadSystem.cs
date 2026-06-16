@@ -46,11 +46,18 @@ namespace Bond.Persistence
         public static JsonSerializerSettings Settings = new JsonSerializerSettings()
         {
             TypeNameHandling = TypeNameHandling.Auto,
+            // BaseSO(카탈로그 SO)는 Id로만 직렬화 → 로드 시 DBSORegistry에서 재해석.
+            Converters = { new BaseSORefConverter() },
         };
 
         private static string GetPath(string saveKey)
         {
             return Path.Combine(SAVE_ROOT, $"{saveKey}.json");
+        }
+
+        public static bool HasSave(string key)
+        {
+            return File.Exists(GetPath(key));
         }
 
         public static void Save(ISaveable saveable)
@@ -60,6 +67,11 @@ namespace Bond.Persistence
 
         private static void Save(string key, object data)
         {
+            if (!Directory.Exists(SAVE_ROOT))
+            {
+                Directory.CreateDirectory(SAVE_ROOT);
+            }
+
             string json = JsonConvert.SerializeObject(data, Formatting.Indented, Settings);
             string path = GetPath(key);
             File.WriteAllText(path, json);
@@ -71,6 +83,11 @@ namespace Bond.Persistence
 
         public static IEnumerable<ISaveable> ReadAll()
         {
+            if (!Directory.Exists(SAVE_ROOT))
+            {
+                yield break;
+            }
+
             foreach (var filePath in Directory.EnumerateFiles(SAVE_ROOT, "*.json"))
             {
                 string json = File.ReadAllText(filePath);
@@ -82,17 +99,31 @@ namespace Bond.Persistence
 
         public static void Load(ISaveable saveable)
         {
-            string json = File.ReadAllText(GetPath(saveable.Key));
-            Type type = saveable.Data.GetType();
-            var obj = JsonConvert.DeserializeObject(json, type, Settings);
-            saveable.Restore(obj);
+            try
+            {
+                string json = File.ReadAllText(GetPath(saveable.Key));
+                Type type = saveable.Data.GetType();
+                var obj = JsonConvert.DeserializeObject(json, type, Settings);
+                saveable.Restore(obj);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning(e.Message);
+            }
         }
 
         public static void Load<T>(ISaveable<T> saveable)
         {
-            string json = File.ReadAllText(GetPath(saveable.Key));
-            var obj = JsonConvert.DeserializeObject<T>(json, Settings);
-            saveable.Restore(obj);
+            try
+            {
+                string json = File.ReadAllText(GetPath(saveable.Key));
+                var obj = JsonConvert.DeserializeObject<T>(json, Settings);
+                saveable.Restore(obj);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning(e.Message);
+            }
         }
     }
 }

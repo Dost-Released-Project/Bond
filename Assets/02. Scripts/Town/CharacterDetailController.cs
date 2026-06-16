@@ -47,12 +47,19 @@ namespace Bond.UI
                 var def = DBSORegistry.GetSO<ReactionDefinitionSO>(reaction.DefinitionId);
                 if (def != null && def.Role != role)
                 {
-                    _character.RoleReactions[i] = null;
+                    _character.ClearRoleReaction(i);
                     OnReactionChanged?.Invoke(i);
                 }
             }
 
             OnRoleChanged?.Invoke(role);
+        }
+
+        /// <summary>자동(AI)/수동(플레이어) 전투 전환. 영속 트리거는 BaseCharacter 내부에서 발화된다.</summary>
+        public void SetPlayable(bool playable)
+        {
+            if (_character == null) return;
+            _character.SetPlayable(playable);
         }
 
         // AccessoryItem은 인벤토리에서 관리되므로 목적지 IInventory를 Presenter에서 전달받는다
@@ -114,7 +121,7 @@ namespace Bond.UI
         {
             if (_character == null || definition == null) return;
             if (roleSlotIndex < 0 || roleSlotIndex >= _character.RoleReactions.Length) return;
-            _character.RoleReactions[roleSlotIndex] = definition.CreateRuntimeReaction();
+            _character.SetRoleReaction(roleSlotIndex, definition.CreateRuntimeReaction());
             OnReactionChanged?.Invoke(roleSlotIndex);
         }
 
@@ -123,7 +130,7 @@ namespace Bond.UI
         {
             if (_character == null) return;
             if (roleSlotIndex < 0 || roleSlotIndex >= _character.RoleReactions.Length) return;
-            _character.RoleReactions[roleSlotIndex] = null;
+            _character.ClearRoleReaction(roleSlotIndex);
             OnReactionChanged?.Invoke(roleSlotIndex);
         }
 
@@ -163,6 +170,7 @@ namespace Bond.UI
             var slot = GetObserveSlot(slotIndex);
             if (reaction == null || slot == null) return;
             slot.Apply(reaction, allyId);
+            _character.RaiseReactionsChanged();
             OnReactionChanged?.Invoke(slotIndex);
         }
 
@@ -181,6 +189,7 @@ namespace Bond.UI
             var slot = GetActionSkillSlot(slotIndex);
             if (reaction == null || slot == null) return;
             slot.Apply(reaction, skillIndex);
+            _character.RaiseReactionsChanged();
             OnReactionChanged?.Invoke(slotIndex);
         }
 

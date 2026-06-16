@@ -14,6 +14,7 @@
     --border-active:    #3a2e1e;
     --border-highlight: #5a4020;
     --border-danger:    #4a1a1a;
+    --border-accent:    #c9a060;
 
     /* Text */
     --text-primary:   #c9b99a;

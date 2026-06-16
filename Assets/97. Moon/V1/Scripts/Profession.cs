@@ -53,7 +53,7 @@ public class Profession
         // AGI 영향군
         stat.speed = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Speed, stat.AGI * _classData.Speed));
         stat.crt = controller.ApplyModifiers(StatType.Cri, stat.AGI * _classData.Cri) * 0.01f;
-        stat.acc = (controller.ApplyModifiers(StatType.Acc, stat.AGI * _classData.Acc) * 0.01f) + 0.5f;
+        stat.acc = (controller.ApplyModifiers(StatType.Acc, stat.AGI * _classData.Acc) * 0.01f) + 0.8f;
         stat.eva = controller.ApplyModifiers(StatType.Eva, stat.AGI * _classData.Eva) * 0.01f;
         
         // INT 영향군

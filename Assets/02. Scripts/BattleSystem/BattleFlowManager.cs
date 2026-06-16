@@ -5,6 +5,8 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+using VContainer;
+
 namespace BattleStage
 {
     public class BattleFlowManager : MonoBehaviour, IBattleFlowManager
@@ -12,6 +14,14 @@ namespace BattleStage
         public event Action<BaseCharacter[], BaseCharacter[]> OnBattle;
         public event Action<bool> OnBattleEnd;
         
+        private Bond.Expedition.ExpeditionPayload _payload;
+
+        [Inject]
+        public void Construct(Bond.Expedition.ExpeditionPayload payload)
+        {
+            _payload = payload;
+        }
+
         private BaseCharacter[] m_playerUnits;
         private BaseCharacter[] m_enemyUnits;
         
@@ -121,6 +131,12 @@ namespace BattleStage
         {
             Debug.Log($"<color=green>[BattleFlowManager] 전투 종료 처리 시작. (플레이어 승리: {isPlayerWin}, 퇴각 여부: {isRetreat})</color>");
             
+            // 승리 보상 가상 계좌(Payload) 적립
+            if (isPlayerWin && !isRetreat && _payload != null)
+            {
+                _payload.AddReward(200, 20, 20);
+            }
+
             // 1. 진행 중인 턴 루프 및 전투 로직 중지 신호 발송 (토글 오프)
             BattleSwitch();
 

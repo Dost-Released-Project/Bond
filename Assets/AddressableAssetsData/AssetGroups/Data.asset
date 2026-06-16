@@ -69,6 +69,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - DBSO
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5cb0cab78c9dd2458b277f1771d521a
+    m_Address: SupplyDataBase
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DBSO
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d278c20e489ff9f4599c6835ad9fcb44
     m_Address: EventDataBase
     m_ReadOnly: 0
@@ -96,4 +102,6 @@ MonoBehaviour:
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 2844d279e9fd27e4a9c0e38b898d6b70, type: 2}
   m_SchemaSet:
-    m_Schemas: []
+    m_Schemas:
+    - {fileID: 11400000, guid: 47111744f272d9649b2967a95012732d, type: 2}
+    - {fileID: 11400000, guid: dd0c03ec9b3fc8041b68a7f2a2c2d767, type: 2}

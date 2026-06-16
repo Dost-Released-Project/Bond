@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Bond.Embark;
+using Bond.Expedition;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -23,6 +24,11 @@ namespace Bond.UI.Town
         private readonly VisualElement _raidSuppliesList;
         private readonly Label _destNameLabel;
         private readonly Label _destMetaLabel;
+        private readonly VisualElement _regionList;
+        private readonly Label _step2Hint;
+        private readonly string _defaultStep2Hint;
+        private readonly Dictionary<string, VisualElement> _regionCards = new();
+        private readonly Label _expInvenNameLabel;
 
         private readonly List<BaseCharacter> _partySnapshot = new(4);
 
@@ -40,13 +46,14 @@ namespace Bond.UI.Town
             _footer1 = _overlay.Q("embark__footer--step1");
             _footer2 = _overlay.Q("embark__footer--step2");
             _partyCountLabel = _overlay.Q<Label>("embark__party-count");
+            _expInvenNameLabel = _overlay.Q<Label>("embark__exp-name");
 
             _destNameLabel = _overlay.Q<Label>("dest-info__name");
             _destMetaLabel = _overlay.Q<Label>("dest-info__meta");
 
             for (int i = 0; i < 4; i++)
             {
-                _partySlots[i] = _overlay.Q($"embark__party-slot-{i}");
+                _partySlots[i] = _overlay.Q($"embark__party-slot-{3-i}");
                 int slotIdx = i;
                 _partySlots[i].RegisterCallback<ClickEvent>(_ => OnPartySlotClicked(slotIdx));
             }
@@ -61,6 +68,11 @@ namespace Bond.UI.Town
             _overlay.Q<Button>("btn-prev").clicked += () => GoToStep(1);
             _overlay.Q<Button>("btn-depart").clicked += _controller.ConfirmEmbark;
 
+            _regionList = _overlay.Q("embark__region-list");
+            _step2Hint = _footer2.Q<Label>(className: "embark__footer-hint");
+            _defaultStep2Hint = _step2Hint != null ? _step2Hint.text : "";
+            BuildRegionList();
+
             _embarkRosterPresenter.OnCardClicked = character =>
             {
                 _controller.TogglePartyMember(character);
@@ -73,6 +85,8 @@ namespace Bond.UI.Town
             _controller.OnOverlayOpened += Show;
             _controller.OnOverlayClosed += Hide;
             _controller.OnDataChanged += OnDataChanged;
+            _controller.OnRegionChanged += RefreshSelectedRegion;
+            _controller.OnEmbarkBlocked += ShowEmbarkWarning;
         }
 
         public void Show()
@@ -81,6 +95,7 @@ namespace Bond.UI.Town
             _overlay.AddToClassList("embark-overlay--visible");
             _embarkRosterPresenter.Show();
             GoToStep(1);
+            RefreshSelectedRegion(_controller.SelectedRegion);
         }
 
         public void Hide()
@@ -168,6 +183,8 @@ namespace Bond.UI.Town
                 if (raidSlots[i].IsEmpty) continue;
                 _raidSuppliesList.Add(BuildInventoryRow(i, raidSlots[i], isTown: false));
             }
+            
+            _expInvenNameLabel.text = $"탐사 물품 준비. 최대 {raidSlots.Count}칸 적재 가능";
         }
 
         public void SetDestinationInfo(string name, string meta)
@@ -219,6 +236,57 @@ namespace Bond.UI.Town
             row.Add(nameLabel);
             row.Add(qtyLabel);
             return row;
+        }
+
+        private void BuildRegionList()
+        {
+            if (_regionList == null) return;
+            _regionList.Clear();
+            _regionCards.Clear();
+
+            foreach (var region in _controller.GetRegions())
+            {
+                var card = new Button(() => _controller.SelectRegion(region));
+                card.AddToClassList("embark__region-card");
+
+                var nameLabel = new Label(region.DisplayName);
+                nameLabel.AddToClassList("embark__region-card__name");
+
+                var metaLabel = new Label(region.Meta);
+                metaLabel.AddToClassList("embark__region-card__meta");
+
+                card.Add(nameLabel);
+                card.Add(metaLabel);
+                _regionList.Add(card);
+                _regionCards[region.Id] = card;
+            }
+        }
+
+        private void RefreshSelectedRegion(ExpeditionRegion region)
+        {
+            foreach (var kv in _regionCards)
+                kv.Value.EnableInClassList("embark__region-card--selected", region != null && kv.Key == region.Id);
+
+            if (region != null)
+                SetDestinationInfo(region.DisplayName, region.Meta);
+            else
+                SetDestinationInfo("목적지 미선택", "");
+
+            ClearEmbarkWarning();
+        }
+
+        private void ShowEmbarkWarning()
+        {
+            if (_step2Hint == null) return;
+            _step2Hint.text = "탐사 지역을 먼저 선택하세요.";
+            _step2Hint.AddToClassList("embark__footer-hint--warning");
+        }
+
+        private void ClearEmbarkWarning()
+        {
+            if (_step2Hint == null) return;
+            _step2Hint.RemoveFromClassList("embark__footer-hint--warning");
+            _step2Hint.text = _defaultStep2Hint;
         }
 
         private async UniTaskVoid LoadAvatarAsync(string address, VisualElement target)

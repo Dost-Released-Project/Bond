@@ -17,12 +17,17 @@ MonoBehaviour:
   _description: 
   RoleType: 3
   Level: 6
-  ImageAddress: RiceSummoner
-  IdleImageId: 
-  BattleImageId: 
-  STR: 8
-  AGI: 10
-  INT: 24
+  ImageAddress: Wizard_Icon
+  IdleImageId: Wizard_Idle
+  BattleImageId: Wizard_Battle
+  MaxHP: 30
+  Atk: 5
+  Def: 10
+  Speed: 10
+  Cri: 10
+  Acc: 15
+  Eva: 0
+  SpAtk: 35
   SkillIds:
   - 01010000
   - 01020000

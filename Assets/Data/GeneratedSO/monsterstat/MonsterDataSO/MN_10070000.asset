@@ -17,12 +17,17 @@ MonoBehaviour:
   _description: 
   RoleType: 2
   Level: 4
-  ImageAddress: GodOfWar
-  IdleImageId: 
-  BattleImageId: 
-  STR: 8
-  AGI: 18
-  INT: 6
+  ImageAddress: Assassin_Icon
+  IdleImageId: Assassin_Idle
+  BattleImageId: Assassin_Battle
+  MaxHP: 40
+  Atk: 10
+  Def: 0
+  Speed: 25
+  Cri: 60
+  Acc: 35
+  Eva: 15
+  SpAtk: 10
   SkillIds:
   - 01010000
   - 01020000

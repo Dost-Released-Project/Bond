@@ -16,10 +16,16 @@ public class MonsterSO : BaseSO
     public string IdleImageId;
     public string BattleImageId;
 
-    [Header("기본 스탯")]
-    public int STR;
-    public int AGI;
-    public int INT;
+    [Header("스탯")]
+    public int MaxHP;
+    public int Atk;
+    public float Def;
+    public int Speed;
+    public float Cri;
+    public float Acc;
+    public float Eva;
+    public int SpAtk;
+
 
     [Header("스킬")]
     public List<string> SkillIds;
@@ -33,9 +39,14 @@ public class MonsterSO : BaseSO
         string displayName,
         RoleType roleType,
         int level,
-        int str,
-        int agi,
-        int intel,
+        int maxHP,
+        int atk,
+        float def,
+        int speed,
+        float cri,
+        float acc,
+        float eva,
+        int spAtk,
         string imageAddress,
         string idleImageId,
         string battleImageId,
@@ -44,9 +55,14 @@ public class MonsterSO : BaseSO
         base.Initialize(id, displayName, "");
         this.RoleType = roleType;
         this.Level = level;
-        this.STR = str;
-        this.AGI = agi;
-        this.INT = intel;
+        this.MaxHP = maxHP;
+        this.Atk = atk;
+        this.Def = def;
+        this.Speed = speed;
+        this.Cri = cri;
+        this.Acc = acc;
+        this.Eva = eva;
+        this.SpAtk = spAtk;
         this.ImageAddress = imageAddress;
         this.IdleImageId = idleImageId;
         this.BattleImageId = battleImageId;

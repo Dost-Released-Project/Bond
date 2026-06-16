@@ -53,7 +53,7 @@ MonoBehaviour:
     - rid: 2064474984977793121
       type: {class: ObserveTargetEditableSlot, ns: Reactions, asm: Assembly-CSharp}
       data:
-        Label: "\uBCF4\uD638 \uB300\uC0C1"
+        Label: "\uC9C0\uC6D0 \uB300\uC0C1"
         ExcludeSelf: 1
     - rid: 2064474984977793122
       type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}

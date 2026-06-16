@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Reactions;
 using UnityEngine;
 
 public partial class BaseCharacter
@@ -37,13 +38,36 @@ public partial class BaseCharacter
 
         public BaseCharacter Build()
         {
-            chara.SetRole(RandomUtil.GetRandom(RoleType.None));
-            chara.CalcStat();
-            chara.SetHpFull();
+            SetRoleAuto();
             chara.Id = System.Guid.NewGuid().ToString();
-            chara.SyncTraitReactions();
-            Dict[chara.Id] = chara;
+            chara.Init();
+            chara.isPlayable = true;
+
+#if UNITY_EDITOR
+            chara.TraitIds = new string[4];
+#endif
+            
             return chara;
+        }
+        
+        private void SetRoleAuto()
+        {
+            switch (chara.Profession.Id)
+            {
+                case 0:
+                    chara.SetRole(RoleType.Tanker);
+                    break;
+                case 1:
+                case 2:
+                    chara.SetRole(RoleType.Dealer);
+                    break;
+                case 3:
+                    chara.SetRole(RoleType.Supporter);
+                    break;
+                default:
+                    chara.SetRole(RoleType.None);
+                    break;
+            }
         }
 
         public Builder SetId(string id)
@@ -90,6 +114,7 @@ public partial class BaseCharacter
             chara.Profession = pro;
 
             SetImageAddress(data.IconId);
+            SetName(data.DisplayName);
             chara.IdleImageAddress = data.IdleImageId;
             chara.AttackImageAddress = data.BattleImageId;
             

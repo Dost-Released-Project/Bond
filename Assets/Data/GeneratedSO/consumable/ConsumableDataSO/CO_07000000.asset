@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: CO_07000000
   m_EditorClassIdentifier: Assembly-CSharp::ConsumableItem
   _id: 07000000
-  _displayName: "\uB0A1\uC740 \uBD95\uB300"
-  _description: "\uC0AC\uC6A9 \uC2DC \uC57D\uAC04\uC758 \uCCB4\uB825\uC744 \uD68C\uBCF5\uD55C\uB2E4."
+  _displayName: "\uBE75"
+  _description: "\uC624\uC9C1 \uC7A5\uC2DC\uAC04 \uBCF4\uC874\uC744 \uC704\uD574\uC11C\uB9CC
+    \uC81C\uC791\uB41C \uBE75. \uB9DB\uC740 \uC5C6\uB2E4. \uCCB4\uB825\uC744 \uD68C\uBCF5\uD55C\uB2E4."
   category: 0
-  icon: {fileID: 21300000, guid: e65655f7a51345a49ae41cef8d2d244f, type: 3}
-  totalGlobalMax: 10
-  expeditionSlotMax: 2
+  icon: {fileID: 21300000, guid: 7a1be7952d911a4479e67872ddfd623e, type: 3}
+  totalGlobalMax: 15
+  expeditionSlotMax: 3
   consumableType: 0
   healValue: 10

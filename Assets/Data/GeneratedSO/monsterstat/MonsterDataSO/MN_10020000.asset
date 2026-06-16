@@ -17,12 +17,17 @@ MonoBehaviour:
   _description: 
   RoleType: 1
   Level: 3
-  ImageAddress: GodOfNormalization
-  IdleImageId: 
-  BattleImageId: 
-  STR: 15
-  AGI: 5
-  INT: 2
+  ImageAddress: Warrior_Icon
+  IdleImageId: Warrior_Idle
+  BattleImageId: Warrior_Battle
+  MaxHP: 50
+  Atk: 10
+  Def: 20
+  Speed: 4
+  Cri: 20
+  Acc: 5
+  Eva: 0
+  SpAtk: 2
   SkillIds:
   - 01010000
   - 01020000

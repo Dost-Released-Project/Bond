@@ -16,16 +16,17 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     private ITotalInventory _totalInv;
     private IExpeditionInventory _expeditionInv;
     private ConstructionUI _constructionUI;
+    private Bond.Expedition.ExpeditionPayload _expeditionPayload;
     
     [Inject] private SmithyUIController _smithyUI; 
     [Inject] private CharacterSelector _characterSelector;
-
-
+    
     [Inject]
-    public void Construct(BuildingService bs, ResourceManager rm, InventoryView iv, SupplyView supply, ITotalInventory total, IExpeditionInventory exp)
+    public void Construct(BuildingService bs, ResourceManager rm, InventoryView iv, SupplyView supply, ITotalInventory total, IExpeditionInventory exp, Bond.Expedition.ExpeditionPayload expeditionPayload)
     {
         _buildingService = bs; _resourceManager = rm; _inventoryView = iv;
         _supplyView = supply; _totalInv = total; _expeditionInv = exp;
+        _expeditionPayload = expeditionPayload;
     }
     
     private void Awake()
@@ -48,6 +49,43 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         }
 
         _constructionUI = FindAnyObjectByType<ConstructionUI>();
+
+        // 💥 [핵심 영속성 복구] 시작 시점에 세이브된 마을 상태를 먼저 로드합니다.
+        LoadSettlement();
+
+        // 타 씬(전투, 캠핑 등)에서 마을로 복귀 시 즉시 정산 및 건물 턴 리셋 실행
+        OnExpeditionReturned();
+    }
+
+    private void LoadSettlement()
+    {
+        var settSave = new SettlementSaveData();
+        if (SaveLoadSystem.HasSave(settSave.Key))
+        {
+            SaveLoadSystem.Load(settSave);
+            
+            var buildingDB = DBSORegistry.GetDb<BuildingDataBaseSO>();
+            if (buildingDB == null)
+            {
+                Debug.LogError("[SettlementManager] BuildingDataBaseSO를 로드할 수 없어 건물을 복원하지 못했습니다.");
+                return;
+            }
+
+            foreach (var b in settSave.buildings)
+            {
+                var data = buildingDB.FindSO<BuildingData>(d => d.buildingType == b.type);
+                if (data != null)
+                {
+                    LoadBuilding(b.slotIndex, data, b.level);
+                    if((data.buildingType != BuildingType.Carriage) && (data.buildingType != BuildingType.Storage)) ApplyBuildingEffect(data, b.level);
+                }
+            }
+            Debug.Log($"<color=lime>[SettlementManager]</color> 세이브 파일로부터 {settSave.buildings.Count}개의 건물을 복원했습니다.");
+        }
+        else
+        {
+            Debug.Log("[SettlementManager] 기존 마을 세이브가 없어 빈 영지로 시작합니다.");
+        }
     }
 
     private void OnDestroy()
@@ -86,7 +124,6 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     
     private void Update()
     {
-        if (Keyboard.current.tKey.wasPressedThisFrame) _resourceManager.Admin_AddAllResources(1000);
         if (Keyboard.current.pKey.wasPressedThisFrame) OnExpeditionReturned(); // 치트 테스트
     }
     
@@ -99,7 +136,7 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
         }
 
         // 💥 [핵심 기획 교정 분기]
-        // 주점, 여관, 길드는 클릭 즉시 실행하지 않고, 리더님 기획대로 상세 확인 팝업창을 먼저 띄웁니다.
+        // 주점, 여관, 길드는 클릭 즉시 실행하지 않고, 상세 확인 팝업창을 먼저 띄웁니다.
         switch (building.Data.buildingType)
         {
             case BuildingType.Tavern:
@@ -117,7 +154,7 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
             case BuildingType.Supply: 
                 _smithyUI.Close();
                 _constructionUI.Show(false);
-                _supplyView.Open();
+                _supplyView.Open(building);
                 break;
             case BuildingType.Smithy:
                 _constructionUI.Show(false);
@@ -176,6 +213,24 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
             if (bObj != null && bObj.Counter != null)
             {
                 bObj.Counter.ResetTurnUses();
+            }
+        }
+
+        // 💥 전투 승리 누적 보상 정산
+        if (_expeditionPayload != null && _resourceManager != null)
+        {
+            int frontier = _expeditionPayload.AccumulatedFrontier;
+            int wood = _expeditionPayload.AccumulatedWood;
+            int ore = _expeditionPayload.AccumulatedOre;
+
+            if (frontier > 0 || wood > 0 || ore > 0)
+            {
+                Debug.Log($"<color=orange>[보상 정산]</color> 탐사 중 획득한 누적 보상 지급: 개척 {frontier}, 목재 {wood}, 광석 {ore}");
+                
+                _resourceManager.AddFrontierData(frontier);
+                _resourceManager.AddMaterials(wood, ore);
+                
+                _expeditionPayload.ClearAccumulatedResources();
             }
         }
     }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text;
 using PipeLine;
 using UnityEngine;
+using BattleSystem.Interface;
 
 namespace Reactions
 {
@@ -24,6 +25,12 @@ namespace Reactions
     {
         private readonly List<BaseCharacter> Characters = new List<BaseCharacter>();
         private readonly Dictionary<BaseCharacter, E_BattleSide> _sideCache = new Dictionary<BaseCharacter, E_BattleSide>();
+        public IBattleManager BattleManager { get; private set; }
+
+        public void SetBattleManager(IBattleManager battleManager)
+        {
+            BattleManager = battleManager;
+        }
 
         public void Register(BaseCharacter agent)
         {

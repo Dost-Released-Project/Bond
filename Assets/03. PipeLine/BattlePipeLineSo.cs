@@ -134,8 +134,15 @@ namespace PipeLine
         {
             if (context.target == null || context.target.IsDead) return UniTask.FromResult(context);
             
-            // 지원/힐 스킬은 회피 판정을 생략
-            if (context.runtimeSkill.Data.Type == SkillType.SUPPORT)
+            // 시전자와 타겟이 같은 진영(아군 대상 스킬)인지 확인
+            bool isFriendly = false;
+            if (context.caster?.CurrentSlot != null && context.target?.CurrentSlot != null)
+            {
+                isFriendly = context.caster.CurrentSlot.side == context.target.CurrentSlot.side;
+            }
+
+            // 지원/힐 스킬이거나, 시전자와 타겟이 같은 진영(아군)일 경우 회피 판정 생략
+            if (context.runtimeSkill.Data.Type == SkillType.SUPPORT || isFriendly)
             {
                 context.isEvaded = false;
                 return UniTask.FromResult(context);
@@ -154,10 +161,15 @@ namespace PipeLine
             if (context.isEvaded)
             {
                 Debug.Log($"<color=white><b>[회피]</b></color> {context.target.Name}이(가) {context.caster.Name}의 공격을 피했습니다! (명중률: {hitRate:P0})");
+                
+                // [신규] 공격 회피당함 시 시전자 스트레스 +5
+                context.caster.ReduceInsanity(5);
+                Debug.Log($"[Stress] {context.caster.Name} 공격 회피당하여 스트레스 +5 누적");
+                Debug.Log($"<color=white><b>[회피]</b></color> {context.target.Name}이(가) {context.caster.Name}의 공격을 피했습니다! (타겟 회피율: {context.target.Stat.eva:P0}, 최종 명중률: {hitRate:P0})");
             }
             else
             {
-                Debug.Log($"[EvasionStep] 타겟: {context.target.Name}, 명중률: {hitRate:P0}, 회피 발생 여부: {context.isEvaded}");
+                Debug.Log($"[EvasionStep] 타겟: {context.target.Name} (타겟 회피율: {context.target.Stat.eva:P0}, 최종 명중률: {hitRate:P0}) 회피 발생 여부: {context.isEvaded}");
             }
             return UniTask.FromResult(context);
         }
@@ -172,8 +184,7 @@ namespace PipeLine
             if (context.isEvaded || context.target == null || context.target.IsDead) return UniTask.FromResult(context);
 
             // TODO: 개별 타겟 치명타 확률 로직 (현재는 임시로 시전자 crt 사용)
-            //context.isCritical = Random.Range(0f, 100f) < context.caster.Stat.crt;
-            context.isCritical = false;
+            context.isCritical = Random.value < context.caster.Stat.crt;
             
             if (context.isCritical)
             {
@@ -256,7 +267,7 @@ namespace PipeLine
                 {
                     Debug.Log($"<color=lightblue>Reaction:\n" +
                               $"{execution.ToString()}</color>");
-                    await execution.Agent.ExecuteReaction(execution, context);
+                    await execution.Agent.ExecuteReaction(execution, context, reactionSystem.BattleManager);
                     execution.Agent.IncrementReactionCount(); // '연속' 리액션 카운트 증가 (자기 턴에 리셋)
                     if (execution.Result == ReactionResult.Anomaly)
                         execution.Agent.MarkAnomaly(); // 아군 돌발 관찰용 플래그

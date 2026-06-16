@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4edb4d0a5cf87254f90503bb3484f7b3, type: 3}
+  m_Name: TRT_019
+  m_EditorClassIdentifier: Assembly-CSharp::TraitSO
+  _id: TRT_019
+  _displayName: "\uBB34\uBAA8\uD55C"
+  _description: 
+  Type: 2
+  ReactionDefinition: {fileID: 11400000, guid: f99df35bd75b9d04885922ad682c6e74, type: 2}

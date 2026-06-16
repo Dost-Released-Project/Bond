@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24f60b15841d2dc42bda3a5d4be67068, type: 3}
+  m_Name: TRT_003_RDEF
+  m_EditorClassIdentifier: Assembly-CSharp::Reactions.ReactionDefinitionSO
+  _id: TRT_003_RDEF
+  _displayName: "\uD76C\uC0DD\uC801 \u2014 \uBB34\uACC4\uD68D \uBC29\uC5B4"
+  _description: "HP30%\u2193 \uC544\uAD70 \uD53C\uACA9\uC608\uACE0 \u2192 \uB300\uC2E0
+    \uB9DE\uAE30 + \uBCF8\uC778 \uC2A4\uD2B8\uB808\uC2A4+20"
+  Role: 0
+  Template:
+    Phase: 1
+    ObserveFilter: 2
+    SubjectCharacterId: 
+    DefinitionId: 
+    Trigger:
+      rid: 2064475061108867282
+    Effect:
+      rid: 2064475061108867283
+  EditableSlots: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 2064475061108867282
+      type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        _condition:
+          Additional:
+          - rid: 2064475061108867284
+          - rid: 2064475061108867285
+          - rid: 2064475061108867286
+    - rid: 2064475061108867283
+      type: {class: CompositeReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Effects:
+        - rid: 2064475061108867287
+        - rid: 2064475061108867288
+    - rid: 2064475061108867284
+      type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Filter: 2
+    - rid: 2064475061108867285
+      type: {class: HpBelowCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Threshold: 0.3
+    - rid: 2064475061108867286
+      type: {class: SkillTypeCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Types: 0100000003000000
+    - rid: 2064475061108867287
+      type: {class: InterceptReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data: 
+    - rid: 2064475061108867288
+      type: {class: StressReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Delta: 20
+        Target: 4

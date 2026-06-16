@@ -5,8 +5,8 @@
     <Style src="project://database/Assets/UI/Shared/EquipSlots.uss?fileID=7433441132597879392&amp;guid=33c57ec0ad856974abe818e36e15d6f0&amp;type=3#EquipSlots"/>
     <ui:VisualElement class="character-combat-panel" style="left: 0; bottom: 0; height: 300px; width: 1100px;">
         <ui:VisualElement class="combat-panel__identity" style="width: 205px;">
-            <ui:VisualElement name="combat-panel__char-icon" class="combat-panel__char-icon" style="width: 80px; height: 80px;">
-                <ui:Label name="combat-panel__icon-text" text="?" class="combat-panel__icon-text"/>
+            <ui:VisualElement name="combat-panel__char-icon" class="combat-panel__char-icon" style="width: 100px; height: 100px;">
+                <ui:Label name="combat-panel__icon-text" text="?" class="combat-panel__icon-text" style="font-size: 30px;"/>
             </ui:VisualElement>
             <ui:Label name="combat-panel__char-name" text="이름" class="combat-panel__char-name" style="font-size: 25px;"/>
             <ui:Label name="combat-panel__char-job" text="직업" class="combat-panel__char-job" style="font-size: 20px;"/>

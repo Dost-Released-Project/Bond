@@ -5,21 +5,22 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Bond.Expedition;
 using Bond.Persistence;
 using UnityEngine.AddressableAssets;
 using VContainer;
 
 public class InventoryView : MonoBehaviour
 {
-    private VisualElement _root, _totalGrid, _expeditionGrid, _dragGhost;
-    private List<VisualElement> _totalSlotElements = new(), _expeditionSlotElements = new();
+    private VisualElement _root, _totalGrid, _expeditionGrid;
+    private List<VisualElement> _totalSlotElements = new();
     private TextField _searchField;
     private ScrollView _totalScroll;
 
     private ITotalInventory _totalInventory;
     private InventoryTransferService _transferService;
-    private InventoryUIService _uiService;     // 추가된 서비스
     private ExpeditionResultService _expeditionResultService;
+    [Inject] private ExpeditionPayload _payload;
     
     private string _currentSearch = "";
     private ItemCategory? _currentFilter = null;
@@ -27,32 +28,42 @@ public class InventoryView : MonoBehaviour
     private VisualElement _tooltip; // 상세 정보를 띄울 최상위 레이어
 
     [Inject]
-    public void Construct(ITotalInventory total, InventoryTransferService service, 
-        InventoryUIService uiService, ExpeditionResultService expeditionResultService)
+    public void Construct(ITotalInventory total, InventoryTransferService service, ExpeditionResultService expeditionResultService)
     {
         _totalInventory = total;
-        _transferService = service; _uiService = uiService;
+        _transferService = service;
         _expeditionResultService = expeditionResultService;
     }
 
-    private async void Start()
+    private void Start()
     {
-        // 1. "total_inv" 파일만 로드
-        await LoadTotalInventory();
+        // 1. "total_inv" 파일 로드
+        string savePath = Path.Combine(Application.dataPath, "Data", "Save", "total_inv.json");
+        bool isFirstStart = !File.Exists(savePath);
+
+        LoadTotalInventory();
+    
+        // 2. [개혁] 세이브 파일이 없는 순수 신규 게임("새로하기")일 때만 단 1회 테스트 아이템 추가
+        if (isFirstStart)
+        {
+            Debug.Log("<color=yellow>[최초 실행]</color> 새 게임 시작 초기 아이템을 1회 한정 지급합니다.");
+
+            // 소모품 추가
+            _totalInventory.AddItemId("07000000", 3);
+            _totalInventory.AddItemId("07010000", 3);
+            _totalInventory.AddItemId("07030000", 1);
+            _totalInventory.AddItemId("07040000", 1);
+
+            // 지급된 상태를 즉시 파일로 구워내어 다음 재실행/복귀 시 다시 지급되는 현상 방어
+            SaveTotalInventory(); 
+        }
+        else
+        {
+            Debug.Log("TotalInventory: 기존 세이브 데이터가 존재하므로 초기 아이템 지급을 스킵합니다.");
+        }
         
-        // 2. ID로 테스트 아이템 추가.
-        // 소모품 추가
-        _totalInventory.AddItemId("07000000", 5);
-        _totalInventory.AddItemId("07010000", 5);
-        _totalInventory.AddItemId("07020000", 5);
-        _totalInventory.AddItemId("07030000", 5);
-        _totalInventory.AddItemId("07040000", 5);
-        // 장신구 추가.
-        _totalInventory.AddItemId("08000000", 1);
-        _totalInventory.AddItemId("08010000", 1);
-        _totalInventory.AddItemId("08020000", 1);
-        _totalInventory.AddItemId("08030000", 1);
-        
+        _payload.Supplies.InitAndLoad();
+    
         // 3. 탐사 후 타운으로 넘어올 때, 탐사 인벤토리 아이템 모두 토탈 인벤토리로 이동. 파일 로드 이후 적용해야지 적용됨
         _expeditionResultService.ProcessExpeditionReturn();
         SetupUI();
@@ -60,7 +71,7 @@ public class InventoryView : MonoBehaviour
         ToggleWindow(false);
     }
 
-    private Task LoadTotalInventory()
+    private void LoadTotalInventory()
     {
         // 로드 시도
         var save = new InventorySaveData("total_inv");
@@ -97,8 +108,6 @@ public class InventoryView : MonoBehaviour
         {
             Debug.Log("TotalInventory: 기존 세이브 없음. 기본값으로 시작.");
         }
-
-        return Task.CompletedTask;
     }
     
     private void SaveTotalInventory()
@@ -124,8 +133,6 @@ public class InventoryView : MonoBehaviour
 
         // 1. 툴팁 & 드래그 고스트 초기화
         _tooltip = CreateOverlayElement("inventory-tooltip");
-        _dragGhost = CreateOverlayElement(null, 60);
-        _root.RegisterCallback<PointerMoveEvent>(OnPointerMove);
 
         // 2. 버튼 및 검색 필드 (기존 로직 유지)
         _searchField = _root.Q<TextField>("inventory-search");
@@ -206,7 +213,7 @@ public class InventoryView : MonoBehaviour
 
     private void ShowTooltip(InventorySlot slot, Vector2 position)
     {
-        if (slot.IsEmpty || _uiService.CurrentSourceInventory != null) return;
+        if (slot.IsEmpty || _transferService.CurrentSourceInventory != null) return;
 
         _tooltip.Clear();
         _tooltip.Add(new Label(slot.item.DisplayName) { name = "title" });
@@ -270,21 +277,17 @@ public class InventoryView : MonoBehaviour
         if (evt.button == 0 && !inv.GetSlot(index).IsEmpty)
         {
             HideTooltip();
-            _uiService.StartDrag(inv, index, inv.GetSlot(index).item.icon, _dragGhost, evt.position, new Vector2(30, 30));
+            _transferService.StartDrag(inv, index);
         }
     }
 
     private void OnPointerUp(PointerUpEvent evt, IInventory targetInv, int targetIndex)
     {
-        if (_uiService.CurrentSourceInventory != null)
+        if (_transferService.CurrentSourceInventory != null)
         {
-            _transferService.ExecuteDragDrop(_uiService.CurrentSourceInventory, _uiService.CurrentDraggingIndex, targetInv, targetIndex);
-            _uiService.ResetDrag();
+            _transferService.ExecuteDragDrop(_transferService.CurrentSourceInventory, _transferService.CurrentDraggingIndex, targetInv, targetIndex);
+            _transferService.ResetDrag();
         }
-    }
-
-    private void OnPointerMove(PointerMoveEvent evt) {
-        if (_uiService.CurrentSourceInventory != null) _uiService.UpdateGhostPosition(evt.position, new Vector2(30, 30));
     }
     
     public void ToggleWindow(bool show)

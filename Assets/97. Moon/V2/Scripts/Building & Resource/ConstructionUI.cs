@@ -108,8 +108,6 @@ public class ConstructionUI : MonoBehaviour
         _lblBuildingName.text = $"{_targetBuildingData.DisplayName} 업그레이드 (Lv.{curLevel} ➔ Lv.{nextLevel})";
 
         // 1. [누적형 데이터] 합산 연산
-        int totalMaterialCap = 0;
-        int totalFrontierCap = 0;
         int totalSlotExpansion = 0;
 
         for (int i = 1; i <= curLevel; i++)
@@ -117,8 +115,6 @@ public class ConstructionUI : MonoBehaviour
             var levelData = _targetBuildingData.GetLevelData(i);
             if (levelData.level != 0)
             {
-                totalMaterialCap += levelData.materialCapAdd;
-                totalFrontierCap += levelData.frontierCapAdd;
                 totalSlotExpansion += levelData.slotExpansion;
             }
         }
@@ -126,14 +122,8 @@ public class ConstructionUI : MonoBehaviour
         // 2. [단발성 데이터] 파싱
         var curLvData = _targetBuildingData.GetLevelData(curLevel);
         var nextLvData = _targetBuildingData.GetLevelData(nextLevel);
-
-        int nextMaterialCap = totalMaterialCap + nextLvData.materialCapAdd;
-        int nextFrontierCap = totalFrontierCap + nextLvData.frontierCapAdd;
+        
         int nextSlotExpansion = totalSlotExpansion + nextLvData.slotExpansion;
-
-        int curEffectValue = curLvData.effectValue;
-        int nextEffectValue = nextLvData.effectValue;
-        int curMaxUses = curLvData.maxUses;
 
         // =========================================================================
         // 🎯 [유니티 6 핵심 해결책] Rich Text 태그로 강제 줄간격 확보 규칙 주입
@@ -142,19 +132,19 @@ public class ConstructionUI : MonoBehaviour
         // =========================================================================
         string upText = "<line-height=120%>[업그레이드 완료 시 최종 변경값]\n";
 
-        if (nextLvData.materialCapAdd > 0) upText += $"- 자원 보관 한도: {totalMaterialCap} ➔ {nextMaterialCap} 증가\n";
-        if (nextLvData.frontierCapAdd > 0) upText += $"- 개척 가능 한도: {totalFrontierCap} ➔ {nextFrontierCap} 증가\n";
-        if (nextLvData.slotExpansion > 0) upText += $"- 인벤토리 슬롯: {totalSlotExpansion}칸 ➔ {nextSlotExpansion}칸 증가\n";
-        if (nextLvData.effectValue > 0) upText += $"- 효과 고유 수치: {curEffectValue} ➔ {nextEffectValue} 변경\n";
+        if (nextLvData.materialCapAdd > 0) upText += $"- 자원 보관 한도: {curLvData.materialCapAdd} ➔ {nextLvData.materialCapAdd}\n";
+        if (nextLvData.frontierCapAdd > 0) upText += $"- 개척 가능 한도: {curLvData.frontierCapAdd} ➔ {nextLvData.frontierCapAdd}\n";
+        if (nextLvData.slotExpansion > 0) upText += $"- 인벤토리 슬롯: {totalSlotExpansion}칸 ➔ {nextSlotExpansion}칸\n";
+        if (nextLvData.effectValue > 0) upText += $"- 효과 고유 수치: {curLvData.effectValue} ➔ {nextLvData.effectValue}\n";
 
         if (_targetBuildingData.buildingType == BuildingType.Smithy || _targetBuildingData.name.Contains("Smithy"))
         {
             upText += $"- 장비 최고 강화 한도: {curLevel}단계 ➔ {nextLevel}단계 제한 확장\n";
         }
 
-        if (curMaxUses > 0 && nextLvData.maxUses != curMaxUses)
+        if (curLvData.maxUses > 0 && nextLvData.maxUses != curLvData.maxUses)
         {
-            upText += $"- 이용 제한 횟수: {curMaxUses}회 ➔ {nextLvData.maxUses}회로 제한 변경\n";
+            upText += $"- 이용 제한 횟수: {curLvData.maxUses}회 ➔ {nextLvData.maxUses}회로 제한 변경\n";
         }
 
         // 태그 닫기
@@ -194,7 +184,7 @@ public class ConstructionUI : MonoBehaviour
             descText += "</line-height>";
 
             _lblBuildingDescription.text = descText;
-            _lblBuildingCost.text = $"<line-height=120%>[수령 보상]\n개척 데이터: +{lvData.effectValue} 수급 가능</line-height>";
+            _lblBuildingCost.text = $"<line-height=120%>[수령 보상]\n개척 데이터: +{lvData.effectValue} | 목재 및 광석: +{lvData.effectValue*0.05f} 수급 가능</line-height>";
         }
         // 분기 B: 주점(Tavern), 여관(Inn) 영웅 상태 기반 조건부 회복 안내
         else

@@ -10,20 +10,6 @@ using UnityEngine.AddressableAssets;
 /// </summary>
 public class MonsterFactory
 {
-    // ── 파생 스탯 배율 상수 ───────────────────────────────────────────────────
-    // Profession.CalculateStat()의 ClassSO 배율에 대응한다.
-    // MonsterSO에 직업 데이터가 없으므로 팩토리 내부에 고정값으로 정의한다.
-    private const float HpMultiplier           = 5f;  // STR 계열: max_Hp
-    private const float AtkMultiplier          = 2f;  // STR 계열: atk
-    private const float DefMultiplier          = 2f;  // AGI 계열: def
-    private const float SpeedMultiplier        = 3f;  // AGI 계열: speed
-    private const float CriMultiplier          = 2f;  // AGI 계열: crt
-    private const float AccMultiplier          = 2f;  // AGI 계열: acc
-    private const float EvaMultiplier          = 1f;  // AGI 계열: eva
-    private const float ReactionCtrlMultiplier = 1f;  // INT 계열: Reaction_Ctrl
-    private const float SpAtkMultiplier        = 2f;  // INT 계열: Sp_Atk
-    // ─────────────────────────────────────────────────────────────────────────
-
     private MonsterDataBaseSO m_monsterDb;
     private readonly ISkillManager m_skillManager;
 
@@ -83,9 +69,18 @@ public class MonsterFactory
         monster.AttackImageAddress = so.BattleImageId;
 
         // 기본 능력치 세팅
-        monster.Stat.STR = so.STR;
-        monster.Stat.AGI = so.AGI;
-        monster.Stat.INT = so.INT;
+        monster.Stat.max_Hp = so.MaxHP;
+        monster.Stat.atk    = so.Atk;
+        monster.Stat.def   = so.Def * 0.01f;
+        monster.Stat.speed = so.Speed;
+        monster.Stat.crt   = so.Cri * 0.01f;
+        monster.Stat.acc   = so.Acc * 0.01f;
+        monster.Stat.eva   = so.Eva * 0.01f;
+        monster.Stat.Sp_Atk = so.SpAtk;
+        
+        // 현재 체력을 최대 체력으로 초기화
+        monster.Stat.current_Hp = monster.Stat.max_Hp;
+
 
         // 파생 스탯 계산 (Profession 없는 몬스터용 직접 계산)
         CalculateDerivedStats(monster);
@@ -135,9 +130,9 @@ public class MonsterFactory
             $"  Name     : {monster.Name}\n" +
             $"  Level    : {monster.Level}\n" +
             $"  RoleType : {monster.RoleType}\n" +
-            $"  STR={monster.Stat.STR}  AGI={monster.Stat.AGI}  INT={monster.Stat.INT}\n" +
             $"  HP={monster.Stat.max_Hp}  ATK={monster.Stat.atk}  DEF={monster.Stat.def}\n" +
-            $"  SPD={monster.Stat.speed}  CRI={monster.Stat.crt}  ACC={monster.Stat.acc}  EVA={monster.Stat.eva}"
+            $"  SPD={monster.Stat.speed}  CRI={monster.Stat.crt}  ACC={monster.Stat.acc}\n" +
+            $"  EVA={monster.Stat.eva}  SpAtk={monster.Stat.Sp_Atk}"
         );
         // ────────────────────────────────────────────────────────────────
 
@@ -154,29 +149,15 @@ public class MonsterFactory
     {
         StatController controller = monster.StatController;
         Stat stat = monster.Stat;
-
-        // 모디파이어 적용 (몬스터는 특수 모디파이어 없으므로 입력값 그대로 반환됨)
-        float finalSTR = controller.ApplyModifiers(StatType.STR, stat.STR);
-        float finalAGI = controller.ApplyModifiers(StatType.AGI, stat.AGI);
-        float finalINT = controller.ApplyModifiers(StatType.INT, stat.INT);
-
-        // STR 계열
-        stat.max_Hp = Mathf.FloorToInt(controller.ApplyModifiers(StatType.MaxHP, finalSTR * HpMultiplier));
-        stat.atk    = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Atk,   finalSTR * AtkMultiplier));
-
-        // AGI 계열
-        stat.def   = controller.ApplyModifiers(StatType.Def,   finalAGI * DefMultiplier) * 0.01f;
-        stat.speed = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Speed, finalAGI * SpeedMultiplier));
-        stat.crt   = controller.ApplyModifiers(StatType.Cri,   finalAGI * CriMultiplier) * 0.01f;
-        stat.acc   = (controller.ApplyModifiers(StatType.Acc,   finalAGI * AccMultiplier) * 0.01f) + 0.5f;
-        stat.eva   = controller.ApplyModifiers(StatType.Eva, finalINT * EvaMultiplier) * 0.01f;
-
-        // INT 계열
-        stat.Reaction_Ctrl = controller.ApplyModifiers(StatType.ReactionCtrl, finalINT * ReactionCtrlMultiplier) * 0.01f;
-        stat.Sp_Atk        = Mathf.FloorToInt(controller.ApplyModifiers(StatType.SpAtk,        finalINT * SpAtkMultiplier));
-
-        // 현재 체력을 최대 체력으로 초기화
-        stat.current_Hp = stat.max_Hp;
+        
+        stat.max_Hp = Mathf.FloorToInt(controller.ApplyModifiers(StatType.MaxHP, stat.max_Hp));
+        stat.atk = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Atk, stat.atk));
+        stat.def = controller.ApplyModifiers(StatType.Def, stat.def*100) * 0.01f;
+        stat.speed = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Speed, stat.speed));
+        stat.crt = controller.ApplyModifiers(StatType.Cri, stat.crt*100) * 0.01f;
+        stat.acc = (controller.ApplyModifiers(StatType.Acc, stat.acc*100) * 0.01f) + 0.7f;
+        stat.eva = controller.ApplyModifiers(StatType.Eva, stat.eva*100) * 0.01f;
+        stat.Sp_Atk = Mathf.FloorToInt(controller.ApplyModifiers(StatType.SpAtk, stat.Sp_Atk));
     }
 
     /// <summary>
@@ -188,9 +169,7 @@ public class MonsterFactory
         if (m_monsterDb == null == false)
             return;
 
-        m_monsterDb = Addressables
-            .LoadAssetAsync<MonsterDataBaseSO>("MonsterDataBase")
-            .WaitForCompletion();
+        m_monsterDb = DBSORegistry.LoadSync<MonsterDataBaseSO>("MonsterDataBase");
 
         if (m_monsterDb == null)
             Debug.LogError("[MonsterFactory] MonsterDataBase Addressable 로드 실패. Addressables에 'MonsterDataBase' 키가 등록되어 있는지 확인한다.");

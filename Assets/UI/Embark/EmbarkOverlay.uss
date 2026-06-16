@@ -101,22 +101,64 @@
     padding: 12px;
 }
 
-/* 지도 플레이스홀더 */
+/* 지도 영역: 탐사 지역 선택 리스트 컨테이너 */
 .embark__map-placeholder {
     flex-grow: 1;
+    flex-direction: column;
     background-color: var(--bg-deep);
     border-width: 1px;
     border-color: var(--border-default);
     border-radius: 4px;
     margin-bottom: 8px;
-    align-items: center;
-    justify-content: center;
+    padding: 8px;
+    overflow: hidden;
 }
 
-.embark__map-placeholder__label {
-    font-size: var(--font-size-body);
-    color: var(--text-disabled);
+.embark__map-title {
+    font-size: var(--font-size-header);
+    color: var(--text-label);
     letter-spacing: 3px;
+    -unity-font-style: bold;
+    margin-bottom: 8px;
+}
+
+.embark__region-list {
+    flex-grow: 1;
+}
+
+.embark__region-card {
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: var(--bg-surface);
+    border-width: 1px;
+    border-color: var(--border-default);
+    border-radius: 4px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+}
+
+.embark__region-card:hover {
+    border-color: var(--border-highlight);
+    background-color: var(--bg-raised);
+}
+
+/* 선택 상태는 호버보다 우선 (:hover 의사클래스의 특이도(0,2,0)를 이기도록 --selected:hover 명시(0,3,0)) */
+.embark__region-card--selected,
+.embark__region-card--selected:hover {
+    border-color: var(--text-accent);
+    background-color: var(--bg-raised);
+}
+
+.embark__region-card__name {
+    font-size: var(--font-size-name);
+    color: var(--text-primary);
+    letter-spacing: 2px;
+}
+
+.embark__region-card__meta {
+    font-size: var(--font-size-class);
+    color: var(--text-muted);
+    letter-spacing: 1px;
 }
 
 /* 목적지 정보 바 */
@@ -147,13 +189,14 @@
 /* 파티 슬롯 */
 .embark__party-slots {
     flex-direction: row;
-    height: 110px;
+    height: 140px;
     flex-shrink: 0;
+    justify-content: center;
 }
 
 .embark__party-slot {
-    flex-grow: 1;
-    flex-shrink: 0;
+    flex-grow: 0;
+    flex-shrink: 1;
     flex-basis: 0;
     flex-direction: column;
     align-items: center;
@@ -163,8 +206,11 @@
     border-width: 1px;
     border-color: var(--border-default);
     border-radius: 4px;
+    margin-left: 6px;
     margin-right: 6px;
     padding: 6px;
+    min-width: 128px;
+    min-height: 128px;
 }
 
 .embark__party-slot--empty {
@@ -182,8 +228,8 @@
 }
 
 .embark__slot-avatar {
-    width: 36px;
-    height: 36px;
+    width: 96px;
+    height: 96px;
     background-color: var(--bg-raised);
     border-radius: 4px;
     margin-bottom: 4px;
@@ -201,6 +247,7 @@
 .embark__slot-name {
     font-size: var(--font-size-class);
     color: var(--text-primary);
+    flex-shrink: 1;
     -unity-text-align: middle-center;
     overflow: hidden;
     white-space: nowrap;
@@ -210,6 +257,7 @@
 .embark__slot-class {
     font-size: var(--font-size-system);
     color: var(--text-muted);
+    flex-shrink: 1;
     -unity-text-align: middle-center;
     letter-spacing: 1px;
     overflow: hidden;
@@ -250,7 +298,7 @@
 
 /* 파티 편성 대원 강조 */
 .embark__step1 .roster-card--selected {
-    border-color: var(--text-accent);
+    border-color: var(--border-accent);
     background-color: var(--bg-raised);
 }
 
@@ -378,6 +426,10 @@
     color: var(--text-muted);
     letter-spacing: 1px;
     -unity-text-align: middle-center;
+}
+
+.embark__footer-hint--warning {
+    color: var(--stress-crit);
 }
 
 /* 주요 액션 버튼 */

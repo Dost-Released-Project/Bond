@@ -6,7 +6,7 @@
    ════════════════════════════════════════ */
 .character-detail {
     position: absolute;
-    left: 3%;
+    left: 13%;
     right: 13%;
     top: 6%;
     bottom: 6%;
@@ -88,19 +88,20 @@
 
 /* ── 초상화 ── */
 .char-detail__portrait {
-    width: 100%;
-    height: 120px;
+    width: 256px;
+    height: 256px;
     background-color: var(--bg-raised);
     border-width: 1px;
     border-color: var(--border-default);
     border-radius: 3px;
     margin-bottom: 8px;
-    -unity-background-scale-mode: scale-and-crop;
 }
 
 /* ── 정체성 ── */
 .char-detail__identity {
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 10px;
 }
 
@@ -557,6 +558,49 @@
 .char-detail__role-current--supporter { border-color: var(--slot-trait-border); color: var(--slot-trait-dot); background-color: var(--slot-trait-bg); }
 .char-detail__role-current--none      { border-color: var(--border-default);    color: var(--text-disabled);  background-color: transparent;          }
 .char-detail__role-current--disabled  { opacity: 0.38; }
+
+/* ── 자동/수동 전투 세그먼트 (초상화 아래 식별 행 우측) ── */
+.char-detail__control-seg {
+    flex-direction: row;
+    flex-shrink: 0;
+}
+.char-detail__control-seg__opt {
+    font-size: var(--font-size-system);
+    letter-spacing: 1px;
+    margin: 0;
+    padding: 4px 12px;
+    border-width: 1px;
+    border-color: var(--border-default);
+    border-radius: 2px;
+    background-color: transparent;
+    color: var(--text-muted);
+    -unity-text-align: middle-center;
+}
+/* 좌측 칸(수동): 우측 모서리 직각 + 우측 테두리 제거(가운데 이중선 방지 — 구분선은 자동 칸이 소유) */
+.char-detail__control-seg__opt--manual {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right-width: 0;
+}
+/* 우측 칸(자동): 좌측 모서리 직각 + 좌측 테두리(=가운데 구분선)를 항상 accent로.
+   두 칸 중 항상 하나가 활성이므로, 구분선이 항상 활성 칸 가장자리가 되어 4면 강조가 완성된다. */
+.char-detail__control-seg__opt--auto {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left-color: var(--border-accent);
+}
+.char-detail__control-seg__opt:hover {
+    color: var(--text-primary);
+}
+/* 활성 칸 강조 — 밝은 배경 + accent 테두리·텍스트 (hover보다 후순위·동일 특이도로 유지) */
+.char-detail__control-seg__opt.char-detail__control-seg__opt--active {
+    background-color: var(--bg-raised);
+    border-color: var(--border-accent);
+    color: var(--text-accent);
+}
+.char-detail__control-seg--disabled {
+    opacity: 0.38;
+}
 
 .char-detail__role-picker {
     flex-direction: row;

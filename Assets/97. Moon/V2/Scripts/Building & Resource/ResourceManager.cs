@@ -11,20 +11,19 @@ public class ResourceManager
     private Dictionary<ResourceType, ResourceData> _resources = new();
     public event Action<ResourceType, ResourceData> OnResourceChanged;
 
+    // 💥 최초 시작 여부를 판단하는 동적 상태 변수
+    private bool _isFirstStart = true;
+
     public ResourceManager()
     {
-        _resources[ResourceType.Frontier] = new ResourceData("개척 데이터", 1000);
-        _resources[ResourceType.Wood] = new ResourceData("목재", 100);
-        _resources[ResourceType.Ore] = new ResourceData("광석", 100);
+        _resources[ResourceType.Frontier] = new ResourceData("개척 데이터", 10000);
+        _resources[ResourceType.Wood] = new ResourceData("목재", 1000);
+        _resources[ResourceType.Ore] = new ResourceData("광석", 1000);
         
-        // 로드 시도
         var loadData = new ResourceSaveData();
-        // SaveLoadSystem의 GetPath와 Key를 조합하여 경로 생성 (시스템 수정 없이 대응)
         string saveKey = loadData.Key;
-        string path = Path.Combine(Application.dataPath, "Data", "Save", $"{saveKey}.json");
-        
 
-        if (File.Exists(path))
+        if (SaveLoadSystem.HasSave(saveKey))
         {
             try 
             {
@@ -37,7 +36,11 @@ public class ResourceManager
                 _resources[ResourceType.Frontier].Current = loadData.frontierCur;
                 _resources[ResourceType.Wood].Current = loadData.woodCur;
                 _resources[ResourceType.Ore].Current = loadData.oreCur;
-                Debug.Log("ResourceManager: 데이터 로드 성공");
+
+                // 💥 세이브가 존재하므로 최초 시작이 아님을 마킹
+                _isFirstStart = false;
+
+                Debug.Log("ResourceManager: 기존 데이터 로드 완료 (최초 지급 스킵)");
             }
             catch (Exception e)
             {
@@ -46,20 +49,31 @@ public class ResourceManager
         }
         else 
         {
-            Debug.Log("ResourceManager: 기존 세이브 없음. 기본값으로 시작.");
+            Debug.Log("ResourceManager: 기존 세이브 없음. 순수 신규 게임으로 인지.");
+        }
+
+        // 💥 [핵심 기획 반영] 순수 새 게임 시작일 때만 단 한 번 보너스 재화 다이렉트 할당
+        if (_isFirstStart)
+        {
+            Debug.Log("<color=yellow>[최초 실행]</color> 새 게임 시작 보너스 자원을 1회 한정 지급합니다.");
+            
+            // 초기 세팅치 최대 보유량 범위 안에서 안전하게 추가 정산되도록 오버로드 연산
+            Admin_AddAllResources(10000); 
+            
+            // 지급 후 다음 프레임이나 재실행 시 다시 호출되지 않도록 즉시 false 락 처리
+            _isFirstStart = false;
         }
     }
 
-    // 기존 프로퍼티 유지 (호환성)
     public int FrontierData => _resources[ResourceType.Frontier].Current;
     public int Wood => _resources[ResourceType.Wood].Current;
     public int Ore => _resources[ResourceType.Ore].Current;
 
     public void ExpandCapacities(int fAdd, int wAdd, int oAdd)
     {
-        _resources[ResourceType.Frontier].Max += fAdd;
-        _resources[ResourceType.Wood].Max += wAdd;
-        _resources[ResourceType.Ore].Max += oAdd;
+        _resources[ResourceType.Frontier].Max = fAdd;
+        _resources[ResourceType.Wood].Max = wAdd;
+        _resources[ResourceType.Ore].Max = oAdd;
         NotifyAll();
     }
 
@@ -71,7 +85,6 @@ public class ResourceManager
         NotifyAll();
     }
 
-    // 기존 메서드 보존 (기능 유지)
     public void AddFrontierData(int amount) => AddResource(ResourceType.Frontier, amount);
     public void AddMaterials(int wood, int ore) { AddResource(ResourceType.Wood, wood); AddResource(ResourceType.Ore, ore); }
     
@@ -97,7 +110,7 @@ public class ResourceManager
     {
         foreach (var res in _resources) OnResourceChanged?.Invoke(res.Key, res.Value);
         
-        // 세이브 추가
+        // 세이브 데이터 규격 조립
         var resSave = new ResourceSaveData {
             frontierCur = FrontierData, woodCur = Wood, oreCur = Ore,
             frontierMax = _resources[ResourceType.Frontier].Max, woodMax = _resources[ResourceType.Wood].Max, oreMax = _resources[ResourceType.Ore].Max

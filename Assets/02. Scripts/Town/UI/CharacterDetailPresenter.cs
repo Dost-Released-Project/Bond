@@ -1,7 +1,9 @@
 using System;
 using Bond.UI;
+using Cysharp.Threading.Tasks;
 using Reactions;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UIElements;
 using VContainer;
 
@@ -23,10 +25,16 @@ namespace Bond.UI
         private Label _titleLabel;
         private Label _classLevelLabel;
 
+        private Image  _portrait;
+        private string _portraitAddress;
+
         private Button        _roleBtnCurrent;
         private VisualElement _rolePicker;
         private Button        _roleOptTanker, _roleOptDealer, _roleOptSupporter;
         private bool _rolePickerOpen;
+
+        private VisualElement _controlSeg;
+        private Button        _segManualBtn, _segAutoBtn;
 
         private Label _baseStatStr, _baseStatAgi, _baseStatInt;
         private Label _statHp, _statDef, _statAtk, _statSpd;
@@ -83,6 +91,8 @@ namespace Bond.UI
             };
 
             _classLevelLabel = root.Q<Label>("char-detail__class-level");
+            _portrait        = root.Q<Image>("char-detail__portrait");
+            _portrait.scaleMode = ScaleMode.ScaleAndCrop;   // 고정 박스에 맞춰 채우고 넘치면 크롭
 
             _roleBtnCurrent   = root.Q<Button>("role-btn-current");
             _rolePicker       = root.Q("char-detail__role-picker");
@@ -94,6 +104,12 @@ namespace Bond.UI
             _roleOptTanker.clicked    += () => { _controller.SetRole(RoleType.Tanker);    CloseRolePicker(); };
             _roleOptDealer.clicked    += () => { _controller.SetRole(RoleType.Dealer);    CloseRolePicker(); };
             _roleOptSupporter.clicked += () => { _controller.SetRole(RoleType.Supporter); CloseRolePicker(); };
+
+            _controlSeg   = root.Q("control-mode");
+            _segManualBtn = root.Q<Button>("control-seg-manual");
+            _segAutoBtn   = root.Q<Button>("control-seg-auto");
+            _segManualBtn.clicked += () => SetControlMode(true);
+            _segAutoBtn.clicked   += () => SetControlMode(false);
 
             _baseStatStr = root.Q<Label>("base-stat-str");
             _baseStatAgi = root.Q<Label>("base-stat-agi");
@@ -287,6 +303,10 @@ namespace Bond.UI
             _roleBtnCurrent.pickingMode = fullEdit ? PickingMode.Position : PickingMode.Ignore;
             if (!fullEdit) CloseRolePicker();
 
+            _controlSeg.EnableInClassList("char-detail__control-seg--disabled", !fullEdit);
+            _segManualBtn.pickingMode = fullEdit ? PickingMode.Position : PickingMode.Ignore;
+            _segAutoBtn.pickingMode   = fullEdit ? PickingMode.Position : PickingMode.Ignore;
+
             _equipSlots.SetEditable(canEquip);
 
             for (int i = 0; i < 6; i++)
@@ -332,6 +352,7 @@ namespace Bond.UI
         {
             if (_character == null) return;
             RefreshIdentity();
+            RefreshControlMode();
             RefreshStats();
             RefreshTraits();
             RefreshSkillGrid();
@@ -350,6 +371,8 @@ namespace Bond.UI
             string profName = _character.Profession?.Name ?? "—";
             _classLevelLabel.text = $"{profName}  Lv.{_character.Level}";
 
+            RefreshPortrait();
+
             _roleBtnCurrent.RemoveFromClassList("char-detail__role-current--tanker");
             _roleBtnCurrent.RemoveFromClassList("char-detail__role-current--dealer");
             _roleBtnCurrent.RemoveFromClassList("char-detail__role-current--supporter");
@@ -358,22 +381,44 @@ namespace Bond.UI
             switch (_character.RoleType)
             {
                 case RoleType.Tanker:
-                    _roleBtnCurrent.text = "탱커 ▶";
+                    _roleBtnCurrent.text = "탱커";
                     _roleBtnCurrent.AddToClassList("char-detail__role-current--tanker");
                     break;
                 case RoleType.Dealer:
-                    _roleBtnCurrent.text = "딜러 ▶";
+                    _roleBtnCurrent.text = "딜러";
                     _roleBtnCurrent.AddToClassList("char-detail__role-current--dealer");
                     break;
                 case RoleType.Supporter:
-                    _roleBtnCurrent.text = "서포터 ▶";
+                    _roleBtnCurrent.text = "서포터";
                     _roleBtnCurrent.AddToClassList("char-detail__role-current--supporter");
                     break;
                 default:
-                    _roleBtnCurrent.text = "미설정 ▶";
+                    _roleBtnCurrent.text = "미설정";
                     _roleBtnCurrent.AddToClassList("char-detail__role-current--none");
                     break;
             }
+        }
+
+        /// <summary>대기 이미지를 초상화에 로드. 주소가 같으면 재로드하지 않는다(역할 변경 등으로 RefreshIdentity가 재호출돼도 중복 로드 방지).</summary>
+        private void RefreshPortrait()
+        {
+            if (_portrait == null) return;
+
+            string address = _character?.EffectiveIdleImageAddress;
+            if (address == _portraitAddress) return;
+            _portraitAddress = address;
+
+            _portrait.sprite = null;   // 이전 초상화 제거
+            if (!string.IsNullOrEmpty(address))
+                LoadPortraitAsync(address).Forget();
+        }
+
+        private async UniTaskVoid LoadPortraitAsync(string address)
+        {
+            var sprite = await Addressables.LoadAssetAsync<Sprite>(address).ToUniTask();
+            // 로드가 끝나기 전에 캐릭터가 바뀌었으면 폐기(경합 방지)
+            if (sprite == null || _portrait == null || _portraitAddress != address) return;
+            _portrait.sprite = sprite;
         }
 
         private void RefreshStats()
@@ -496,7 +541,7 @@ namespace Bond.UI
                 return;
             }
 
-            _reactionReactionVals[i].text = def?.DisplayName ?? "(정의 없음)";
+            _reactionReactionVals[i].text = def?.Description ?? "(정의 없음)";
             _reactionReactionVals[i].RemoveFromClassList("char-detail__slot-part-val--placeholder");
 
             bool hasObserve = _controller.HasObserveEditable(i);
@@ -556,7 +601,7 @@ namespace Bond.UI
             }
 
             _reactionSlots[i].RemoveFromClassList("char-detail__reaction-slot--locked");
-            _reactionReactionVals[i].text = def?.DisplayName ?? "(정의 없음)";
+            _reactionReactionVals[i].text = def?.Description ?? "(정의 없음)";
             _reactionReactionVals[i].RemoveFromClassList("char-detail__slot-part-val--placeholder");
 
             bool hasObserve = _controller.HasObserveEditable(i);
@@ -606,6 +651,22 @@ namespace Bond.UI
             _rolePicker.RemoveFromClassList("char-detail__role-picker--open");
         }
 
+        private void SetControlMode(bool manual)
+        {
+            if (_editMode != CharacterDetailEditMode.FullEdit || _character == null) return;
+            _controller.SetPlayable(manual);
+            RefreshControlMode();
+        }
+
+        /// <summary>현재 캐릭터의 isPlayable 을 세그먼트 활성 칸에 반영. true=수동(플레이어 조작), false=자동(AI 위임).</summary>
+        private void RefreshControlMode()
+        {
+            if (_character == null) return;
+            bool manual = _character.isPlayable;
+            _segManualBtn.EnableInClassList("char-detail__control-seg__opt--active", manual);
+            _segAutoBtn.EnableInClassList("char-detail__control-seg__opt--active", !manual);
+        }
+
         private void TogglePool(int slotIndex, string part)
         {
             if (_openPoolSlot == slotIndex && _openPoolPart == part)
@@ -620,24 +681,24 @@ namespace Bond.UI
             var pool = _reactionPools[slotIndex];
             if (pool == null) return;
 
-            var header = new VisualElement();
-            header.AddToClassList("char-detail__pool-header");
-
-            var title = new Label(part switch
-            {
-                "reaction" => "리액션",
-                "observe"  => "관찰 대상",
-                "skill"    => "행동",
-                _ => ""
-            });
-            title.AddToClassList("char-detail__pool-title");
-            header.Add(title);
-
-            var closeBtn = new Button(CloseAllPools);
-            closeBtn.AddToClassList("char-detail__pool-close-btn");
-            closeBtn.text = "닫기 ×";
-            header.Add(closeBtn);
-            pool.Add(header);
+            // var header = new VisualElement();
+            // header.AddToClassList("char-detail__pool-header");
+            //
+            // var title = new Label(part switch
+            // {
+            //     "reaction" => "리액션",
+            //     "observe"  => "관찰 대상",
+            //     "skill"    => "행동",
+            //     _ => ""
+            // });
+            // title.AddToClassList("char-detail__pool-title");
+            // header.Add(title);
+            //
+            // var closeBtn = new Button(CloseAllPools);
+            // closeBtn.AddToClassList("char-detail__pool-close-btn");
+            // closeBtn.text = "닫기 ×";
+            // header.Add(closeBtn);
+            // pool.Add(header);
 
             var chips = new VisualElement();
             chips.AddToClassList("char-detail__pool-chips");

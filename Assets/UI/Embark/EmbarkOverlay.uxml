@@ -21,9 +21,10 @@
 
                 <ui:VisualElement class="embark__step1-left">
 
-                    <!-- 지도 플레이스홀더 -->
+                    <!-- 지도 영역: 탐사 지역 선택 -->
                     <ui:VisualElement name="map-placeholder" class="embark__map-placeholder">
-                        <ui:Label class="embark__map-placeholder__label" text="지도 — 추후 구현 예정" />
+                        <ui:Label class="embark__map-title" text="탐사 지역 선택" />
+                        <ui:ScrollView name="embark__region-list" class="embark__region-list" />
                     </ui:VisualElement>
 
                     <!-- 목적지 정보 바 -->
@@ -62,7 +63,7 @@
 
                 <!-- 탐사 보급품 (우) -->
                 <ui:VisualElement class="embark__inventory-panel">
-                    <ui:Label class="embark__inventory-panel__title" text="탐사 보급품" />
+                    <ui:Label class="embark__inventory-panel__title" text="탐사 보급품" name="embark__exp-name" />
                     <ui:ScrollView class="embark__inventory-scroll">
                         <ui:VisualElement name="embark__raid-supplies__list" class="embark__inventory-list" />
                     </ui:ScrollView>
@@ -77,7 +78,7 @@
 
             <ui:VisualElement name="embark__footer--step1" class="embark__footer-row">
                 <ui:Button name="btn-cancel" class="embark__btn-secondary" text="← 취소" />
-                <ui:Label class="embark__footer-hint" text="대원을 선택하고 다음 단계로 이동하세요." />
+                <ui:Label class="embark__footer-hint" text="탐사 지역과 대원을 선택하고 다음 단계로 이동하세요." />
                 <ui:Button name="btn-next" class="embark__btn-action" text="다음 단계 →" />
             </ui:VisualElement>
 
