@@ -25,8 +25,8 @@ MonoBehaviour:
   Def: 20
   Speed: 20
   Cri: 40
-  Acc: 30
-  Eva: 20
+  Acc: 15
+  Eva: 10
   SpAtk: 10
   SkillIds:
   - 01010000
