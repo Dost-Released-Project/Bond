@@ -494,7 +494,9 @@ public partial class BaseCharacter : ITurnUseUnit
     
     public async UniTask ExecuteReaction(ReactionExecution execution, BattleContext context, IBattleManager battleManager = null)
     {
-        if (execution?.Reaction?.Effect == null) return;
+        if (execution?.Reaction == null) return;
+        var eff = execution.Reaction.EffectFor(execution.Result);
+        if (eff == null) return; // 미저작만 스킵 — NoAction(무행동)은 연출은 재생하고 행동만 생략한다
 
         Debug.Log($"<color=lightblue>{Name} 리액션 시작!</color>");
 
@@ -524,7 +526,7 @@ public partial class BaseCharacter : ITurnUseUnit
             await UniTask.Delay(500); // 연출 감상 대기 (기존 공격 연출 딜레이와 동일하게)
         }
 
-        await execution.Reaction.Effect.Apply(this, execution, context);
+        await eff.Apply(this, execution, context);
         
         Debug.Log($"<color=lightblue>{Name} 리액션 완료!</color>");
 

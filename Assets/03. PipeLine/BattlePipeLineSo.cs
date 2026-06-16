@@ -270,7 +270,9 @@ namespace PipeLine
                     await execution.Agent.ExecuteReaction(execution, context, reactionSystem.BattleManager);
                     execution.Agent.IncrementReactionCount(); // '연속' 리액션 카운트 증가 (자기 턴에 리셋)
                     if (execution.Result == ReactionResult.Anomaly)
-                        execution.Agent.MarkAnomaly(); // 아군 돌발 관찰용 플래그
+                        execution.Agent.MarkAnomaly(); // 아군 돌발(특이행동) 관찰용 플래그
+                    else if (execution.Result == ReactionResult.BondAwakening)
+                        Debug.Log($"<color=cyan>[유대적 각성]</color> {execution.Agent.Name} 의 성향이 강화 행동으로 발현. (전용 연출 훅 자리)");
                 }
             }
             return context;

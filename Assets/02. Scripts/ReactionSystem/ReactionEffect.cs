@@ -22,6 +22,21 @@ namespace Reactions
     }
 
     /// <summary>
+    /// 행동 없음 — 실제 효과는 수행하지 않고, 연출(포커스/글리치)만 재생되게 하는 명시적 "무행동" 효과.
+    /// 스윙 분기에서 "기존 행동을 하지 않음"(역할의 특이행동 등)을 표현할 때 사용. null(미저작)과 구분된다.
+    /// </summary>
+    [Serializable][AddTypeMenu("No Action (연출만)", -1100)]
+    public class NoActionReactionEffect : ReactionEffect
+    {
+        public override UniTask Apply(BaseCharacter reactor, ReactionExecution execution, BattleContext originalContext)
+            => UniTask.CompletedTask;
+
+        public override string Description => "행동 없음 (연출만)";
+
+        public override ReactionEffect Clone() => new NoActionReactionEffect();
+    }
+
+    /// <summary>
     /// 기존 동작: reactor 의 스킬을 새 BattleContext 로 발동.
     /// 대상은 매치된 관찰 대상(Observed) 또는 원본의 caster/target.
     /// </summary>

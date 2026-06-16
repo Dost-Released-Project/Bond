@@ -58,7 +58,7 @@ namespace Reactions
     /// <summary>
     /// 행동 스킬을 플레이어가 지정 → SkillCastReactionEffect.SkillIndex 를 채운다.
     /// 후보는 reactor 가 장착한 스킬(BaseCharacter.Skills) 중 AllowedTypes 에 속하는 것.
-    /// 이 슬롯을 쓰는 정의의 Template.Effect 는 SkillCastReactionEffect 여야 한다.
+    /// 이 슬롯을 쓰는 정의의 Template.BaseEffect 는 SkillCastReactionEffect 여야 한다.
     /// </summary>
     [Serializable][AddTypeMenu("행동 스킬 (장착 스킬 지정)", -900)]
     public class ActionSkillEditableSlot : ReactionEditableSlot
@@ -86,16 +86,16 @@ namespace Reactions
 
         public void Apply(Reaction reaction, int skillIndex)
         {
-            if (reaction?.Effect is SkillCastReactionEffect cast)
+            if (reaction?.BaseEffect is SkillCastReactionEffect cast)
                 cast.SkillIndex = skillIndex;
         }
 
         public override bool IsFilled(Reaction reaction)
-            => reaction?.Effect is SkillCastReactionEffect cast && cast.SkillIndex >= 0;
+            => reaction?.BaseEffect is SkillCastReactionEffect cast && cast.SkillIndex >= 0;
 
         public override void Clear(Reaction reaction)
         {
-            if (reaction?.Effect is SkillCastReactionEffect cast) cast.SkillIndex = -1;
+            if (reaction?.BaseEffect is SkillCastReactionEffect cast) cast.SkillIndex = -1;
         }
 
         public override string Description
