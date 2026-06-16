@@ -16,6 +16,11 @@ public class EffectSpritePlayer : MonoBehaviour
 
     private void Awake()
     {
+        if (_spriteRenderer == null)
+        {
+            _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        }
+
         _destroyToken = destroyCancellationToken;
     }
 
