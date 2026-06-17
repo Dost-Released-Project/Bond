@@ -202,5 +202,12 @@ namespace Bond.UI
             if (def == null) return true;
             return def.AllEditablesFilled(reaction);
         }
+
+        /// <summary>가방 인벤토리 슬롯에서 장신구 슬롯 방향으로 드래그 장착/스왑을 수행합니다.</summary>
+        public void EquipAccessoryFromDrag(IInventory sourceInventory, int invIndex, int charSlotIndex)
+        {
+            if (_character == null) return;
+            _itemService.EquipFromDrag(sourceInventory, invIndex, charSlotIndex);
+        }
     }
 }
