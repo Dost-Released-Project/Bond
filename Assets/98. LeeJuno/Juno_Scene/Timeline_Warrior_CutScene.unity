@@ -679,6 +679,10 @@ PrefabInstance:
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3073034494909163762, guid: ec72674a87a12414c8c81e6ef2a081e9, type: 3}
+      propertyPath: _ignoreTimeScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5982904903607836105, guid: ec72674a87a12414c8c81e6ef2a081e9, type: 3}
       propertyPath: m_Name
       value: RedSlice1
@@ -1185,6 +1189,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1884799415}
   - component: {fileID: 1884799414}
+  - component: {fileID: 1884799416}
   m_Layer: 0
   m_Name: ==TimeLine==
   m_TagString: Untagged
@@ -1203,7 +1208,7 @@ PlayableDirector:
   serializedVersion: 3
   m_PlayableAsset: {fileID: 11400000, guid: 3e370eeb3f9ce164db661e27ce0feb30, type: 2}
   m_InitialState: 1
-  m_WrapMode: 0
+  m_WrapMode: 2
   m_DirectorUpdateMode: 1
   m_InitialTime: 0
   m_SceneBindings:
@@ -1247,6 +1252,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1884799416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1884799413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ef213bc6eec3d447a28c8fe2fe1b352, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillCutSceneController
+  _director: {fileID: 1884799414}
 --- !u!1 &1928046706
 GameObject:
   m_ObjectHideFlags: 0
@@ -1488,6 +1506,10 @@ PrefabInstance:
     - target: {fileID: 686575094102818458, guid: 86a82ad969ede634abbec359a5084054, type: 3}
       propertyPath: m_Name
       value: RedSlice2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3006687993225194080, guid: 86a82ad969ede634abbec359a5084054, type: 3}
+      propertyPath: _ignoreTimeScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6758663651794348485, guid: 86a82ad969ede634abbec359a5084054, type: 3}
       propertyPath: m_Size.x

@@ -1080,6 +1080,7 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   _ui: {fileID: 1521924634}
+  _skillCutSceneConfig: {fileID: 11400000, guid: 0047c455c9d58ea4bad7f9ad712a4aa3, type: 2}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1300,7 +1301,7 @@ Canvas:
   m_GameObject: {fileID: 1127401137}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 330585545}
   m_PlaneDistance: 100
   m_PixelPerfect: 0

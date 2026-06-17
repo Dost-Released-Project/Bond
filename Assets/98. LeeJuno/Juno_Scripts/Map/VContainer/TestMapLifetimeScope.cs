@@ -22,7 +22,6 @@ public class TestMapLifetimeScope : LifetimeScope
 {
     [SerializeField] private MapUIController mapUIController;
     [SerializeField] private JournalUIView _journalUIPrefab;
-    [SerializeField] private SkillCutSceneConfig _skillCutSceneConfig;
 
     protected override void Configure(IContainerBuilder builder)
     {
@@ -57,16 +56,6 @@ public class TestMapLifetimeScope : LifetimeScope
 
         // Config 로드 + 맵 생성 담당 EntryPoint
         builder.RegisterEntryPoint<MapInitializer>();
-
-        // SkillCutSceneConfig SO 등록 — Inspector 슬롯에서 연결된 에셋을 DI 컨테이너에 주입한다
-        if (_skillCutSceneConfig != null)
-            builder.RegisterComponent(_skillCutSceneConfig);
-        else
-            Debug.LogError("[TestMapLifetimeScope] _skillCutSceneConfig 가 연결되지 않았습니다.", this);
-
-        // SkillCutSceneInjector: 전투 시작 시 onBattleAction 래핑을 담당하는 서비스
-        // AsImplementedInterfaces(): IStartable, IDisposable 로 VContainer EntryPoint 수명에 연결된다
-        builder.Register<SkillCutSceneInjector>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
 
         // 탐사 일지 팝업 UI 등록 — 탐사 종료 후 일지를 표시한다
         // Inspector 에서 _journalUIPrefab 슬롯에 JournalUIView 프리팹 연결 필요
