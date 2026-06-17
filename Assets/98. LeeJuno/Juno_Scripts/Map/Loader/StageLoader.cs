@@ -40,6 +40,11 @@ public class StageLoader : IStageLoader
     private bool _hasLoadedScene;               // 현재 로드된 씬이 있는지 여부
     private bool _isLoading;                    // 비동기 로딩 진행 중 여부 (이중 호출 방지)
 
+    // 컷씬 전용 필드 — _currentScene / _hasLoadedScene / _isLoading 과 완전 분리
+    private SceneInstance _cutSceneInstance;    // 로드된 컷씬 씬 인스턴스
+    private bool _hasCutScene;                  // 컷씬이 현재 로드되어 있는지 여부
+    private bool _isCutSceneLoading;            // 컷씬 비동기 처리 진행 중 여부 (이중 호출 방지)
+
     // 전투 결과 로그 기록용 — NotifyStageCompleted 시점에 사용
     private bool _isBattleStage = false;                  // 현재 로드된 스테이지가 전투 씬인지 여부
     private bool _isEventBattle = false;                  // 이벤트 선택으로 전환된 전투인지 여부 — 일반 전투와 구분해 로그 합산 여부를 결정한다
@@ -204,6 +209,101 @@ public class StageLoader : IStageLoader
         finally
         {
             _isLoading = false;
+        }
+    }
+
+    /// <summary>
+    /// 스킬 컷씬을 Additive 방식으로 로드하고 타임라인 재생 완료까지 대기한 뒤 언로드한다.
+    /// 반환 시점에 컷씬 로드·재생·언로드가 모두 완료되어 있음이 보장된다(자기완결형).
+    /// 전투씬(_currentScene)은 건드리지 않으며 전투씬 로딩 플래그(_isLoading)와도 독립적이다.
+    /// skillId 는 로그 식별용, sceneId 는 Addressables 키로 사용한다.
+    /// </summary>
+    public async UniTask LoadSkillCutScene(string skillId, string sceneId)
+    {
+        // 컷씬 전용 이중 호출 방지 — _isLoading 과 독립적으로 동작한다
+        if (_isCutSceneLoading)
+        {
+            Debug.LogWarning($"[StageLoader] LoadSkillCutScene — 이미 컷씬 로딩 중입니다. skillId={skillId}");
+            return;
+        }
+
+        _isCutSceneLoading = true;
+
+        // 타임라인 종료 신호를 UniTask로 수신하기 위한 CompletionSource
+        UniTaskCompletionSource<StageResult> cutSceneTcs = new UniTaskCompletionSource<StageResult>();
+
+        // 람다식: 정적 채널 콜백을 로컬 TCS 와 연결하기 위해 사용 — 별도 메서드로 분리하면 TCS 참조를 캡처할 수 없다
+        Action<StageResult> onCutSceneCompleted = (StageResult result) =>
+        {
+            cutSceneTcs.TrySetResult(result);
+        };
+
+        try
+        {
+            Debug.Log($"[StageLoader] LoadSkillCutScene 시작 — skillId={skillId}, sceneId={sceneId}");
+
+            // 이전에 컷씬이 잔류한 경우 먼저 정리한다 (비정상 종료 복구)
+            if (_hasCutScene)
+                await UnloadCutSceneInternal();
+
+            // 타임라인 종료 신호 채널에 컷씬 전용 콜백 등록
+            // 스택 방식이므로 LoadStage 가 등록한 NotifyStageCompleted 는 유지된다
+            StageCompletionChannel.Register(onCutSceneCompleted);
+
+            // 컷씬 씬 Additive 로드 — _currentScene(전투씬)은 건드리지 않는다
+            AsyncOperationHandle<SceneInstance> handle =
+                Addressables.LoadSceneAsync(sceneId, LoadSceneMode.Additive);
+
+            try
+            {
+                _cutSceneInstance = await handle.ToUniTask();
+                _hasCutScene = true;
+            }
+            catch (Exception e)
+            {
+                StageCompletionChannel.Unregister();
+                Debug.LogError($"[StageLoader] 컷씬 로드 실패: {e.Message}");
+                _hasCutScene = false;
+                throw;
+            }
+
+            // 타임라인 종료 신호 대기 — 컷씬 씬 내부에서 StageCompletionChannel.Invoke() 호출 시 해제
+            StageResult cutSceneResult = await cutSceneTcs.Task;
+            Debug.Log($"[StageLoader] 컷씬 타임라인 종료 수신 — skillId={skillId}, IsSuccess={cutSceneResult.IsSuccess}");
+
+            // 컷씬 언로드 — UnloadCutSceneInternal 내부에서 Pop() 으로 onCutSceneCompleted 를 제거한다
+            // 스택에는 LoadStage 가 등록한 NotifyStageCompleted 가 자동 복구된다
+            await UnloadCutSceneInternal();
+        }
+        finally
+        {
+            _isCutSceneLoading = false;
+        }
+    }
+
+    /// <summary>
+    /// 컷씬 씬 언로드 내부 구현.
+    /// StageCompletionChannel 스택에서 컷씬 콜백을 Pop 하고 _cutSceneInstance 를 언로드한다.
+    /// </summary>
+    private async UniTask UnloadCutSceneInternal()
+    {
+        StageCompletionChannel.Unregister();
+
+        if (_hasCutScene == false)
+            return;
+
+        try
+        {
+            await Addressables.UnloadSceneAsync(_cutSceneInstance).ToUniTask();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[StageLoader] 컷씬 언로드 실패: {e.Message}");
+            throw;
+        }
+        finally
+        {
+            _hasCutScene = false;
         }
     }
 

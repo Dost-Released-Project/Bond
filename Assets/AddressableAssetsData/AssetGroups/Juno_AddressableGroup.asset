@@ -80,6 +80,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7db83319fa9956a4cbdce6500d4cc620
+    m_Address: Timeline_Warrior_CutScene
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 87fa9ee5570c7e445ac5df9d9fb746aa
     m_Address: EventBattleConfig
     m_ReadOnly: 0
