@@ -15,6 +15,7 @@ using UnityEngine.Playables;
 public class SkillCutSceneController : MonoBehaviour
 {
     [SerializeField] private PlayableDirector _director;
+    [SerializeField] private SpriteRenderer _enemyRenderer;
 
     private bool _hasInvoked;
 
@@ -57,6 +58,17 @@ public class SkillCutSceneController : MonoBehaviour
 
         if (isNearEnd)
             NotifyCompletion();
+    }
+
+    public void SetEnemySprite(Sprite sprite)
+    {
+        if (_enemyRenderer == null)
+        {
+            Debug.LogWarning("[SkillCutSceneController] _enemyRenderer 가 연결되지 않았습니다. Inspector 에서 SpriteRenderer 를 연결하세요.");
+            return;
+        }
+
+        _enemyRenderer.sprite = sprite;
     }
 
     private void OnDirectorStopped(PlayableDirector director)

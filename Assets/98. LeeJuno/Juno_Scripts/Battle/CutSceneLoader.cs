@@ -32,6 +32,7 @@ public class CutSceneLoader
 
     private SceneInstance _cutSceneInstance;
     private bool _hasCutScene;
+    private AsyncOperationHandle<Sprite> _spriteHandle;
 
     public CutSceneLoader()
     {
@@ -44,7 +45,7 @@ public class CutSceneLoader
     /// 반환 시점에 씬 로드·재생·언로드가 모두 완료되어 있음이 보장된다(자기완결형).
     /// </summary>
     /// <param name="sceneId">Addressables 씬 주소.</param>
-    public async UniTask Load(string sceneId)
+    public async UniTask Load(string sceneId, string spriteAddress = null)
     {
         if (_isLoading)
         {
@@ -82,6 +83,10 @@ public class CutSceneLoader
             {
                 _cutSceneInstance = await handle.ToUniTask();
                 _hasCutScene = true;
+
+                // 적 스프라이트 주소가 있으면 로드 후 컨트롤러에 주입한다
+                if (string.IsNullOrEmpty(spriteAddress) == false)
+                    await InjectEnemySpriteAsync(spriteAddress);
             }
             catch (Exception e)
             {
@@ -104,6 +109,10 @@ public class CutSceneLoader
             // 예외·정상 경로 모두에서 시간·컴포넌트를 반드시 복구한다
             RestoreSceneComponents();
             Time.timeScale = 1f;
+
+            if (_spriteHandle.IsValid())
+                Addressables.Release(_spriteHandle);
+
             _isLoading = false;
         }
     }
@@ -139,6 +148,27 @@ public class CutSceneLoader
     /// 컷씬 씬이 화면을 독점할 수 있도록 다른 씬 UI·사운드·입력을 차단한다.
     /// 비활성화한 컴포넌트는 _disabledBehaviours 에 캐시해 복구 시 사용한다.
     /// </summary>
+    private async UniTask InjectEnemySpriteAsync(string spriteAddress)
+    {
+        _spriteHandle = Addressables.LoadAssetAsync<Sprite>(spriteAddress);
+        await _spriteHandle.ToUniTask();
+
+        if (_spriteHandle.Status != AsyncOperationStatus.Succeeded)
+        {
+            Debug.LogWarning($"[CutSceneLoader] 적 스프라이트 로드 실패: {spriteAddress}");
+            return;
+        }
+
+        SkillCutSceneController controller = UnityEngine.Object.FindFirstObjectByType<SkillCutSceneController>();
+        if (controller == null)
+        {
+            Debug.LogWarning("[CutSceneLoader] SkillCutSceneController 를 찾을 수 없습니다.");
+            return;
+        }
+
+        controller.SetEnemySprite(_spriteHandle.Result);
+    }
+
     private void DisableSceneComponents()
     {
         _disabledBehaviours.Clear();

@@ -66,7 +66,11 @@ public class SkillCutSceneInjector
 
                     if (_config.TryGetSceneId(skillId, out sceneId))
                     {
-                        await _cutSceneLoader.Load(sceneId);
+                        string spriteAddress = null;
+                        if (context.target != null)
+                            spriteAddress = context.target.IdleImageAddress;
+
+                        await _cutSceneLoader.Load(sceneId, spriteAddress);
                     }
                 }
 
