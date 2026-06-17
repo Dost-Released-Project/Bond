@@ -20,6 +20,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1cbb3f6bb198b6e4c88e1801666ebd64
+    m_Address: CampFood
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 24636dac66f23f64ca7f2468a6d054ec
     m_Address: ShoddyNectar
     m_ReadOnly: 0

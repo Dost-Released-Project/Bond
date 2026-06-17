@@ -56,4 +56,21 @@ public class CharacterCombatPanelController
     {
         SetMyTurn(true);
     }
+
+    /// <summary>탐사 가방 인벤토리 슬롯에서 장신구 슬롯 방향으로 드래그 장착/스왑을 수행합니다.</summary>
+    public void EquipAccessoryFromDrag(IInventory sourceInventory, int invIndex, int charSlotIndex, CharacterItemService itemService)
+    {
+        if (_character == null) return;
+    
+        // CharacterDetailController가 사용하던 규칙과 완전히 동일하게 
+        // CharacterItemService를 찔러 인벤토리 풀 상태 스왑 장착 연산을 대행시킵니다.
+        itemService.EquipFromDrag(sourceInventory, invIndex, charSlotIndex);
+    }
+
+    public void UnequipAccessory(int accSlotIndex, ExpeditionInventory supplies, CharacterItemService itemService)
+    {
+        // AccessoryItem은 인벤토리에서 관리되므로 목적지 IInventory를 Presenter에서 전달받는다
+        if (_character == null) return;
+        itemService.UnequipToInventory(_character, accSlotIndex, supplies);
+    }
 }

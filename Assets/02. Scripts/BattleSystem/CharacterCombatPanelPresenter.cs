@@ -5,6 +5,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.UIElements;
 using VContainer;
 using BattleSystem.UI;
+using Bond.Expedition;
 
 public class CharacterCombatPanelPresenter : MonoBehaviour
 {
@@ -13,8 +14,11 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
     private CharacterCombatPanelController _controller;
     private CharacterDetailPresenter _detailPresenter;
     private ICharacterSelector _selector;
+    private ExpeditionPayload _payload;
     private EquipSlotsPresenter _equipSlots;
     private SkillTooltipView _skillTooltipView;
+    private InventoryTransferService _transferService;
+    private CharacterItemService _itemService;
 
     private VisualElement _root;
     private VisualElement _charIcon;
@@ -44,10 +48,16 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
     [Inject]
     public void Construct(
         CharacterDetailPresenter detailPresenter,
-        ICharacterSelector selector)
+        ICharacterSelector selector,
+        ExpeditionPayload payload,
+        CharacterItemService itemService,
+        InventoryTransferService transferService)
     {
         _detailPresenter  = detailPresenter;
         _selector         = selector;
+        _payload          = payload;
+        _itemService      = itemService;
+        _transferService  = transferService;
     }
 
     private void Start()
@@ -92,6 +102,39 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
         {
             _equipSlots = new EquipSlotsPresenter(equipMount, _root);
             _equipSlots.SetEditable(false);
+            
+            // [멀티 씬/어드레서블 서브 씬 완벽 대응 배리어]
+            // GetActiveScene()에 매달리지 않고, 현재 엔진에 로드되어 있는 모든 씬(서브 씬 포함)을 전부 스캔합니다.
+            // 어드레서블 키 주소 명세에 따라, 로드된 씬 중 이름이 "Stage_Camp"인 녀석이 단 하나라도 존재하는지 찾아냅니다.
+            bool isCampScene = false;
+            int sceneCount = UnityEngine.SceneManagement.SceneManager.sceneCount;
+
+            for (int i = 0; i < sceneCount; i++)
+            {
+                var scene = UnityEngine.SceneManagement.SceneManager.GetSceneAt(i);
+                // 어드레서블 Key가 "Stage_Camp"로 박혀있으므로 scene.name과 완벽하게 일치하는 녀석이 있는지 검사합니다.
+                if (scene.IsValid() && scene.name == "Stage_Camp")
+                {
+                    isCampScene = true;
+                    break;
+                }
+            }
+            
+            // 검증 결과 반영: 오직 캠프 씬이 중첩 로드되어 메모리에 살아있을 때만 조작 배선을 개방합니다.
+            _equipSlots.SetEditable(isCampScene);
+
+            if (isCampScene)
+            {
+                // 중복 등록 방지를 위해 안전하게 한 번 해제 후 이벤트를 바인딩합니다.
+                _equipSlots.OnUnequipRequested -= HandleCombatEquipUnequip;
+                _equipSlots.OnUnequipRequested += HandleCombatEquipUnequip;
+
+                _equipSlots.OnDragStartRequested -= HandleCombatEquipDragStart;
+                _equipSlots.OnDragStartRequested += HandleCombatEquipDragStart;
+
+                _equipSlots.OnDragDropRequested -= HandleCombatEquipDragDrop;
+                _equipSlots.OnDragDropRequested += HandleCombatEquipDragDrop;
+            }
         }
 
         _controller.OnCharacterUpdated += BindCharacter;
@@ -323,6 +366,44 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
                 if (_skillSlots[idx].ClassListContains("combat-panel__skill-slot--inactive")) return;
                 _controller.SelectSkill(idx);
             });
+        }
+    }
+
+    // [우클릭 해제 정산]: 마우스 우클릭 시 탐사 가방(Supplies) 내부 빈 공간으로 수거 지시
+    private void HandleCombatEquipUnequip(int accSlotIndex)
+    {
+        if (_character != null && _payload != null && _payload.Supplies != null)
+        {
+            _controller.UnequipAccessory(accSlotIndex, _payload.Supplies, _itemService);
+        }
+    }
+
+    // [드래그 해제 개시]: 슬롯에서 마우스를 쥔 채 가방(ExpeditionInventoryView)으로 나갈 때 플래그 부팅
+    private void HandleCombatEquipDragStart(int accSlotIndex)
+    {
+        if (_transferService != null && _payload != null && _payload.Supplies != null)
+        {
+            _transferService.StartEquipmentDrag(accSlotIndex); 
+        
+            // 만약 탐사인벤토리 전용 독립 변수(IsDraggingFromEquipment = true)를 켜주는 함수가 
+            // 서비스 내부에 별도로 존재한다면 함께 찔러주어 신호를 일치시킵니다.
+        }
+    }
+
+    // [드래그 장착 정산]: 탐사 가방에서 아이템을 들고 와 이 장신구 슬롯에 떨어뜨렸을 때
+    private void HandleCombatEquipDragDrop(int accSlotIndex)
+    {
+        if (_transferService != null && _transferService.IsDragging)
+        {
+            IInventory sourceInv = _transferService.CurrentSourceInventory;
+            int sourceIdx = _transferService.CurrentDraggingIndex;
+
+            if (sourceInv != null && sourceIdx != -1)
+            {
+                // 우회 규칙에 맞추어 컨트롤러의 장착 창구를 노크합니다.
+                _controller.EquipAccessoryFromDrag(sourceInv, sourceIdx, accSlotIndex, _itemService);
+                _transferService.ResetDrag();
+            }
         }
     }
 

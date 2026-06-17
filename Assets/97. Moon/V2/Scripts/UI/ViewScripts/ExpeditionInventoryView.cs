@@ -150,43 +150,4 @@ public class ExpeditionInventoryView : MonoBehaviour
             _payload.SetSuplies(_payload.Supplies);
         }
     }
-    
-    private void LoadExpeditionInventory(params DataBaseSO[] dbs)
-    {
-        if (_payload == null || _payload.Supplies == null) return;
-        
-        var save = new InventorySaveData("exp_inv");
-        // SaveLoadSystem의 GetPath와 Key를 조합하여 경로 생성 (시스템 수정 없이 대응)
-        string saveKey = save.Key;
-        string path = Path.Combine(Application.dataPath, "Data", "Save", $"{saveKey}.json");
-
-        if (File.Exists(path))
-        {
-            try 
-            {
-                SaveLoadSystem.Load(save);
-                
-                // 1. 기존 슬롯을 완전히 비우고 저장된 용량만큼 재생성
-                _payload.Supplies.ClearAll(); 
-                _payload.Supplies.ExpandStorage(save.capacity); 
-
-                // 2. 아이템 복구
-                foreach (var s in save.slots)
-                {
-                    BaseItem item = dbs.Select(db => db.GetSO<BaseItem>(s.id)).FirstOrDefault(i => i != null);
-                    if (item != null) _payload.Supplies.AddItemAuto(item, s.count);
-                }
-                
-                Debug.Log("ExpeditionInventory: 데이터 로드 성공");
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"ExpeditionInventory: 로드 중 오류 발생 - {e.Message}");
-            }
-        }
-        else
-        {
-            Debug.Log("ExpeditionInventory: 기존 세이브 없음. 기본값으로 시작.");
-        }
-    }
 }
