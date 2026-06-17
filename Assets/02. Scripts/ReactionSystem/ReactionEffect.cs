@@ -416,4 +416,83 @@ namespace Reactions
 
         public override ReactionEffect Clone() => new ResetChainCountReactionEffect();
     }
+
+    /// <summary>
+    /// 무작위 공격: 리액터가 "현재 위치에서 사용 가능한, 적을 공격하는" 스킬 중 하나를 무작위로 골라 발동.
+    /// 제자리(현재 랭크)에서 쓸 수 있는 적 공격 스킬이 없으면 아무 행동도 하지 않는다.
+    /// 사용 가능 판정 = (Data.Target==Enemy) && (UseableSlots &amp; 현재 슬롯 rank) && (스킬 타겟 사거리에 대상 포함). 호전적(TRT_002) 등에서 사용.
+    /// </summary>
+    [Serializable][AddTypeMenu("Cast Random Attack Skill", -950)]
+    public class RandomAttackSkillReactionEffect : ReactionEffect
+    {
+        [Tooltip("공격 대상. 기본=전열(가장 가까운) 적.")]
+        public E_TargetFilter SkillTarget = E_TargetFilter.FrontmostEnemy;
+
+        public override async UniTask Apply(BaseCharacter reactor, ReactionExecution execution, BattleContext originalContext)
+        {
+            if (reactor == null || reactor.onBattleAction == null || reactor.CurrentSlot == null) return;
+
+            var target = ResolveTarget(reactor, execution, originalContext);
+            if (target == null || target.IsDead) return; // 공격할 적 없음 → 무행동
+
+            // 현재 위치(랭크)에서 사용 가능한, 적을 공격하는 스킬만 후보.
+            var candidates = new List<int>();
+            for (int i = 0; i < reactor.Skills.Length; i++)
+            {
+                var s = reactor.Skills[i];
+                if (s?.Data == null) continue;
+                if (s.Data.Target != global::SkillTarget.Enemy) continue;                  // 적 공격 스킬만
+                if ((s.Data.UseableSlots & (int)reactor.CurrentSlot.rank) == 0) continue;  // 제자리에서 사용 불가
+                if (!reactor.CanSkillTarget(s.Data, target)) continue;                     // 스킬 타겟 사거리(마스크)에 대상 미포함
+                candidates.Add(i);
+            }
+            if (candidates.Count == 0) return; // 제자리에서 공격할 수 없음 → 무행동
+
+            var skill = reactor.Skills[candidates[UnityEngine.Random.Range(0, candidates.Count)]];
+            var bc = new BattleContext(reactor, skill, false) { isReaction = true, target = target };
+            await reactor.onBattleAction.Invoke(bc);
+        }
+
+        private BaseCharacter ResolveTarget(BaseCharacter reactor, ReactionExecution execution, BattleContext context)
+        {
+            switch (SkillTarget)
+            {
+                case E_TargetFilter.Caster: return context.caster;
+                case E_TargetFilter.Target: return context.target;
+                case E_TargetFilter.FrontmostEnemy: return reactor.GetOpposingByRank(true);
+                case E_TargetFilter.BackmostEnemy: return reactor.GetOpposingByRank(false);
+                default:
+                    return (execution.MatchedSubjects != null && execution.MatchedSubjects.Count > 0)
+                        ? execution.MatchedSubjects[0] : null;
+            }
+        }
+
+        public override string Description => $"무작위 공격 스킬 → {SkillTarget}";
+
+        public override ReactionEffect Clone() => new RandomAttackSkillReactionEffect { SkillTarget = SkillTarget };
+    }
+
+    /// <summary>
+    /// 불협조: 리액터가 관찰 대상(아군)을 일정 턴 동안 "돕지 않는" 상태로 만든다.
+    /// 그 아군의 행동에 리액션하지 않고(Resolve 후보 제외), 그 아군을 대상으로 한 보조/보호 스킬도
+    /// 선택할 수 없게 된다(FormationManager 후보 제외 — 수동/자동 공통). 의심 많은(TRT_004) 등에서 사용.
+    /// </summary>
+    [Serializable][AddTypeMenu("Distrust Ally (불협조)", -280)]
+    public class DistrustReactionEffect : ReactionEffect
+    {
+        [Tooltip("불협조 지속(리액터 자기 턴 수). 1=이번 라운드.")]
+        public int DurationTurns = 1;
+
+        public override UniTask Apply(BaseCharacter reactor, ReactionExecution execution, BattleContext originalContext)
+        {
+            if (reactor != null && execution.MatchedSubjects != null)
+                foreach (var ally in execution.MatchedSubjects)
+                    reactor.ApplyDistrust(ally, DurationTurns);
+            return UniTask.CompletedTask;
+        }
+
+        public override string Description => $"관찰 대상 불협조 ({DurationTurns}턴)";
+
+        public override ReactionEffect Clone() => new DistrustReactionEffect { DurationTurns = DurationTurns };
+    }
 }

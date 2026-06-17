@@ -79,6 +79,7 @@ namespace Reactions
                     var matched = new List<BaseCharacter>();
                     foreach (var candidate in ResolveCandidates(reaction, owner, context, phase))
                     {
+                        if (owner.IsUncooperativeWith(candidate)) continue; // 불협조 대상에겐 리액션/보조/보호하지 않음
                         if (reaction.Trigger.CheckCondition(candidate, context))
                             matched.Add(candidate);
                     }

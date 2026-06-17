@@ -105,9 +105,17 @@ namespace Reactions.Authoring
         public static ReactionEffect CastSkill(E_TargetFilter to, int skillIndex = -1)
             => new SkillCastReactionEffect { SkillTarget = to, SkillIndex = skillIndex };
 
+        /// <summary>현재 위치에서 쓸 수 있는 적 공격 스킬 중 무작위 발동(없으면 무행동). 기본 대상=전열 적.</summary>
+        public static ReactionEffect CastRandomAttack(E_TargetFilter to = E_TargetFilter.FrontmostEnemy)
+            => new RandomAttackSkillReactionEffect { SkillTarget = to };
+
         /// <summary>리액션 봉인. self=true 면 리액터 자신, false 면 관찰 대상(Observed)을 봉인.</summary>
         public static ReactionEffect Seal(SealKind kind = SealKind.All, int turns = 1, int count = 1, bool self = true)
             => new SealReactionEffect { Kind = kind, DurationTurns = turns, Count = count, TargetSelf = self };
+
+        /// <summary>관찰 대상(아군)을 turns 동안 불협조 — 그 아군에 대한 리액션·보조·보호 차단(수동/자동 공통).</summary>
+        public static ReactionEffect Distrust(int turns = 1)
+            => new DistrustReactionEffect { DurationTurns = turns };
 
         /// <summary>여러 효과를 순차 실행하는 묶음.</summary>
         public static ReactionEffect Composite(params ReactionEffect[] effects)
@@ -166,8 +174,6 @@ namespace Reactions.Authoring
                 Debug.LogError($"[ReactionDef:{_id}] Phase 가 None 이라 발화하지 않습니다. PreApply/PostApply 지정 필요.");
             if (_template.BaseEffect == null)
                 Debug.LogError($"[ReactionDef:{_id}] BaseEffect(평상시 행동) 가 비어 있습니다.");
-            if (_template.AltEffect == null)
-                Debug.LogWarning($"[ReactionDef:{_id}] AltEffect(대체 행동) 가 비어 있습니다 — 대체 시 BaseEffect 로 폴백됩니다(권장: 대체 행동 또는 NoAction() 지정).");
             if (_conditions.Count == 0)
                 Debug.LogError($"[ReactionDef:{_id}] 트리거 조건이 하나도 없습니다.");
 
