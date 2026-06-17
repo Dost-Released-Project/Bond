@@ -46,22 +46,22 @@ namespace Reactions
         public string DefinitionId;
         [SerializeReference, SubclassSelector] public ITrigger Trigger;
 
-        [Tooltip("평상시 행동(판정 Success). 역할=정상 행동, 성향=기본 행동. 플레이어가 편집하는 UserSkill.")]
+        [Tooltip("평상시 행동(판정 Default). 역할=정상 행동, 성향=기본 행동. 플레이어가 편집하는 UserSkill.")]
         [FormerlySerializedAs("Effect")]
         [SerializeReference, SubclassSelector] public ReactionEffect BaseEffect;
 
-        [Tooltip("스윙 행동(판정 실패=스윙). 역할=특이(돌발) 행동, 성향=강화 행동. 행동 없이 연출만 하려면 NoAction. 디자이너 저작.")]
-        [SerializeReference, SubclassSelector] public ReactionEffect SwingEffect;
+        [Tooltip("대체 행동(판정이 평상시에서 벗어났을 때). 역할=특이(돌발) 행동, 성향=강화 행동. 행동 없이 연출만 하려면 NoAction. 디자이너 저작.")]
+        [SerializeReference, SubclassSelector] public ReactionEffect AltEffect;
 
         /// <summary>
-        /// 판정 결과에 해당하는 효과. Success=평상시(BaseEffect), 스윙(Anomaly/BondAwakening)=SwingEffect.
-        /// 스윙 효과가 비어 있으면 BaseEffect 로 폴백한다(스윙 미저작 시 안전).
+        /// 판정 결과에 해당하는 효과. Default=평상시(BaseEffect), 그 외(Anomaly/BondAwakening)=AltEffect.
+        /// 대체 효과가 비어 있으면 BaseEffect 로 폴백한다(대체 미저작 시 안전).
         /// </summary>
         public ReactionEffect EffectFor(ReactionResult result)
-            => result == ReactionResult.Default ? BaseEffect : (SwingEffect ?? BaseEffect);
+            => result == ReactionResult.Default ? BaseEffect : (AltEffect ?? BaseEffect);
 
         /// <summary>
-        /// 깊은 복제. Trigger/BaseEffect/SwingEffect/조건까지 독립 인스턴스로 복사해
+        /// 깊은 복제. Trigger/BaseEffect/AltEffect/조건까지 독립 인스턴스로 복사해
         /// 정의(템플릿)로부터 캐릭터별 런타임 리액션을 만들 때 공유 참조가 생기지 않게 한다.
         /// </summary>
         public Reaction Clone()
@@ -73,7 +73,7 @@ namespace Reactions
                 SubjectCharacterId = SubjectCharacterId,
                 DefinitionId       = DefinitionId,
                 BaseEffect         = BaseEffect?.Clone(),
-                SwingEffect        = SwingEffect?.Clone(),
+                AltEffect          = AltEffect?.Clone(),
             };
             // Trigger 가 Trigger 타입이 아닌 다른 ITrigger 구현이면 참조 공유되지만, 현재 구현체는 Trigger 뿐이라 무방.
             clone.Trigger = Trigger is Trigger t ? t.Clone() : Trigger;

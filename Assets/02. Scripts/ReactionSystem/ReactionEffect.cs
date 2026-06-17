@@ -23,7 +23,7 @@ namespace Reactions
 
     /// <summary>
     /// 행동 없음 — 실제 효과는 수행하지 않고, 연출(포커스/글리치)만 재생되게 하는 명시적 "무행동" 효과.
-    /// 스윙 분기에서 "기존 행동을 하지 않음"(역할의 특이행동 등)을 표현할 때 사용. null(미저작)과 구분된다.
+    /// 대체 분기에서 "기존 행동을 하지 않음"(역할의 특이행동 등)을 표현할 때 사용. null(미저작)과 구분된다.
     /// </summary>
     [Serializable][AddTypeMenu("No Action (연출만)", -1100)]
     public class NoActionReactionEffect : ReactionEffect

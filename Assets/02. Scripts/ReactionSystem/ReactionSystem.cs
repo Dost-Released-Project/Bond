@@ -9,8 +9,8 @@ namespace Reactions
     public enum ReactionResult
     {
         Default = 0,       // 평상시 — BaseEffect 실행 (역할=정상 행동, 성향=기본 행동)
-        Anomaly = 1,       // 역할 스윙 — 저관계 특이(돌발) 행동, SwingEffect 실행
-        BondAwakening = 2  // 성향 스윙 — 고관계 강화 행동, SwingEffect 실행
+        Anomaly = 1,       // 역할 대체 — 저관계 특이(돌발) 행동, AltEffect 실행
+        BondAwakening = 2  // 성향 대체 — 고관계 강화 행동, AltEffect 실행
     }
 
     public interface IReactionResolver
@@ -84,8 +84,8 @@ namespace Reactions
                     }
                     if (matched.Count == 0) continue;
 
-                    // 판정: 역할/성향에 따라 관계·스트레스·INT 기반으로 Success/스윙(Anomaly|BondAwakening) 결정.
-                    // 트리거가 충족되면 항상 실행을 생성하고, 결과가 어느 효과(Base/Swing)를 실행할지 가른다.
+                    // 판정: 역할/성향에 따라 관계·스트레스·INT 기반으로 Default/대체(Anomaly|BondAwakening) 결정.
+                    // 트리거가 충족되면 항상 실행을 생성하고, 결과가 어느 효과(Base/Alt)를 실행할지 가른다.
                     ReactionResult result = owner.JudgeReaction(reaction, matched);
                     executions.Add(new ReactionExecution(owner, reaction, result, matched));
                 }

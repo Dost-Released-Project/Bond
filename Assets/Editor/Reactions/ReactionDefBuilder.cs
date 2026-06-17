@@ -57,10 +57,10 @@ namespace Reactions.Authoring
             return this;
         }
 
-        /// <summary>스윙(판정 실패) 행동을 지정. 역할=특이행동, 성향=강화행동. 행동 없이 연출만이면 NoAction(). (= SwingEffect)</summary>
-        public ReactionDefBuilder Swing(params ReactionEffect[] effects)
+        /// <summary>대체(판정이 평상시에서 벗어났을 때) 행동을 지정. 역할=특이행동, 성향=강화행동. 행동 없이 연출만이면 NoAction(). (= AltEffect)</summary>
+        public ReactionDefBuilder Alt(params ReactionEffect[] effects)
         {
-            _template.SwingEffect = Combine(effects);
+            _template.AltEffect = Combine(effects);
             return this;
         }
 
@@ -113,7 +113,7 @@ namespace Reactions.Authoring
         public static ReactionEffect Composite(params ReactionEffect[] effects)
             => new CompositeReactionEffect { Effects = effects != null ? effects.ToList() : new List<ReactionEffect>() };
 
-        /// <summary>행동 없음 — 연출만 재생되고 실제 행동은 하지 않음(스윙에서 "기존 행동 안 함").</summary>
+        /// <summary>행동 없음 — 연출만 재생되고 실제 행동은 하지 않음(대체에서 "기존 행동 안 함").</summary>
         public static ReactionEffect NoAction() => new NoActionReactionEffect();
 
         /// <summary>스트레스 증감. delta&gt;0 증가, delta&lt;0 감소. to=Self 면 리액터 자신.</summary>
@@ -166,8 +166,8 @@ namespace Reactions.Authoring
                 Debug.LogError($"[ReactionDef:{_id}] Phase 가 None 이라 발화하지 않습니다. PreApply/PostApply 지정 필요.");
             if (_template.BaseEffect == null)
                 Debug.LogError($"[ReactionDef:{_id}] BaseEffect(평상시 행동) 가 비어 있습니다.");
-            if (_template.SwingEffect == null)
-                Debug.LogWarning($"[ReactionDef:{_id}] SwingEffect(스윙 행동) 가 비어 있습니다 — 스윙 시 BaseEffect 로 폴백됩니다(권장: 스윙 행동 또는 NoAction() 지정).");
+            if (_template.AltEffect == null)
+                Debug.LogWarning($"[ReactionDef:{_id}] AltEffect(대체 행동) 가 비어 있습니다 — 대체 시 BaseEffect 로 폴백됩니다(권장: 대체 행동 또는 NoAction() 지정).");
             if (_conditions.Count == 0)
                 Debug.LogError($"[ReactionDef:{_id}] 트리거 조건이 하나도 없습니다.");
 
