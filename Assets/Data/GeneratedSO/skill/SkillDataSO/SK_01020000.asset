@@ -14,12 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
   _id: 01020000
   _displayName: 
-  _description: "\uB8CC\uC774\uD0A4 \uD150\uCE74\uC774"
+  _description: "\uB2E8\uC77C \uB300\uC0C1 \uD2B9\uC218\uAE30"
   _type: 2
   _target: 0
   _targetingType: 0
-  _effectTypes: 
-  _value: 1
+  _effectTypes: 0a000000
+  _values:
+  - 1
   _coolTime: 0
   _duration: 0
   _useableClasses: 0
