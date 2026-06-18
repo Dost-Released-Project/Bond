@@ -24,33 +24,33 @@ MonoBehaviour:
     SubjectCharacterId: 
     DefinitionId: 
     Trigger:
-      rid: 2064475332497375348
+      rid: 2064475332497375376
     BaseEffect:
-      rid: 2064475332497375349
+      rid: 2064475332497375377
     AltEffect:
-      rid: 2064475332497375350
+      rid: 2064475332497375378
   EditableSlots: []
   references:
     version: 2
     RefIds:
-    - rid: 2064475332497375348
+    - rid: 2064475332497375376
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
         _condition:
           Additional:
-          - rid: 2064475332497375351
-          - rid: 2064475332497375352
-    - rid: 2064475332497375349
+          - rid: 2064475332497375379
+          - rid: 2064475332497375380
+    - rid: 2064475332497375377
       type: {class: DistrustReactionEffect, ns: Reactions, asm: Assembly-CSharp}
       data:
         DurationTurns: 1
-    - rid: 2064475332497375350
+    - rid: 2064475332497375378
       type: {class: NoActionReactionEffect, ns: Reactions, asm: Assembly-CSharp}
       data: 
-    - rid: 2064475332497375351
+    - rid: 2064475332497375379
       type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
         Filter: 1
-    - rid: 2064475332497375352
+    - rid: 2064475332497375380
       type: {class: EvadeCondition, ns: Reactions, asm: Assembly-CSharp}
       data: 

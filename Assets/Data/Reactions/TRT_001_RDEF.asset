@@ -24,41 +24,46 @@ MonoBehaviour:
     SubjectCharacterId: 
     DefinitionId: 
     Trigger:
-      rid: 2064475332497375333
+      rid: 2064475332497375360
     BaseEffect:
-      rid: 2064475332497375334
+      rid: 2064475332497375361
     AltEffect:
-      rid: 2064475332497375335
+      rid: 2064475332497375362
   EditableSlots: []
   references:
     version: 2
     RefIds:
-    - rid: 2064475332497375333
+    - rid: 2064475332497375360
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
         _condition:
           Additional:
-          - rid: 2064475332497375336
-    - rid: 2064475332497375334
+          - rid: 2064475332497375363
+          - rid: 2064475332497375364
+    - rid: 2064475332497375361
       type: {class: CompositeReactionEffect, ns: Reactions, asm: Assembly-CSharp}
       data:
         Effects:
-        - rid: 2064475332497375337
-        - rid: 2064475332497375338
-    - rid: 2064475332497375335
+        - rid: 2064475332497375365
+        - rid: 2064475332497375366
+    - rid: 2064475332497375362
       type: {class: StressReactionEffect, ns: Reactions, asm: Assembly-CSharp}
       data:
         Delta: -20
         Target: 4
-    - rid: 2064475332497375336
+    - rid: 2064475332497375363
       type: {class: HpBelowCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
         Threshold: 0.3
-    - rid: 2064475332497375337
+    - rid: 2064475332497375364
+      type: {class: SkillTypeCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Types: 0100000003000000
+    - rid: 2064475332497375365
       type: {class: FormationMoveReactionEffect, ns: Reactions, asm: Assembly-CSharp}
       data:
         To: 1
-    - rid: 2064475332497375338
+    - rid: 2064475332497375366
       type: {class: SealReactionEffect, ns: Reactions, asm: Assembly-CSharp}
       data:
         TargetSelf: 1

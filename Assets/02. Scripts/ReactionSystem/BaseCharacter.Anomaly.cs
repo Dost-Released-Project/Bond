@@ -11,6 +11,17 @@ using UnityEngine;
 // — 자기 턴에는 원본 스킬 컨텍스트가 없어 SkillType/Crit/Evade 등 BattleContext 의존 조건은 의미가 없다.
 public partial class BaseCharacter
 {
+#if UNITY_EDITOR
+    /// <summary>리액션 분기 강제(에디터 디버그 전용). Off=정상 판정. Tools/Bond/리액션 분기 디버그 윈도우로 제어.</summary>
+    public enum ReactionBranchForce { Off, ForceDefault, ForceAlt }
+
+    /// <summary>
+    /// 켜져 있으면 JudgeReaction 이 확률 굴림 대신 이 분기를 반환한다(에디터 전용, 빌드에 미포함).
+    /// ForceAlt 는 역할/성향에 맞는 대체 결과(Anomaly/BondAwakening)로 자동 매핑돼 후속 분기까지 충실히 재현된다.
+    /// </summary>
+    public static ReactionBranchForce DebugBranchForce = ReactionBranchForce.Off;
+#endif
+
     /// <summary>
     /// 자기 턴 시작에 호출. OnSelfTurn 트레잇 중 조건을 만족하는 첫 항목의 효과를 실행하고
     /// true(계획 행동 대체)를 반환한다. 없으면 false.
@@ -76,7 +87,13 @@ public partial class BaseCharacter
     /// </summary>
     public ReactionResult JudgeReaction(Reaction reaction, IReadOnlyList<BaseCharacter> subjects)
     {
-        // TODO: 수치 조정
+#if UNITY_EDITOR
+        // 디버그 강제 분기 — 확률 굴림을 건너뛰고 지정한 분기로 고정(빌드 미포함).
+        if (DebugBranchForce == ReactionBranchForce.ForceDefault)
+            return ReactionResult.Default;
+        if (DebugBranchForce == ReactionBranchForce.ForceAlt)
+            return IsTraitReaction(reaction) ? ReactionResult.BondAwakening : ReactionResult.Anomaly;
+#endif
         int relation = RelationFor(subjects);
         if (IsTraitReaction(reaction))
             return UnityEngine.Random.value < GetBondAwakeningChance(relation)
@@ -93,7 +110,7 @@ public partial class BaseCharacter
     /// </summary>
     public float GetAnomalyChance(int relation)
     {
-        // TODO: 계산식 검토
+        // TODO: 계산식 검토 및 수치 조정
         const float baseRate     = 0.20f;
         const float stressCoef   = 0.005f; // Insanity(0~100) → 최대 +0.5
         const float intCoef      = 0.004f; // 지능 억제 계수 (INT 범위에 맞춰 튜닝)
@@ -111,7 +128,7 @@ public partial class BaseCharacter
     /// </summary>
     public float GetBondAwakeningChance(int relation)
     {
-        // TODO: 계산식 검토
+        // TODO: 계산식 검토 및 수치 조정
         const float baseRate     = 0.10f;
         const float relationCoef = 0.006f; // 관계↑ → 각성↑ (관계 스케일에 맞춰 튜닝)
         const float stressCoef   = 0.003f; // 스트레스 임계에서 각성 보조

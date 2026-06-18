@@ -96,7 +96,7 @@ public partial class BaseCharacter : ITurnUseUnit
             if (traitSO == null) continue;                 // 미로드 — 보존
             var def = traitSO.ReactionDefinition;
             if (def == null) { TraitReactions[i] = null; continue; }
-            if (TraitReactions[i] == null || TraitReactions[i].DefinitionId != def.Id)
+            //if (TraitReactions[i] == null || TraitReactions[i].DefinitionId != def.Id)
                 TraitReactions[i] = def.CreateRuntimeReaction();
         }
     }
@@ -498,7 +498,12 @@ public partial class BaseCharacter : ITurnUseUnit
         var eff = execution.Reaction.EffectFor(execution.Result);
         if (eff == null) return; // 미저작만 스킵 — NoAction(무행동)은 연출은 재생하고 행동만 생략한다
 
-        Debug.Log($"<color=lightblue>{Name} 리액션 시작!</color>");
+        string color = "lightblue";
+        if (execution.Result != default) color = "yellow";
+        Debug.Log($"<color={color}>{Name} 리액션 시작! 판정: {execution.Result}\n" +
+                  $"Reaction:\n" +
+                  $"{execution.ToString()}</color>");
+        
 
         List<CharacterSlot> targetSlots = new List<CharacterSlot>();
         if (execution.MatchedSubjects != null)

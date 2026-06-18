@@ -31,7 +31,8 @@ namespace Reactions
                 : string.Join(", ", MatchedSubjects.Select(s => s?.Name ?? "?"));
             return $"Agent: {Agent.Name}\n" +
                    $"Matched Subject: {subjects}\n" +
-                   $"Trigger: {Reaction.Trigger.Description}";
+                   $"Trigger: {Reaction.Trigger.Description}\n" +
+                   $"Action: {Reaction.EffectFor(Result).Description}";
         }
     }
 
