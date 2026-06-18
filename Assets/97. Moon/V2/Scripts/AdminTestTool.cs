@@ -63,7 +63,7 @@ public class AdminTestTool : MonoBehaviour
         // 2. 스트레스 증가 (여관 테스트용)
         if (Keyboard.current.f2Key.wasPressedThisFrame)
         {
-            testHero.ReduceInsanity(20);
+            testHero.IncreaseInsanity(20);
             Debug.Log($"테스트 캐릭터 스트레스 증가: {testHero.Insanity}");
         }
 

@@ -314,7 +314,7 @@ namespace BattleSystem
                 var allies = deadCharacter.GetSameSideAllies(false); // 사망한 자신 제외 생존자
                 foreach (var ally in allies)
                 {
-                    ally.ReduceInsanity(20);
+                    ally.IncreaseInsanity(20);
                     Debug.Log($"[Stress] 아군 {deadCharacter.Name}의 사망으로 {ally.Name} 스트레스 +20 누적");
                 }
             }

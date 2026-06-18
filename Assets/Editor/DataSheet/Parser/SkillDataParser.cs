@@ -18,7 +18,7 @@ public class SkillDTO
     public SkillTarget Target { get; set; }
     public TargetingType TargetingType { get; set; }
     public List<SkillEffectType> SkillEffectTypes { get; set; }
-    public float Value { get; set; }
+    public List<float> Values { get; set; }
     public int CoolTime { get; set; }
     public int Duration { get; set; }
     public int UseableClasses { get; set; }
@@ -53,7 +53,7 @@ public class SkillDataParser : TSVParserBase<SkillDTO, SkillData>
             Target = dto.Target,
             TargetingType = dto.TargetingType,
             SkillEffectTypes = dto.SkillEffectTypes,
-            Value = dto.Value,
+            Values = dto.Values,
             CoolTime = dto.CoolTime,
             Duration = dto.Duration,
             UseableClasses = dto.UseableClasses,
@@ -120,7 +120,7 @@ public sealed class SkillDataMap : ClassMap<SkillDTO>
         // Effects 컬럼이 없으면 빈 리스트로 처리하도록 대응 (콤마 구분자 처리)
         Map(m => m.SkillEffectTypes).Name("Effects", "Effect").Optional().TypeConverter<SkillEffectTypeListConverter>();
 
-        Map(m => m.Value).Name("Value", " Value").Default(0f); // 공백 포함 헤더 대응
+        Map(m => m.Values).Name("Value", " Value").Optional().TypeConverter<SkillValueListConverter>();
         Map(m => m.CoolTime).Name("CoolTime").Default(0);
         Map(m => m.Duration).Name("지속 시간").Default(0);
         Map(m => m.UseableClasses).Name("Useable").Default(0);
@@ -232,6 +232,28 @@ public sealed class SkillDataMap : ClassMap<SkillDTO>
                 return result;
             }
             return TargetingType.Single;
+        }
+    }
+
+    /// <summary>
+    /// TSV의 "10,5" 같은 수치 문자열을 List<float>로 변환하는 컨버터
+    /// </summary>
+    private class SkillValueListConverter : CsvHelper.TypeConversion.DefaultTypeConverter
+    {
+        public override object ConvertFromString(string text, CsvHelper.IReaderRow row, MemberMapData memberMapData)
+        {
+            var list = new List<float>();
+            if (string.IsNullOrWhiteSpace(text)) return list;
+            
+            var parts = text.Split(',');
+            foreach (var part in parts)
+            {
+                if (float.TryParse(part.Trim(), out float val))
+                {
+                    list.Add(val);
+                }
+            }
+            return list;
         }
     }
 }
