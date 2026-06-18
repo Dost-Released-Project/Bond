@@ -35,7 +35,7 @@ namespace Reactions.Authoring
 
             // 001 겁쟁이: HP30%↓ - Default 후열 이동. 해당 턴 리액션 봉인 / Alt 스트레스 -20
             Add("TRT_001", "겁쟁이", E_TraitType.Negative,
-                Def("TRT_001_RDEF", RoleType.None).Name("겁쟁이 — 후방 이탈", "HP30%↓ → Default: 후열로 이동. 해당 턴 리액션 봉인 / Alt: 스트레스 -20")
+                Def("TRT_001_RDEF", RoleType.None).Name("겁쟁이 — 후방 이탈", "HP30% 이하일때, Default: 후열로 이동. 해당 턴 리액션 봉인 / Alt: 스트레스 -20")
                     .Phase(E_ReactionPhase.PostApply).Observe(E_ObserveFilter.Self)
                     .When(HpBelow(0.3f))
                     .Do(MoveBack(), Seal(SealKind.All, turns: 1))
@@ -43,7 +43,7 @@ namespace Reactions.Authoring
 
             // 002 호전적: 적 처치 시 — Default 전열 이동+가까운 적 추가공격 / Alt 자기 공격버프+제자리 공격(불가 시 무행동)
             Add("TRT_002", "호전적", E_TraitType.Neutral,
-                Def("TRT_002_RDEF", RoleType.None).Name("호전적 — 무계획 추격", "적 처치 시 Default: 전열 이동+가까운 적 추가공격 / Alt: 자기 공격버프+제자리 공격")
+                Def("TRT_002_RDEF", RoleType.None).Name("호전적 — 무계획 추격", "적 처치 시, Default: 전열 이동+가까운 적 추가공격 / Alt: 자기 공격버프+제자리 공격")
                     .Phase(E_ReactionPhase.PostApply).Observe(E_ObserveFilter.Self)
                     .When(SubjectIs(E_TargetFilter.Caster), Killed())
                     .Do(MoveFront(), CastRandomAttack(E_TargetFilter.FrontmostEnemy))
@@ -51,7 +51,7 @@ namespace Reactions.Authoring
 
             // 004 의심많은: 아군 공격 빗나감 시 — Default 그 아군 불협조 / Alt 무효과(대사 연출만)
             Add("TRT_004", "의심 많은", E_TraitType.Negative,
-                Def("TRT_004_RDEF", RoleType.None).Name("의심 많은 — 단독 행동", "아군 공격 빗나감 시 Default: 그 아군 불협조(리액션·보조·보호 차단) / Alt: 무효과")
+                Def("TRT_004_RDEF", RoleType.None).Name("의심 많은 — 단독 행동", "아군 공격 빗나감 시, Default: 그 아군 불협조(리액션·보조·보호 차단) / Alt: 무효과")
                     .Phase(E_ReactionPhase.PostApply).Observe(E_ObserveFilter.OtherAlly)
                     .When(SubjectIs(E_TargetFilter.Caster), Evaded())
                     .Do(Distrust(turns: 1))
@@ -59,7 +59,7 @@ namespace Reactions.Authoring
 
             // 014 과시욕: 본인 치명타 시 — Default 남은 리액션 봉인+스트레스-10 / Alt 봉인 없이 스트레스-5
             Add("TRT_014", "과시욕 있는", E_TraitType.Neutral,
-                Def("TRT_014_RDEF", RoleType.None).Name("과시욕 — 독무대", "본인 치명타 시 Default: 남은 리액션 봉인+스트레스-10 / Alt: 봉인 없이 스트레스-5")
+                Def("TRT_014_RDEF", RoleType.None).Name("과시욕 — 독무대", "본인 치명타 시, Default: 이번 턴동안 리액션 봉인+스트레스-10 / Alt: 봉인 없이 스트레스-5")
                     .Phase(E_ReactionPhase.PostApply).Observe(E_ObserveFilter.Self)
                     .When(SubjectIs(E_TargetFilter.Caster), Crit())
                     .Do(Seal(SealKind.All, turns: 1), Stress(-10))

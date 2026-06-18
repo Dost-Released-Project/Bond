@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Reactions.ReactionDefinitionSO
   _id: TRT_004_RDEF
   _displayName: "\uC758\uC2EC \uB9CE\uC740 \u2014 \uB2E8\uB3C5 \uD589\uB3D9"
-  _description: "\uC544\uAD70 \uACF5\uACA9 \uBE57\uB098\uAC10 \u2192 \uD574\uB2F9
-    \uB77C\uC6B4\uB4DC \uC804\uCCB4 \uBD09\uC778"
+  _description: "\uC544\uAD70 \uACF5\uACA9 \uBE57\uB098\uAC10 \uC2DC, Default: \uADF8
+    \uC544\uAD70 \uBD88\uD611\uC870(\uB9AC\uC561\uC158\xB7\uBCF4\uC870\xB7\uBCF4\uD638
+    \uCC28\uB2E8) / Alt: \uBB34\uD6A8\uACFC"
   Role: 0
   Template:
     Phase: 2
@@ -23,31 +24,33 @@ MonoBehaviour:
     SubjectCharacterId: 
     DefinitionId: 
     Trigger:
-      rid: 2064475061108867289
-    Effect:
-      rid: 2064475061108867290
+      rid: 2064475332497375348
+    BaseEffect:
+      rid: 2064475332497375349
+    AltEffect:
+      rid: 2064475332497375350
   EditableSlots: []
   references:
     version: 2
     RefIds:
-    - rid: 2064475061108867289
+    - rid: 2064475332497375348
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
         _condition:
           Additional:
-          - rid: 2064475061108867291
-          - rid: 2064475061108867292
-    - rid: 2064475061108867290
-      type: {class: SealReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+          - rid: 2064475332497375351
+          - rid: 2064475332497375352
+    - rid: 2064475332497375349
+      type: {class: DistrustReactionEffect, ns: Reactions, asm: Assembly-CSharp}
       data:
-        TargetSelf: 1
-        Kind: 0
-        Count: 1
         DurationTurns: 1
-    - rid: 2064475061108867291
+    - rid: 2064475332497375350
+      type: {class: NoActionReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data: 
+    - rid: 2064475332497375351
       type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
         Filter: 1
-    - rid: 2064475061108867292
+    - rid: 2064475332497375352
       type: {class: EvadeCondition, ns: Reactions, asm: Assembly-CSharp}
       data: 

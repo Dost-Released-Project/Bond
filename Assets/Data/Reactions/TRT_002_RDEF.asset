@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Reactions.ReactionDefinitionSO
   _id: TRT_002_RDEF
   _displayName: "\uD638\uC804\uC801 \u2014 \uBB34\uACC4\uD68D \uCD94\uACA9"
-  _description: "\uC801 \uCC98\uCE58 \u2192 \uAC00\uC7A5 \uAC00\uAE4C\uC6B4 \uC801
-    \uCD94\uAC00\uACF5\uACA9 + \uB2E4\uC74C \uD134 \uBD09\uC778"
+  _description: "\uC801 \uCC98\uCE58 \uC2DC, Default: \uC804\uC5F4 \uC774\uB3D9+\uAC00\uAE4C\uC6B4
+    \uC801 \uCD94\uAC00\uACF5\uACA9 / Alt: \uC790\uAE30 \uACF5\uACA9\uBC84\uD504+\uC81C\uC790\uB9AC
+    \uACF5\uACA9"
   Role: 0
   Template:
     Phase: 2
@@ -23,42 +24,62 @@ MonoBehaviour:
     SubjectCharacterId: 
     DefinitionId: 
     Trigger:
-      rid: 2064475061108867276
-    Effect:
-      rid: 2064475061108867277
+      rid: 2064475332497375339
+    BaseEffect:
+      rid: 2064475332497375340
+    AltEffect:
+      rid: 2064475332497375341
   EditableSlots: []
   references:
     version: 2
     RefIds:
-    - rid: 2064475061108867276
+    - rid: 2064475332497375339
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
         _condition:
           Additional:
-          - rid: 2064475061108867278
-          - rid: 2064475061108867279
-    - rid: 2064475061108867277
+          - rid: 2064475332497375342
+          - rid: 2064475332497375343
+    - rid: 2064475332497375340
       type: {class: CompositeReactionEffect, ns: Reactions, asm: Assembly-CSharp}
       data:
         Effects:
-        - rid: 2064475061108867280
-        - rid: 2064475061108867281
-    - rid: 2064475061108867278
+        - rid: 2064475332497375344
+        - rid: 2064475332497375345
+    - rid: 2064475332497375341
+      type: {class: CompositeReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Effects:
+        - rid: 2064475332497375346
+        - rid: 2064475332497375347
+    - rid: 2064475332497375342
       type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
         Filter: 1
-    - rid: 2064475061108867279
+    - rid: 2064475332497375343
       type: {class: KillCondition, ns: Reactions, asm: Assembly-CSharp}
       data: 
-    - rid: 2064475061108867280
-      type: {class: SkillCastReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+    - rid: 2064475332497375344
+      type: {class: FormationMoveReactionEffect, ns: Reactions, asm: Assembly-CSharp}
       data:
-        SkillIndex: 0
+        To: 0
+    - rid: 2064475332497375345
+      type: {class: RandomAttackSkillReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data:
         SkillTarget: 5
-    - rid: 2064475061108867281
-      type: {class: SealReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+    - rid: 2064475332497375346
+      type: {class: BuffReactionEffect, ns: Reactions, asm: Assembly-CSharp}
       data:
-        TargetSelf: 1
-        Kind: 0
-        Count: 1
+        BuffTarget: 4
+        BuffId: 
         DurationTurns: 2
+        Modifiers:
+        - id: 
+          name: 
+          type: 3
+          mode: 0
+          value: 0.3
+    - rid: 2064475332497375347
+      type: {class: RandomAttackSkillReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        SkillTarget: 5
