@@ -12,7 +12,7 @@ using UnityEngine;
 public partial class BaseCharacter
 {
 #if UNITY_EDITOR
-    /// <summary>리액션 분기 강제(에디터 디버그 전용). Off=정상 판정. Tools/Bond/리액션 분기 디버그 윈도우로 제어.</summary>
+    /// <summary>리액션 분기 강제(에디터 디버그 전용). Off=정상 판정. Bond/리액션 분기 디버그 윈도우로 제어.</summary>
     public enum ReactionBranchForce { Off, ForceDefault, ForceAlt }
 
     /// <summary>
@@ -102,6 +102,20 @@ public partial class BaseCharacter
         return UnityEngine.Random.value < GetAnomalyChance(relation)
             ? ReactionResult.Anomaly : ReactionResult.Default;
     }
+
+#if UNITY_EDITOR
+    /// <summary>
+    /// 몬테카를로 검증용 프로브(에디터 전용). 강제 분기를 거치지 않은 "기대 Alt 확률"과
+    /// 그 판정에 쓰일 relation·trait 여부를 그대로 돌려준다. 실측(JudgeReaction N회)과 비교용.
+    /// </summary>
+    public (float chance, bool isTrait, int relation) DebugJudgeProbe(Reaction reaction, IReadOnlyList<BaseCharacter> subjects)
+    {
+        int relation = RelationFor(subjects);
+        bool isTrait = IsTraitReaction(reaction);
+        float chance = isTrait ? GetBondAwakeningChance(relation) : GetAnomalyChance(relation);
+        return (chance, isTrait, relation);
+    }
+#endif
 
     /// <summary>
     /// 역할 리액션의 특이(돌발) 행동 확률 = clamp(기본 + 스트레스 − 지능 − 관계, 최저 5%, 1).<br/>
