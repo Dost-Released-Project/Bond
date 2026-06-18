@@ -501,10 +501,6 @@ PrefabInstance:
       propertyPath: mapUIController
       value: 
       objectReference: {fileID: 1979411112}
-    - target: {fileID: 2265023690592475847, guid: 2829ca6ff76b3f34a820746cfbd3afc3, type: 3}
-      propertyPath: _mapUIController
-      value: 
-      objectReference: {fileID: 1979411112}
     - target: {fileID: 2856240865671535684, guid: 2829ca6ff76b3f34a820746cfbd3afc3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 960

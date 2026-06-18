@@ -18,9 +18,8 @@ MonoBehaviour:
   _type: 3
   _target: 0
   _targetingType: 0
-  _effectTypes: 0a000000
-  _values:
-  - 1
+  _effectTypes: 
+  _value: 1
   _coolTime: 0
   _duration: 0
   _useableClasses: 3
