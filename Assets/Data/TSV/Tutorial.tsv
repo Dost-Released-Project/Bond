@@ -1,0 +1,12 @@
+﻿시트 페이지 2자리				
+16				
+				
+				
+				
+				
+				
+				
+ID	Name	Description	SequenceType	TargetUiKey
+TUT_A_01	최초 진입 자원 가이드	화면 상단의 영지 자원을 확인하세요. 기본 보급 비용이 충전됩니다.	0	ResourceStatusBar
+TUT_A_02	대원 명부 안내	대원 명부 버튼을 클릭하여 소속 대원들의 성미를 파악하십시오.	0	RosterOpenButton
+TUT_A_03	보급소 건설 유도	지정된 건설 슬롯에 대원 증원을 담당할 보급소를 건설하세요.	0	BuildSlot_01
