@@ -6,7 +6,7 @@ using UnityEngine;
 public interface ISkillEffectPool
 {
     UniTask WarmUpAsync(IReadOnlyList<BaseCharacter> party, CancellationToken cancellationToken = default);
-    void Play(string prefabAddress, Vector3 worldPosition);
+    void Play(string prefabAddress, Transform slotTransform);
     void ReturnAll();
     void Clear();
 }

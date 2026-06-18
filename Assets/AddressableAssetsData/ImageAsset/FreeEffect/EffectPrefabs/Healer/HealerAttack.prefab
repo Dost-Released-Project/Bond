@@ -29,7 +29,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1078.4839, y: 535.62964, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -60,7 +60,7 @@ MonoBehaviour:
   - {fileID: 1609457988, guid: e740885b1cbf15f4da0f2b1a549d7c7f, type: 3}
   - {fileID: -299293171, guid: e740885b1cbf15f4da0f2b1a549d7c7f, type: 3}
   - {fileID: 1833677950, guid: e740885b1cbf15f4da0f2b1a549d7c7f, type: 3}
-  _fps: 12
+  _fps: 50
   _loop: 0
   _playOnStart: 1
   _ignoreTimeScale: 0

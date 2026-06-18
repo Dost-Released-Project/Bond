@@ -46,6 +46,12 @@ public class SkillEffectPool : ISkillEffectPool
                 {
                     GameObject instance = await handle.ToUniTask(cancellationToken: cancellationToken);
                     instance.SetActive(false);
+                    instance.transform.localScale = Vector3.one * 10f;
+                    // Canvas 위에 렌더링되도록 SpriteRenderer 소팅 오더를 높게 설정한다
+                    foreach (SpriteRenderer sr in instance.GetComponentsInChildren<SpriteRenderer>(true))
+                        sr.sortingOrder = 1;
+                    // 전투씬 언로드 시 파괴되지 않도록 DontDestroyOnLoad 씬에 보관한다
+                    Object.DontDestroyOnLoad(instance);
                     queue.Enqueue(instance);
                     _handles.Add(handle);
                 }
@@ -63,14 +69,14 @@ public class SkillEffectPool : ISkillEffectPool
         Debug.Log($"[SkillEffectPool] WarmUp 완료 — 주소 수: {_warmUpAddresses.Count}, 인스턴스 수: {POOL_SIZE}개/주소");
     }
 
-    public void Play(string prefabAddress, Vector3 worldPosition)
+    public void Play(string prefabAddress, Transform slotTransform)
     {
         if (string.IsNullOrEmpty(prefabAddress))
             return;
 
         if (_idle.TryGetValue(prefabAddress, out Queue<GameObject> queue) == false)
         {
-            Debug.LogWarning($"[SkillEffectPool] 풀에 없는 주소: {prefabAddress}");
+            Debug.LogWarning($"[SkillEffectPool] 풀에 없는 주소: {prefabAddress}. 현재 키 목록: {string.Join(", ", _idle.Keys)}");
             return;
         }
 
@@ -82,8 +88,11 @@ public class SkillEffectPool : ISkillEffectPool
 
         GameObject instance = queue.Dequeue();
         _active[prefabAddress].Add(instance);
-        instance.transform.position = worldPosition;
+
+        Vector3 slotPos = slotTransform.position;
+        instance.transform.position = new Vector3(slotPos.x, slotPos.y, slotPos.z);
         instance.SetActive(true);
+        Debug.Log($"[SkillEffectPool] {instance.name} 활성화 — worldPos={instance.transform.position}, parent={instance.transform.parent?.name}, slotWorldPos={slotTransform.position}");
 
         // 람다식: 반환 대상 주소·인스턴스를 클로저로 캡처하기 위해 사용한다
         ReturnAfterPlayAsync(prefabAddress, instance).Forget();
