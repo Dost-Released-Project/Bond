@@ -28,3 +28,4 @@ MonoBehaviour:
   _enemyTargetMask: 7
   _allyTargetMask: 0
   _iconAddress: 0101
+  _prefabAddress: WhiteSlash

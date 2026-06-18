@@ -53,6 +53,9 @@ public class SkillData : BaseSO
     [Tooltip("Addressables 아이콘 주소")]
     [SerializeField] private string _iconAddress;
 
+    [Tooltip("스킬 이펙트 프리팹 Addressables 주소. 비어 있으면 이펙트 없음")]
+    [SerializeField] private string _prefabAddress;
+
     // ── 프로퍼티 ────────────────────────────────────
     // 기반 필드(Id, DisplayName, Description)는 BaseSO 프로퍼티 그대로 사용.
     // SkillId / SkillName 별칭 제거 — 호출부를 Id / DisplayName 으로 통일.
@@ -69,6 +72,7 @@ public class SkillData : BaseSO
     public int         EnemyTargetMask=> _enemyTargetMask;
     public int         AllyTargetMask => _allyTargetMask;
     public string      IconAddress    => _iconAddress;
+    public string      PrefabAddress  => _prefabAddress;
 
     /// <summary>
     /// 파서가 TSV 1행을 읽어 채운 SkillRawData를 받아 필드를 초기화한다.
@@ -100,6 +104,7 @@ public class SkillData : BaseSO
         _enemyTargetMask = raw.EnemyTargetMask;
         _allyTargetMask  = raw.AllyTargetMask;
         _iconAddress     = raw.IconAddress;
+        _prefabAddress   = raw.PrefabAddress;
     }
 }
 
@@ -124,4 +129,5 @@ public struct SkillRawData
     public int        EnemyTargetMask;
     public int        AllyTargetMask;
     public string     IconAddress;
+    public string     PrefabAddress;
 }

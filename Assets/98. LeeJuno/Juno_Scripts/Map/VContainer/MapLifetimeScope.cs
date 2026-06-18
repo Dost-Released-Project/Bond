@@ -55,6 +55,9 @@ public class MapLifetimeScope : LifetimeScope
         // 런 전체 이벤트 이력 누적 저장소
         builder.Register<EventLogAccumulator>(Lifetime.Singleton);
 
+        // 스킬 이펙트 풀 — 맵씬 Singleton으로 등록하여 전투씬 BattleScope에서 부모 스코프를 통해 주입받는다
+        builder.Register<ISkillEffectPool, SkillEffectPool>(Lifetime.Singleton);
+
         // StageLoader: 맵 스코프에서 등록해야 LifetimeScope 주입 시 맵 스코프가 전달된다
         // EnqueueParent 패턴으로 이벤트/전투 씬 로드 시 올바른 부모 스코프를 지정하기 위해 필요하다
         // WithParameter: LifetimeScope는 VContainer가 자동 주입을 보장하지 않으므로 this(현재 맵 스코프)를 직접 전달한다

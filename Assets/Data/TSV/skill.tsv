@@ -1,29 +1,29 @@
-﻿시트 페이지 2자리	스킬 타입			사용 가능 클래스(Useable)		동일 타입 번호	지속 시간				CoolTime	턴 기준	
-01	01	공격형	OFFENSIVE	클래스 시트 참고		00	0	즉발			사용 가능 칸	1이랑 AND연산 하면됨	
-	02	방어형	DEFENSIVE	00	전사		1	1턴					
-	03	공격 마법	SPELL	01	암살		2	2턴					
-	04	보조 마법	SUPPORT	02	법사		-	-					
-				03	힐러								
-				04									
-				05									
-ID	Type	 Value	CoolTime	Useable	Target	지속 시간	사용 가능 칸	적 진영	아군 진영	아이콘 ID	Effect	Description	TargetingType
-01010000	OFFENSIVE	1	0	00	Enemy	0	0011	1100	0000	0100	체력_감소	단일 대상 타격	Single
-01020000	DEFENSIVE	1	0	00	Enemy	0	0110	1100	0000	0104	체력_감소	단일 대상 특수기	Single
-01030000	OFFENSIVE	1	0	00	Enemy	0	0011	1100	0000	0108	체력_감소	두명의 대상 타격	AOE
-01040000	SUPPORT	1	0	00	Self	3	1111	0000	1111	010C	버프_스탯_힘	자신의 방어력 증가	Single
-01050000	SUPPORT	1	0	00	Party	3	1111	0000	1111	0110	버프_스탯_힘	아군의 방어력 증가	AOE
-01010100	OFFENSIVE	1	0	01	Enemy	0	0111	1110	0000	0101	체력_감소	단일 대상 타격	Single
-01020100	OFFENSIVE	1	0	01	Enemy	0	1110	1100	0000	0105	체력_감소	단일 대상 특수기	Single
-01030100	SPELL	1	0	01	Enemy	3	1110	1111	0000	0109	체력_감소	단일 대상 독뎀	Single
-01040100	SUPPORT	1,1	0	01	Self	3	1111	0000	1111	010D	버프_스탯_민첩, 체력_감소	스팀팩 버프	Single
-01050100	SUPPORT	1,1	0	01	Party	3	1111	0000	1111	0111	버프_스탯_민첩, 체력_감소	아군 스팀팩 버프	Single
-01010200	SPELL	1	0	02	Enemy	0	1100	0111	0000	0102	체력_감소	단일 대상 타격	Single
-01020200	SPELL	1	0	02	Enemy	0	1100	1111	0000	0106	체력_감소	모든 대상 타격	AOE
-01030200	SPELL	1	0	02	Enemy	3	1100	1111	0000	010A	체력_감소	모든 대상 타격 특수기	AOE
-01040200	SUPPORT	1	0	02	Self	3	1100	0000	1111	010E	버프_스탯_지능	지능 버프	Single
-01050200	SUPPORT	1	0	02	Party	3	1100	0000	1111	0112	버프_스탯_지능	아군 지능 버프	Single
-01010300	SPELL	1	0	03	Enemy	0	1111	1111	0000	0103	체력_감소	단일 대상 타격	Single
-01020300	SUPPORT	1	0	03	Party	3	1100	0000	1111	0107	체력_회복	단일 도트 힐	Single
-01030300	SUPPORT	1	0	03	Party	0	1100	0000	1111	010B	체력_회복	단일 힐	Single
-01040300	SUPPORT	1	0	03	Party	0	1100	0000	1111	010F	체력_회복	파티 힐	AOE
-01050300	SUPPORT	1	0	03	Party	3	1100	0000	1111	0113	체력_회복	도트 파티 힐	AOE
+﻿시트 페이지 2자리	스킬 타입			사용 가능 클래스(Useable)		동일 타입 번호	지속 시간				CoolTime	턴 기준		
+01	01	공격형	OFFENSIVE	클래스 시트 참고		00	0	즉발			사용 가능 칸	1이랑 AND연산 하면됨		
+	02	방어형	DEFENSIVE	00	전사		1	1턴						
+	03	공격 마법	SPELL	01	암살		2	2턴						
+	04	보조 마법	SUPPORT	02	법사		-	-						
+				03	힐러									
+				04										
+				05										
+ID	Type	 Value	CoolTime	Useable	Target	지속 시간	사용 가능 칸	적 진영	아군 진영	아이콘 ID	Effect	Description	TargetingType	PrefabAddress
+01010000	OFFENSIVE	1	0	00	Enemy	0	0011	1100	0000	0100	체력_감소	단일 대상 타격	Single	RedSlice2
+01020000	DEFENSIVE	1	0	00	Enemy	0	0111	1100	0000	0104	체력_감소	단일 대상 특수기	Single	
+01030000	OFFENSIVE	1	0	00	Enemy	0	0011	1100	0000	0108	체력_감소	두명의 대상 타격	AOE	RedSlice1
+01040000	SUPPORT	1	0	00	Self	3	1111	0000	1111	010C	버프_스탯_힘	자신의 방어력 증가	Single	BlueShield
+01050000	SUPPORT	1	0	00	Party	3	1111	0000	1111	0110	버프_스탯_힘	아군의 방어력 증가	AOE	BlueShield
+01010100	OFFENSIVE	1	0	01	Enemy	0	0111	1110	0000	0101	체력_감소	단일 대상 타격	Single	WhiteSlash
+01020100	OFFENSIVE	1	0	01	Enemy	0	1110	1100	0000	0105	체력_감소	단일 대상 특수기	Single	
+01030100	SPELL	1	0	01	Enemy	3	1110	1111	0000	0109	체력_감소	단일 대상 독뎀	Single	Poison
+01040100	SUPPORT	1,1	0	01	Self	3	1111	0000	1111	010D	버프_스탯_민첩, 체력_감소	스팀팩 버프	Single	Doping
+01050100	SUPPORT	1,1	0	01	Party	3	1111	0000	1111	0111	버프_스탯_민첩, 체력_감소	아군 스팀팩 버프	Single	Doping
+01010200	SPELL	1	0	02	Enemy	0	1100	0111	0000	0102	체력_감소	단일 대상 타격	Single	CircleMagic
+01020200	SPELL	1	0	02	Enemy	0	1100	1111	0000	0106	체력_감소	모든 대상 타격	AOE	BlueThunder
+01030200	SPELL	1	0	02	Enemy	3	1100	1111	0000	010A	체력_감소	모든 대상 타격 특수기	AOE	
+01040200	SUPPORT	1	0	02	Self	3	1100	0000	1111	010E	버프_스탯_지능	지능 버프	Single	PurpleBuff
+01050200	SUPPORT	1	0	02	Party	3	1100	0000	1111	0112	버프_스탯_지능	아군 지능 버프	Single	PurpleBuff
+01010300	SPELL	1	0	03	Enemy	0	1111	1111	0000	0103	체력_감소	단일 대상 타격	Single	HealerAttack
+01020300	SUPPORT	1	0	03	Party	3	1100	0000	1111	0107	체력_회복	단일 도트 힐	Single	Heal
+01030300	SUPPORT	1	0	03	Party	0	1100	0000	1111	010B	체력_회복	단일 힐	Single	Heal
+01040300	SUPPORT	1	0	03	Party	0	1100	0000	1111	010F	체력_회복	파티 힐	AOE	
+01050300	SUPPORT	1	0	03	Party	3	1100	0000	1111	0113	체력_회복	도트 파티 힐	AOE	Heal
