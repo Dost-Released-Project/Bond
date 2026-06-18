@@ -10,6 +10,8 @@ public class TurnLifetimeScope : LifetimeScope
 {
     [SerializeField] private TurnUI _ui;
     [SerializeField] private SkillCutSceneConfig _skillCutSceneConfig;
+    [SerializeField] private Canvas _portraitCanvas;
+    [SerializeField] private float _portraitDuration = 1.5f;
 
     protected override void Configure(IContainerBuilder builder)
     {
@@ -27,7 +29,9 @@ public class TurnLifetimeScope : LifetimeScope
         else
             Debug.LogError("[TurnLifetimeScope] _skillCutSceneConfig 가 연결되지 않았습니다.", this);
 
-        builder.Register<CutSceneLoader>(Lifetime.Singleton);
+        builder.Register<CutSceneLoader>(Lifetime.Singleton)
+            .WithParameter("portraitCanvas", _portraitCanvas)
+            .WithParameter("portraitDuration", _portraitDuration);
         builder.Register<SkillCutSceneInjector>(Lifetime.Singleton);
     }
 }

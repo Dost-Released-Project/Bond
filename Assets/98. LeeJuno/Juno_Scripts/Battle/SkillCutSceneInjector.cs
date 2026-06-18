@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using PipeLine;
 using UnityEngine;
@@ -35,14 +36,13 @@ public class SkillCutSceneInjector
             return;
         }
 
-        WrapArray(players);
-        WrapArray(enemies);
+        WrapArray(players, enemies);
     }
 
     /// <summary>
     /// 배열 내 각 캐릭터의 onBattleAction 을 래핑한다.
     /// </summary>
-    private void WrapArray(BaseCharacter[] characters)
+    private void WrapArray(BaseCharacter[] characters, BaseCharacter[] allEnemies)
     {
         if (characters == null)
             return;
@@ -66,11 +66,8 @@ public class SkillCutSceneInjector
 
                     if (_config.TryGetSceneId(skillId, out sceneId))
                     {
-                        string spriteAddress = null;
-                        if (context.target != null)
-                            spriteAddress = context.target.IdleImageAddress;
-
-                        await _cutSceneLoader.Load(sceneId, spriteAddress);
+                        string[] spriteAddresses = CollectTargetSpriteAddresses(context, allEnemies);
+                        await _cutSceneLoader.Load(sceneId, spriteAddresses);
                     }
                 }
 
@@ -80,5 +77,28 @@ public class SkillCutSceneInjector
                 }
             };
         }
+    }
+
+    private static string[] CollectTargetSpriteAddresses(BattleContext context, BaseCharacter[] allEnemies)
+    {
+        // 단일 타겟 스킬
+        if (context.target != null)
+            return new string[] { context.target.IdleImageAddress };
+
+        // 광역 스킬 — 살아있는 적 전원의 Idle 주소 수집
+        List<string> addresses = new List<string>();
+        if (allEnemies == null)
+            return addresses.ToArray();
+
+        foreach (BaseCharacter enemy in allEnemies)
+        {
+            if (enemy == null) continue;
+            if (enemy.IsDead) continue;
+            if (string.IsNullOrEmpty(enemy.IdleImageAddress)) continue;
+
+            addresses.Add(enemy.IdleImageAddress);
+        }
+
+        return addresses.ToArray();
     }
 }

@@ -1043,7 +1043,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 15
+  field of view: 40
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -1070,7 +1070,7 @@ Transform:
   m_GameObject: {fileID: 1693520512}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.1, y: -28, z: -24.6}
+  m_LocalPosition: {x: -3.5, y: 36.7, z: -24.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1267,7 +1267,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillCutSceneController
   _director: {fileID: 1884799414}
-  _enemyRenderer: {fileID: 1941447836}
+  _enemyRenderers:
+  - {fileID: 1941447836}
 --- !u!1 &1928046706
 GameObject:
   m_ObjectHideFlags: 0
@@ -1404,7 +1405,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: dc036f3d41e97b44e86da9f6ab9b00ed, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1412,7 +1413,7 @@ SpriteRenderer:
   m_Size: {x: 1.28, y: 1.28}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!1 &2120161367
 GameObject:

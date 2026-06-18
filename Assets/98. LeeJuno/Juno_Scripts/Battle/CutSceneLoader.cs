@@ -24,6 +24,9 @@ using UnityEngine.UIElements;
 /// </summary>
 public class CutSceneLoader
 {
+    private readonly Canvas _portraitCanvas;
+    private readonly float _portraitDuration;
+
     private bool _isLoading;
 
     // 컷씬 로드 중 비활성화한 컴포넌트 목록 — 언로드 후 복구한다
@@ -32,12 +35,14 @@ public class CutSceneLoader
 
     private SceneInstance _cutSceneInstance;
     private bool _hasCutScene;
-    private AsyncOperationHandle<Sprite> _spriteHandle;
+    private readonly List<AsyncOperationHandle<Sprite>> _spriteHandles = new List<AsyncOperationHandle<Sprite>>();
 
-    public CutSceneLoader()
+    public CutSceneLoader(Canvas portraitCanvas, float portraitDuration)
     {
-        _isLoading  = false;
-        _hasCutScene = false;
+        _portraitCanvas  = portraitCanvas;
+        _portraitDuration = portraitDuration;
+        _isLoading        = false;
+        _hasCutScene      = false;
     }
 
     /// <summary>
@@ -45,7 +50,7 @@ public class CutSceneLoader
     /// 반환 시점에 씬 로드·재생·언로드가 모두 완료되어 있음이 보장된다(자기완결형).
     /// </summary>
     /// <param name="sceneId">Addressables 씬 주소.</param>
-    public async UniTask Load(string sceneId, string spriteAddress = null)
+    public async UniTask Load(string sceneId, string[] spriteAddresses = null)
     {
         if (_isLoading)
         {
@@ -72,6 +77,14 @@ public class CutSceneLoader
             Time.timeScale = 0f;
             DisableSceneComponents();
 
+            // 초상화 캔버스를 지정 시간 동안 표시한 뒤 컷씬으로 넘어간다
+            // if (_portraitCanvas != null)
+            // {
+            //     _portraitCanvas.gameObject.SetActive(true);
+            //     await UniTask.Delay(TimeSpan.FromSeconds(_portraitDuration), DelayType.UnscaledDeltaTime);
+            //     _portraitCanvas.gameObject.SetActive(false);
+            // }
+
             // 완료 신호 채널에 콜백 등록
             CutSceneCompletionChannel.Register(onCompleted);
 
@@ -85,8 +98,8 @@ public class CutSceneLoader
                 _hasCutScene = true;
 
                 // 적 스프라이트 주소가 있으면 로드 후 컨트롤러에 주입한다
-                if (string.IsNullOrEmpty(spriteAddress) == false)
-                    await InjectEnemySpriteAsync(spriteAddress);
+                if (spriteAddresses != null && spriteAddresses.Length > 0)
+                    await InjectEnemySpriteAsync(spriteAddresses);
             }
             catch (Exception e)
             {
@@ -110,8 +123,12 @@ public class CutSceneLoader
             RestoreSceneComponents();
             Time.timeScale = 1f;
 
-            if (_spriteHandle.IsValid())
-                Addressables.Release(_spriteHandle);
+            foreach (AsyncOperationHandle<Sprite> handle in _spriteHandles)
+            {
+                if (handle.IsValid())
+                    Addressables.Release(handle);
+            }
+            _spriteHandles.Clear();
 
             _isLoading = false;
         }
@@ -148,16 +165,19 @@ public class CutSceneLoader
     /// 컷씬 씬이 화면을 독점할 수 있도록 다른 씬 UI·사운드·입력을 차단한다.
     /// 비활성화한 컴포넌트는 _disabledBehaviours 에 캐시해 복구 시 사용한다.
     /// </summary>
-    private async UniTask InjectEnemySpriteAsync(string spriteAddress)
+    private async UniTask InjectEnemySpriteAsync(string[] spriteAddresses)
     {
-        _spriteHandle = Addressables.LoadAssetAsync<Sprite>(spriteAddress);
-        await _spriteHandle.ToUniTask();
+        _spriteHandles.Clear();
 
-        if (_spriteHandle.Status != AsyncOperationStatus.Succeeded)
+        UniTask[] loadTasks = new UniTask[spriteAddresses.Length];
+        for (int i = 0; i < spriteAddresses.Length; i++)
         {
-            Debug.LogWarning($"[CutSceneLoader] 적 스프라이트 로드 실패: {spriteAddress}");
-            return;
+            AsyncOperationHandle<Sprite> handle = Addressables.LoadAssetAsync<Sprite>(spriteAddresses[i]);
+            _spriteHandles.Add(handle);
+            loadTasks[i] = handle.ToUniTask();
         }
+
+        await UniTask.WhenAll(loadTasks);
 
         SkillCutSceneController controller = UnityEngine.Object.FindFirstObjectByType<SkillCutSceneController>();
         if (controller == null)
@@ -166,12 +186,32 @@ public class CutSceneLoader
             return;
         }
 
-        controller.SetEnemySprite(_spriteHandle.Result);
+        List<Sprite> sprites = new List<Sprite>();
+        foreach (AsyncOperationHandle<Sprite> handle in _spriteHandles)
+        {
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+                sprites.Add(handle.Result);
+            else
+                Debug.LogWarning($"[CutSceneLoader] 스프라이트 로드 실패.");
+        }
+
+        controller.SetEnemySprites(sprites.ToArray());
     }
 
     private void DisableSceneComponents()
     {
         _disabledBehaviours.Clear();
+
+        Canvas[] canvases = UnityEngine.Object.FindObjectsByType<Canvas>(FindObjectsSortMode.None);
+        foreach (Canvas canvas in canvases)
+        {
+            if (canvas == _portraitCanvas) continue;
+            if (canvas.enabled)
+            {
+                canvas.enabled = false;
+                _disabledBehaviours.Add(canvas);
+            }
+        }
 
         UIDocument[] uiDocuments = UnityEngine.Object.FindObjectsByType<UIDocument>(FindObjectsSortMode.None);
         foreach (UIDocument uiDocument in uiDocuments)
