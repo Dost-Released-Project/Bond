@@ -17,11 +17,17 @@ public class TurnManager : ITurnManager, IStartable, IDisposable
     
     private readonly IBattleFlowManager _battleFlowManager;
     private readonly CharacterSelector _selector;
+    private readonly SkillCutSceneInjector _skillCutSceneInjector;
     private CancellationTokenSource m_cts;
-    
-    public TurnManager(IBattleFlowManager expeditionFlowManager, CharacterSelector selector) {
-        _battleFlowManager = expeditionFlowManager;
-        _selector = selector;
+
+    public TurnManager(
+        IBattleFlowManager expeditionFlowManager,
+        CharacterSelector selector,
+        SkillCutSceneInjector skillCutSceneInjector)
+    {
+        _battleFlowManager     = expeditionFlowManager;
+        _selector              = selector;
+        _skillCutSceneInjector = skillCutSceneInjector;
     }
     
     void IStartable.Start()
@@ -68,6 +74,10 @@ public class TurnManager : ITurnManager, IStartable, IDisposable
         _units.AddRange(characters.Where(c => c != null));
         _units.AddRange(targets.Where(c => c != null));
         Debug.Log($"TurnManager received battle start event with {characters.Length} characters and {targets.Length} targets.");
+
+        // 전투 시작 직전 — 각 캐릭터의 onBattleAction 에 컷씬 래퍼를 씌운다
+        _skillCutSceneInjector?.WrapBattleActions(characters, targets);
+
         StartBattleAsync(m_cts.Token).Forget();
     }
 
