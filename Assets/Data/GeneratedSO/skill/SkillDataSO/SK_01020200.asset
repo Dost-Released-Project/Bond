@@ -14,16 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
   _id: 01020200
   _displayName: 
-  _description: 
+  _description: "\uBAA8\uB4E0 \uB300\uC0C1 \uD0C0\uACA9"
   _type: 3
   _target: 0
   _targetingType: 1
-  _effectTypes: 01000000
-  _value: 14
+  _effectTypes: 0a000000
+  _values:
+  - 1
   _coolTime: 0
-  _duration: 1
+  _duration: 0
   _useableClasses: 2
-  _useableSlots: 14
-  _enemyTargetMask: 7
+  _useableSlots: 12
+  _enemyTargetMask: 15
   _allyTargetMask: 0
   _iconAddress: 0106

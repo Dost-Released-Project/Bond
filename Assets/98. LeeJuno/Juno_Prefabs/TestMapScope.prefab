@@ -97,5 +97,6 @@ MonoBehaviour:
     TypeName: RootVContainer.RootScope
   autoRun: 1
   autoInjectGameObjects: []
-  _mapUIController: {fileID: 0}
+  mapUIController: {fileID: 0}
   _journalUIPrefab: {fileID: 2408579647488794321, guid: e972ad374caaa0443aa796b971b1ffc9, type: 3}
+  _skillCutSceneConfig: {fileID: 11400000, guid: 0047c455c9d58ea4bad7f9ad712a4aa3, type: 2}

@@ -17,7 +17,7 @@ public class InventoryView : MonoBehaviour
     private TextField _searchField;
     private ScrollView _totalScroll;
 
-    private ITotalInventory _totalInventory;
+    private TotalInventory _totalInventory;
     private InventoryTransferService _transferService;
     private ExpeditionResultService _expeditionResultService;
     [Inject] private ExpeditionPayload _payload;
@@ -28,7 +28,7 @@ public class InventoryView : MonoBehaviour
     private VisualElement _tooltip; // 상세 정보를 띄울 최상위 레이어
 
     [Inject]
-    public void Construct(ITotalInventory total, InventoryTransferService service, ExpeditionResultService expeditionResultService)
+    public void Construct(TotalInventory total, InventoryTransferService service, ExpeditionResultService expeditionResultService)
     {
         _totalInventory = total;
         _transferService = service;
@@ -40,8 +40,8 @@ public class InventoryView : MonoBehaviour
         // 1. "total_inv" 파일 로드
         string savePath = Path.Combine(Application.dataPath, "Data", "Save", "total_inv.json");
         bool isFirstStart = !File.Exists(savePath);
-
-        LoadTotalInventory();
+        
+        _totalInventory.LoadTotalInventory();
     
         // 2. [개혁] 세이브 파일이 없는 순수 신규 게임("새로하기")일 때만 단 1회 테스트 아이템 추가
         if (isFirstStart)
@@ -55,7 +55,7 @@ public class InventoryView : MonoBehaviour
             _totalInventory.AddItemId("07040000", 1);
 
             // 지급된 상태를 즉시 파일로 구워내어 다음 재실행/복귀 시 다시 지급되는 현상 방어
-            SaveTotalInventory(); 
+            _totalInventory.SaveTotalInventory(); 
         }
         else
         {
@@ -69,60 +69,6 @@ public class InventoryView : MonoBehaviour
         SetupUI();
 
         ToggleWindow(false);
-    }
-
-    private void LoadTotalInventory()
-    {
-        // 로드 시도
-        var save = new InventorySaveData("total_inv");
-        // SaveLoadSystem의 GetPath와 Key를 조합하여 경로 생성 (시스템 수정 없이 대응)
-        string saveKey = save.Key;
-        string path = Path.Combine(Application.dataPath, "Data", "Save", $"{saveKey}.json");
-
-        if (File.Exists(path))
-        {
-            try 
-            {
-                SaveLoadSystem.Load(save);
-                
-                // 1. 기존 슬롯을 완전히 비우고 저장된 용량만큼 재생성
-                _totalInventory.ClearAll(); 
-                _totalInventory.ExpandStorage(save.capacity); 
-
-                // 2. 아이템 복구
-                foreach (var s in save.slots)
-                {
-                    // 아이템 데이터 베이스 접근
-                    BaseItem item = DBSORegistry.GetSO<BaseItem>(s.id);
-                    if (item != null) _totalInventory.AddItemAuto(item, s.count);
-                }
-                
-                Debug.Log("TotalInventory: 데이터 로드 성공");
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"TotalInventory: 로드 중 오류 발생 - {e.Message}");
-            }
-        }
-        else
-        {
-            Debug.Log("TotalInventory: 기존 세이브 없음. 기본값으로 시작.");
-        }
-    }
-    
-    private void SaveTotalInventory()
-    {
-        // 1. 저장할 데이터 객체 생성 (파일명: total_inv)
-        var save = new InventorySaveData("total_inv");
-        save.capacity = _totalInventory.Capacity;
-        foreach (var slot in _totalInventory.GetAll())
-        {
-            if (!slot.IsEmpty)
-                save.slots.Add(new InventorySaveData.SlotData { id = slot.item.id, count = slot.quantity });
-        }
-
-        // 3. 세이브 시스템 실행
-        SaveLoadSystem.Save(save);
     }
     
     private void SetupUI()
@@ -304,7 +250,7 @@ public class InventoryView : MonoBehaviour
 
         UpdateGrid(_totalSlotElements, _totalInventory, totalVisible);
         
-        SaveTotalInventory();
+        _totalInventory.SaveTotalInventory(); 
     }
 
     private void SetFilter(ItemCategory? cat) 

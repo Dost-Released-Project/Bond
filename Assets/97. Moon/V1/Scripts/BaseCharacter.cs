@@ -135,6 +135,9 @@ public partial class BaseCharacter : ITurnUseUnit
 
     // UI 갱신용 상태 변경 이벤트. 데이터 변경 메서드에서 발사된다.
     public event Action<BaseCharacter> OnHpChanged;
+    public event Action<BaseCharacter, int> OnDamageTaken;
+    public event Action<BaseCharacter, int> OnHealed;
+    public event Action<BaseCharacter> OnEvaded;
     public event Action<BaseCharacter> OnInsanityChanged;
     public event Action<BaseCharacter> OnStatRecalculated;
     public event Action<BaseCharacter> OnRoleChanged;
@@ -261,6 +264,7 @@ public partial class BaseCharacter : ITurnUseUnit
         Stat.current_Hp = Mathf.Max(Stat.current_Hp - amount, 0);
         Debug.Log($"<color=orange>[HP 차감] {Name}이(가) {amount}의 피해를 입었습니다. (잔여 HP: {Stat.current_Hp}/{Stat.max_Hp})</color>");
         OnHpChanged?.Invoke(this);
+        OnDamageTaken?.Invoke(this, amount);
 
         if (Stat.current_Hp <= 0)
         {
@@ -270,7 +274,12 @@ public partial class BaseCharacter : ITurnUseUnit
         }
     }
 
-    public void ReduceInsanity(int amount)
+    public void Evade()
+    {
+        OnEvaded?.Invoke(this);
+    }
+
+    public void IncreaseInsanity(int amount)
     {
         Insanity = Mathf.Min(Insanity + amount, 100); // 스트레스 증가
         OnInsanityChanged?.Invoke(this);
@@ -282,8 +291,9 @@ public partial class BaseCharacter : ITurnUseUnit
         Stat.current_Hp = Mathf.Min(Stat.current_Hp + amount, Stat.max_Hp);
         Debug.Log($"<color=lime>[HP 회복] {Name}이(가) {amount}의 체력을 회복했습니다. (현재 HP: {Stat.current_Hp}/{Stat.max_Hp})</color>");
         OnHpChanged?.Invoke(this);
+        OnHealed?.Invoke(this, amount);
     }
-    public void RecoverInsanity(int amount)
+    public void ReduceInsanity(int amount)
     {
         Insanity = Mathf.Max(Insanity - amount, 0);
         OnInsanityChanged?.Invoke(this);

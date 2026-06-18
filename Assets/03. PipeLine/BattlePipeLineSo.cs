@@ -107,8 +107,12 @@ namespace PipeLine
                     break;
             }
 
-            float skillValue = context.runtimeSkill.Data.Value;
-            context.value = characterStat + skillValue;
+            // Values[0]을 스탯 계수(Multiplier)로 사용, 없을 경우 1f 기본값 지정
+            float skillMultiplier = (context.runtimeSkill.Data.Values != null && context.runtimeSkill.Data.Values.Count > 0) 
+                ? context.runtimeSkill.Data.Values[0] 
+                : 1f;
+
+            context.value = characterStat * skillMultiplier;
 
             // 공격 계열 스킬에 한해 시전자의 데미지 증가 비율(DamageMultiplier; 버프/장비 모디파이어 합산)을 적용
             if (skillType == SkillType.OFFENSIVE || skillType == SkillType.SPELL)
@@ -122,7 +126,7 @@ namespace PipeLine
                 }
             }
 
-            Debug.Log($"[EntryStep] 최종 산출 수치: {context.value} (스탯 {characterStat} + 스킬 위력 {skillValue})");
+            Debug.Log($"[EntryStep] 최종 산출 수치: {context.value} (스탯 {characterStat} * 스킬 계수 {skillMultiplier})");
             return UniTask.FromResult(context);
         }
     }
@@ -158,14 +162,18 @@ namespace PipeLine
             // 난수가 명중 확률보다 크면 공격을 회피한 것으로 판정합니다.
             context.isEvaded = Random.value > hitRate;
 
+            context.isEvaded = true;
+            // 회피 테스트 확률 100퍼 
             if (context.isEvaded)
             {
                 Debug.Log($"<color=white><b>[회피]</b></color> {context.target.Name}이(가) {context.caster.Name}의 공격을 피했습니다! (명중률: {hitRate:P0})");
                 
                 // [신규] 공격 회피당함 시 시전자 스트레스 +5
-                context.caster.ReduceInsanity(5);
+                context.caster.IncreaseInsanity(5);
                 Debug.Log($"[Stress] {context.caster.Name} 공격 회피당하여 스트레스 +5 누적");
                 Debug.Log($"<color=white><b>[회피]</b></color> {context.target.Name}이(가) {context.caster.Name}의 공격을 피했습니다! (타겟 회피율: {context.target.Stat.eva:P0}, 최종 명중률: {hitRate:P0})");
+
+                context.target.Evade();
             }
             else
             {
@@ -190,6 +198,7 @@ namespace PipeLine
             {
                 float bonus = context.value * criticalBonus;
                 context.value += bonus;
+                context.caster.ReduceInsanity(5);
                 Debug.Log($"<color=yellow><b>[치명타]</b></color> 크리티컬 발생! 보너스: {bonus}, 타겟: {context.target.Name}");
             }
             return UniTask.FromResult(context);

@@ -14,12 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
   m_GroupName: Battle
   m_GUID: f0a291ef06d34d943b37e549899e07c7
-  m_SerializeEntries:
-  - m_GUID: 20c3457861b5d874883161d564b9428d
-    m_Address: Stage_Battle
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 2844d279e9fd27e4a9c0e38b898d6b70, type: 2}
   m_SchemaSet:

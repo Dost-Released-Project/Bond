@@ -25,7 +25,7 @@ MonoBehaviour:
     Trigger:
       rid: 2064474984977793109
     Effect:
-      rid: 2064474984977793110
+      rid: 6587028310960111693
   EditableSlots: []
   references:
     version: 2
@@ -38,9 +38,6 @@ MonoBehaviour:
           - rid: 2064474984977793111
           - rid: 2064474984977793112
           - rid: 2064474984977793113
-    - rid: 2064474984977793110
-      type: {class: InterceptReactionEffect, ns: Reactions, asm: Assembly-CSharp}
-      data: 
     - rid: 2064474984977793111
       type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
@@ -53,3 +50,7 @@ MonoBehaviour:
       type: {class: HpBelowCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
         Threshold: 0.2
+    - rid: 6587028310960111693
+      type: {class: CompositeReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Effects: []

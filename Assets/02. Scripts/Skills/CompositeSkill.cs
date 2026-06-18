@@ -23,15 +23,24 @@ public class CompositeSkill : SkillBase
         _effects.Clear();
         if (_skillData == null || _skillData.SkillEffectTypes == null) return;
 
-        foreach (var type in _skillData.SkillEffectTypes)
+        for (int i = 0; i < _skillData.SkillEffectTypes.Count; i++)
         {
+            var type = _skillData.SkillEffectTypes[i];
+            float effectValue = (_skillData.Values != null && i < _skillData.Values.Count) ? _skillData.Values[i] : 0f;
+
             switch (type)
             {
                 case SkillEffectType.HpChange:
-                    _effects.Add(new HpChangeEffect());
+                case SkillEffectType.체력_감소:
+                case SkillEffectType.체력_회복:
+                    _effects.Add(new HpChangeEffect(type, effectValue));
                     break;
                 case SkillEffectType.Buff:
-                    _effects.Add(new BuffEffect());
+                case SkillEffectType.버프_스탯_힘:
+                case SkillEffectType.버프_스탯_민첩:
+                case SkillEffectType.버프_스탯_지능:
+                case SkillEffectType.버프_스탯_방어:
+                    _effects.Add(new BuffEffect(type, effectValue));
                     break;
                 default:
                     Debug.LogWarning($"[CompositeSkill] 정의되지 않은 SkillEffectType: {type}");

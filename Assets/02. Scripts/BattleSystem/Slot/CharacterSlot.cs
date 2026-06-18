@@ -1,5 +1,6 @@
 using System;
 using BattleSystem.Interface;
+using BattleSystem.UI;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -24,6 +25,9 @@ namespace BattleSystem
         public E_BattleSide side;
         public FormationMask rank;
 
+        [Header("Visual Effects")]
+        [SerializeField] private TextVisualizer m_TextVisualizer;
+
         public BaseCharacter Occupant { get; private set; }
         public bool IsEmpty => Occupant == null;
 
@@ -36,6 +40,10 @@ namespace BattleSystem
         { 
             Occupant = character;
             character.CurrentSlot = this;
+
+            character.OnDamageTaken += ShowDamageText;
+            character.OnHealed += ShowHealText;
+            character.OnEvaded += ShowEvadedText;
             
             // 기본 이미지 타입(Idle)으로 로드
             m_currentImageType = SlotImageType.Idle;
@@ -106,7 +114,13 @@ namespace BattleSystem
 
         public void Clear()
         {
-            if (Occupant != null) Occupant.CurrentSlot = null;
+            if (Occupant != null)
+            {
+                Occupant.OnDamageTaken -= ShowDamageText;
+                Occupant.OnHealed -= ShowHealText;
+                Occupant.OnEvaded -= ShowEvadedText;
+                Occupant.CurrentSlot = null;
+            }
             Occupant = null;
             m_CharacterSlotVisualizer.SetPortrait(null); // 스프라이트 참조 제거
         }
@@ -207,6 +221,40 @@ namespace BattleSystem
         public void Bind(ICharacterSlotVisualizer targetClass)
         {
             m_CharacterSlotVisualizer = targetClass;
+        }
+
+        private void ShowDamageText(BaseCharacter target, int amount)
+        {
+            if (m_TextVisualizer != null)
+            {
+                m_TextVisualizer.Show(amount, isHeal: false);
+            }
+        }
+
+        private void ShowHealText(BaseCharacter target, int amount)
+        {
+            if (m_TextVisualizer != null)
+            {
+                m_TextVisualizer.Show(amount, isHeal: true);
+            }
+        }
+
+        private void ShowEvadedText(BaseCharacter target)
+        {
+            if (m_TextVisualizer != null)
+            {
+                m_TextVisualizer.ShowMiss();
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (Occupant != null)
+            {
+                Occupant.OnDamageTaken -= ShowDamageText;
+                Occupant.OnHealed -= ShowHealText;
+                Occupant.OnEvaded -= ShowEvadedText;
+            }
         }
     }
 }

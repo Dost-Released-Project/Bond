@@ -1,23 +1,16 @@
 using UnityEngine;
 
-public enum ConsumableType { Bandage, Sedative, Stimulant }
+public enum ConsumableType { Bandage, Sedative, Stimulant, Etc  }
 
 [CreateAssetMenu(fileName = "NewConsumable", menuName = "Items/Consumable")]
 public class ConsumableItem : BaseItem
 {
     public ConsumableType consumableType;
-    public int healValue = 20;
-
-    private void OnEnable()
-    {
-        category = ItemCategory.Consume;
-    }
+    public int healValue;
 
     public override void Use(BaseCharacter target)
     {
         if (target == null) return;
-
-        Stat stat = target.Stat;
 
         switch (consumableType)
         {
@@ -26,12 +19,14 @@ public class ConsumableItem : BaseItem
                 Debug.Log($"[사용] {itemName}: {target.Name}의 HP {healValue} 만큼 회복");
                 break;
             case ConsumableType.Sedative:
-                target.RecoverInsanity(healValue);
+                target.ReduceInsanity(healValue);
                 Debug.Log($"[사용] {itemName}: {target.Name}의 {healValue} 만큼 스트레스 감소");
                 break;
             case ConsumableType.Stimulant:
                 // 성향 시스템은 팀원이 작업 중이므로 연동 지점만 만듭니다.
                 TryAwakenTrait(target);
+                break;
+            case ConsumableType.Etc:
                 break;
         }
     }

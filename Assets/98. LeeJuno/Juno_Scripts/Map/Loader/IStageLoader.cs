@@ -29,6 +29,13 @@ public interface IStageLoader
     public UniTask LoadStage(StageType stageType, MapNode node);
 
     /// <summary>
+    /// 스킬 컷씬을 Additive 방식으로 로드하고 타임라인 재생 완료까지 대기한 뒤 언로드한다.
+    /// 반환 시점에 컷씬 로드·재생·언로드가 모두 완료되어 있음이 보장된다(자기완결형).
+    /// 전투씬(_currentScene)은 건드리지 않으며 전투씬 로딩 플래그(_isLoading)와도 독립적이다.
+    /// </summary>
+    public UniTask LoadSkillCutScene(string skillId, string sceneId);
+
+    /// <summary>
     /// 현재 로드된 스테이지 씬을 비동기로 언로드한다.
     /// 로드된 씬이 없으면 아무 동작도 하지 않는다.
     /// </summary>

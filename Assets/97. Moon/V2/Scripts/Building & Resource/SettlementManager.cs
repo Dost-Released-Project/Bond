@@ -308,12 +308,25 @@ public class SettlementManager : MonoBehaviour, ISettlementManager
     {
         if (slotIndex < 0 || slotIndex >= constructionSlots.Length) return;
         Transform slotTransform = constructionSlots[slotIndex];
+        
+        // =========================================================================
+        // [이중 생성 및 세이브 먹통 버그 해결 방어벽]
+        // 만약 해당 슬롯에 이미 기존 건물(BuildingObject)이 복원되어 서 있다면,
+        // 새로운 인스턴스를 팩토리로 또 찍어내지 않고 기존 건물의 레벨만 파일 수치로 덮어씌우고 마감합니다.
+        // =========================================================================
+        var existingBuilding = slotTransform.GetComponentInChildren<BuildingObject>();
+        if (existingBuilding != null)
+        {
+            Debug.Log($"<color=yellow>[방어선 가동]</color> {slotIndex}번 슬롯에 이미 {existingBuilding.Data.DisplayName}이(가) 실재하므로 중복 생성을 차단하고 레지스트리 레벨({level})만 동기화합니다.");
+            existingBuilding.LoadLevelForce(level); // 기존 인스턴스의 레벨 데이터만 안전 강제 복구
+            return; // 새 객체 생성 라인으로 내려가지 않고 여기서 정산 종료
+        }
 
         if (slotTransform.TryGetComponent<SpriteRenderer>(out var mr)) mr.enabled = false;
         if (slotTransform.TryGetComponent<BoxCollider>(out var bc)) bc.enabled = false;
         if (slotTransform.TryGetComponent<ConstructionSlot>(out var cs)) cs.enabled = false;
 
-        // 💥 팩토리로 조용히 조립 생산
+        // 팩토리로 조용히 조립 생산
         BuildingObject bObj = BuildingFactory.Create(slotTransform, data, this);
     
         if (bObj != null)

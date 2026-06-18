@@ -10,6 +10,7 @@ public class EffectSpritePlayer : MonoBehaviour
     [SerializeField] private float _fps = 12f;
     [SerializeField] private bool _loop = false;
     [SerializeField] private bool _playOnStart = true;
+    [SerializeField] private bool _ignoreTimeScale = false;
 
     private CancellationToken _destroyToken;
     private int _playGeneration;
@@ -56,7 +57,8 @@ public class EffectSpritePlayer : MonoBehaviour
 
                 _spriteRenderer.sprite = _sprites[i];
 
-                bool isCancelled = await UniTask.Delay(TimeSpan.FromSeconds(interval), cancellationToken: _destroyToken)
+                DelayType delayType = _ignoreTimeScale ? DelayType.UnscaledDeltaTime : DelayType.DeltaTime;
+                bool isCancelled = await UniTask.Delay(TimeSpan.FromSeconds(interval), delayType, cancellationToken: _destroyToken)
                     .SuppressCancellationThrow();
 
                 if (isCancelled) return;
