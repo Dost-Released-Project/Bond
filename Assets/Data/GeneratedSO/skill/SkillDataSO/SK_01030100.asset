@@ -28,3 +28,4 @@ MonoBehaviour:
   _enemyTargetMask: 15
   _allyTargetMask: 0
   _iconAddress: 0109
+  _prefabAddress: Poison

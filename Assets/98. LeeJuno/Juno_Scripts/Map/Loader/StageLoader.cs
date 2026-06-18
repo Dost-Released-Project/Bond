@@ -35,6 +35,7 @@ public class StageLoader : IStageLoader
     private readonly LifetimeScope _currentScope;
     private readonly EventLogAccumulator _logAccumulator;
     private readonly Dictionary<StageType, StageConfig> _stageConfigMap;
+    private readonly ISkillEffectPool _skillEffectPool;
 
     private SceneInstance _currentScene;         // 현재 로드된 씬 인스턴스
     private bool _hasLoadedScene;               // 현재 로드된 씬이 있는지 여부
@@ -61,13 +62,15 @@ public class StageLoader : IStageLoader
         IEventContext eventContext,
         IStageMonsterContext stageMonsterContext,
         LifetimeScope currentScope,
-        EventLogAccumulator logAccumulator)
+        EventLogAccumulator logAccumulator,
+        ISkillEffectPool skillEffectPool)
     {
         _mapConfigCache = mapConfigCache;
         _eventContext = eventContext;
         _stageMonsterContext = stageMonsterContext;
         _currentScope = currentScope;
         _logAccumulator = logAccumulator;
+        _skillEffectPool = skillEffectPool;
         _hasLoadedScene = false;
         _stageConfigMap = new Dictionary<StageType, StageConfig>();
     }
@@ -411,6 +414,8 @@ public class StageLoader : IStageLoader
                 _logAccumulator?.AppendBattleResultToPendingReport(result, _pendingBattleGroupId);
             else
                 _logAccumulator?.RecordBattleResult(result, _pendingBattleGroupId);
+
+            _skillEffectPool?.ReturnAll();
 
             _isBattleStage = false;
             _isEventBattle = false;

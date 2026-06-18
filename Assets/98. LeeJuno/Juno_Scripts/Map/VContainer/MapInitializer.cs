@@ -35,6 +35,7 @@ public class MapInitializer : IAsyncStartable, IDisposable
     private readonly MapConfigCache _mapConfigCache;
     private readonly ISpriteLoader _spriteLoader;
     private readonly ExpeditionPayload _expeditionPayload;
+    private readonly ISkillEffectPool _skillEffectPool;
 
     private AsyncOperationHandle<AccessoryDataBaseSO> _accessoryDBHandle;
     private AsyncOperationHandle<Sprite> _bgSpriteHandle;
@@ -51,7 +52,8 @@ public class MapInitializer : IAsyncStartable, IDisposable
         MapUIController mapUIController,
         MapConfigCache mapConfigCache,
         ISpriteLoader spriteLoader,
-        ExpeditionPayload expeditionPayload)
+        ExpeditionPayload expeditionPayload,
+        ISkillEffectPool skillEffectPool)
     {
         _mapConfigLoader = mapConfigLoader;
         _mapGenerator = mapGenerator;
@@ -61,6 +63,7 @@ public class MapInitializer : IAsyncStartable, IDisposable
         _mapConfigCache = mapConfigCache;
         _spriteLoader = spriteLoader;
         _expeditionPayload = expeditionPayload;
+        _skillEffectPool = skillEffectPool;
     }
 
     /// <summary>
@@ -182,5 +185,7 @@ public class MapInitializer : IAsyncStartable, IDisposable
 
         _mapNavigator.Initialize(mapData);
         _mapUIController.ShowMap(mapData);
+
+        await _skillEffectPool.WarmUpAsync(_expeditionPayload.Party, cancellation);
     }
 }

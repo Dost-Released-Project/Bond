@@ -26,6 +26,7 @@ public class SkillDTO
     public int EnemyTargetMask { get; set; }
     public int AllyTargetMask { get; set; }
     public string IconAddress { get; set; }
+    public string PrefabAddress { get; set; }
 }
 
 /// <summary>
@@ -60,7 +61,8 @@ public class SkillDataParser : TSVParserBase<SkillDTO, SkillData>
             UseableSlots = dto.UseableSlots,
             EnemyTargetMask = dto.EnemyTargetMask,
             AllyTargetMask = dto.AllyTargetMask,
-            IconAddress = dto.IconAddress
+            IconAddress = dto.IconAddress,
+            PrefabAddress = dto.PrefabAddress
         };
 
         so.SetData(raw);
@@ -131,6 +133,7 @@ public sealed class SkillDataMap : ClassMap<SkillDTO>
         Map(m => m.AllyTargetMask).Name("아군 진영").Default(0).TypeConverter<PlayerSideMaskConverter>();
         
         Map(m => m.IconAddress).Name("아이콘 ID").Optional();
+        Map(m => m.PrefabAddress).Name("PrefabAddress").Optional();
     }
 
     /// <summary>
