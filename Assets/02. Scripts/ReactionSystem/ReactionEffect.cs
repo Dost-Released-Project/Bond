@@ -297,7 +297,6 @@ namespace Reactions
 
     /// <summary>
     /// 스트레스(Insanity) 증감. Delta&gt;0 = 증가, Delta&lt;0 = 감소.
-    /// 기존 API 재사용 — 증가는 ReduceInsanity(명명과 반대로 +), 감소는 RecoverInsanity.
     /// </summary>
     [Serializable][AddTypeMenu("Modify Stress", -250)]
     public class StressReactionEffect : ReactionEffect
@@ -313,8 +312,8 @@ namespace Reactions
             foreach (var t in ResolveTargets(reactor, execution, originalContext))
             {
                 if (t == null) continue;
-                if (Delta >= 0) t.ReduceInsanity(Delta);   // 기존 명명: ReduceInsanity = 스트레스 증가
-                else t.RecoverInsanity(-Delta);
+                if (Delta >= 0) t.IncreaseInsanity(Delta);   
+                else t.ReduceInsanity(-Delta);
             }
             return UniTask.CompletedTask;
         }

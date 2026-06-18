@@ -19,7 +19,7 @@ public class ConsumableItem : BaseItem
                 Debug.Log($"[사용] {itemName}: {target.Name}의 HP {healValue} 만큼 회복");
                 break;
             case ConsumableType.Sedative:
-                target.RecoverInsanity(healValue);
+                target.ReduceInsanity(healValue);
                 Debug.Log($"[사용] {itemName}: {target.Name}의 {healValue} 만큼 스트레스 감소");
                 break;
             case ConsumableType.Stimulant:

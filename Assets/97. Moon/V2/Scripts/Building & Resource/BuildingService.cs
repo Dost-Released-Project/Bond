@@ -51,7 +51,7 @@ public class BuildingService
     public void ExecuteTavern(BaseCharacter target, BuildingLevelData data)
     {
         if (target == null) return;
-        target.RecoverInsanity(data.effectValue);
+        target.ReduceInsanity(data.effectValue);
         Debug.Log($"[BuildingService] 주점 이용: {data.effectValue} 스트레스 회복");
     }
 
