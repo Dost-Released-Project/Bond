@@ -26,8 +26,8 @@ public class SkillData : BaseSO
     [SerializeField] private List<SkillEffectType> _effectTypes = new List<SkillEffectType>();
 
     [Header("수치")]
-    [Tooltip("기본 효과 수치 (데미지 / 힐 / 버프량)")]
-    [SerializeField] private float _value;
+    [Tooltip("기본 효과 수치들 (데미지 / 힐 / 버프량)")]
+    [SerializeField] private List<float> _values = new List<float>();
 
     [Tooltip("쿨타임 (0 = 없음, N = N라운드 후 재사용)")]
     [SerializeField] private int _coolTime;
@@ -60,7 +60,8 @@ public class SkillData : BaseSO
     public SkillTarget Target         => _target;
     public TargetingType TargetingType => _targetingType;
     public IReadOnlyList<SkillEffectType> SkillEffectTypes => _effectTypes;
-    public float       Value          => _value;
+    public float       Value          => (_values != null && _values.Count > 0) ? _values[0] : 0f;
+    public IReadOnlyList<float> Values => _values;
     public int         CoolTime       => _coolTime;
     public int         Duration       => _duration;
     public int         UseableClasses => _useableClasses;
@@ -87,7 +88,11 @@ public class SkillData : BaseSO
             _effectTypes.AddRange(raw.SkillEffectTypes);
         }
 
-        _value           = raw.Value;
+        _values.Clear();
+        if (raw.Values != null)
+        {
+            _values.AddRange(raw.Values);
+        }
         _coolTime        = raw.CoolTime;
         _duration        = raw.Duration;
         _useableClasses  = raw.UseableClasses;
@@ -111,7 +116,7 @@ public struct SkillRawData
     public SkillTarget Target;
     public TargetingType TargetingType;
     public List<SkillEffectType> SkillEffectTypes;
-    public float      Value;
+    public List<float> Values;
     public int        CoolTime;
     public int        Duration;
     public int        UseableClasses;

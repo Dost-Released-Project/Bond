@@ -3,7 +3,7 @@ namespace Bond.WT.Camping
     public enum CampingActionType
     {
         HealHP,
-        RecoverInsanity,
+        ReduceInsanity,
         RemoveDebuff
     }
 
