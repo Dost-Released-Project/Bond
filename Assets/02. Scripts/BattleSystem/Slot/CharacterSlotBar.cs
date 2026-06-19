@@ -10,6 +10,7 @@ namespace Shapes {
 		public float insfillAmount = 1;
 		public Gradient colorGradient1;
 		public Gradient colorGradient2;
+		public Color currentColor = Color.gray;
 
 		public override void DrawPanelShapes( Rect rect, ImCanvasContext ctx ) {
 			if( colorGradient1 == null || colorGradient2 == null ) 
@@ -17,6 +18,9 @@ namespace Shapes {
 
 			// Draw black background:
 			Draw.Rectangle( rect, 8f, Color.black );
+
+			// Draw border:
+			Draw.RectangleBorder( rect, 1.5f, 8f, currentColor );
 
 			Rect innerRect = Inset( rect, 8 );
 			float spacing = 4f;
