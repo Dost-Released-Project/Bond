@@ -7,6 +7,9 @@
 				
 				
 ID	Name	Description	SequenceType	TargetUiKey
-TUT_A_01	최초 진입 자원 가이드	화면 상단의 영지 자원을 확인하세요. 기본 보급 비용이 충전됩니다.	0	ResourceStatusBar
-TUT_A_02	대원 명부 안내	대원 명부 버튼을 클릭하여 소속 대원들의 성미를 파악하십시오.	0	RosterOpenButton
-TUT_A_03	보급소 건설 유도	지정된 건설 슬롯에 대원 증원을 담당할 보급소를 건설하세요.	0	BuildSlot_01
+TUT_A_01	최초 진입 자원 확인	화면 상단의 영지 자원을 확인하세요. 보급소와 창고 건설을 위한 기본 자원이 다이렉트로 충전됩니다.	0	resource-container
+TUT_A_02	대원 명부 열기	대원 명부 버튼을 클릭하여 소속 대원들의 성미와 기질 가이드를 확인하십시오.	0	roster-toggle-btn
+TUT_A_03	보급소 건설 슬롯	건설 슬롯 영역을 선택하여 대원 증원을 담당할 '보급소 Lv.1'을 건설하세요.	0	Construction_Slot02
+TUT_A_04	창고 건설 슬롯	이어서 아이템 수납을 안정적으로 관리할 '창고 Lv.1'을 슬롯에 건설하세요.	0	Construction_Slot05
+TUT_A_05	최초 증원 요청	완공된 보급소를 선택하고 [증원 요청] 버튼을 눌러 새로운 대원을 모집하십시오.	0	ReinforceRequestButton
+TUT_A_06	탐사 출발 트리거	늘어난 인원과 보급 자원을 확인했다면, 이제 탐사 출발 버튼을 눌러 출항하십시오.	0	embark-btn

@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b4d21d8be30e47844a21b0e8770670b4, type: 3}
-  m_Name: TUT_A_03
+  m_Name: TUT_A_05
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
-  _id: TUT_A_03
-  _displayName: "\uBCF4\uAE09\uC18C \uAC74\uC124 \uC2AC\uB86F"
-  _description: "\uAC74\uC124 \uC2AC\uB86F \uC601\uC5ED\uC744 \uC120\uD0DD\uD558\uC5EC
-    \uB300\uC6D0 \uC99D\uC6D0\uC744 \uB2F4\uB2F9\uD560 '\uBCF4\uAE09\uC18C Lv.1'\uC744
-    \uAC74\uC124\uD558\uC138\uC694."
+  _id: TUT_A_05
+  _displayName: "\uCD5C\uCD08 \uC99D\uC6D0 \uC694\uCCAD"
+  _description: "\uC644\uACF5\uB41C \uBCF4\uAE09\uC18C\uB97C \uC120\uD0DD\uD558\uACE0
+    [\uC99D\uC6D0 \uC694\uCCAD] \uBC84\uD2BC\uC744 \uB20C\uB7EC \uC0C8\uB85C\uC6B4
+    \uB300\uC6D0\uC744 \uBAA8\uC9D1\uD558\uC2ED\uC2DC\uC624."
   _sequence: 0
-  _targetUiKey: Construction_Slot02
+  _targetUiKey: ReinforceRequestButton

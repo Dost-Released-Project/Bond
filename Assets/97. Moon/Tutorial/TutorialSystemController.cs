@@ -22,9 +22,6 @@ namespace Bond.Tutorial
         public event Action<TutorialStepSO> OnStepChanged;
         public event Action OnTutorialFinished;
 
-        public bool IsCleared => _saveData.isTutorialCleared;
-        public string CurrentStepId => _saveData.currentStepId;
-
         public TutorialSystemController(
             ResourceManager resourceManager, 
             TotalInventory totalInventory, 
