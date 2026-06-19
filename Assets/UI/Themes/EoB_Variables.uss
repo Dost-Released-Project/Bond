@@ -17,6 +17,7 @@
     --border-active:    transparent;
     --border-highlight: transparent;
     --border-danger:    transparent;
+    --border-accent:    transparent;
 
     /* Text */
     --text-primary:   rgba(0,0,0,0);

@@ -927,6 +927,9 @@ namespace Bond.UI
             // 링은 매 프레임 진행도(_fireProgress)에 따라 시계방향 호를 다시 그린다.
             _fireRing.generateVisualContent += OnGenerateFireRing;
 
+            // 링이 버튼 테두리-박스를 정확히 덮도록 인셋(-border-width)을 동기화. 레이아웃이 잡힌 뒤 한 번 + 변경 시.
+            _fireBtn.RegisterCallback<GeometryChangedEvent>(_ => SyncFireRingInset());
+
             // 누르는 동안에만 Resume — 진행도 갱신용 프레임 틱.
             _fireTicker = _fireBtn.schedule.Execute(UpdateFireHold).Every(16);
             _fireTicker.Pause();
@@ -934,6 +937,17 @@ namespace Bond.UI
             _fireBtn.RegisterCallback<PointerDownEvent>(OnFirePointerDown);
             _fireBtn.RegisterCallback<PointerUpEvent>(OnFirePointerUp);
             _fireBtn.RegisterCallback<PointerCaptureOutEvent>(_ => CancelFireHold());
+        }
+
+        /// <summary>링 오버레이를 버튼 테두리-박스에 맞춘다(인셋 = -테두리두께). border-width 만 바꿔도 정렬이 자동 추종된다.</summary>
+        private void SyncFireRingInset()
+        {
+            if (_fireBtn == null || _fireRing == null) return;
+            float bw = _fireBtn.resolvedStyle.borderTopWidth;
+            _fireRing.style.left   = -bw;
+            _fireRing.style.top    = -bw;
+            _fireRing.style.right  = -bw;
+            _fireRing.style.bottom = -bw;
         }
 
         private void OnFirePointerDown(PointerDownEvent evt)
@@ -1005,7 +1019,9 @@ namespace Bond.UI
             var rect = _fireRing.contentRect;
             if (rect.width <= 0f || rect.height <= 0f) return;
 
-            const float lineWidth = 6f;
+            // 선 두께 = 버튼 테두리 두께. 링이 테두리-박스를 덮으므로(SyncFireRingInset) 띠가 테두리 위에 정확히 겹친다.
+            float lineWidth = _fireBtn.resolvedStyle.borderTopWidth;
+            if (lineWidth <= 0f) return;
             float inset = lineWidth * 0.5f;             // 선이 밖으로 삐져나가지 않게 절반만큼 안쪽
             float w = rect.width, h = rect.height;
             float left = inset, top = inset, right = w - inset, bottom = h - inset;
