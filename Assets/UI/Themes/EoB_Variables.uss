@@ -17,6 +17,8 @@
     --border-active:    transparent;
     --border-highlight: transparent;
     --border-danger:    transparent;
+    --border-danger-hover:  transparent;
+    --border-danger-strong: transparent;
     --border-accent:    transparent;
 
     /* Text */

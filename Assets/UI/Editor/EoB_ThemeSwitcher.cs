@@ -17,13 +17,12 @@ namespace Bond.UI.Editor
     public class EoB_ThemeSwitcher : EditorWindow
     {
         private const string THEME_DARK_AMBER = "Assets/UI/Themes/EoB_Theme_DarkAmber.uss";
-        private const string THEME_DARK_BLUE  = "Assets/UI/Themes/EoB_Theme_DarkBlue.uss";
 
         private const string PREF_THEME = "EoB_SelectedTheme";
         private const string PREF_SCALE = "EoB_FontScale";
 
-        private static readonly string[] ThemeNames = { "DarkAmber", "DarkBlue" };
-        private static readonly string[] ThemePaths = { THEME_DARK_AMBER, THEME_DARK_BLUE };
+        private static readonly string[] ThemeNames = { "DarkAmber" };
+        private static readonly string[] ThemePaths = { THEME_DARK_AMBER };
 
         private static readonly Dictionary<string, float> FontBaseSizes = new()
         {

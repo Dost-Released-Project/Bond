@@ -66,7 +66,7 @@
 }
 
 .character-detail__fire-btn:hover {
-    border-color: var(--slot-trait-dot);
+    border-color: var(--border-danger-hover);
     background-color: var(--btn-hover-bg);
 }
 
@@ -93,7 +93,7 @@
     top: -2px;
     right: -2px;
     bottom: -2px;
-    color: var(--stress-crit);
+    color: var(--border-danger-strong);
 }
 
 .character-detail__body {
