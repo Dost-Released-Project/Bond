@@ -80,16 +80,38 @@ namespace BattleSystem
             }
 
             // 연출 전 LayoutGroup 비활성화
-            if (caster != null) DisableLayoutGroup(caster, focusLevel);
+            if (caster != null) 
+            {
+                DisableLayoutGroup(caster, focusLevel);
+            }
             if (targets != null)
             {
                 foreach (var t in targets)
                 {
-                    if (t != null) DisableLayoutGroup(t, focusLevel);
+                    if (t != null)
+                    {
+                        DisableLayoutGroup(t, focusLevel);
+                    }
                 }
             }
 
             var seq = DOTween.Sequence();
+
+            // SlotBar Dim 연출 (부드럽게 어두워짐)
+            if (caster != null)
+            {
+                seq.Join(DOTween.To(() => caster.BarAlpha, x => caster.BarAlpha = x, 0.2f, 0.3f).SetEase(Ease.OutQuad));
+            }
+            if (targets != null)
+            {
+                foreach (var t in targets)
+                {
+                    if (t != null)
+                    {
+                        seq.Join(DOTween.To(() => t.BarAlpha, x => t.BarAlpha = x, 0.2f, 0.3f).SetEase(Ease.OutQuad));
+                    }
+                }
+            }
 
             // 2. Caster 처리 (껐다 켜서 Dim보다 뒤의 순서로, 즉 최상단에 렌더링되게 만듦)
             if (caster != null)
@@ -216,13 +238,21 @@ namespace BattleSystem
 
             var seq = DOTween.Sequence();
 
-            if (caster != null) RestoreSlotAnim(caster, seq, currentLevel);
+            if (caster != null) 
+            {
+                RestoreSlotAnim(caster, seq, currentLevel);
+                seq.Join(DOTween.To(() => caster.BarAlpha, x => caster.BarAlpha = x, 1.0f, 0.3f).SetEase(Ease.OutQuad));
+            }
             
             if (targets != null)
             {
                 foreach (var target in targets)
                 {
-                    if (target != null) RestoreSlotAnim(target, seq, currentLevel);
+                    if (target != null) 
+                    {
+                        RestoreSlotAnim(target, seq, currentLevel);
+                        seq.Join(DOTween.To(() => target.BarAlpha, x => target.BarAlpha = x, 1.0f, 0.3f).SetEase(Ease.OutQuad));
+                    }
                 }
             }
 

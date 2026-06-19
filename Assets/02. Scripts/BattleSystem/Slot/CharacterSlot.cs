@@ -170,6 +170,18 @@ namespace BattleSystem
             IsTargeted = false;
         }
 
+        public float BarAlpha
+        {
+            get => m_CharacterSlotBar != null ? m_CharacterSlotBar.alpha : 1f;
+            set
+            {
+                if (m_CharacterSlotBar != null)
+                {
+                    m_CharacterSlotBar.alpha = value;
+                }
+            }
+        }
+
         public CharacterSlot(E_BattleSide side, FormationMask rank)
         {
             this.side = side;
