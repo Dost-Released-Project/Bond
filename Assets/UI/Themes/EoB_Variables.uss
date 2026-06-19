@@ -53,6 +53,10 @@
     --btn-active-bg:        transparent;   /* 클릭(눌림) 시 배경 */
     --btn-secondary-border: transparent;
     --btn-secondary-text:   rgba(0,0,0,0);
+    --btn-danger-text:      rgba(0,0,0,0);
+    --btn-danger-bg:        transparent;
+    --btn-danger-bg-hover:  transparent;
+    --btn-danger-bg-active: transparent;
 
     /* Echo System */
     --echo-ready-border: transparent;
