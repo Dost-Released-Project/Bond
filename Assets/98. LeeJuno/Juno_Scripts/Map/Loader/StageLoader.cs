@@ -35,6 +35,7 @@ public class StageLoader : IStageLoader
     private readonly LifetimeScope _currentScope;
     private readonly EventLogAccumulator _logAccumulator;
     private readonly Dictionary<StageType, StageConfig> _stageConfigMap;
+    private readonly ISkillEffectPool _skillEffectPool;
 
     private SceneInstance _currentScene;         // 현재 로드된 씬 인스턴스
     private bool _hasLoadedScene;               // 현재 로드된 씬이 있는지 여부
@@ -61,13 +62,15 @@ public class StageLoader : IStageLoader
         IEventContext eventContext,
         IStageMonsterContext stageMonsterContext,
         LifetimeScope currentScope,
-        EventLogAccumulator logAccumulator)
+        EventLogAccumulator logAccumulator,
+        ISkillEffectPool skillEffectPool)
     {
         _mapConfigCache = mapConfigCache;
         _eventContext = eventContext;
         _stageMonsterContext = stageMonsterContext;
         _currentScope = currentScope;
         _logAccumulator = logAccumulator;
+        _skillEffectPool = skillEffectPool;
         _hasLoadedScene = false;
         _stageConfigMap = new Dictionary<StageType, StageConfig>();
     }
@@ -187,7 +190,11 @@ public class StageLoader : IStageLoader
 
             // 현재 활성 스코프를 EventSceneLifetimeScope 의 부모로 지정한다.
             // MapLifetimeScope 또는 TestMapLifetimeScope 등 어떤 맵 스코프에서 실행해도 자동 대응된다.
+            // BattleFlowManagerScope 가 Inspector 에서 RootScope 를 부모로 직접 지정할 경우
+            // EnqueueParent 가 무시되므로, Enqueue 로 풀 인스턴스를 전투씬 스코프에 직접 주입한다.
             using (LifetimeScope.EnqueueParent(_currentScope))
+            using (LifetimeScope.Enqueue(builder =>
+                builder.RegisterInstance(_skillEffectPool).As<ISkillEffectPool>()))
             {
                 AsyncOperationHandle<SceneInstance> handle = Addressables.LoadSceneAsync(config.SceneAddress, LoadSceneMode.Additive);
 
@@ -412,6 +419,8 @@ public class StageLoader : IStageLoader
             else
                 _logAccumulator?.RecordBattleResult(result, _pendingBattleGroupId);
 
+            _skillEffectPool?.ReturnAll();
+
             _isBattleStage = false;
             _isEventBattle = false;
             _pendingBattleGroupId = string.Empty;
@@ -466,7 +475,11 @@ public class StageLoader : IStageLoader
 
             // 현재 활성 스코프를 전투 씬 LifetimeScope 의 부모로 지정한다.
             // MapLifetimeScope 또는 TestMapLifetimeScope 등 어떤 맵 스코프에서 실행해도 자동 대응된다.
+            // BattleFlowManagerScope 가 Inspector 에서 RootScope 를 부모로 직접 지정할 경우
+            // EnqueueParent 가 무시되므로, Enqueue 로 풀 인스턴스를 전투씬 스코프에 직접 주입한다.
             using (LifetimeScope.EnqueueParent(_currentScope))
+            using (LifetimeScope.Enqueue(builder =>
+                builder.RegisterInstance(_skillEffectPool).As<ISkillEffectPool>()))
             {
                 AsyncOperationHandle<SceneInstance> handle =
                     Addressables.LoadSceneAsync(battleConfig.EventBattleSceneAddress, LoadSceneMode.Additive);
