@@ -69,6 +69,48 @@ public class SkillEffectPool : ISkillEffectPool
         Debug.Log($"[SkillEffectPool] WarmUp 완료 — 주소 수: {_warmUpAddresses.Count}, 인스턴스 수: {POOL_SIZE}개/주소");
     }
 
+    public async UniTask AddCharactersAsync(IReadOnlyList<BaseCharacter> characters, CancellationToken cancellationToken = default)
+    {
+        HashSet<string> addresses = CollectAddresses(characters);
+
+        foreach (string address in addresses)
+        {
+            if (string.IsNullOrEmpty(address))
+                continue;
+            if (_idle.ContainsKey(address))
+                continue;
+
+            Queue<GameObject> queue = new Queue<GameObject>(POOL_SIZE);
+            List<GameObject> active = new List<GameObject>(POOL_SIZE);
+
+            for (int i = 0; i < POOL_SIZE; i++)
+            {
+                AsyncOperationHandle<GameObject> handle = Addressables.InstantiateAsync(address);
+                try
+                {
+                    GameObject instance = await handle.ToUniTask(cancellationToken: cancellationToken);
+                    instance.SetActive(false);
+                    instance.transform.localScale = Vector3.one * 10f;
+                    foreach (SpriteRenderer sr in instance.GetComponentsInChildren<SpriteRenderer>(true))
+                        sr.sortingOrder = 1;
+                    Object.DontDestroyOnLoad(instance);
+                    queue.Enqueue(instance);
+                    _handles.Add(handle);
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"[SkillEffectPool] 몬스터 스킬 프리팹 생성 실패 address={address}: {e.Message}");
+                }
+            }
+
+            _idle[address] = queue;
+            _active[address] = active;
+            _warmUpAddresses.Add(address);
+        }
+
+        Debug.Log($"[SkillEffectPool] AddCharacters 완료 — 총 주소 수: {_warmUpAddresses.Count}");
+    }
+
     public void Play(string prefabAddress, Transform slotTransform)
     {
         if (string.IsNullOrEmpty(prefabAddress))

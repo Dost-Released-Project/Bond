@@ -1,5 +1,6 @@
 using BattleSystem.Interface;
 using Bond.Expedition;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VContainer.Unity;
@@ -13,16 +14,18 @@ namespace BattleSystem
         private readonly IFormationManager m_formationManager;
         private readonly IStageMonsterContext m_stageMonsterContext;
         private readonly MonsterFactory m_monsterFactory;
+        private readonly ISkillEffectPool m_skillEffectPool;
 
         public BattleStageEntry(IBattleFlowManager expeditionFlowManager, ExpeditionPayload expeditionPayload
             , IFormationManager formationManager, IStageMonsterContext stageMonsterContext
-            , MonsterFactory monsterFactory)
+            , MonsterFactory monsterFactory, ISkillEffectPool skillEffectPool)
         {
             m_battleFlowManager   = expeditionFlowManager;
             m_battlePayload       = expeditionPayload;
             m_formationManager    = formationManager;
             m_stageMonsterContext = stageMonsterContext;
             m_monsterFactory      = monsterFactory;
+            m_skillEffectPool     = skillEffectPool;
         }
 
         void IPostStartable.PostStart()
@@ -67,6 +70,7 @@ namespace BattleSystem
             );
 
             BaseCharacter[] enemy = m_monsterFactory.Build(m_stageMonsterContext.MonsterIds);
+            m_skillEffectPool.AddCharactersAsync(enemy).Forget();
 
             // 테스트 로그: Build() 결과 요약 (BaseCharacter.ToString() 미사용 — Profession null 주의)
             Debug.Log($"[BattleStageEntry] MonsterFactory.Build() 완료 — 생성된 몬스터 수: {enemy.Length}");
