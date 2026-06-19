@@ -43,6 +43,8 @@
     --btn-primary-bg:     #1e1e3a;
     --btn-primary-border: #4a3aaa;
     --btn-primary-text:   #f59e0b;
+    --btn-hover-bg:       #2a2a4a;   /* 호버 시 배경 하이라이트 (filled 버튼) */
+    --btn-active-bg:      #353560;   /* 클릭(눌림) 시 배경 — 호버보다 한 단계 밝게 */
     --btn-secondary-border: #2d2d4a;
     --btn-secondary-text:   #64748b;
 

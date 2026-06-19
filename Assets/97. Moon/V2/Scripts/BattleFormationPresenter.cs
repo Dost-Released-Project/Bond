@@ -158,7 +158,7 @@ namespace BattleSystem
             m_isTargetingMode = true;
 
             // 유효한 타겟 슬롯 계산
-            m_validSlots = m_FormationManager.GetValidSlots(actor, skill.Data);
+            m_validSlots = actor.GetSelectableSlots(skill.Data);
 
             // 유효 슬롯 하이라이트 (시각적 피드백)
             foreach (var slot in characterSlots)

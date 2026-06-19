@@ -442,9 +442,13 @@
     border-radius: 4px;
     padding: 6px 18px;
     letter-spacing: 2px;
+
+    transition-property: background-color, border-color, scale;
+    transition-duration: 0.25s;
 }
 
 .embark__btn-action:hover {
+    background-color: var(--btn-hover-bg);
     border-color: var(--border-highlight);
 }
 
@@ -479,8 +483,12 @@
     padding: 8px 24px;
     letter-spacing: 3px;
     translate: -50% 0;
+
+    transition-property: background-color, border-color, scale;
+    transition-duration: 0.25s;
 }
 
 #embark-btn:hover {
+    background-color: var(--btn-hover-bg);
     border-color: var(--border-highlight);
 }

@@ -59,13 +59,16 @@ namespace Reactions
             if (Template.Phase == E_ReactionPhase.None)
                 Debug.LogWarning($"[ReactionDefinition] '{name}' Template.Phase 가 None — 발화하지 않는다. PreApply/PostApply 지정 필요.", this);
 
+            if (Template.BaseEffect == null)
+                Debug.LogWarning($"[ReactionDefinition] '{name}' Template.BaseEffect 가 비어 있다 — 평상시 행동이 없다.", this);
+
             if (EditableSlots == null) return;
             foreach (var slot in EditableSlots)
             {
                 if (slot is ObserveTargetEditableSlot && Template.ObserveFilter != E_ObserveFilter.Specific)
                     Debug.LogWarning($"[ReactionDefinition] '{name}' 관찰대상 편집슬롯이 있으나 Template.ObserveFilter 가 Specific 이 아니다 ({Template.ObserveFilter}).", this);
-                if (slot is ActionSkillEditableSlot && (Template.Effect is SkillCastReactionEffect) == false)
-                    Debug.LogWarning($"[ReactionDefinition] '{name}' 행동스킬 편집슬롯이 있으나 Template.Effect 가 SkillCastReactionEffect 가 아니다.", this);
+                if (slot is ActionSkillEditableSlot && (Template.BaseEffect is SkillCastReactionEffect) == false)
+                    Debug.LogWarning($"[ReactionDefinition] '{name}' 행동스킬 편집슬롯이 있으나 Template.BaseEffect 가 SkillCastReactionEffect 가 아니다.", this);
             }
         }
 #endif

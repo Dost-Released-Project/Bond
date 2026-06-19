@@ -50,14 +50,24 @@ namespace Reactions.Authoring
         public ReactionDefBuilder Phase(E_ReactionPhase phase) { _template.Phase = phase; return this; }
         public ReactionDefBuilder Observe(E_ObserveFilter filter) { _template.ObserveFilter = filter; return this; }
         public ReactionDefBuilder When(params ICondition[] conditions) { if (conditions != null) _conditions.AddRange(conditions); return this; }
-        /// <summary>행동을 지정. 여러 개를 주면 CompositeReactionEffect 로 묶는다.</summary>
+        /// <summary>평상시(판정 Success) 행동을 지정. 여러 개면 Composite 로 묶는다. (= BaseEffect)</summary>
         public ReactionDefBuilder Do(params ReactionEffect[] effects)
         {
-            _template.Effect = (effects == null || effects.Length == 0) ? null
-                : effects.Length == 1 ? effects[0]
-                : new CompositeReactionEffect { Effects = effects.ToList() };
+            _template.BaseEffect = Combine(effects);
             return this;
         }
+
+        /// <summary>대체(판정이 평상시에서 벗어났을 때) 행동을 지정. 역할=특이행동, 성향=강화행동. 행동 없이 연출만이면 NoAction(). (= AltEffect)</summary>
+        public ReactionDefBuilder Alt(params ReactionEffect[] effects)
+        {
+            _template.AltEffect = Combine(effects);
+            return this;
+        }
+
+        private static ReactionEffect Combine(ReactionEffect[] effects)
+            => (effects == null || effects.Length == 0) ? null
+             : effects.Length == 1 ? effects[0]
+             : new CompositeReactionEffect { Effects = effects.ToList() };
         public ReactionDefBuilder Editable(ReactionEditableSlot slot) { if (slot != null) _slots.Add(slot); return this; }
 
         // ── 조건 단축 팩토리 ──────────────────────────────────
@@ -95,13 +105,24 @@ namespace Reactions.Authoring
         public static ReactionEffect CastSkill(E_TargetFilter to, int skillIndex = -1)
             => new SkillCastReactionEffect { SkillTarget = to, SkillIndex = skillIndex };
 
+        /// <summary>현재 위치에서 쓸 수 있는 적 공격 스킬 중 무작위 발동(없으면 무행동). 기본 대상=전열 적.</summary>
+        public static ReactionEffect CastRandomAttack(E_TargetFilter to = E_TargetFilter.FrontmostEnemy)
+            => new RandomAttackSkillReactionEffect { SkillTarget = to };
+
         /// <summary>리액션 봉인. self=true 면 리액터 자신, false 면 관찰 대상(Observed)을 봉인.</summary>
         public static ReactionEffect Seal(SealKind kind = SealKind.All, int turns = 1, int count = 1, bool self = true)
             => new SealReactionEffect { Kind = kind, DurationTurns = turns, Count = count, TargetSelf = self };
 
+        /// <summary>관찰 대상(아군)을 turns 동안 불협조 — 그 아군에 대한 리액션·보조·보호 차단(수동/자동 공통).</summary>
+        public static ReactionEffect Distrust(int turns = 1)
+            => new DistrustReactionEffect { DurationTurns = turns };
+
         /// <summary>여러 효과를 순차 실행하는 묶음.</summary>
         public static ReactionEffect Composite(params ReactionEffect[] effects)
             => new CompositeReactionEffect { Effects = effects != null ? effects.ToList() : new List<ReactionEffect>() };
+
+        /// <summary>행동 없음 — 연출만 재생되고 실제 행동은 하지 않음(대체에서 "기존 행동 안 함").</summary>
+        public static ReactionEffect NoAction() => new NoActionReactionEffect();
 
         /// <summary>스트레스 증감. delta&gt;0 증가, delta&lt;0 감소. to=Self 면 리액터 자신.</summary>
         public static ReactionEffect Stress(int delta, E_TargetFilter to = E_TargetFilter.Self)
@@ -151,15 +172,15 @@ namespace Reactions.Authoring
         {
             if (_template.Phase == E_ReactionPhase.None)
                 Debug.LogError($"[ReactionDef:{_id}] Phase 가 None 이라 발화하지 않습니다. PreApply/PostApply 지정 필요.");
-            if (_template.Effect == null)
-                Debug.LogError($"[ReactionDef:{_id}] Effect 가 비어 있습니다.");
+            if (_template.BaseEffect == null)
+                Debug.LogError($"[ReactionDef:{_id}] BaseEffect(평상시 행동) 가 비어 있습니다.");
             if (_conditions.Count == 0)
                 Debug.LogError($"[ReactionDef:{_id}] 트리거 조건이 하나도 없습니다.");
 
             if (_slots.Any(s => s is ObserveTargetEditableSlot) && _template.ObserveFilter != E_ObserveFilter.Specific)
                 Debug.LogError($"[ReactionDef:{_id}] 관찰대상 편집슬롯이 있으나 ObserveFilter 가 Specific 이 아닙니다 ({_template.ObserveFilter}).");
-            if (_slots.Any(s => s is ActionSkillEditableSlot) && (_template.Effect is SkillCastReactionEffect) == false)
-                Debug.LogError($"[ReactionDef:{_id}] 행동스킬 편집슬롯이 있으나 Effect 가 CastSkill 이 아닙니다.");
+            if (_slots.Any(s => s is ActionSkillEditableSlot) && (_template.BaseEffect is SkillCastReactionEffect) == false)
+                Debug.LogError($"[ReactionDef:{_id}] 행동스킬 편집슬롯이 있으나 BaseEffect 가 CastSkill 이 아닙니다.");
         }
     }
 }

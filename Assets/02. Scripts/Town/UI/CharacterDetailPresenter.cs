@@ -576,7 +576,7 @@ namespace Bond.UI
 
             if (hasSkill)
             {
-                int skillIdx = (reaction.Effect as SkillCastReactionEffect)?.SkillIndex ?? -1;
+                int skillIdx = (reaction.BaseEffect as SkillCastReactionEffect)?.SkillIndex ?? -1;
                 bool valid = skillIdx >= 0 && skillIdx < _character.Skills.Length && _character.Skills[skillIdx] != null;
                 _reactionSkillLabels[i].text = valid
                     ? (_character.Skills[skillIdx].Data?.DisplayName ?? "미설정")
@@ -633,7 +633,7 @@ namespace Bond.UI
             }
             if (hasSkill)
             {
-                int skillIdx = (reaction.Effect as SkillCastReactionEffect)?.SkillIndex ?? -1;
+                int skillIdx = (reaction.BaseEffect as SkillCastReactionEffect)?.SkillIndex ?? -1;
                 bool valid = skillIdx >= 0 && skillIdx < _character.Skills.Length && _character.Skills[skillIdx] != null;
                 _reactionSkillLabels[i].text = valid ? (_character.Skills[skillIdx].Data?.DisplayName ?? "미설정") : "미설정";
                 _reactionSkillLabels[i].EnableInClassList("char-detail__slot-part-val--placeholder", !valid);
@@ -818,7 +818,7 @@ namespace Bond.UI
             }
 
             var reaction = GetReactionAt(slotIndex);
-            int currentIndex = (reaction?.Effect as SkillCastReactionEffect)?.SkillIndex ?? -1;
+            int currentIndex = (reaction?.BaseEffect as SkillCastReactionEffect)?.SkillIndex ?? -1;
 
             foreach (var (index, skill) in candidates)
             {
