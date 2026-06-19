@@ -2,6 +2,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using DG.Tweening;
+using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Shapes;
 using BattleSystem.Interface;
@@ -25,6 +26,7 @@ namespace BattleSystem
         {
             public DimPanelVisualizer dimVisualizer;
             public Dictionary<CharacterSlot, SlotRestoreData> restoreData = new Dictionary<CharacterSlot, SlotRestoreData>();
+            public HashSet<LayoutGroup> disabledLayoutGroups = new HashSet<LayoutGroup>();
         }
 
         private Stack<FocusLevel> m_focusStack = new Stack<FocusLevel>();
@@ -74,6 +76,16 @@ namespace BattleSystem
                 {
                     if (t != null && !focusLevel.restoreData.ContainsKey(t)) 
                         CacheSlotData(t, focusLevel);
+                }
+            }
+
+            // 연출 전 LayoutGroup 비활성화
+            if (caster != null) DisableLayoutGroup(caster, focusLevel);
+            if (targets != null)
+            {
+                foreach (var t in targets)
+                {
+                    if (t != null) DisableLayoutGroup(t, focusLevel);
                 }
             }
 
@@ -141,6 +153,17 @@ namespace BattleSystem
             await tcs.Task;
         }
 
+        private void DisableLayoutGroup(CharacterSlot slot, FocusLevel level)
+        {
+            if (slot == null) return;
+            var layoutGroup = slot.GetComponentInParent<LayoutGroup>();
+            if (layoutGroup != null && layoutGroup.enabled)
+            {
+                layoutGroup.enabled = false;
+                level.disabledLayoutGroups.Add(layoutGroup);
+            }
+        }
+
         private void BringToFront(CharacterSlot slot)
         {
             var visualizer = slot.GetComponent<CharacterSlotVisualizer>();
@@ -172,11 +195,11 @@ namespace BattleSystem
             var rectTransform = slot.GetComponent<RectTransform>();
             if (rectTransform == null) return;
 
-            // 레이아웃 그룹에서 분리하기 위해 캔버스 최상단으로 이동 (화면 위치 유지)
-            rectTransform.SetParent(m_shapesCanvas.transform, true);
+            // 부모 변경 없이, targetLocalPos(Canvas 기준 로컬 좌표)를 슬롯의 현재 부모 기준 로컬 좌표로 변환하여 트윈
+            Vector3 targetWorldPos = m_shapesCanvas.transform.TransformPoint(targetLocalPos);
+            Vector3 localTargetPos = rectTransform.parent.InverseTransformPoint(targetWorldPos);
 
-            // Canvas의 중심(0,0,0)을 기준으로 이동
-            seq.Join(rectTransform.DOLocalMove(targetLocalPos, 0.3f).SetEase(Ease.OutQuad));
+            seq.Join(rectTransform.DOLocalMove(localTargetPos, 0.3f).SetEase(Ease.OutQuad));
             seq.Join(rectTransform.DOScale(Vector3.one * 1.5f, 0.3f).SetEase(Ease.OutQuad));
         }
 
@@ -216,6 +239,16 @@ namespace BattleSystem
                     }
                 }
                 
+                // 일시 비활성화했던 LayoutGroup들 다시 활성화 및 갱신
+                foreach (var lg in currentLevel.disabledLayoutGroups)
+                {
+                    if (lg != null)
+                    {
+                        lg.enabled = true;
+                        LayoutRebuilder.ForceRebuildLayoutImmediate(lg.GetComponent<RectTransform>());
+                    }
+                }
+                
                 // 해당 레벨의 DimPanel 정리
                 if (currentLevel.dimVisualizer != null)
                 {
@@ -236,12 +269,8 @@ namespace BattleSystem
 
             seq.Join(rectTransform.DOScale(data.localScale, 0.3f).SetEase(Ease.OutQuad));
             
-            if (data.parent != null)
-            {
-                Vector3 targetWorldPos = data.parent.TransformPoint(data.localPosition);
-                Vector3 targetLocalPos = rectTransform.parent.InverseTransformPoint(targetWorldPos);
-                seq.Join(rectTransform.DOLocalMove(targetLocalPos, 0.3f).SetEase(Ease.OutQuad));
-            }
+            // 부모가 변경되지 않았으므로 원래의 localPosition으로 바로 트윈
+            seq.Join(rectTransform.DOLocalMove(data.localPosition, 0.3f).SetEase(Ease.OutQuad));
         }
 
         private void RestoreSlotLayout(CharacterSlot slot, FocusLevel level)
@@ -250,7 +279,7 @@ namespace BattleSystem
             var rectTransform = slot.GetComponent<RectTransform>();
             if (rectTransform == null) return;
 
-            // 계층 복구
+            // 계층 복구 (부모가 유지되므로 원래 데이터대로 재정렬 순서 세팅)
             rectTransform.SetParent(data.parent, false);
             rectTransform.SetSiblingIndex(data.siblingIndex);
 
@@ -262,7 +291,7 @@ namespace BattleSystem
             // 리액션 등 연출 중첩 시 부모 복귀 후 LayoutGroup이 즉시 갱신되지 않아 빈칸이 생기는 현상 방지
             if (data.parent != null)
             {
-                UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(data.parent.GetComponent<RectTransform>());
+                LayoutRebuilder.ForceRebuildLayoutImmediate(data.parent.GetComponent<RectTransform>());
             }
         }
     }

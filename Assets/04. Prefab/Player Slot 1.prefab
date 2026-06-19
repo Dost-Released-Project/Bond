@@ -110,6 +110,7 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 5
     m_NumAlphaKeys: 2
+  currentColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
 --- !u!1 &1503356969114657205
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,7 +223,7 @@ MonoBehaviour:
   cornerRadius: 1.99
   thickness: 10
   padding: 10
-  m_bgColor: {r: 0, g: 0, b: 0, a: 1}
+  m_bgColor: {r: 0, g: 0, b: 0, a: 0}
   m_currentColor: {r: 0, g: 0, b: 0, a: 0}
   m_portrait: {fileID: 0}
 --- !u!114 &3246607127319415500
