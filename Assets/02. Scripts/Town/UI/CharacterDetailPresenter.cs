@@ -997,7 +997,7 @@ namespace Bond.UI
             _roster?.Fire(victim);
         }
 
-        /// <summary>버튼 테두리를 따라 12시 방향에서 시계방향으로 진행도만큼 호를 그린다.</summary>
+        /// <summary>버튼의 각진 사각 테두리를 12시(위 변 중앙)에서 시계방향으로 진행도만큼 그린다.</summary>
         private void OnGenerateFireRing(MeshGenerationContext mgc)
         {
             if (_fireProgress <= 0f) return;
@@ -1005,24 +1005,57 @@ namespace Bond.UI
             var rect = _fireRing.contentRect;
             if (rect.width <= 0f || rect.height <= 0f) return;
 
-            const float lineWidth = 3f;
-            var center   = new Vector2(rect.width * 0.5f, rect.height * 0.5f);
-            float radius = Mathf.Min(rect.width, rect.height) * 0.5f - lineWidth * 0.5f;
-            if (radius <= 0f) return;
+            const float lineWidth = 6f;
+            float inset = lineWidth * 0.5f;             // 선이 밖으로 삐져나가지 않게 절반만큼 안쪽
+            float w = rect.width, h = rect.height;
+            float left = inset, top = inset, right = w - inset, bottom = h - inset;
+            if (right <= left || bottom <= top) return;
 
             var painter = mgc.painter2D;
             painter.lineWidth   = lineWidth;
             painter.lineCap     = LineCap.Butt;
+            painter.lineJoin    = LineJoin.Miter;        // 각진 모서리
             painter.strokeColor = _fireRing.resolvedStyle.color;
 
-            const float startDeg = -90f;                         // 12시 방향
-            float endDeg = startDeg + 360f * _fireProgress;      // 시계방향으로 진행
+            // 시계방향 꼭짓점: 위 변 중앙 → 우상 → 우하 → 좌하 → 좌상 → 위 변 중앙 복귀
+            float midX = w * 0.5f;
+            var pts = new[]
+            {
+                new Vector2(midX,  top),
+                new Vector2(right, top),
+                new Vector2(right, bottom),
+                new Vector2(left,  bottom),
+                new Vector2(left,  top),
+                new Vector2(midX,  top),
+            };
+
+            float perimeter = 2f * (right - left) + 2f * (bottom - top);
+            float target    = perimeter * _fireProgress;
 
             painter.BeginPath();
-            painter.Arc(center, radius,
-                new Angle(startDeg, AngleUnit.Degree),
-                new Angle(endDeg,   AngleUnit.Degree),
-                ArcDirection.Clockwise);
+            painter.MoveTo(pts[0]);
+
+            // 변 길이를 누적하며 target 까지 그린다. 마지막 변은 중간에서 멈춘다.
+            float acc = 0f;
+            for (int i = 0; i < pts.Length - 1; i++)
+            {
+                Vector2 a = pts[i], b = pts[i + 1];
+                float segLen = Vector2.Distance(a, b);
+                if (segLen <= 0f) continue;
+
+                if (acc + segLen <= target)
+                {
+                    painter.LineTo(b);                       // 변 전체
+                }
+                else
+                {
+                    float t = (target - acc) / segLen;
+                    painter.LineTo(Vector2.Lerp(a, b, t));   // 변 중간에서 멈춤
+                    break;
+                }
+                acc += segLen;
+            }
+
             painter.Stroke();
         }
     }

@@ -60,14 +60,13 @@
     padding: 0;
     justify-content: center;
     align-items: center;
-    border-width: 1px;
-    border-radius: 13px;
+    border-width: 2px;
     border-color: var(--border-danger);
-    background-color: var(--bg-raised);
+    background-color: var(--slot-trait-bg);
 }
 
 .character-detail__fire-btn:hover {
-    border-color: var(--border-highlight);
+    border-color: var(--slot-trait-dot);
     background-color: var(--btn-hover-bg);
 }
 
@@ -78,7 +77,7 @@
 .character-detail__fire-label {
     font-size: var(--font-size-system);
     letter-spacing: 0;
-    color: var(--text-secondary);
+    color: var(--slot-trait-dot);
     -unity-text-align: middle-center;
 }
 
@@ -94,7 +93,7 @@
     top: -1px;
     right: -1px;
     bottom: -1px;
-    color: var(--border-accent);
+    color: var(--slot-trait-dot);
 }
 
 .character-detail__body {
