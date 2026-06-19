@@ -83,28 +83,53 @@ namespace BattleSystem
             if (caster != null)
             {
                 BringToFront(caster);
+                bool isSameSide = (targets != null && targets.Count > 0 && targets[0] != null && targets[0].side == caster.side);
                 float casterX = (caster.side == E_BattleSide.Player) ? -250f : 250f;
+                // 광역(2명 이상)이면서 아군 대상인 경우에만 캐스터를 더 외곽으로 이동
+                if (isSameSide && targets.Count > 1)
+                {
+                    casterX = (caster.side == E_BattleSide.Player) ? -350f : 350f;
+                }
                 MoveSlotToCenter(caster, new Vector3(casterX, 0, 0), seq, focusLevel);
             }
             
             // 3. Targets 처리
             if (targets != null && targets.Count > 0)
             {
-                float targetOffsetY = - (targets.Count - 1) * 75f; 
-                for (int i = 0; i < targets.Count; i++)
+                bool isSameSide = (caster != null && targets[0] != null && targets[0].side == caster.side);
+                
+                if (targets.Count > 1) // 광역(2명 이상) 연출: 가로 정렬 적용
                 {
-                    if (targets[i] != null)
+                    float targetOffsetX = - (targets.Count - 1) * 75f; 
+                    for (int i = 0; i < targets.Count; i++)
                     {
-                        BringToFront(targets[i]);
-                        float targetX = (targets[i].side == E_BattleSide.Player) ? -250f : 250f;
-                        
-                        // 시전자와 대상이 같은 진영일 경우 (ex: 힐, 버프) 타겟을 화면 중앙 쪽으로 약간 당겨서 시전자와 겹치는 것을 방지
-                        if (caster != null && targets[i].side == caster.side)
+                        if (targets[i] != null)
                         {
-                            targetX = (targets[i].side == E_BattleSide.Player) ? -100f : 100f;
-                        }
+                            BringToFront(targets[i]);
+                            float targetX = (targets[i].side == E_BattleSide.Player) ? -250f : 250f;
+                            
+                            // 시전자와 대상이 같은 진영일 경우 (ex: 힐, 버프) 타겟을 화면 중앙(0f)에 배치
+                            if (isSameSide)
+                            {
+                                targetX = 0f;
+                            }
 
-                        MoveSlotToCenter(targets[i], new Vector3(targetX, targetOffsetY + (i * 150f), 0), seq, focusLevel);
+                            MoveSlotToCenter(targets[i], new Vector3(targetX + targetOffsetX + (i * 150f), 0, 0), seq, focusLevel);
+                        }
+                    }
+                }
+                else // 단일(1명) 연출: 기존 오리지널 위치 유지
+                {
+                    var target = targets[0];
+                    if (target != null)
+                    {
+                        BringToFront(target);
+                        float targetX = (target.side == E_BattleSide.Player) ? -250f : 250f;
+                        if (caster != null && target.side == caster.side)
+                        {
+                            targetX = (target.side == E_BattleSide.Player) ? -100f : 100f;
+                        }
+                        MoveSlotToCenter(target, new Vector3(targetX, 0, 0), seq, focusLevel);
                     }
                 }
             }

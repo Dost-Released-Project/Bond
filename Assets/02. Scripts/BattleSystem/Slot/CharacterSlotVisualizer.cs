@@ -13,7 +13,7 @@ public class CharacterSlotVisualizer : ImmediateModePanel, ICharacterSlotVisuali
     public float cornerRadius = 12f;
     public float thickness = 2f;
     public float padding = 5f;
-    [SerializeField][ColorUsage(true, true)] private Color m_bgColor;
+    //[SerializeField][ColorUsage(true, true)] private Color m_bgColor;
     
     [SerializeField]private Color m_currentColor;
     [SerializeField]private Texture m_portrait;
@@ -23,7 +23,7 @@ public class CharacterSlotVisualizer : ImmediateModePanel, ICharacterSlotVisuali
         Rect drawRect = Inset(rect, padding);
             
         // 1. 배경 그리기
-        Draw.Rectangle(drawRect, cornerRadius, m_bgColor);
+        // Draw.Rectangle(drawRect, cornerRadius, m_bgColor);
 
         // 2. 캐릭터 스프라이트 그리기 (배경과 테두리 사이 레이어)
         if (m_portrait != null)
@@ -33,7 +33,7 @@ public class CharacterSlotVisualizer : ImmediateModePanel, ICharacterSlotVisuali
         }
 
         // 3. 테두리 그리기
-        Draw.RectangleBorder(drawRect, thickness, cornerRadius, m_currentColor);
+        // Draw.RectangleBorder(drawRect, thickness, cornerRadius, m_currentColor);
     }
     
     private Rect Inset(Rect r, float amount)
@@ -41,10 +41,10 @@ public class CharacterSlotVisualizer : ImmediateModePanel, ICharacterSlotVisuali
         return new Rect(r.x + amount, r.y + amount, r.width - amount * 2, r.height - amount * 2);
     }
 
-    public void SetBG(Color bgColor)
-    {
-        this.m_bgColor = bgColor;
-    }
+    // public void SetBG(Color bgColor)
+    // {
+    //     this.m_bgColor = bgColor;
+    // }
 
     public void SetCurrentColor(Color currentColor)
     {

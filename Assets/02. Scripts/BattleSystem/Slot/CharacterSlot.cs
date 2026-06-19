@@ -180,7 +180,6 @@ namespace BattleSystem
         {
             m_currentColor = colorData.normalColor;
             m_targetColor = colorData.normalColor;
-            m_CharacterSlotVisualizer.SetBG(colorData.bgColor);
         }
 
         private void Update()

@@ -20,7 +20,7 @@ namespace Shapes {
 			Draw.Rectangle( rect, 8f, Color.black );
 
 			// Draw border:
-			Draw.RectangleBorder( rect, 1.5f, 8f, currentColor );
+			Draw.RectangleBorder( rect, 3f, 8f, currentColor );
 
 			Rect innerRect = Inset( rect, 8 );
 			float spacing = 4f;
