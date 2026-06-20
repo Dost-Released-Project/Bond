@@ -3,17 +3,15 @@ using UnityEngine.Playables;
 
 /// <summary>
 /// SilhouetteTrack의 믹서. SpriteRenderer 전용.
-/// static 공유 머티리얼 1개 + MaterialPropertyBlock으로 per-renderer 프로퍼티 오버라이드.
-/// 공유 머티리얼을 직접 수정하지 않으므로 여러 SilhouetteTrack이 동시에 동작해도 안전하다.
+/// 바인딩된 SpriteRenderer에 per-인스턴스 머티리얼을 사용해 실루엣 색상을 전환한다.
+/// 머티리얼은 CacheTarget()에서 1회 생성하고 OnPlayableDestroy()에서 해제한다.
+/// MaterialPropertyBlock을 사용하지 않으므로 SRP Batcher와 호환된다.
 /// </summary>
 public class SilhouetteMixerBehaviour : PlayableBehaviour
 {
-    /// <summary>모든 인스턴스가 공유하는 실루엣 셰이더 머티리얼. 씬 단위 1회 생성.</summary>
-    private static Material _sharedSilhouetteMaterial;
-
     private SpriteRenderer _spriteRenderer;
     private Material _originalMaterial;
-    private MaterialPropertyBlock _propertyBlock;
+    private Material _silhouetteMaterial;
     private bool _originalColorSaved;
     private bool _isSilhouetteActive;
 
@@ -52,12 +50,12 @@ public class SilhouetteMixerBehaviour : PlayableBehaviour
 
             SilhouetteClipBehaviour clipBehaviour = inputPlayable.GetBehaviour();
 
-            float clipTime = (float)inputPlayable.GetTime();
+            float clipTime     = (float)inputPlayable.GetTime();
             float clipDuration = (float)inputPlayable.GetDuration();
-            float fadeWeight = CalculateFadeWeight(clipTime, clipDuration, clipBehaviour.fadeInDuration, clipBehaviour.fadeOutDuration);
+            float fadeWeight   = CalculateFadeWeight(clipTime, clipDuration, clipBehaviour.fadeInDuration, clipBehaviour.fadeOutDuration);
 
             activeColorMode = clipBehaviour.colorMode;
-            totalWeight += weight * fadeWeight;
+            totalWeight    += weight * fadeWeight;
         }
 
         if (totalWeight > 0f)
@@ -72,66 +70,66 @@ public class SilhouetteMixerBehaviour : PlayableBehaviour
 
     /// <summary>
     /// Timeline 정지 또는 트랙 바인딩 해제 시 호출된다.
-    /// 원본 머티리얼 복원, PropertyBlock 초기화, 참조 해제를 수행한다.
-    /// 공유 머티리얼은 해제하지 않는다.
+    /// 원본 머티리얼 복원, 생성한 인스턴스 머티리얼 해제, 참조 초기화를 수행한다.
     /// </summary>
     public override void OnPlayableDestroy(Playable playable)
     {
-        RestoreOriginalColor();
+        // _isSilhouetteActive 플래그 대신 실제 material 참조를 비교한다.
+        // 에디터 PlayableGraph 재빌드 타이밍에 플래그가 동기화되지 않아도
+        // renderer가 실루엣 머티리얼을 사용 중이라면 Destroy 전에 반드시 복원한다.
+        if (_spriteRenderer != null && _silhouetteMaterial != null
+            && _spriteRenderer.sharedMaterial == _silhouetteMaterial)
+        {
+            _spriteRenderer.sharedMaterial = _originalMaterial;
+        }
 
-        _spriteRenderer = null;
-        _originalMaterial = null;
-        _propertyBlock = null;
-        _originalColorSaved = false;
         _isSilhouetteActive = false;
+
+        if (_silhouetteMaterial != null)
+        {
+            // CacheTarget에서 new Material()로 생성한 인스턴스를 해제한다
+            Object.Destroy(_silhouetteMaterial);
+            _silhouetteMaterial = null;
+        }
+
+        _spriteRenderer     = null;
+        _originalMaterial   = null;
+        _originalColorSaved = false;
     }
 
     /// <summary>
-    /// 바인딩 SpriteRenderer의 원본 sharedMaterial을 저장하고 PropertyBlock을 초기화한다.
-    /// 공유 셰이더 머티리얼이 null이면 이 시점에 1회 생성한다.
+    /// 바인딩 SpriteRenderer의 원본 sharedMaterial을 저장하고
+    /// 실루엣용 머티리얼 인스턴스를 1회 생성한다.
     /// </summary>
     private void CacheTarget(SpriteRenderer target)
     {
-        _spriteRenderer = target;
+        _spriteRenderer   = target;
         _originalMaterial = target.sharedMaterial;
-
-        if (_sharedSilhouetteMaterial == null)
-        {
-            // static 필드 — 모든 인스턴스 공유, 씬 전체에서 1번만 생성된다
-            _sharedSilhouetteMaterial = new Material(Shader.Find("JunoTimeline/SilhouetteOverride"));
-        }
-
-        _propertyBlock = new MaterialPropertyBlock();
-        _originalColorSaved = true;
+        // per-인스턴스 머티리얼 — MPB 없이 SRP Batcher 호환
+        _silhouetteMaterial  = new Material(Shader.Find("JunoTimeline/SilhouetteOverride"));
+        _originalColorSaved  = true;
     }
 
     /// <summary>
-    /// 공유 머티리얼로 교체하고 MaterialPropertyBlock으로 색상·BlendFactor를 설정한다.
-    /// 머티리얼 교체는 비활성 상태일 때 1회만 수행한다. per-frame은 SetPropertyBlock만 호출한다.
+    /// 실루엣 머티리얼로 교체하고 색상·BlendFactor를 설정한다.
+    /// 머티리얼 교체는 비활성 상태일 때 1회만 수행한다.
     /// </summary>
     private void ApplyColor(SilhouetteColorMode colorMode, float totalWeight)
     {
         if (_isSilhouetteActive == false)
         {
-            // 공유 머티리얼로 교체 — 인스턴스 생성 없음
-            _spriteRenderer.material = _sharedSilhouetteMaterial;
-            _isSilhouetteActive = true;
+            _spriteRenderer.material = _silhouetteMaterial;
+            _isSilhouetteActive      = true;
         }
 
         Color silhouetteColor = colorMode == SilhouetteColorMode.Black ? Color.black : Color.white;
-
-        // GetPropertyBlock으로 현재 블록을 읽고 값을 덮어쓴 뒤 SetPropertyBlock으로 적용한다
-        // 다른 시스템이 설정한 기존 프로퍼티를 유지하기 위해 Get → Set 패턴을 사용한다
-        _spriteRenderer.GetPropertyBlock(_propertyBlock);
-        _propertyBlock.SetColor("_SilhouetteColor", silhouetteColor);
+        _silhouetteMaterial.SetColor("_SilhouetteColor", silhouetteColor);
         // totalWeight(0~1)을 BlendFactor로 사용해 원본↔실루엣 색상을 보간한다
-        _propertyBlock.SetFloat("_BlendFactor", totalWeight);
-        _spriteRenderer.SetPropertyBlock(_propertyBlock);
+        _silhouetteMaterial.SetFloat("_BlendFactor", totalWeight);
     }
 
     /// <summary>
-    /// 원본 머티리얼로 복원하고 PropertyBlock을 제거한다.
-    /// 클립 구간 밖(totalWeight == 0)에서 호출된다.
+    /// 원본 머티리얼로 복원한다. 클립 구간 밖(totalWeight == 0)에서 호출된다.
     /// </summary>
     private void RestoreOriginalColor()
     {
@@ -140,10 +138,10 @@ public class SilhouetteMixerBehaviour : PlayableBehaviour
             return;
         }
 
-        if (_spriteRenderer != null)
+        // _originalMaterial이 null이면 설정하지 않는다 (None 방지)
+        if (_spriteRenderer != null && _originalMaterial != null)
         {
-            _spriteRenderer.material = _originalMaterial;
-            _spriteRenderer.SetPropertyBlock(null);
+            _spriteRenderer.sharedMaterial = _originalMaterial;
         }
 
         _isSilhouetteActive = false;
