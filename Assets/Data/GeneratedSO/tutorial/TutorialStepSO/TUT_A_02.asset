@@ -13,9 +13,13 @@ MonoBehaviour:
   m_Name: TUT_A_02
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_02
-  _displayName: "\uB300\uC6D0 \uBA85\uBD80 \uC5F4\uAE30"
-  _description: "\uB300\uC6D0 \uBA85\uBD80 \uBC84\uD2BC\uC744 \uD074\uB9AD\uD558\uC5EC
-    \uC18C\uC18D \uB300\uC6D0\uB4E4\uC758 \uC131\uBBF8\uC640 \uAE30\uC9C8 \uAC00\uC774\uB4DC\uB97C
-    \uD655\uC778\uD558\uC2ED\uC2DC\uC624."
+  _displayName: "\uC790\uC6D0 \uC9C0\uAE09 \uD655\uC778"
+  _description: "\uC790\uC6D0\uC774 \uC9C0\uAE09\uB418\uC5C8\uC2B5\uB2C8\uB2E4. \uC790\uC6D0\uC740
+    \uC21C\uC11C\uB300\uB85C \uB370\uC774\uD130, \uBAA9\uC7AC, \uAD11\uC11D\uC785\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: roster-toggle-btn
+  _targetUiKey: Resource.resource-container
+  _rewardFrontier: 0
+  _rewardWood: 0
+  _rewardOre: 0
+  _rewardItemIds: 
+  _rewardItemCounts: 

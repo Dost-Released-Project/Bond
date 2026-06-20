@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: TUT_A_05
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_05
-  _displayName: "\uCD5C\uCD08 \uC99D\uC6D0 \uC694\uCCAD"
-  _description: "\uC644\uACF5\uB41C \uBCF4\uAE09\uC18C\uB97C \uC120\uD0DD\uD558\uACE0
-    [\uC99D\uC6D0 \uC694\uCCAD] \uBC84\uD2BC\uC744 \uB20C\uB7EC \uC0C8\uB85C\uC6B4
-    \uB300\uC6D0\uC744 \uBAA8\uC9D1\uD558\uC2ED\uC2DC\uC624."
+  _displayName: "\uB300\uC6D0 \uC0C1\uC138 \uC815\uBCF4"
+  _description: "\uB300\uC6D0\uC758 \uC0C1\uC138 \uC815\uBCF4\uB97C \uD655\uC778\uD558\uC138\uC694."
   _sequence: 0
-  _targetUiKey: ReinforceRequestButton
+  _targetUiKey: CharacterDetailUi.character-detail
+  _rewardFrontier: 0
+  _rewardWood: 0
+  _rewardOre: 0
+  _rewardItemIds: 
+  _rewardItemCounts: 

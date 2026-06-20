@@ -10,17 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b4d21d8be30e47844a21b0e8770670b4, type: 3}
-  m_Name: TUT_A_03
+  m_Name: TUT_A_40
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
-  _id: TUT_A_03
-  _displayName: "\uB300\uC6D0 \uBA85\uBD80 \uC5F4\uAE30"
-  _description: "\uB300\uC6D0 \uBA85\uBD80 \uBC84\uD2BC\uC744 \uD074\uB9AD\uD558\uC5EC
-    \uC18C\uC18D \uB300\uC6D0\uB4E4\uC758 \uC131\uBBF8\uC640 \uAE30\uC9C8 \uAC00\uC774\uB4DC\uB97C
-    \uD655\uC778\uD558\uC138\uC694."
+  _id: TUT_A_40
+  _displayName: "\uD0D0\uC0AC \uCD9C\uBC1C"
+  _description: "\uC900\uBE44\uAC00 \uB2E4 \uB418\uC5C8\uC2B5\uB2C8\uB2E4 \uD0D0\uC0AC\uB97C
+    \uC9C4\uD589\uD558\uC138\uC694."
   _sequence: 0
-  _targetUiKey: TownUi.roster-toggle-btn
+  _targetUiKey: TownUi.btn-depart
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0
-  _rewardItemIds: 
-  _rewardItemCounts: 
+  _rewardItemIds: 08000000,08010000,08020000
+  _rewardItemCounts: 1,1,1

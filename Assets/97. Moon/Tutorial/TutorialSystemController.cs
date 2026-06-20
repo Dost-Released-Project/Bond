@@ -89,6 +89,45 @@ namespace Bond.Tutorial
         {
             if (_saveData.isTutorialCleared) return;
 
+            // 💥 [보상 정산 타이밍] 현재 완료 판정을 받은 스텝의 SO를 꺼내 정산 개시
+            if (_stepMap.TryGetValue(_saveData.currentStepId, out var currentStepSO))
+            {
+                // 1. 자원 보상 처리
+                if (currentStepSO.RewardFrontier > 0 || currentStepSO.RewardWood > 0 || currentStepSO.RewardOre > 0)
+                {
+                    _resourceManager.AddFrontierData(currentStepSO.RewardFrontier);
+                    _resourceManager.AddMaterials(currentStepSO.RewardWood, currentStepSO.RewardOre);
+                }
+
+                // 2. 💥 [콤마 분리형 다중 아이템 자동 안착 엔진]
+                if (!string.IsNullOrEmpty(currentStepSO.RewardItemIds) && !string.IsNullOrEmpty(currentStepSO.RewardItemCounts))
+                {
+                    // 콤마 단위 슬라이싱 파싱
+                    string[] ids = currentStepSO.RewardItemIds.Split(',');
+                    string[] counts = currentStepSO.RewardItemCounts.Split(',');
+
+                    int minLength = Mathf.Min(ids.Length, counts.Length);
+                    bool hasAddedAny = false;
+
+                    for (int i = 0; i < minLength; i++)
+                    {
+                        string itemId = ids[i].Trim();
+                        if (int.TryParse(counts[i].Trim(), out int count) && !string.IsNullOrEmpty(itemId))
+                        {
+                            _totalInventory.AddItemId(itemId, count);
+                            hasAddedAny = true;
+                            Debug.Log($"<color=orange>[Tutorial Auto-Reward]</color> 보상 수납: Item {itemId} x{count}개 완공.");
+                        }
+                    }
+
+                    if (hasAddedAny)
+                    {
+                        _totalInventory.SaveTotalInventory(); // 단 한 번만 디스크 물리 인쇄 실행
+                    }
+                }
+            }
+
+            // 보상 정산이 완벽히 끝난 후 안전하게 인덱스를 다음 단계로 전환
             _currentStepIndex++;
             if (_currentStepIndex >= _stepOrder.Count)
             {
