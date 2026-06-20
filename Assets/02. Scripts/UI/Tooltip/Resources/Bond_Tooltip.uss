@@ -1,0 +1,18 @@
+/* ── Bond_Tooltip.uss ──
+   TooltipPopup 의 기본 제안 스킨(텍스트 툴팁 .tooltip).
+   색·폰트는 EoB 테마 변수만 사용(하드코딩 금지). 패널 테마(:root)에 정의된 변수를 그대로 사용.
+   ※ 툴팁 시각 스타일은 아직 style_guide 미규정 항목 — 추후 '툴팁 스타일 통일' 논의 시 이 파일을 기준으로 교체.
+   ※ TooltipPopup 엔진(배치/clamp)은 이 스킨과 무관하므로, 리치 콘텐츠는 호출부가 자유롭게 스타일링해도 됨. */
+
+.tooltip {
+    background-color: var(--bg-deep);
+    border-width: 1px;
+    border-color: var(--border-highlight);
+    border-radius: 2px;
+    padding: 8px 10px;
+    max-width: 360px;
+    color: var(--text-secondary);
+    font-size: var(--font-size-system);
+    white-space: normal;
+    -unity-text-align: upper-left;
+}
