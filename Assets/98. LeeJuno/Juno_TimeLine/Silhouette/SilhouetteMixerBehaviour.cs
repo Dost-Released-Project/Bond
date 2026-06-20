@@ -87,8 +87,15 @@ public class SilhouetteMixerBehaviour : PlayableBehaviour
 
         if (_silhouetteMaterial != null)
         {
-            // CacheTarget에서 new Material()로 생성한 인스턴스를 해제한다
-            Object.Destroy(_silhouetteMaterial);
+            // 에디터 Edit 모드에서는 Destroy가 금지되므로 DestroyImmediate를 사용한다
+            if (Application.isPlaying)
+            {
+                Object.Destroy(_silhouetteMaterial);
+            }
+            else
+            {
+                Object.DestroyImmediate(_silhouetteMaterial);
+            }
             _silhouetteMaterial = null;
         }
 
