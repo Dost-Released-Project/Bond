@@ -111,6 +111,7 @@ MonoBehaviour:
     m_NumColorKeys: 5
     m_NumAlphaKeys: 2
   currentColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  alpha: 1
 --- !u!1 &1503356969114657205
 GameObject:
   m_ObjectHideFlags: 0
@@ -390,6 +391,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleSystem.UI.DamageTextVisualizer
   m_Text: {fileID: 896929803196067003}
   m_DamageColor: {r: 1, g: 0, b: 0, a: 1}
+  m_CriticalColor: {r: 1, g: 0.42586336, b: 0.015686274, a: 1}
   m_HealColor: {r: 0, g: 1, b: 0, a: 1}
   m_MissColor: {r: 1, g: 1, b: 1, a: 1}
   m_Duration: 0.8

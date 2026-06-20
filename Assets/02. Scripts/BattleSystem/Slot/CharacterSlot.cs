@@ -253,19 +253,19 @@ namespace BattleSystem
             m_CharacterSlotVisualizer = targetClass;
         }
 
-        private void ShowDamageText(BaseCharacter target, int amount)
+        private void ShowDamageText(BaseCharacter target, int amount, bool isCritical)
         {
             if (m_TextVisualizer != null)
             {
-                m_TextVisualizer.Show(amount, isHeal: false);
+                m_TextVisualizer.Show(amount, isHeal: false, isCritical: isCritical);
             }
         }
 
-        private void ShowHealText(BaseCharacter target, int amount)
+        private void ShowHealText(BaseCharacter target, int amount, bool isCritical)
         {
             if (m_TextVisualizer != null)
             {
-                m_TextVisualizer.Show(amount, isHeal: true);
+                m_TextVisualizer.Show(amount, isHeal: true, isCritical: isCritical);
             }
         }
 

@@ -39,7 +39,6 @@ public class CompositeSkill : SkillBase
                 case SkillEffectType.버프_스탯_힘:
                 case SkillEffectType.버프_스탯_민첩:
                 case SkillEffectType.버프_스탯_지능:
-                case SkillEffectType.버프_스탯_방어:
                     _effects.Add(new BuffEffect(type, effectValue));
                     break;
                 default:

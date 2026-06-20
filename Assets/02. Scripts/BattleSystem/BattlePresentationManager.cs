@@ -134,7 +134,6 @@ namespace BattleSystem
                 
                 if (targets.Count > 1) // 광역(2명 이상) 연출: 가로 정렬 적용
                 {
-                    float targetOffsetX = - (targets.Count - 1) * 75f; 
                     for (int i = 0; i < targets.Count; i++)
                     {
                         if (targets[i] != null)
@@ -148,7 +147,21 @@ namespace BattleSystem
                                 targetX = 0f;
                             }
 
-                            MoveSlotToCenter(targets[i], new Vector3(targetX + targetOffsetX + (i * 150f), 0, 0), seq, focusLevel);
+                            // 실제 슬롯 위치(Rank)에 따른 고정 오프셋 계산
+                            int slotIndex = targets[i].rank switch
+                            {
+                                FormationMask.Rank1 => 0,
+                                FormationMask.Rank2 => 1,
+                                FormationMask.Rank3 => 2,
+                                FormationMask.Rank4 => 3,
+                                _ => 0
+                            };
+
+                            // 아군은 오른쪽에서 왼쪽, 적군은 왼쪽에서 오른쪽 정렬되도록 진영별 부호 처리
+                            float direction = (targets[i].side == E_BattleSide.Player) ? -1f : 1f;
+                            float offsetX = direction * (slotIndex - 1.5f) * 150f;
+
+                            MoveSlotToCenter(targets[i], new Vector3(targetX + offsetX, 0, 0), seq, focusLevel);
                         }
                     }
                 }
