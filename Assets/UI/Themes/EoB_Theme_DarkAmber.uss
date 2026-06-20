@@ -8,6 +8,7 @@
     --bg-surface: #12100d;
     --bg-raised:  #1a1410;
     --bg-divider: #1e1810;
+    --bg-overlay: rgba(10, 9, 7, 0.94);   /* 떠 있는 반투명 면 (툴팁·모달·팝업) */
 
     /* Border */
     --border-default:   #2a2015;

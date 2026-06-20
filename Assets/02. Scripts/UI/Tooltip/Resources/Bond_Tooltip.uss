@@ -1,18 +1,28 @@
 /* ── Bond_Tooltip.uss ──
-   TooltipPopup 의 기본 제안 스킨(텍스트 툴팁 .tooltip).
-   색·폰트는 EoB 테마 변수만 사용(하드코딩 금지). 패널 테마(:root)에 정의된 변수를 그대로 사용.
-   ※ 툴팁 시각 스타일은 아직 style_guide 미규정 항목 — 추후 '툴팁 스타일 통일' 논의 시 이 파일을 기준으로 교체.
-   ※ TooltipPopup 엔진(배치/clamp)은 이 스킨과 무관하므로, 리치 콘텐츠는 호출부가 자유롭게 스타일링해도 됨. */
+   TooltipPopup 기본 스킨(.tooltip). EoB DarkAmber 가이드 §6 준수.
+   색·폰트는 테마 변수만 사용(하드코딩 금지).
+   ※ 호출처가 직접 스타일링하는 리치 툴팁(스킬 SkillTooltipContent, 건물 등)은 이 스킨과 별개. */
 
 .tooltip {
-    background-color: var(--bg-deep);
+    background-color: var(--bg-overlay);     /* 반투명 떠 있는 면 */
     border-width: 1px;
-    border-color: var(--border-highlight);
-    border-radius: 2px;
-    padding: 8px 10px;
-    max-width: 360px;
+    border-color: var(--border-accent);      /* 명확한 골드 경계 */
+    border-radius: 3px;
+    padding: 10px 12px;
+    max-width: 320px;
     color: var(--text-secondary);
-    font-size: var(--font-size-system);
+    font-size: var(--font-size-body);
     white-space: normal;
     -unity-text-align: upper-left;
 }
+
+/* 구조 클래스 — 내용 구분(읽기 쉽게 명도·크기 차등). 단순 텍스트 툴팁은 .tooltip 하나로 충분. */
+.tooltip__title { color: var(--text-accent);    font-size: var(--font-size-name);   -unity-font-style: bold;   margin-bottom: 4px; }
+.tooltip__label { color: var(--text-label);     font-size: var(--font-size-class);  letter-spacing: 2px; -unity-font-style: bold; }
+.tooltip__sep   { height: 1px; background-color: var(--bg-divider); margin-top: 6px; margin-bottom: 6px; }
+.tooltip__body  { color: var(--text-primary);   font-size: var(--font-size-body);   white-space: normal; }
+.tooltip__num   { color: var(--text-secondary); font-size: var(--font-size-system); letter-spacing: 1px; }
+.tooltip__hint  { color: var(--text-muted);     font-size: var(--font-size-class);  -unity-font-style: italic; margin-top: 6px; }
+
+/* 상태 모디파이어 */
+.tooltip--danger { border-color: var(--border-danger); }

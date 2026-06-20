@@ -87,15 +87,15 @@ namespace Bond.UI
 
         private void RegisterEvents()
         {
-            // 무기·방어구: 툴팁만 (클릭 이벤트 없음). 배치·flip·경계 clamp는 TooltipPopup이 처리.
-            _tooltipHandles.Add(TooltipPopup.Attach(_chipWeapon, () => BuildTooltip(GetWeaponTooltip())));
-            _tooltipHandles.Add(TooltipPopup.Attach(_chipArmor,  () => BuildTooltip(GetArmorTooltip())));
+            // 무기·방어구: 툴팁만 (클릭 이벤트 없음).
+            _tooltipHandles.Add(TooltipPopup.Attach(_chipWeapon, GetWeaponTooltip));
+            _tooltipHandles.Add(TooltipPopup.Attach(_chipArmor,  GetArmorTooltip));
 
             // 부속품: 클릭 → 인벤토리 열기, 우클릭 → 해제 요청
             for (int i = 0; i < _chipAcc.Length; i++)
             {
                 int idx = i;
-                _tooltipHandles.Add(TooltipPopup.Attach(_chipAcc[idx], () => BuildTooltip(GetAccTooltip(idx))));
+                _tooltipHandles.Add(TooltipPopup.Attach(_chipAcc[idx], () => GetAccTooltip(idx)));
 
                 _chipAcc[idx].RegisterCallback<ClickEvent>(evt =>
                 {
@@ -224,14 +224,7 @@ namespace Bond.UI
         }
 
         // ── 툴팁 ──────────────────────────────────────────────────────
-        // 배치(부착·실측·flip·경계 clamp)는 TooltipPopup이 담당. 여기선 기존 룩(equip-slots__tooltip)만 구성.
-
-        private static VisualElement BuildTooltip(string text)
-        {
-            var label = new Label(text);
-            label.AddToClassList("equip-slots__tooltip");
-            return label;
-        }
+        // 배치·스킨 모두 TooltipPopup이 담당(문자열 오버로드 → 기본 .tooltip 스킨). 여기선 텍스트만 제공.
 
         private string GetWeaponTooltip()
         {

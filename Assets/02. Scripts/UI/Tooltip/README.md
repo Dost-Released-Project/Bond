@@ -1,6 +1,6 @@
 # TooltipPopup — 범용 툴팁 엔진
 
-UI Toolkit 어떤 요소든 hover하면 툴팁을 띄워주는 **정적 엔진**. "어디에 / 어떻게 띄울지"(부착·실측·flip·경계 clamp·표시·숨김)만 담당하고, **툴팁 생김새는 호출부가 만든 `VisualElement`를 그대로 표시**한다. 즉 엔진은 스타일에 관여하지 않는다.
+UI Toolkit 어떤 요소든 hover하면 툴팁을 띄워주는 **정적 엔진**. 코어는 "어디에 / 어떻게 띄울지"(부착·실측·flip·경계 clamp·표시·숨김)만 담당하고, **생김새는 호출부 소유**(직접 만든 `VisualElement`를 표시). 단순 텍스트용 **기본 스킨 `.tooltip`**도 제공한다(`style_guide §6`).
 
 > 설계 이유·UI Toolkit 배경지식은 [설계노트.md](설계노트.md) 참고. 여기는 쓰는 법만.
 
@@ -68,7 +68,7 @@ TooltipPopup.AttachFollow(building, () => BuildingTooltipContent.Build(b));
 
 엔진은 콘텐츠를 **anchor의 문서 루트**에 붙인다 → 그 문서의 USS가 그대로 적용된다(중요: [설계노트 §2.3](설계노트.md) 참고).
 
-- **기본 스킨** `.tooltip` — `Resources/Bond_Tooltip.uss`(테마 변수). 문자열/`BuildText` 경로가 자동 적용.
+- **기본 스킨** `.tooltip` — `Resources/Bond_Tooltip.uss`(반투명 `--bg-overlay` + 골드 `--border-accent`, 테마 변수만). 규칙은 `style_guide §6 툴팁`. 문자열/`BuildText` 경로가 자동 적용. 구조 클래스 `__title/__label/__sep/__body/__num/__hint`.
 - **덮어쓰기 3단계** (약→강):
 
   | 방식 | 코드 | 우선순위 | 테마변수 |
@@ -88,7 +88,7 @@ TooltipPopup.AttachFollow(building, () => BuildingTooltipContent.Build(b));
 
 - **기존 클래스 그대로 쓰기**: 콘텐츠에 이미 있는 문서 클래스를 붙이면 그대로 먹는다(문서 루트 마운트라서).
   ```csharp
-  () => { var l = new Label(text); l.AddToClassList("equip-slots__tooltip"); return l; }
+  () => { var l = new Label(text); l.AddToClassList("my-doc-tooltip"); return l; }
   ```
 
 ---
@@ -112,7 +112,7 @@ TooltipPopup.AttachFollow(building, () => BuildingTooltipContent.Build(b));
 
 ## 통합 현황
 
-- ✅ 장비 (`EquipSlotsPresenter`) — 슬롯 앵커.
+- ✅ 장비 (`EquipSlotsPresenter`) — 슬롯 앵커 + **기본 `.tooltip` 스킨** 사용(문자열 오버로드).
 - ✅ 스킬 — 전투 패널(`CharacterCombatPanelPresenter`, 슬롯 앵커) + CharacterDetail 스킬 칩(마우스 추종, `AttachFollow`). 공유 빌더 `SkillTooltipContent.Build()`. 기존 `SkillTooltipView`(MonoBehaviour+자체 UIDocument)는 **삭제**.
 - ⏸ 건물 (`BuildingTooltipView`, 97.Moon) — 미통합. 마우스 추종이라 `AttachFollow` 후보.
 - ⏹ 트레잇 — 현재 **작동하는 툴팁 없음**. `tag.tooltip`(Unity 내장)을 set하지만 런타임(Unity 6.3 UIDocument)에선 렌더 안 됨 → "통합"이 아니라 `Attach`로 **신규** 추가 대상.

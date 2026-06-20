@@ -11,6 +11,7 @@
     --bg-surface: transparent;
     --bg-raised:  transparent;
     --bg-divider: transparent;
+    --bg-overlay: transparent;   /* 떠 있는 반투명 면 (툴팁·모달·팝업) */
 
     /* Border */
     --border-default:   transparent;
