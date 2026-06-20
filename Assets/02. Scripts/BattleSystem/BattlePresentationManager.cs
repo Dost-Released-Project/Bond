@@ -2,6 +2,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using DG.Tweening;
+using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Shapes;
 using BattleSystem.Interface;
@@ -25,6 +26,7 @@ namespace BattleSystem
         {
             public DimPanelVisualizer dimVisualizer;
             public Dictionary<CharacterSlot, SlotRestoreData> restoreData = new Dictionary<CharacterSlot, SlotRestoreData>();
+            public HashSet<LayoutGroup> disabledLayoutGroups = new HashSet<LayoutGroup>();
         }
 
         private Stack<FocusLevel> m_focusStack = new Stack<FocusLevel>();
@@ -77,34 +79,91 @@ namespace BattleSystem
                 }
             }
 
+            // 연출 전 LayoutGroup 비활성화
+            if (caster != null) 
+            {
+                DisableLayoutGroup(caster, focusLevel);
+            }
+            if (targets != null)
+            {
+                foreach (var t in targets)
+                {
+                    if (t != null)
+                    {
+                        DisableLayoutGroup(t, focusLevel);
+                    }
+                }
+            }
+
             var seq = DOTween.Sequence();
+
+            // SlotBar Dim 연출 (부드럽게 어두워짐)
+            if (caster != null)
+            {
+                seq.Join(DOTween.To(() => caster.BarAlpha, x => caster.BarAlpha = x, 0.2f, 0.3f).SetEase(Ease.OutQuad));
+            }
+            if (targets != null)
+            {
+                foreach (var t in targets)
+                {
+                    if (t != null)
+                    {
+                        seq.Join(DOTween.To(() => t.BarAlpha, x => t.BarAlpha = x, 0.2f, 0.3f).SetEase(Ease.OutQuad));
+                    }
+                }
+            }
 
             // 2. Caster 처리 (껐다 켜서 Dim보다 뒤의 순서로, 즉 최상단에 렌더링되게 만듦)
             if (caster != null)
             {
                 BringToFront(caster);
+                bool isSameSide = (targets != null && targets.Count > 0 && targets[0] != null && targets[0].side == caster.side);
                 float casterX = (caster.side == E_BattleSide.Player) ? -250f : 250f;
+                // 광역(2명 이상)이면서 아군 대상인 경우에만 캐스터를 더 외곽으로 이동
+                if (isSameSide && targets.Count > 1)
+                {
+                    casterX = (caster.side == E_BattleSide.Player) ? -350f : 350f;
+                }
                 MoveSlotToCenter(caster, new Vector3(casterX, 0, 0), seq, focusLevel);
             }
             
             // 3. Targets 처리
             if (targets != null && targets.Count > 0)
             {
-                float targetOffsetY = - (targets.Count - 1) * 75f; 
-                for (int i = 0; i < targets.Count; i++)
+                bool isSameSide = (caster != null && targets[0] != null && targets[0].side == caster.side);
+                
+                if (targets.Count > 1) // 광역(2명 이상) 연출: 가로 정렬 적용
                 {
-                    if (targets[i] != null)
+                    float targetOffsetX = - (targets.Count - 1) * 75f; 
+                    for (int i = 0; i < targets.Count; i++)
                     {
-                        BringToFront(targets[i]);
-                        float targetX = (targets[i].side == E_BattleSide.Player) ? -250f : 250f;
-                        
-                        // 시전자와 대상이 같은 진영일 경우 (ex: 힐, 버프) 타겟을 화면 중앙 쪽으로 약간 당겨서 시전자와 겹치는 것을 방지
-                        if (caster != null && targets[i].side == caster.side)
+                        if (targets[i] != null)
                         {
-                            targetX = (targets[i].side == E_BattleSide.Player) ? -100f : 100f;
-                        }
+                            BringToFront(targets[i]);
+                            float targetX = (targets[i].side == E_BattleSide.Player) ? -250f : 250f;
+                            
+                            // 시전자와 대상이 같은 진영일 경우 (ex: 힐, 버프) 타겟을 화면 중앙(0f)에 배치
+                            if (isSameSide)
+                            {
+                                targetX = 0f;
+                            }
 
-                        MoveSlotToCenter(targets[i], new Vector3(targetX, targetOffsetY + (i * 150f), 0), seq, focusLevel);
+                            MoveSlotToCenter(targets[i], new Vector3(targetX + targetOffsetX + (i * 150f), 0, 0), seq, focusLevel);
+                        }
+                    }
+                }
+                else // 단일(1명) 연출: 기존 오리지널 위치 유지
+                {
+                    var target = targets[0];
+                    if (target != null)
+                    {
+                        BringToFront(target);
+                        float targetX = (target.side == E_BattleSide.Player) ? -250f : 250f;
+                        if (caster != null && target.side == caster.side)
+                        {
+                            targetX = (target.side == E_BattleSide.Player) ? -100f : 100f;
+                        }
+                        MoveSlotToCenter(target, new Vector3(targetX, 0, 0), seq, focusLevel);
                     }
                 }
             }
@@ -114,6 +173,17 @@ namespace BattleSystem
             var tcs = new UniTaskCompletionSource();
             seq.OnComplete(() => tcs.TrySetResult());
             await tcs.Task;
+        }
+
+        private void DisableLayoutGroup(CharacterSlot slot, FocusLevel level)
+        {
+            if (slot == null) return;
+            var layoutGroup = slot.GetComponentInParent<LayoutGroup>();
+            if (layoutGroup != null && layoutGroup.enabled)
+            {
+                layoutGroup.enabled = false;
+                level.disabledLayoutGroups.Add(layoutGroup);
+            }
         }
 
         private void BringToFront(CharacterSlot slot)
@@ -147,11 +217,11 @@ namespace BattleSystem
             var rectTransform = slot.GetComponent<RectTransform>();
             if (rectTransform == null) return;
 
-            // 레이아웃 그룹에서 분리하기 위해 캔버스 최상단으로 이동 (화면 위치 유지)
-            rectTransform.SetParent(m_shapesCanvas.transform, true);
+            // 부모 변경 없이, targetLocalPos(Canvas 기준 로컬 좌표)를 슬롯의 현재 부모 기준 로컬 좌표로 변환하여 트윈
+            Vector3 targetWorldPos = m_shapesCanvas.transform.TransformPoint(targetLocalPos);
+            Vector3 localTargetPos = rectTransform.parent.InverseTransformPoint(targetWorldPos);
 
-            // Canvas의 중심(0,0,0)을 기준으로 이동
-            seq.Join(rectTransform.DOLocalMove(targetLocalPos, 0.3f).SetEase(Ease.OutQuad));
+            seq.Join(rectTransform.DOLocalMove(localTargetPos, 0.3f).SetEase(Ease.OutQuad));
             seq.Join(rectTransform.DOScale(Vector3.one * 1.5f, 0.3f).SetEase(Ease.OutQuad));
         }
 
@@ -168,13 +238,21 @@ namespace BattleSystem
 
             var seq = DOTween.Sequence();
 
-            if (caster != null) RestoreSlotAnim(caster, seq, currentLevel);
+            if (caster != null) 
+            {
+                RestoreSlotAnim(caster, seq, currentLevel);
+                seq.Join(DOTween.To(() => caster.BarAlpha, x => caster.BarAlpha = x, 1.0f, 0.3f).SetEase(Ease.OutQuad));
+            }
             
             if (targets != null)
             {
                 foreach (var target in targets)
                 {
-                    if (target != null) RestoreSlotAnim(target, seq, currentLevel);
+                    if (target != null) 
+                    {
+                        RestoreSlotAnim(target, seq, currentLevel);
+                        seq.Join(DOTween.To(() => target.BarAlpha, x => target.BarAlpha = x, 1.0f, 0.3f).SetEase(Ease.OutQuad));
+                    }
                 }
             }
 
@@ -188,6 +266,16 @@ namespace BattleSystem
                     foreach (var target in targets)
                     {
                         if (target != null) RestoreSlotLayout(target, currentLevel);
+                    }
+                }
+                
+                // 일시 비활성화했던 LayoutGroup들 다시 활성화 및 갱신
+                foreach (var lg in currentLevel.disabledLayoutGroups)
+                {
+                    if (lg != null)
+                    {
+                        lg.enabled = true;
+                        LayoutRebuilder.ForceRebuildLayoutImmediate(lg.GetComponent<RectTransform>());
                     }
                 }
                 
@@ -211,12 +299,8 @@ namespace BattleSystem
 
             seq.Join(rectTransform.DOScale(data.localScale, 0.3f).SetEase(Ease.OutQuad));
             
-            if (data.parent != null)
-            {
-                Vector3 targetWorldPos = data.parent.TransformPoint(data.localPosition);
-                Vector3 targetLocalPos = rectTransform.parent.InverseTransformPoint(targetWorldPos);
-                seq.Join(rectTransform.DOLocalMove(targetLocalPos, 0.3f).SetEase(Ease.OutQuad));
-            }
+            // 부모가 변경되지 않았으므로 원래의 localPosition으로 바로 트윈
+            seq.Join(rectTransform.DOLocalMove(data.localPosition, 0.3f).SetEase(Ease.OutQuad));
         }
 
         private void RestoreSlotLayout(CharacterSlot slot, FocusLevel level)
@@ -225,7 +309,7 @@ namespace BattleSystem
             var rectTransform = slot.GetComponent<RectTransform>();
             if (rectTransform == null) return;
 
-            // 계층 복구
+            // 계층 복구 (부모가 유지되므로 원래 데이터대로 재정렬 순서 세팅)
             rectTransform.SetParent(data.parent, false);
             rectTransform.SetSiblingIndex(data.siblingIndex);
 
@@ -237,7 +321,7 @@ namespace BattleSystem
             // 리액션 등 연출 중첩 시 부모 복귀 후 LayoutGroup이 즉시 갱신되지 않아 빈칸이 생기는 현상 방지
             if (data.parent != null)
             {
-                UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(data.parent.GetComponent<RectTransform>());
+                LayoutRebuilder.ForceRebuildLayoutImmediate(data.parent.GetComponent<RectTransform>());
             }
         }
     }
