@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Bond.UI;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -16,7 +18,7 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
     private ICharacterSelector _selector;
     private ExpeditionPayload _payload;
     private EquipSlotsPresenter _equipSlots;
-    private SkillTooltipView _skillTooltipView;
+    private readonly List<IDisposable> _skillTooltipHandles = new List<IDisposable>();
     private InventoryTransferService _transferService;
     private CharacterItemService _itemService;
 
@@ -62,8 +64,6 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
 
     private void Start()
     {
-        _skillTooltipView = gameObject.AddComponent<SkillTooltipView>();
-
         _controller = new CharacterCombatPanelController();
 
         _root = _document.rootVisualElement;
@@ -155,16 +155,13 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
 
     private void RegisterSkillTooltip(VisualElement slot, int index)
     {
-        slot.RegisterCallback<MouseEnterEvent>(evt => 
+        // 배치·flip·경계 clamp는 TooltipPopup이 담당. 슬롯 기준 표시(기존 마우스추종 → 슬롯 앵커).
+        _skillTooltipHandles.Add(TooltipPopup.Attach(slot, () =>
         {
-            if (_character == null || _character.Skills == null || index >= _character.Skills.Length || _character.Skills[index] == null) return;
-            _skillTooltipView.ShowTooltip(_character.Skills[index], evt.mousePosition);
-        });
-
-        slot.RegisterCallback<MouseLeaveEvent>(evt => 
-        {
-            _skillTooltipView.HideTooltip();
-        });
+            if (_character?.Skills == null || index >= _character.Skills.Length) return null;
+            var skill = _character.Skills[index];
+            return skill == null ? null : SkillTooltipContent.Build(skill);
+        }));
     }
 
     public void SetCharacter(BaseCharacter character) => _controller.SetCharacter(character);
@@ -242,6 +239,9 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
     {
         DetachCharacterEvents(_character);
         _equipSlots?.Dispose();
+
+        foreach (var handle in _skillTooltipHandles) handle.Dispose();
+        _skillTooltipHandles.Clear();
     }
 
     private void BindSkillSlots(BaseCharacter character)

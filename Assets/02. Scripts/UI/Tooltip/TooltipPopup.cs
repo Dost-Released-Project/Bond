@@ -142,6 +142,50 @@ namespace Bond.UI
         }
 
         /// <summary>
+        /// <see cref="Attach(VisualElement, Func{VisualElement}, Placement)"/>의 마우스 추종 버전.
+        /// hover 동안 콘텐츠가 커서를 따라다닌다(맵 위 자유 오브젝트 등 앵커가 마땅찮을 때).
+        /// 콘텐츠는 enter 시 한 번 만들어 move마다 재사용한다.
+        /// </summary>
+        public static IDisposable AttachFollow(VisualElement target, Func<VisualElement> provider, Placement prefer = Placement.Auto)
+        {
+            if (target == null || provider == null) return _empty;
+
+            VisualElement content = null;
+            EventCallback<MouseEnterEvent> onEnter = _ => content = provider();
+            EventCallback<MouseMoveEvent>  onMove  = e => { if (content != null) ShowAt(content, e.mousePosition, target, prefer); };
+            EventCallback<MouseLeaveEvent> onLeave = _ => { content = null; Hide(target); };
+            EventCallback<DetachFromPanelEvent> onDetach = _ => Hide(target);
+
+            target.RegisterCallback(onEnter);
+            target.RegisterCallback(onMove);
+            target.RegisterCallback(onLeave);
+            target.RegisterCallback(onDetach);
+
+            return new Subscription(() =>
+            {
+                target.UnregisterCallback(onEnter);
+                target.UnregisterCallback(onMove);
+                target.UnregisterCallback(onLeave);
+                target.UnregisterCallback(onDetach);
+                Hide(target);
+            });
+        }
+
+        /// <summary>간단 텍스트 버전 <see cref="AttachFollow(VisualElement, Func{VisualElement}, Placement)"/>.</summary>
+        public static IDisposable AttachFollow(VisualElement target, Func<string> textProvider, Placement prefer = Placement.Auto)
+        {
+            if (target == null || textProvider == null) return _empty;
+
+            return AttachFollow(target, () =>
+            {
+                var t = textProvider();
+                if (string.IsNullOrEmpty(t)) return null;
+                EnsureDefaultStyle(target.panel);
+                return BuildText(t);
+            }, prefer);
+        }
+
+        /// <summary>
         /// 기본 제안 스킨의 텍스트 라벨을 만든다. 색·테두리·폰트는 <c>.tooltip</c> USS(테마 변수)에서 온다.
         /// 스타일을 통일/교체하려면 <c>Resources/Bond_Tooltip.uss</c>만 수정하면 된다(엔진은 무관).
         /// </summary>

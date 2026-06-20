@@ -1,4 +1,5 @@
 using System;
+using BattleSystem.UI;
 using Bond.UI;
 using Cysharp.Threading.Tasks;
 using Reactions;
@@ -552,6 +553,8 @@ namespace Bond.UI
                     var nameLabel = new Label(skill.Data?.DisplayName ?? "?");
                     nameLabel.AddToClassList("char-detail__skill-name");
                     chip.Add(nameLabel);
+
+                    TooltipPopup.AttachFollow(chip, () => SkillTooltipContent.Build(skill));
                 }
 
                 _skillGrid.Add(chip);
