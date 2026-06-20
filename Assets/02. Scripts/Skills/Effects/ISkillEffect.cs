@@ -13,7 +13,6 @@ namespace Skills.Effects
         버프_스탯_힘 = 20,
         버프_스탯_민첩 = 21,
         버프_스탯_지능 = 22,
-        버프_스탯_방어 = 23
     }
 
     public interface ISkillEffect

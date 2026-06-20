@@ -162,7 +162,7 @@ namespace PipeLine
             // 난수가 명중 확률보다 크면 공격을 회피한 것으로 판정합니다.
             context.isEvaded = Random.value > hitRate;
 
-            context.isEvaded = true;
+            //context.isEvaded = true;
             // 회피 테스트 확률 100퍼 
             if (context.isEvaded)
             {
@@ -193,7 +193,7 @@ namespace PipeLine
 
             // TODO: 개별 타겟 치명타 확률 로직 (현재는 임시로 시전자 crt 사용)
             context.isCritical = Random.value < context.caster.Stat.crt;
-            
+                
             if (context.isCritical)
             {
                 float bonus = context.value * criticalBonus;

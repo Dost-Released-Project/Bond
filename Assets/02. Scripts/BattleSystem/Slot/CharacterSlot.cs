@@ -2,6 +2,7 @@ using System;
 using BattleSystem.Interface;
 using BattleSystem.UI;
 using Cysharp.Threading.Tasks;
+using Shapes;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.EventSystems;
@@ -27,6 +28,7 @@ namespace BattleSystem
 
         [Header("Visual Effects")]
         [SerializeField] private TextVisualizer m_TextVisualizer;
+        [SerializeField] private CharacterSlotBar m_CharacterSlotBar;
 
         public BaseCharacter Occupant { get; private set; }
         public bool IsEmpty => Occupant == null;
@@ -44,6 +46,12 @@ namespace BattleSystem
             character.OnDamageTaken += ShowDamageText;
             character.OnHealed += ShowHealText;
             character.OnEvaded += ShowEvadedText;
+            character.OnHpChanged += UpdateHpBar;
+            character.OnInsanityChanged += UpdateInsanityBar;
+
+            // 초기 UI 갱신
+            UpdateHpBar(character);
+            UpdateInsanityBar(character);
             
             // 기본 이미지 타입(Idle)으로 로드
             m_currentImageType = SlotImageType.Idle;
@@ -119,10 +127,17 @@ namespace BattleSystem
                 Occupant.OnDamageTaken -= ShowDamageText;
                 Occupant.OnHealed -= ShowHealText;
                 Occupant.OnEvaded -= ShowEvadedText;
+                Occupant.OnHpChanged -= UpdateHpBar;
+                Occupant.OnInsanityChanged -= UpdateInsanityBar;
                 Occupant.CurrentSlot = null;
             }
             Occupant = null;
             m_CharacterSlotVisualizer.SetPortrait(null); // 스프라이트 참조 제거
+            if (m_CharacterSlotBar != null)
+            {
+                m_CharacterSlotBar.hpfillAmount = 0f;
+                m_CharacterSlotBar.insfillAmount = 0f;
+            }
         }
         
         public void OnPointerEnter(PointerEventData eventData) => MouseCheck(true, false);
@@ -155,6 +170,18 @@ namespace BattleSystem
             IsTargeted = false;
         }
 
+        public float BarAlpha
+        {
+            get => m_CharacterSlotBar != null ? m_CharacterSlotBar.alpha : 1f;
+            set
+            {
+                if (m_CharacterSlotBar != null)
+                {
+                    m_CharacterSlotBar.alpha = value;
+                }
+            }
+        }
+
         public CharacterSlot(E_BattleSide side, FormationMask rank)
         {
             this.side = side;
@@ -165,7 +192,6 @@ namespace BattleSystem
         {
             m_currentColor = colorData.normalColor;
             m_targetColor = colorData.normalColor;
-            m_CharacterSlotVisualizer.SetBG(colorData.bgColor);
         }
 
         private void Update()
@@ -210,6 +236,10 @@ namespace BattleSystem
 
             m_currentColor = Color.Lerp(m_currentColor, m_targetColor, Time.unscaledDeltaTime * colorData.lerpSpeed);
             m_CharacterSlotVisualizer.SetCurrentColor(m_currentColor);
+            if (m_CharacterSlotBar != null)
+            {
+                m_CharacterSlotBar.currentColor = m_currentColor;
+            }
         }
         
         public void OnPointerClick(PointerEventData eventData)
@@ -223,19 +253,19 @@ namespace BattleSystem
             m_CharacterSlotVisualizer = targetClass;
         }
 
-        private void ShowDamageText(BaseCharacter target, int amount)
+        private void ShowDamageText(BaseCharacter target, int amount, bool isCritical)
         {
             if (m_TextVisualizer != null)
             {
-                m_TextVisualizer.Show(amount, isHeal: false);
+                m_TextVisualizer.Show(amount, isHeal: false, isCritical: isCritical);
             }
         }
 
-        private void ShowHealText(BaseCharacter target, int amount)
+        private void ShowHealText(BaseCharacter target, int amount, bool isCritical)
         {
             if (m_TextVisualizer != null)
             {
-                m_TextVisualizer.Show(amount, isHeal: true);
+                m_TextVisualizer.Show(amount, isHeal: true, isCritical: isCritical);
             }
         }
 
@@ -247,6 +277,24 @@ namespace BattleSystem
             }
         }
 
+        private void UpdateHpBar(BaseCharacter character)
+        {
+            if (m_CharacterSlotBar != null && character != null)
+            {
+                m_CharacterSlotBar.hpfillAmount = character.Stat.max_Hp > 0 
+                    ? (float)character.Stat.current_Hp / character.Stat.max_Hp 
+                    : 0f;
+            }
+        }
+
+        private void UpdateInsanityBar(BaseCharacter character)
+        {
+            if (m_CharacterSlotBar != null && character != null)
+            {
+                m_CharacterSlotBar.insfillAmount = (float)character.Insanity / 100f;
+            }
+        }
+
         private void OnDestroy()
         {
             if (Occupant != null)
@@ -254,6 +302,8 @@ namespace BattleSystem
                 Occupant.OnDamageTaken -= ShowDamageText;
                 Occupant.OnHealed -= ShowHealText;
                 Occupant.OnEvaded -= ShowEvadedText;
+                Occupant.OnHpChanged -= UpdateHpBar;
+                Occupant.OnInsanityChanged -= UpdateInsanityBar;
             }
         }
     }
