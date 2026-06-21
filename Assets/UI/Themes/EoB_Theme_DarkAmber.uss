@@ -8,6 +8,7 @@
     --bg-surface: #12100d;
     --bg-raised:  #1a1410;
     --bg-divider: #1e1810;
+    --bg-overlay: rgba(10, 9, 7, 0.94);   /* 떠 있는 반투명 면 (툴팁·모달·팝업) */
 
     /* Border */
     --border-default:   #2a2015;
@@ -50,6 +51,10 @@
     --btn-active-bg:        #5a4226;   /* 클릭(눌림) 시 배경 — 호버보다 한 단계 밝게 */
     --btn-secondary-border: #2a2015;
     --btn-secondary-text:   #5a4a35;
+    --btn-danger-text:      #aa4a4a;   /* 위험(해고) 버튼 라벨 텍스트 */
+    --btn-danger-bg:        #120a0a;   /* 위험(해고) 버튼 배경 — 평상시 */
+    --btn-danger-bg-hover:  #221212;   /* 위험(해고) 버튼 배경 — 호버 */
+    --btn-danger-bg-active: #321a1a;   /* 위험(해고) 버튼 배경 — 눌림(holding) */
 
     /* Echo System */
     --echo-ready-border: #4a6a4a;

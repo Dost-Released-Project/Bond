@@ -118,17 +118,3 @@
 .equip-slots__chip--disabled {
     opacity: 0.38;
 }
-
-/* 툴팁 */
-.equip-slots__tooltip {
-    background-color: var(--bg-deep);
-    border-width: 1px;
-    border-color: var(--border-highlight);
-    border-radius: 2px;
-    padding: 8px 10px;
-    min-width: 120px;
-    font-size: var(--font-size-system);
-    color: var(--text-secondary);
-    white-space: normal;
-    -unity-text-align: upper-left;
-}

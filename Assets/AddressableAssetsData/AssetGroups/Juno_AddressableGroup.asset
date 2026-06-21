@@ -180,6 +180,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd6d44c4d8876eb418d3e21f90692390
+    m_Address: Timeline_Wizard_CutScene
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ce436f0981d06dd48847627c589d4195
     m_Address: PurpleBuff
     m_ReadOnly: 0
