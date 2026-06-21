@@ -28,6 +28,7 @@ public class EffectSpritePlayer : MonoBehaviour
     private void OnEnable()
     {
         if (_playOnStart == false) return;
+        this.enabled = true;
         Play();
     }
 
