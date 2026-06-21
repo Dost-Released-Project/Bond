@@ -360,6 +360,24 @@
     opacity: 0.3;
 }
 
+/* 편성된(장착) 스킬 — 강조: 두꺼운 강조 테두리 + 배경 상승 + 강조 텍스트 */
+.char-detail__skill-chip--selected {
+    border-width: 2px;
+    border-color: var(--border-accent);
+    background-color: var(--bg-raised);
+}
+.char-detail__skill-chip--selected:hover {
+    border-color: var(--border-accent);
+}
+.char-detail__skill-chip--selected .char-detail__skill-name {
+    color: var(--text-accent);
+}
+
+/* 최대 슬롯이 차서 추가 불가한 미선택 칩 */
+.char-detail__skill-chip--disabled {
+    opacity: 0.38;
+}
+
 .char-detail__skill-name {
     font-size: var(--font-size-system);
     color: var(--text-secondary);

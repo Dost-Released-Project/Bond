@@ -69,14 +69,22 @@ namespace Bond.UI
             _itemService.UnequipToInventory(_character, index, targetInventory);
         }
 
-        // 직업이 보유 가능한 전체 스킬 목록 반환 (스킬 그리드용)
-        // TODO: 스태틱하게 db 접근 후에 그걸 기반으로 반환하도록 구현
-        // public List<SkillData> GetAllProfessionSkills()
-        // {
-        //     if (_character?.Profession == null) return new List<SkillData>();
-        //     int profId = _character.Profession.Id;
-        //     return _skillDb.Query<SkillData>(s => s.UseableClasses == profId).ToList();
-        // }
+        // ── 스킬 편성 (스킬 그리드) ──────────────────────────────────────
+
+        /// <summary>현재 캐릭터 직업이 사용 가능한 전체 스킬 목록(그리드 표시용). DBSORegistry 정적 조회.</summary>
+        public IReadOnlyList<SkillData> GetProfessionSkills()
+        {
+            if (_character?.Profession == null) return Array.Empty<SkillData>();
+            int profId = _character.Profession.Id;
+            return DBSORegistry.QuerySO<SkillData>(s => s != null && s.UseableClasses == profId).ToList();
+        }
+
+        /// <summary>그리드 토글: 편성↔해제. 추가는 최대 슬롯에서 차단(BaseCharacter). 변경 시 true.</summary>
+        public bool ToggleSkill(SkillData data)
+        {
+            if (_character == null || data == null) return false;
+            return _character.ToggleSkill(data);
+        }
 
         public BaseCharacter CurrentCharacter => _character;
 

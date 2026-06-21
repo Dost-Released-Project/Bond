@@ -284,6 +284,7 @@ namespace Bond.UI
             character.OnInsanityChanged  += HandleInsanityChanged;
             character.OnStatRecalculated += HandleStatRecalculated;
             character.OnRoleChanged      += HandleRoleChanged;
+            character.OnSkillsChanged    += HandleSkillsChanged;
         }
 
         private void DetachCharacterEvents(BaseCharacter character)
@@ -293,6 +294,7 @@ namespace Bond.UI
             character.OnInsanityChanged  -= HandleInsanityChanged;
             character.OnStatRecalculated -= HandleStatRecalculated;
             character.OnRoleChanged      -= HandleRoleChanged;
+            character.OnSkillsChanged    -= HandleSkillsChanged;
         }
 
         // RefreshStats가 HP/광기 게이지까지 함께 갱신하므로 별도 분기는 두지 않는다
@@ -300,6 +302,16 @@ namespace Bond.UI
         private void HandleInsanityChanged(BaseCharacter c)  => RefreshStats();
         private void HandleStatRecalculated(BaseCharacter c) => RefreshStats();
         private void HandleRoleChanged(BaseCharacter c)      => RefreshIdentity();
+
+        // 스킬 편성 변경 → 그리드 갱신 + 리액션 슬롯 재표시(압축으로 SkillIndex 가 재매핑/해제됐을 수 있음)
+        private void HandleSkillsChanged(BaseCharacter c)
+        {
+            // 열려 있던 인라인 풀(리액션 스킬 선택 등)은 후보가 바뀌었을 수 있으므로 닫는다.
+            CloseAllPools();
+            RefreshSkillGrid();
+            for (int i = 0; i < 2; i++) RefreshRoleSlot(i);
+            for (int i = 2; i < 6; i++) RefreshTraitSlot(i);
+        }
 
         private void OnDestroy()
         {
@@ -534,31 +546,46 @@ namespace Bond.UI
             }
         }
 
+        // 직업이 사용 가능한 전체 스킬을 칩으로 표시하고, 장착된 것은 강조한다.
+        // FullEdit 에서만 클릭으로 편성/해제(최대 슬롯에서 미선택 칩은 비활성).
         private void RefreshSkillGrid()
         {
             _skillGrid.Clear();
-            if (_character?.Skills == null) return;
+            if (_character?.Profession == null) return;
 
-            foreach (var skill in _character.Skills)
+            bool editable = _editMode == CharacterDetailEditMode.FullEdit;
+            bool full     = _character.EquippedSkillCount >= _character.Skills.Length;
+
+            foreach (var data in _controller.GetProfessionSkills())
+                _skillGrid.Add(BuildSkillChip(data, editable, full));
+        }
+
+        private VisualElement BuildSkillChip(SkillData data, bool editable, bool full)
+        {
+            var chip = new VisualElement();
+            chip.AddToClassList("char-detail__skill-chip");
+
+            var nameLabel = new Label(data?.DisplayName ?? "?");
+            nameLabel.AddToClassList("char-detail__skill-name");
+            chip.Add(nameLabel);
+
+            // 미장착 풀 스킬도 툴팁을 위해 SkillBase 로 임시 래핑(Build 는 .Data 만 읽음).
+            var preview = new SampleSkill(data);
+            TooltipPopup.AttachFollow(chip, () => SkillTooltipContent.Build(preview));
+
+            bool equipped = _character.HasSkill(data);
+            if (equipped) chip.AddToClassList("char-detail__skill-chip--selected");
+
+            if (editable)
             {
-                var chip = new VisualElement();
-                chip.AddToClassList("char-detail__skill-chip");
-
-                if (skill == null)
-                {
-                    chip.AddToClassList("char-detail__skill-chip--empty");
-                }
+                bool blocked = full && !equipped;   // 만석 상태에서 새 스킬 추가 불가
+                if (blocked)
+                    chip.AddToClassList("char-detail__skill-chip--disabled");
                 else
-                {
-                    var nameLabel = new Label(skill.Data?.DisplayName ?? "?");
-                    nameLabel.AddToClassList("char-detail__skill-name");
-                    chip.Add(nameLabel);
-
-                    TooltipPopup.AttachFollow(chip, () => SkillTooltipContent.Build(skill));
-                }
-
-                _skillGrid.Add(chip);
+                    chip.RegisterCallback<ClickEvent>(_ => _controller.ToggleSkill(data));
             }
+
+            return chip;
         }
 
         private void RefreshRoleSlot(int i)
