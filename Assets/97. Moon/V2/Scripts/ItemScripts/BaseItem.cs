@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public enum ItemCategory { Consume, Accessories }
+public enum ItemCategory { Consume, Accessories, Etc }
 
 /// <summary>
 /// [D] Pure Data: 모든 아이템의 기반이 되는 SO.

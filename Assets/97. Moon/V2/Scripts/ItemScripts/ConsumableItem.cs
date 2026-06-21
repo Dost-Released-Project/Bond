@@ -1,23 +1,16 @@
 using UnityEngine;
 
-public enum ConsumableType { Bandage, Sedative, Stimulant }
+public enum ConsumableType { Bandage, Sedative, Stimulant, Etc  }
 
 [CreateAssetMenu(fileName = "NewConsumable", menuName = "Items/Consumable")]
 public class ConsumableItem : BaseItem
 {
     public ConsumableType consumableType;
-    public int healValue = 20;
-
-    private void OnEnable()
-    {
-        category = ItemCategory.Consume;
-    }
+    public int healValue;
 
     public override void Use(BaseCharacter target)
     {
         if (target == null) return;
-
-        Stat stat = target.Stat;
 
         switch (consumableType)
         {
@@ -32,6 +25,8 @@ public class ConsumableItem : BaseItem
             case ConsumableType.Stimulant:
                 // 성향 시스템은 팀원이 작업 중이므로 연동 지점만 만듭니다.
                 TryAwakenTrait(target);
+                break;
+            case ConsumableType.Etc:
                 break;
         }
     }

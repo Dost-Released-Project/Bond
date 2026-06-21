@@ -1,4 +1,5 @@
 using System;
+using BattleSystem.UI;
 using Bond.UI;
 using Cysharp.Threading.Tasks;
 using Reactions;
@@ -68,13 +69,26 @@ namespace Bond.UI
         private BaseCharacter _character;
         private CharacterDetailEditMode _editMode;
         private IInventory _currentInventory;
+
+        // 해고(꾹 눌러 확정) 버튼 — 마을 관리(allowFire)에서만 동작. 누르는 동안 테두리가 시계방향으로 채워진다.
+        private Roster        _roster;
+        private bool          _allowFire;
+        private VisualElement _fireBtn;
+        private VisualElement _fireRing;
+        private IVisualElementScheduledItem _fireTicker;
+        private float _fireHoldStart;
+        private float _fireProgress;
+        private bool  _fireHolding;
+        private int   _firePointerId = -1;
+        private const float FIRE_HOLD_SECONDS = 3f;
     
         [Inject]
-        public void Construct(CharacterDetailController controller, ICharacterSelector selector, InventoryTransferService transfer)
+        public void Construct(CharacterDetailController controller, ICharacterSelector selector, InventoryTransferService transfer, Roster roster)
         {
             _controller      = controller;
             _selector        = selector;
             _transferService = transfer;
+            _roster          = roster;
 
             _controller.OnCharacterSet += RefreshCharacter;
             _selector.OnSelectionChanged += _controller.SetCharacter;
@@ -91,6 +105,8 @@ namespace Bond.UI
                 Hide();
                 OnCloseRequested?.Invoke();
             };
+
+            SetupFireButton(root);
 
             _classLevelLabel = root.Q<Label>("char-detail__class-level");
             _portrait        = root.Q<Image>("char-detail__portrait");
@@ -230,10 +246,12 @@ namespace Bond.UI
             });
         }
         
-        public void Show(BaseCharacter character, CharacterDetailEditMode mode, IInventory inventory)
+        // allowFire: 해고 버튼 노출 여부. 마을 관리에서만 true — 탐사 준비(embark)는 파티 슬롯 정합성 때문에 false.
+        public void Show(BaseCharacter character, CharacterDetailEditMode mode, IInventory inventory, bool allowFire = false)
         {
             _editMode         = mode;
             _currentInventory = inventory;
+            _allowFire        = allowFire;
 
             // 상세 대상의 단일 출처는 컨트롤러다. selector 경유 없이 직접 열리는 호출처(탐사 준비 등)에서도
             // 컨트롤러 _character 가 동기화돼야 GetRoleReactionCatalog 등이 올바른 캐릭터로 동작한다.
@@ -287,12 +305,14 @@ namespace Bond.UI
         {
             DetachCharacterEvents(_character);
             _equipSlots?.Dispose();
+            CancelFireHold();
         }
 
         public void Hide()
         {
             _panel.RemoveFromClassList("character-detail--visible");
             _panel.AddToClassList("character-detail--hidden");
+            CancelFireHold();
             CloseAllPools();
             CloseRolePicker();
         }
@@ -307,6 +327,14 @@ namespace Bond.UI
         {
             bool fullEdit = _editMode == CharacterDetailEditMode.FullEdit;
             bool canEquip = _editMode != CharacterDetailEditMode.ReadOnly;
+
+            // 해고는 마을 관리(allowFire + FullEdit)에서만 노출. 조건이 풀리면 진행 중인 홀드는 취소.
+            if (_fireBtn != null)
+            {
+                bool canFire = fullEdit && _allowFire;
+                _fireBtn.style.display = canFire ? DisplayStyle.Flex : DisplayStyle.None;
+                if (!canFire) CancelFireHold();
+            }
 
             _roleBtnCurrent.EnableInClassList("char-detail__role-current--disabled", !fullEdit);
             _roleBtnCurrent.pickingMode = fullEdit ? PickingMode.Position : PickingMode.Ignore;
@@ -525,6 +553,8 @@ namespace Bond.UI
                     var nameLabel = new Label(skill.Data?.DisplayName ?? "?");
                     nameLabel.AddToClassList("char-detail__skill-name");
                     chip.Add(nameLabel);
+
+                    TooltipPopup.AttachFollow(chip, () => SkillTooltipContent.Build(skill));
                 }
 
                 _skillGrid.Add(chip);
@@ -576,7 +606,7 @@ namespace Bond.UI
 
             if (hasSkill)
             {
-                int skillIdx = (reaction.Effect as SkillCastReactionEffect)?.SkillIndex ?? -1;
+                int skillIdx = (reaction.BaseEffect as SkillCastReactionEffect)?.SkillIndex ?? -1;
                 bool valid = skillIdx >= 0 && skillIdx < _character.Skills.Length && _character.Skills[skillIdx] != null;
                 _reactionSkillLabels[i].text = valid
                     ? (_character.Skills[skillIdx].Data?.DisplayName ?? "미설정")
@@ -633,7 +663,7 @@ namespace Bond.UI
             }
             if (hasSkill)
             {
-                int skillIdx = (reaction.Effect as SkillCastReactionEffect)?.SkillIndex ?? -1;
+                int skillIdx = (reaction.BaseEffect as SkillCastReactionEffect)?.SkillIndex ?? -1;
                 bool valid = skillIdx >= 0 && skillIdx < _character.Skills.Length && _character.Skills[skillIdx] != null;
                 _reactionSkillLabels[i].text = valid ? (_character.Skills[skillIdx].Data?.DisplayName ?? "미설정") : "미설정";
                 _reactionSkillLabels[i].EnableInClassList("char-detail__slot-part-val--placeholder", !valid);
@@ -818,7 +848,7 @@ namespace Bond.UI
             }
 
             var reaction = GetReactionAt(slotIndex);
-            int currentIndex = (reaction?.Effect as SkillCastReactionEffect)?.SkillIndex ?? -1;
+            int currentIndex = (reaction?.BaseEffect as SkillCastReactionEffect)?.SkillIndex ?? -1;
 
             foreach (var (index, skill) in candidates)
             {
@@ -887,6 +917,165 @@ namespace Bond.UI
                     _transferService.ResetDrag();
                 }
             }
+        }
+
+        // ── 해고(꾹 눌러 확정) ──────────────────────────────────────────────
+
+        private void SetupFireButton(VisualElement root)
+        {
+            _fireBtn  = root.Q("character-detail__fire-btn");
+            _fireRing = root.Q("character-detail__fire-ring");
+            if (_fireBtn == null || _fireRing == null) return;
+
+            // 링은 매 프레임 진행도(_fireProgress)에 따라 시계방향 호를 다시 그린다.
+            _fireRing.generateVisualContent += OnGenerateFireRing;
+
+            // 링이 버튼 테두리-박스를 정확히 덮도록 인셋(-border-width)을 동기화. 레이아웃이 잡힌 뒤 한 번 + 변경 시.
+            _fireBtn.RegisterCallback<GeometryChangedEvent>(_ => SyncFireRingInset());
+
+            // 누르는 동안에만 Resume — 진행도 갱신용 프레임 틱.
+            _fireTicker = _fireBtn.schedule.Execute(UpdateFireHold).Every(16);
+            _fireTicker.Pause();
+
+            _fireBtn.RegisterCallback<PointerDownEvent>(OnFirePointerDown);
+            _fireBtn.RegisterCallback<PointerUpEvent>(OnFirePointerUp);
+            _fireBtn.RegisterCallback<PointerCaptureOutEvent>(_ => CancelFireHold());
+        }
+
+        /// <summary>링 오버레이를 버튼 테두리-박스에 맞춘다(인셋 = -테두리두께). border-width 만 바꿔도 정렬이 자동 추종된다.</summary>
+        private void SyncFireRingInset()
+        {
+            if (_fireBtn == null || _fireRing == null) return;
+            float bw = _fireBtn.resolvedStyle.borderTopWidth;
+            _fireRing.style.left   = -bw;
+            _fireRing.style.top    = -bw;
+            _fireRing.style.right  = -bw;
+            _fireRing.style.bottom = -bw;
+        }
+
+        private void OnFirePointerDown(PointerDownEvent evt)
+        {
+            // 해고는 마을 관리(allowFire + FullEdit) + 좌클릭/주 포인터에서만 시작.
+            if (!_allowFire || _editMode != CharacterDetailEditMode.FullEdit || _character == null) return;
+            if (evt.button != 0) return;
+
+            _fireHolding   = true;
+            _firePointerId = evt.pointerId;
+            _fireHoldStart = Time.realtimeSinceStartup;
+            _fireProgress  = 0f;
+            _fireBtn.CapturePointer(evt.pointerId);   // 손가락이 버튼 밖으로 나가도 PointerUp 을 받기 위해
+            _fireBtn.AddToClassList("character-detail__fire-btn--holding");
+            _fireTicker.Resume();
+            evt.StopPropagation();
+        }
+
+        private void OnFirePointerUp(PointerUpEvent evt)
+        {
+            if (!_fireHolding) return;
+            CancelFireHold();   // 3초 전에 떼면 취소
+            evt.StopPropagation();
+        }
+
+        private void UpdateFireHold()
+        {
+            if (!_fireHolding) return;
+            _fireProgress = Mathf.Clamp01((Time.realtimeSinceStartup - _fireHoldStart) / FIRE_HOLD_SECONDS);
+            _fireRing.MarkDirtyRepaint();
+            if (_fireProgress >= 1f) PerformFire();
+        }
+
+        private void CancelFireHold()
+        {
+            if (!_fireHolding && _fireProgress <= 0f) return;
+
+            // 상태부터 초기화 — ReleasePointer 가 PointerCaptureOut→CancelFireHold 로 재진입해도 가드에서 즉시 빠진다.
+            _fireHolding  = false;
+            _fireProgress = 0f;
+            _fireTicker?.Pause();
+
+            int pid = _firePointerId;
+            _firePointerId = -1;
+            if (pid != -1 && _fireBtn != null && _fireBtn.HasPointerCapture(pid))
+                _fireBtn.ReleasePointer(pid);
+
+            _fireBtn?.RemoveFromClassList("character-detail__fire-btn--holding");
+            _fireRing?.MarkDirtyRepaint();
+        }
+
+        /// <summary>홀드가 3초를 채우면 호출. 진행 상태를 정리하고 Detail 을 닫은 뒤 로스터에서 해고한다.</summary>
+        private void PerformFire()
+        {
+            var victim = _character;
+            CancelFireHold();            // 캡처 해제 + 링 리셋 (재진입/중복 해고 방지)
+            if (victim == null) return;
+
+            Hide();
+            OnCloseRequested?.Invoke();
+            _roster?.Fire(victim);
+        }
+
+        /// <summary>버튼의 각진 사각 테두리를 12시(위 변 중앙)에서 시계방향으로 진행도만큼 그린다.</summary>
+        private void OnGenerateFireRing(MeshGenerationContext mgc)
+        {
+            if (_fireProgress <= 0f) return;
+
+            var rect = _fireRing.contentRect;
+            if (rect.width <= 0f || rect.height <= 0f) return;
+
+            // 선 두께 = 버튼 테두리 두께. 링이 테두리-박스를 덮으므로(SyncFireRingInset) 띠가 테두리 위에 정확히 겹친다.
+            float lineWidth = _fireBtn.resolvedStyle.borderTopWidth;
+            if (lineWidth <= 0f) return;
+            float inset = lineWidth * 0.5f;             // 선이 밖으로 삐져나가지 않게 절반만큼 안쪽
+            float w = rect.width, h = rect.height;
+            float left = inset, top = inset, right = w - inset, bottom = h - inset;
+            if (right <= left || bottom <= top) return;
+
+            var painter = mgc.painter2D;
+            painter.lineWidth   = lineWidth;
+            painter.lineCap     = LineCap.Butt;
+            painter.lineJoin    = LineJoin.Miter;        // 각진 모서리
+            painter.strokeColor = _fireRing.resolvedStyle.color;
+
+            // 시계방향 꼭짓점: 위 변 중앙 → 우상 → 우하 → 좌하 → 좌상 → 위 변 중앙 복귀
+            float midX = w * 0.5f;
+            var pts = new[]
+            {
+                new Vector2(midX,  top),
+                new Vector2(right, top),
+                new Vector2(right, bottom),
+                new Vector2(left,  bottom),
+                new Vector2(left,  top),
+                new Vector2(midX,  top),
+            };
+
+            float perimeter = 2f * (right - left) + 2f * (bottom - top);
+            float target    = perimeter * _fireProgress;
+
+            painter.BeginPath();
+            painter.MoveTo(pts[0]);
+
+            // 변 길이를 누적하며 target 까지 그린다. 마지막 변은 중간에서 멈춘다.
+            float acc = 0f;
+            for (int i = 0; i < pts.Length - 1; i++)
+            {
+                Vector2 a = pts[i], b = pts[i + 1];
+                float segLen = Vector2.Distance(a, b);
+                if (segLen <= 0f) continue;
+
+                if (acc + segLen <= target)
+                {
+                    painter.LineTo(b);                       // 변 전체
+                }
+                else
+                {
+                    float t = (target - acc) / segLen;
+                    painter.LineTo(Vector2.Lerp(a, b, t));   // 변 중간에서 멈춤
+                    break;
+                }
+                acc += segLen;
+            }
+
+            painter.Stroke();
         }
     }
 }

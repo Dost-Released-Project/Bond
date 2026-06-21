@@ -5,6 +5,10 @@
     <Style src="project://database/Assets/UI/Shared/EquipSlots.uss?fileID=7433441132597879392&amp;guid=33c57ec0ad856974abe818e36e15d6f0&amp;type=3#EquipSlots"/>
     <ui:VisualElement name="character-detail" class="character-detail character-detail--hidden">
         <ui:VisualElement class="character-detail__header">
+            <ui:VisualElement name="character-detail__fire-btn" class="character-detail__fire-btn" tooltip="길게 눌러 해고">
+                <ui:Label text="X" picking-mode="Ignore" class="character-detail__fire-label"/>
+                <ui:VisualElement name="character-detail__fire-ring" picking-mode="Ignore" class="character-detail__fire-ring"/>
+            </ui:VisualElement>
             <ui:Label name="character-detail__title" text="" class="character-detail__title"/>
             <ui:Button name="character-detail__close-btn" text="✕" class="character-detail__close-btn"/>
         </ui:VisualElement>

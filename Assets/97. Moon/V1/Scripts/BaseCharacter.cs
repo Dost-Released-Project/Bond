@@ -96,7 +96,7 @@ public partial class BaseCharacter : ITurnUseUnit
             if (traitSO == null) continue;                 // 미로드 — 보존
             var def = traitSO.ReactionDefinition;
             if (def == null) { TraitReactions[i] = null; continue; }
-            if (TraitReactions[i] == null || TraitReactions[i].DefinitionId != def.Id)
+            //if (TraitReactions[i] == null || TraitReactions[i].DefinitionId != def.Id)
                 TraitReactions[i] = def.CreateRuntimeReaction();
         }
     }
@@ -314,7 +314,7 @@ public partial class BaseCharacter : ITurnUseUnit
             // 시전자 진영과 관계없이 상대적 위치(Rank)를 기반으로 직접 비교
             bool rankMatch = (Skills[i].Data.UseableSlots & (int)CurrentSlot.rank) != 0;
 
-            bool targetMatch = m_formationManager.HasAnyValidTarget(this, Skills[i].Data);
+            bool targetMatch = HasSelectableTarget(Skills[i].Data);
             
             availability[i] = rankMatch && targetMatch;
         }
@@ -430,7 +430,7 @@ public partial class BaseCharacter : ITurnUseUnit
                     if (skill.Data.TargetingType == TargetingType.Single)
                     {
                         // 단일 스킬: 사거리 내 유효 타겟 중 무작위 선택
-                        var validSlots = m_formationManager.GetValidSlots(this, skill.Data);
+                        var validSlots = GetSelectableSlots(skill.Data);
                         var validTargets = validSlots
                             .Where(s => !s.IsEmpty && !s.Occupant.IsDead)
                             .Select(s => s.Occupant)
@@ -465,7 +465,7 @@ public partial class BaseCharacter : ITurnUseUnit
                         if (Skills[i] == null) continue;
                         
                         bool rankMatch = (CurrentSlot != null) && ((Skills[i].Data.UseableSlots & (int)CurrentSlot.rank) != 0);
-                        bool targetMatch = m_formationManager.HasAnyValidTarget(this, Skills[i].Data);
+                        bool targetMatch = HasSelectableTarget(Skills[i].Data);
                         
                         debugMsg.AppendLine($"- 스킬 [{Skills[i].Data.name}]: 위치(Rank) 조건 = {rankMatch}, 타겟 조건 = {targetMatch}");
                     }
@@ -504,9 +504,16 @@ public partial class BaseCharacter : ITurnUseUnit
     
     public async UniTask ExecuteReaction(ReactionExecution execution, BattleContext context, IBattleManager battleManager = null)
     {
-        if (execution?.Reaction?.Effect == null) return;
+        if (execution?.Reaction == null) return;
+        var eff = execution.Reaction.EffectFor(execution.Result);
+        if (eff == null) return; // 미저작만 스킵 — NoAction(무행동)은 연출은 재생하고 행동만 생략한다
 
-        Debug.Log($"<color=lightblue>{Name} 리액션 시작!</color>");
+        string color = "lightblue";
+        if (execution.Result != default) color = "yellow";
+        Debug.Log($"<color={color}>{Name} 리액션 시작! 판정: {execution.Result}\n" +
+                  $"Reaction:\n" +
+                  $"{execution.ToString()}</color>");
+        
 
         List<CharacterSlot> targetSlots = new List<CharacterSlot>();
         if (execution.MatchedSubjects != null)
@@ -534,7 +541,7 @@ public partial class BaseCharacter : ITurnUseUnit
             await UniTask.Delay(500); // 연출 감상 대기 (기존 공격 연출 딜레이와 동일하게)
         }
 
-        await execution.Reaction.Effect.Apply(this, execution, context);
+        await eff.Apply(this, execution, context);
         
         Debug.Log($"<color=lightblue>{Name} 리액션 완료!</color>");
 

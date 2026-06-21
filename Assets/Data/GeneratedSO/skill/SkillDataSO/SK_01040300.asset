@@ -28,3 +28,4 @@ MonoBehaviour:
   _enemyTargetMask: 0
   _allyTargetMask: 15
   _iconAddress: 010F
+  _prefabAddress: 

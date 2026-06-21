@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Reactions.ReactionDefinitionSO
   _id: TRT_014_RDEF
   _displayName: "\uACFC\uC2DC\uC695 \u2014 \uB3C5\uBB34\uB300"
-  _description: "\uBCF8\uC778 \uCE58\uBA85\uD0C0 \u2192 \uB0A8\uC740 \uB9AC\uC561\uC158
-    \uBD09\uC778"
+  _description: "\uBCF8\uC778 \uCE58\uBA85\uD0C0 \uC2DC, Default: \uC774\uBC88 \uD134\uB3D9\uC548
+    \uB9AC\uC561\uC158 \uBD09\uC778+\uC2A4\uD2B8\uB808\uC2A4-10 / Alt: \uBD09\uC778
+    \uC5C6\uC774 \uC2A4\uD2B8\uB808\uC2A4-5"
   Role: 0
   Template:
     Phase: 2
@@ -23,31 +24,49 @@ MonoBehaviour:
     SubjectCharacterId: 
     DefinitionId: 
     Trigger:
-      rid: 2064475061108867317
-    Effect:
-      rid: 2064475061108867318
+      rid: 2064475332497375381
+    BaseEffect:
+      rid: 2064475332497375382
+    AltEffect:
+      rid: 2064475332497375383
   EditableSlots: []
   references:
     version: 2
     RefIds:
-    - rid: 2064475061108867317
+    - rid: 2064475332497375381
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
         _condition:
           Additional:
-          - rid: 2064475061108867319
-          - rid: 2064475061108867320
-    - rid: 2064475061108867318
+          - rid: 2064475332497375384
+          - rid: 2064475332497375385
+    - rid: 2064475332497375382
+      type: {class: CompositeReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Effects:
+        - rid: 2064475332497375386
+        - rid: 2064475332497375387
+    - rid: 2064475332497375383
+      type: {class: StressReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Delta: -5
+        Target: 4
+    - rid: 2064475332497375384
+      type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Filter: 1
+    - rid: 2064475332497375385
+      type: {class: CritCondition, ns: Reactions, asm: Assembly-CSharp}
+      data: 
+    - rid: 2064475332497375386
       type: {class: SealReactionEffect, ns: Reactions, asm: Assembly-CSharp}
       data:
         TargetSelf: 1
         Kind: 0
         Count: 1
         DurationTurns: 1
-    - rid: 2064475061108867319
-      type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
+    - rid: 2064475332497375387
+      type: {class: StressReactionEffect, ns: Reactions, asm: Assembly-CSharp}
       data:
-        Filter: 1
-    - rid: 2064475061108867320
-      type: {class: CritCondition, ns: Reactions, asm: Assembly-CSharp}
-      data: 
+        Delta: -10
+        Target: 4

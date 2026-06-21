@@ -8,9 +8,9 @@ namespace Reactions
 {
     public enum ReactionResult
     {
-        Success = 0,      // 이성 — UserSkill 실행
-        Anomaly = 1,      // 본능 — AnomalySkill 강제 실행
-        BondAwakening = 2 // 유대적 각성 — 돌발 취소 + 강화 스킬
+        Default = 0,       // 평상시 — BaseEffect 실행 (역할=정상 행동, 성향=기본 행동)
+        Anomaly = 1,       // 역할 대체 — 저관계 특이(돌발) 행동, AltEffect 실행
+        BondAwakening = 2  // 성향 대체 — 고관계 강화 행동, AltEffect 실행
     }
 
     public interface IReactionResolver
@@ -79,19 +79,15 @@ namespace Reactions
                     var matched = new List<BaseCharacter>();
                     foreach (var candidate in ResolveCandidates(reaction, owner, context, phase))
                     {
+                        if (owner.IsUncooperativeWith(candidate)) continue; // 불협조 대상에겐 리액션/보조/보호하지 않음
                         if (reaction.Trigger.CheckCondition(candidate, context))
                             matched.Add(candidate);
                     }
                     if (matched.Count == 0) continue;
 
-                    // 성향(트레잇) 리액션은 돌발 확률로 게이트 — 굴림 성공 시에만 발동(Anomaly).
-                    // 역할(설계) 리액션은 항상 발동(Success).
-                    ReactionResult result = ReactionResult.Success;
-                    if (owner.IsTraitReaction(reaction))
-                    {
-                        if (!owner.RollAnomaly()) continue;
-                        result = ReactionResult.Anomaly;
-                    }
+                    // 판정: 역할/성향에 따라 관계·스트레스·INT 기반으로 Default/대체(Anomaly|BondAwakening) 결정.
+                    // 트리거가 충족되면 항상 실행을 생성하고, 결과가 어느 효과(Base/Alt)를 실행할지 가른다.
+                    ReactionResult result = owner.JudgeReaction(reaction, matched);
                     executions.Add(new ReactionExecution(owner, reaction, result, matched));
                 }
             }

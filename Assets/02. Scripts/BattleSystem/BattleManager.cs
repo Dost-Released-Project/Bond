@@ -18,11 +18,12 @@ namespace BattleSystem
         private readonly IBattleFlowManager m_battleFlowManager;
         private readonly IFormationManager m_formationManager;
         private readonly BattlePresentationManager m_presentationManager;
+        private readonly ISkillEffectPool m_skillEffectPool;
         private bool m_isBattle;
-        
-        public BattleManager(ReactionSystem reactionSystem, 
+
+        public BattleManager(ReactionSystem reactionSystem,
             IBattlePipeLine  skillApplyPipeline, IBattleFlowManager expeditionFlowManager,
-            IFormationManager formationManager)
+            IFormationManager formationManager, ISkillEffectPool skillEffectPool)
         {
             m_battleFlowManager = expeditionFlowManager;
             m_reactionSystem = reactionSystem;
@@ -30,6 +31,7 @@ namespace BattleSystem
             m_isBattle = false;
             m_formationManager = formationManager;
             m_presentationManager = new BattlePresentationManager();
+            m_skillEffectPool = skillEffectPool;
             Init();
         }
         
@@ -214,8 +216,22 @@ namespace BattleSystem
                 await m_presentationManager.StartFocusEffect(casterSlot, targetSlots);
                 
                 // 연출 감상을 위한 추가 대기
-                await UniTask.Delay(500);
+                
 
+                // 이펙트 재생 — 타겟마다 타겟 슬롯 위치에 이펙트를 재생한다
+                Debug.Log($"[BattleManager] runtimeSkill={battleContext.runtimeSkill}, Data={battleContext.runtimeSkill?.Data}, PrefabAddress={battleContext.runtimeSkill?.Data?.PrefabAddress}");
+                string prefabAddress = battleContext.runtimeSkill?.Data?.PrefabAddress;
+                if (string.IsNullOrEmpty(prefabAddress) == false)
+                {
+                    foreach (BaseCharacter target in targets)
+                    {
+                        if (target.CurrentSlot == null)
+                            continue;
+                        m_skillEffectPool.Play(prefabAddress, target.CurrentSlot.transform);
+                    }
+                }
+                await UniTask.Delay(700);
+                
                 // 6. 기술 실행 (개별 타겟 단위)
                 foreach (var target in targets)
                 {

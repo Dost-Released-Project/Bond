@@ -60,7 +60,7 @@ namespace Bond.UI.Town
             _rosterPresenter.OnCardRightClicked += (character) =>
             {
                 _selector.Select(character);
-                _characterDetail.Show(character, CharacterDetailEditMode.FullEdit, _townInventory);
+                _characterDetail.Show(character, CharacterDetailEditMode.FullEdit, _townInventory, allowFire: true);
             };
         }
 

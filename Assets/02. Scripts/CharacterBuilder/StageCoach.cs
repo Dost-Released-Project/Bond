@@ -19,7 +19,6 @@ public class StageCoach
         builder
             .SetRandomName()
             .SetProfession(classSO)
-            .AddRandomTrait()
             .AddRandomTrait();
 
         return builder.Build();

@@ -28,3 +28,4 @@ MonoBehaviour:
   _enemyTargetMask: 3
   _allyTargetMask: 0
   _iconAddress: 0100
+  _prefabAddress: RedSlice2

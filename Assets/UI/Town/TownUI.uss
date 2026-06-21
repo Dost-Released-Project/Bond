@@ -18,6 +18,14 @@
     border-radius: 4px;
     padding: 6px 12px;
     -unity-text-align: middle-center;
+
+    transition-property: background-color, border-color, scale;
+    transition-duration: 0.25s;
+}
+
+.roster-toggle-btn:hover  {
+    background-color: var(--btn-hover-bg);
+    border-color: var(--border-highlight);
 }
 
 .roster-toggle-btn--active {

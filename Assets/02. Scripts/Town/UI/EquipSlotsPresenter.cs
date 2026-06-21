@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -6,7 +7,7 @@ namespace Bond.UI
 {
     public class EquipSlotsPresenter : IDisposable
     {
-        private readonly VisualElement _tooltipRoot;
+        private readonly List<IDisposable> _tooltipHandles = new List<IDisposable>();
 
         // 인벤토리 열기 / 부속품 해제 요청은 상위 Presenter가 처리한다
         public event Action OnInventoryOpenRequested;
@@ -22,11 +23,9 @@ namespace Bond.UI
         private BaseCharacter _character;
         private bool _editable;
 
-        // tooltipRoot: 툴팁을 붙일 클리핑 없는 상위 컨테이너 (null이면 chip 자체에 붙임)
+        // tooltipRoot: (구) 툴팁 부착 컨테이너. 이제 TooltipPopup이 chip의 패널에서 자동 해석하므로 미사용(호환 위해 시그니처만 유지).
         public EquipSlotsPresenter(VisualElement root, VisualElement tooltipRoot = null)
         {
-            _tooltipRoot = tooltipRoot ?? root;
-
             _chipWeapon = root.Q("equip-chip-weapon");
             _chipArmor  = root.Q("equip-chip-armor");
             _chipAcc[0] = root.Q("equip-chip-acc0");
@@ -45,6 +44,9 @@ namespace Bond.UI
 
         public void Dispose()
         {
+            foreach (var handle in _tooltipHandles) handle.Dispose();
+            _tooltipHandles.Clear();
+
             DetachCharacterEvents(_character);
             _character = null;
         }
@@ -85,15 +87,15 @@ namespace Bond.UI
 
         private void RegisterEvents()
         {
-            // 무기·방어구: 툴팁만 (클릭 이벤트 없음)
-            RegisterTooltip(_chipWeapon, GetWeaponTooltip);
-            RegisterTooltip(_chipArmor, GetArmorTooltip);
+            // 무기·방어구: 툴팁만 (클릭 이벤트 없음).
+            _tooltipHandles.Add(TooltipPopup.Attach(_chipWeapon, GetWeaponTooltip));
+            _tooltipHandles.Add(TooltipPopup.Attach(_chipArmor,  GetArmorTooltip));
 
             // 부속품: 클릭 → 인벤토리 열기, 우클릭 → 해제 요청
             for (int i = 0; i < _chipAcc.Length; i++)
             {
                 int idx = i;
-                RegisterTooltip(_chipAcc[idx], () => GetAccTooltip(idx));
+                _tooltipHandles.Add(TooltipPopup.Attach(_chipAcc[idx], () => GetAccTooltip(idx)));
 
                 _chipAcc[idx].RegisterCallback<ClickEvent>(evt =>
                 {
@@ -222,32 +224,7 @@ namespace Bond.UI
         }
 
         // ── 툴팁 ──────────────────────────────────────────────────────
-
-        private void RegisterTooltip(VisualElement chip, Func<string> getText)
-        {
-            var tooltip = new Label();
-            tooltip.AddToClassList("equip-slots__tooltip");
-            tooltip.pickingMode    = PickingMode.Ignore;
-            tooltip.style.display  = DisplayStyle.None;
-            tooltip.style.position = Position.Absolute;
-            _tooltipRoot.Add(tooltip);
-
-            chip.RegisterCallback<MouseEnterEvent>(evt =>
-            {
-                tooltip.text = getText();
-                // chip의 월드 좌표를 _tooltipRoot 로컬 좌표로 변환하여 clip 없이 표시
-                var chipBounds = chip.worldBound;
-                var localPos   = _tooltipRoot.WorldToLocal(new Vector2(chipBounds.x, chipBounds.yMax + 4));
-                tooltip.style.left = localPos.x;
-                tooltip.style.top  = localPos.y;
-                tooltip.style.display = DisplayStyle.Flex;
-                tooltip.BringToFront();
-            });
-            chip.RegisterCallback<MouseLeaveEvent>(evt =>
-            {
-                tooltip.style.display = DisplayStyle.None;
-            });
-        }
+        // 배치·스킨 모두 TooltipPopup이 담당(문자열 오버로드 → 기본 .tooltip 스킨). 여기선 텍스트만 제공.
 
         private string GetWeaponTooltip()
         {
