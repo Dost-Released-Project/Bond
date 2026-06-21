@@ -20,6 +20,7 @@ MonoBehaviour:
     \uAC74\uBB3C\uC744 \uAC74\uC124\uD558\uC138\uC694."
   _sequence: 0
   _targetUiKey: Construction.btn-confirm
+  _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

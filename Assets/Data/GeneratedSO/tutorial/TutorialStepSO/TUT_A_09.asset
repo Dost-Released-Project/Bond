@@ -18,6 +18,7 @@ MonoBehaviour:
     \uD655\uC778\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uD655\uC778\uC744 \uB204\uB974\uC138\uC694."
   _sequence: 0
   _targetUiKey: Construction.btn-confirm
+  _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

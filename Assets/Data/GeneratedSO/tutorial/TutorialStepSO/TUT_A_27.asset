@@ -17,6 +17,7 @@ MonoBehaviour:
   _description: "\uD0D0\uC0AC \uC2A4\uD0ED 1 \uBCF5\uADC0"
   _sequence: 0
   _targetUiKey: TownUi.embark__step1
+  _clickType: 2
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

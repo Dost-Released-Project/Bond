@@ -13,3 +13,13 @@
     border-top-width: 3px;
     border-bottom-width: 3px;
 }
+
+#GuideTextLabel
+{
+    white-space: normal;
+    flex-shrink: 0;
+    color: white ;
+    background-color: rgba(0, 0, 0, 0.85);
+    padding: 12px;
+    border-radius: 6px;
+}

@@ -19,6 +19,7 @@ MonoBehaviour:
     \uB20C\uB7EC \uCD9C\uD56D\uD558\uC2ED\uC2DC\uC624."
   _sequence: 0
   _targetUiKey: TownUi.embark-btn
+  _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

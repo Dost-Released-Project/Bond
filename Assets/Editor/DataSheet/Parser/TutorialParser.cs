@@ -17,6 +17,7 @@ public class TutorialDTO
     public int Ore { get; set; }
     public string ItemIds { get; set; }
     public string ItemCounts { get; set; }
+    public TutorialClickType ClickType { get; set; }
 }
 
 public class TutorialParser : TSVParserBase<TutorialDTO, TutorialStepSO>
@@ -27,7 +28,7 @@ public class TutorialParser : TSVParserBase<TutorialDTO, TutorialStepSO>
     
     protected override void Populate(TutorialStepSO so, TutorialDTO dto)
     {
-        so.SetData(dto.ID, dto.Name, dto.Description, dto.SequenceType, dto.TargetUiKey, dto.Frontier, dto.Wood ,dto.Ore, dto.ItemIds, dto.ItemCounts);
+        so.SetData(dto.ID, dto.Name, dto.Description, dto.SequenceType, dto.TargetUiKey, dto.Frontier, dto.Wood ,dto.Ore, dto.ItemIds, dto.ItemCounts, dto.ClickType);
     }
 
     protected override void OnPostImport(string outputDir)
@@ -79,5 +80,6 @@ public sealed class TutorialMap : ClassMap<TutorialDTO>
         Map(m => m.Ore).Name("Ore");
         Map(m => m.ItemIds).Name("ItemIds");
         Map(m => m.ItemCounts).Name("ItemCounts");
+        Map(m => m.ClickType).Name("ClickType");
     }
 }

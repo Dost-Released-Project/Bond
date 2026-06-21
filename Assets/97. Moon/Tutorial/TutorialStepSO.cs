@@ -2,14 +2,23 @@ using UnityEngine;
 
 public enum TutorialSequence { Sequence_A_Town, Sequence_B_Expedition }
 
+public enum TutorialClickType
+{
+    LeftClick = 0,      // 반드시 좌클릭
+    RightClick = 1,     // 반드시 우클릭
+    AnyClick = 2        // 좌/우 관계없음
+}
+
 public class TutorialStepSO : BaseSO
 {
     [Header("튜토리얼 고유 설정")]
     [SerializeField] private TutorialSequence _sequence;
     [SerializeField] private string _targetUiKey;
+    [SerializeField] private TutorialClickType _clickType;
 
     public TutorialSequence Sequence => _sequence;
     public string TargetUiKey        => _targetUiKey;
+    public TutorialClickType ClickType     => _clickType;
 
     [Header("🎁 단계 처리 보상 설정 (0 또는 공백이면 무시)")]
     [SerializeField] private int _rewardFrontier;
@@ -29,7 +38,7 @@ public class TutorialStepSO : BaseSO
     public string RewardItemCounts => _rewardItemCounts;
 
     public void SetData(string id, string displayName, string description, TutorialSequence sequence, string targetUiKey,
-        int frontier, int wood, int ore, string itemIds, string itemCounts)
+        int frontier, int wood, int ore, string itemIds, string itemCounts, TutorialClickType clickType)
     {
         base.Initialize(id, displayName, description);
         _sequence = sequence;
@@ -39,6 +48,7 @@ public class TutorialStepSO : BaseSO
         _rewardOre = ore;
         _rewardItemIds = itemIds;
         _rewardItemCounts = itemCounts;
+        _clickType = clickType;
     }
 }
 

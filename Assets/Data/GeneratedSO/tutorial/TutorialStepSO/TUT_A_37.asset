@@ -18,6 +18,7 @@ MonoBehaviour:
     \uACF5\uAC04\uC785\uB2C8\uB2E4."
   _sequence: 0
   _targetUiKey: TownUi.embark__raid-supplies__list
+  _clickType: 2
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

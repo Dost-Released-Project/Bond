@@ -18,6 +18,7 @@ MonoBehaviour:
     \uB2E4\uC74C\uC73C\uB85C \uB118\uC5B4\uAC00\uC138\uC694."
   _sequence: 0
   _targetUiKey: TownUi.btn-next
+  _clickType: 2
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

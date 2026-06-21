@@ -17,6 +17,7 @@ MonoBehaviour:
   _description: "\uC774\uC81C \uC778\uBCA4\uD1A0\uB9AC\uB97C \uB2EB\uC73C\uC138\uC694."
   _sequence: 0
   _targetUiKey: Inventory.btn-close
+  _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0
