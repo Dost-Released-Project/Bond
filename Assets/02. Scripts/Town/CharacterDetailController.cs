@@ -211,6 +211,61 @@ namespace Bond.UI
             return def.AllEditablesFilled(reaction);
         }
 
+        // ── 3분할 표시(대상/조건/행동) 헬퍼 ──────────────────────────────
+
+        /// <summary>슬롯의 3분할 표시 문구(대상/조건/행동). 정의 없으면 "—".</summary>
+        public (string target, string condition, string action) GetPartTexts(int slotIndex)
+            => GetSlotDefinition(slotIndex)?.ResolvePartTexts() ?? ("—", "—", "—");
+
+        /// <summary>관찰 대상 편집칸이 실제로 채워졌는가(아군 지정됨).</summary>
+        public bool IsObserveFilled(int slotIndex)
+        {
+            var slot = GetObserveSlot(slotIndex);
+            return slot != null && slot.IsFilled(GetReaction(slotIndex));
+        }
+
+        /// <summary>행동 스킬 편집칸이 실제로 채워졌는가(스킬 지정됨).</summary>
+        public bool IsActionFilled(int slotIndex)
+        {
+            var slot = GetActionSkillSlot(slotIndex);
+            return slot != null && slot.IsFilled(GetReaction(slotIndex));
+        }
+
+        /// <summary>지정된 관찰 대상(아군)의 초상 주소. 미지정/미탐색이면 null.</summary>
+        public string GetObserveIconAddress(int slotIndex)
+        {
+            var reaction = GetReaction(slotIndex);
+            if (reaction == null || string.IsNullOrEmpty(reaction.SubjectCharacterId)) return null;
+            return BaseCharacter.Dict.TryGetValue(reaction.SubjectCharacterId, out var subj)
+                ? subj.EffectiveIdleImageAddress : null;
+        }
+
+        /// <summary>지정된 관찰 대상(아군) 이름. 미지정/미탐색이면 null.</summary>
+        public string GetObserveTargetName(int slotIndex)
+        {
+            var reaction = GetReaction(slotIndex);
+            if (reaction == null || string.IsNullOrEmpty(reaction.SubjectCharacterId)) return null;
+            return BaseCharacter.Dict.TryGetValue(reaction.SubjectCharacterId, out var subj) ? subj.Name : null;
+        }
+
+        /// <summary>지정된 행동 스킬의 아이콘 주소. 미지정/범위밖이면 null.</summary>
+        public string GetActionIconAddress(int slotIndex)
+        {
+            var reaction = GetReaction(slotIndex);
+            int idx = (reaction?.BaseEffect as SkillCastReactionEffect)?.SkillIndex ?? -1;
+            if (_character?.Skills == null || idx < 0 || idx >= _character.Skills.Length) return null;
+            return _character.Skills[idx]?.Data?.IconAddress;
+        }
+
+        /// <summary>지정된 행동 스킬(툴팁/식별용). 미지정/범위밖이면 null.</summary>
+        public SkillBase GetActionSkill(int slotIndex)
+        {
+            var reaction = GetReaction(slotIndex);
+            int idx = (reaction?.BaseEffect as SkillCastReactionEffect)?.SkillIndex ?? -1;
+            if (_character?.Skills == null || idx < 0 || idx >= _character.Skills.Length) return null;
+            return _character.Skills[idx];
+        }
+
         /// <summary>가방 인벤토리 슬롯에서 장신구 슬롯 방향으로 드래그 장착/스왑을 수행합니다.</summary>
         public void EquipAccessoryFromDrag(IInventory sourceInventory, int invIndex, int charSlotIndex)
         {
