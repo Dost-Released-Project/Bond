@@ -238,29 +238,48 @@ namespace Bond.Tutorial
         {
             if (string.IsNullOrEmpty(key)) return null;
 
-            if (key.Contains("."))
-            {
-                string[] split = key.Split('.');
-                string docGoName = split[0].Trim();
-                string elName = split[1].Trim();
+            string[] split = key.Split('.');
 
-                GameObject docGo = GameObject.Find(docGoName);
+            // 1. 계층형 경로 검색 (예: TownUi.embark-overlay.roster-panel)
+            if (split.Length > 1)
+            {
+                GameObject docGo = GameObject.Find(split[0].Trim());
                 if (docGo != null && docGo.TryGetComponent<UIDocument>(out var specDoc))
                 {
-                    if (specDoc.rootVisualElement != null)
-                        return specDoc.rootVisualElement.Q<VisualElement>(elName);
+                    VisualElement current = specDoc.rootVisualElement;
+                    if (current == null) return null;
+
+                    for (int i = 1; i < split.Length; i++)
+                    {
+                        string targetName = split[i].Trim();
+                
+                        // 일반 검색 후, 실패 시 템플릿 내부(contentContainer) 스코프에서 재검색
+                        VisualElement next = current.Q<VisualElement>(targetName);
+                        if (next == null && current is TemplateContainer template)
+                        {
+                            next = template.contentContainer.Q<VisualElement>(targetName);
+                        }
+
+                        current = next;
+                        if (current == null) return null; // 중간 경로가 끊기면 즉시 예외 반환
+                    }
+                    return current;
+                }
+            }
+            // 2. 단일 키 검색 (백업용)
+            else
+            {
+                var uiDocuments = FindObjectsByType<UIDocument>(FindObjectsSortMode.None);
+                foreach (var doc in uiDocuments)
+                {
+                    if (doc != null && doc != townUiDocument && doc.rootVisualElement != null)
+                    {
+                        var el = doc.rootVisualElement.Q<VisualElement>(key);
+                        if (el != null) return el;
+                    }
                 }
             }
 
-            var uiDocuments = FindObjectsByType<UIDocument>(FindObjectsSortMode.None);
-            foreach (var doc in uiDocuments)
-            {
-                if (doc != null && doc != townUiDocument && doc.rootVisualElement != null)
-                {
-                    var el = doc.rootVisualElement.Q<VisualElement>(key);
-                    if (el != null) return el;
-                }
-            }
             return null;
         }
 

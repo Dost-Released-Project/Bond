@@ -19,7 +19,7 @@ TUT_A_09	건설 확인 UI	건물의 기능과 건설 비용을 확인할 수 있
 TUT_A_10	창고 건설	창고를 건설했습니다. 창고를 우클릭 하세요.	0	Building_창고	1	0	0	0		
 TUT_A_11	건물 업그레이드	건물의 경우 우클릭으로 업그레이드를 할 수 있습니다. 취소를 누르세요.	0	Construction.btn-cancel	0	0	0	0		
 TUT_A_12	창고 이용	건물의 기능은 좌클릭을 통해 이용할 수 있습니다. 창고를 좌클릭 하세요.	0	Building_창고	0	0	0	0		
-TUT_A_13	인벤토리	창고에서는 현재 지닌 아이템을 확인할 수 있습니다.	0	Inventory.inventory-container	2	0	0	0		
+TUT_A_13	인벤토리	창고에서는 현재 지닌 아이템을 확인할 수 있습니다.	0	Inventory.inventory-container	1	0	0	0		
 TUT_A_14	인벤토리 닫기	이제 인벤토리를 닫으세요.	0	Inventory.btn-close	0	0	0	0		
 TUT_A_15	보급소 건설 슬롯	건설 슬롯 영역을 선택하여 대원 증원을 담당할 '보급소 Lv.1'을 건설하세요.	0	Construction_Slot02	0	0	0	0		
 TUT_A_16	건설 확인 UI	보급소는 업그레이드가 불가능하여 초기 건설 비용이 비싼 편입니다. 이전에 지급된 자원을 사용해서 건물을 건설하세요.	0	Construction.btn-confirm	0	0	0	0		
@@ -32,15 +32,15 @@ TUT_A_22	대원 명부 스크롤	대원 명부를 스크롤 하면 추가된 요
 TUT_A_23	대원 명부 닫기2	대원 명부 창을 닫으세요.	0	TownUi.roster-panel__close-btn	0	0	0	0		
 TUT_A_24	탐사 출발 트리거	늘어난 인원과 보급 자원을 확인했다면, 이제 탐사 출발 버튼을 눌러 출항하십시오.	0	TownUi.embark-btn	0	0	0	0		
 TUT_A_25	탐사 스텝 확인	탐사 스탭 1 확인	0	TownUi.embark__step1	2	0	0	0		
-TUT_A_26	탐사 스텝 확인	탐사 스탭 2 확인	0	TownUi.embark__step2	2	0	0	0		
-TUT_A_27	탐사 스텝 확인	탐사 스탭 1 복귀	0	TownUi.embark__step1	2	0	0	0		
+TUT_A_26	탐사 스텝 확인	탐사 스탭 2 확인	0	TownUi.tab-btn--step2	2	0	0	0		
+TUT_A_27	탐사 스텝 확인	탐사 스탭 1 복귀	0	TownUi.tab-btn--step1	2	0	0	0		
 TUT_A_28	탐사 맵 확인	갈 수 있는 맵 확인 및 맵 지정	0	TownUi.embark__region-list	2	0	0	0		
-TUT_A_29	탐사 인원 편성	대원 목록 확인?1	0	TownUi.dest__info-bar	2	0	0	0		
-TUT_A_30	탐사 인원 편성	대원 목록 확인?2	0	TownUi.roster-panel	2	0	0	0		
-TUT_A_31	대원 편성 1	대원 클릭 1	0	TownUi.roster-panel	2	0	0	0		
-TUT_A_32	대원 편성 2	대원 클릭 2	0	TownUi.roster-panel	2	0	0	0		
-TUT_A_33	대원 편성 3	대원 클릭 3	0	TownUi.roster-panel	2	0	0	0		
-TUT_A_34	대원 편성 4	대원 클릭 4	0	TownUi.roster-panel	2	0	0	0		
+TUT_A_29	탐사 인원 편성	대원 목록 확인?1	0	TownUi.embark__region-list	2	0	0	0		
+TUT_A_30	탐사 인원 편성	대원 목록 확인?2	0	TownUi.embark-overlay.roster-panel	2	0	0	0		
+TUT_A_31	대원 편성 1	대원 클릭 1	0	TownUi.embark-overlay.roster-panel	2	0	0	0		
+TUT_A_32	대원 편성 2	대원 클릭 2	0	TownUi.embark-overlay.roster-panel	2	0	0	0		
+TUT_A_33	대원 편성 3	대원 클릭 3	0	TownUi.embark-overlay.roster-panel	2	0	0	0		
+TUT_A_34	대원 편성 4	대원 클릭 4	0	TownUi.embark-overlay.roster-panel	2	0	0	0		
 TUT_A_35	아이템 적재	이제 물자를 조정하기 위해 다음으로 넘어가세요.	0	TownUi.btn-next	2	0	0	0		
 TUT_A_36	지닌 아이템	현재 지니고 있는 물자입니다. 창고에서 자세한 확인이 가능합니다.	0	TownUi.embark__town-inventory__list	2	0	0	0		
 TUT_A_37	탐사 물자	탐사에 들고 갈 물자를 담는 공간입니다.	0	TownUi.embark__raid-supplies__list	2	0	0	0		

@@ -16,7 +16,7 @@ MonoBehaviour:
   _displayName: "\uB300\uC6D0 \uD3B8\uC131 1"
   _description: "\uB300\uC6D0 \uD074\uB9AD 1"
   _sequence: 0
-  _targetUiKey: TownUi.roster-panel
+  _targetUiKey: TownUi.embark-overlay.roster-panel
   _clickType: 2
   _rewardFrontier: 0
   _rewardWood: 0
