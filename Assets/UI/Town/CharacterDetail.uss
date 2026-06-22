@@ -710,6 +710,8 @@
 }
 .char-detail__reaction-slot--role  .char-detail__slot-header-label { color: var(--slot-role-dot);  }
 .char-detail__reaction-slot--trait .char-detail__slot-header-label { color: var(--slot-trait-dot); }
+/* 빈 슬롯 헤더 문구("리액션을 선택하세요" / "비어 있음")는 이탤릭 placeholder 톤 — 설정된 이름과 구분 */
+.char-detail__slot-header-label--empty { -unity-font-style: italic; }
 .char-detail__reaction-slot--role .char-detail__slot-header:hover {
     background-color: var(--slot-role-bg);
 }
@@ -790,20 +792,26 @@
    리액션 드롭다운 (카탈로그 / 대상 / 행동 공용 오버레이)
    문서 루트에 절대배치로 떠서 슬롯 리스트를 밀지 않는다.
    ════════════════════════════════════════ */
+/* 폭 고정 + 내부 스크롤. max-height 로 자르되 항목은 flex-shrink:0 이라 세로로 찌그러지지 않고 넘치면 스크롤된다. */
 .char-detail__dropdown {
     flex-direction: column;
-    min-width: 160px;
-    max-width: 280px;
-    max-height: 240px;
+    width: 250px;
+    max-height: 256px;
     background-color: var(--bg-deep);
     border-width: 1px;
     border-color: var(--border-active);
     border-radius: 3px;
     padding: 3px;
+    overflow: hidden;
+}
+.char-detail__dropdown-scroll {
+    flex-grow: 1;
+    flex-shrink: 1;
 }
 .char-detail__dropdown-item {
     flex-direction: row;
     align-items: center;
+    flex-shrink: 0;
     padding: 5px 8px;
     margin: 0;
     background-color: transparent;

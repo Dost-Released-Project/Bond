@@ -582,9 +582,14 @@ namespace Bond.UI
             var reaction = GetReactionAt(i);
 
             // 리액션 미선택(역할) 또는 성향 미해금/무반응 → 3분할 숨김, 헤더만.
+            // 빈 상태를 헤더 문구로 알린다: 역할=선택 유도, 성향=비어 있음.
             if (reaction == null)
             {
-                if (_reactionHeaderLabels[i] != null) _reactionHeaderLabels[i].text = kind;
+                if (_reactionHeaderLabels[i] != null)
+                {
+                    _reactionHeaderLabels[i].text = isRole ? $"{kind} - 리액션을 선택하세요" : $"{kind} - 비어 있음";
+                    _reactionHeaderLabels[i].AddToClassList("char-detail__slot-header-label--empty");
+                }
                 if (_reactionParts[i] != null) _reactionParts[i].style.display = DisplayStyle.None;
                 // 역할은 '선택 가능'(잠금 아님), 성향은 잠금 표시.
                 _reactionSlots[i].EnableInClassList("char-detail__reaction-slot--locked", !isRole);
@@ -598,7 +603,10 @@ namespace Bond.UI
             var def = _controller.GetSlotDefinition(i);
             string defName = def?.DisplayName;
             if (_reactionHeaderLabels[i] != null)
+            {
+                _reactionHeaderLabels[i].RemoveFromClassList("char-detail__slot-header-label--empty");
                 _reactionHeaderLabels[i].text = string.IsNullOrEmpty(defName) ? kind : $"{kind} - {defName}";
+            }
 
             if (_reactionParts[i] != null) _reactionParts[i].style.display = DisplayStyle.Flex;
 

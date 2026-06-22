@@ -17,7 +17,8 @@ namespace Bond.UI
         private const float Margin = 6f;
 
         private readonly VisualElement _root;   // 문서 루트 — 오버레이 부착 + 바깥클릭 감지
-        private readonly VisualElement _layer;
+        private readonly VisualElement _layer;   // 위치/프레임(테두리·배경·max-height·clip)
+        private readonly ScrollView   _content;  // 항목 컨테이너 — 길어지면 세로 스크롤(찌그러짐 방지)
 
         /// <summary>현재 열려 있는 기준 앵커. 닫혀 있으면 null. (토글 판정용)</summary>
         public VisualElement CurrentAnchor { get; private set; }
@@ -31,6 +32,13 @@ namespace Bond.UI
             _layer.AddToClassList("char-detail__dropdown");
             _layer.style.position = Position.Absolute;
             _layer.style.display = DisplayStyle.None;
+
+            // 항목은 스크롤 영역 안에 쌓는다 — 목록이 길어도 항목이 세로로 찌그러지지 않고(항목 flex-shrink:0) 넘치면 스크롤.
+            _content = new ScrollView(ScrollViewMode.Vertical);
+            _content.AddToClassList("char-detail__dropdown-scroll");
+            _content.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+            _content.verticalScrollerVisibility   = ScrollerVisibility.Auto;
+            _layer.Add(_content);
 
             // 항목 크기가 확정(또는 변동)되면 실측 기반으로 다시 clamp.
             _layer.RegisterCallback<GeometryChangedEvent>(_ =>
@@ -49,8 +57,9 @@ namespace Bond.UI
             if (anchor == null) return;
             CurrentAnchor = anchor;
 
-            _layer.Clear();
-            buildItems?.Invoke(_layer);
+            _content.Clear();
+            buildItems?.Invoke(_content);
+            _content.scrollOffset = Vector2.zero;   // 새로 열 때 항상 맨 위부터
 
             _layer.style.display = DisplayStyle.Flex;
             _layer.style.visibility = Visibility.Hidden; // 실측·배치 전 깜빡임 방지
@@ -61,7 +70,7 @@ namespace Bond.UI
         public void Close()
         {
             CurrentAnchor = null;
-            _layer.Clear();
+            _content.Clear();
             _layer.style.display = DisplayStyle.None;
         }
 
