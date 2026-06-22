@@ -804,6 +804,10 @@
     padding: 3px;
     overflow: hidden;
 }
+/* 카탈로그(역할 리액션 선택): 대상·조건·행동 미리보기 부제가 있어 더 넓게 */
+.char-detail__dropdown--wide {
+    width: 340px;
+}
 .char-detail__dropdown-scroll {
     flex-grow: 1;
     flex-shrink: 1;
@@ -863,4 +867,44 @@
     font-size: var(--font-size-system);
     color: var(--text-disabled);
     padding: 6px 8px;
+}
+
+/* ════════════════════════════════════════
+   스크롤바 통일 — 로스터(roster-panel__scroll)와 동일한 다크 테마.
+   기본 흰 스크롤바 대신: 화살표 버튼 숨김 · 트랙=bg-deep(거의 안 보임) · 썸=bg-surface.
+   적용 대상: 우측 컬럼 스크롤(char-detail__scroll) + 편집 드롭다운 스크롤(char-detail__dropdown-scroll).
+   ════════════════════════════════════════ */
+.char-detail__scroll .unity-scroller,
+.char-detail__dropdown-scroll .unity-scroller {
+    background-color: var(--bg-deep);
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+.char-detail__scroll .unity-scroller__low-button,
+.char-detail__scroll .unity-scroller__high-button,
+.char-detail__dropdown-scroll .unity-scroller__low-button,
+.char-detail__dropdown-scroll .unity-scroller__high-button {
+    display: none;
+}
+.char-detail__scroll .unity-scroller .unity-base-slider,
+.char-detail__dropdown-scroll .unity-scroller .unity-base-slider {
+    flex-grow: 1;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.char-detail__scroll .unity-scroller .unity-base-slider__tracker,
+.char-detail__dropdown-scroll .unity-scroller .unity-base-slider__tracker {
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-color: var(--bg-deep);
+    border-bottom-color: var(--bg-deep);
+    border-left-color: var(--bg-deep);
+    border-right-color: var(--bg-deep);
+    background-color: var(--bg-deep);
+}
+.char-detail__scroll .unity-scroller .unity-base-slider__dragger,
+.char-detail__dropdown-scroll .unity-scroller .unity-base-slider__dragger {
+    background-color: var(--bg-surface);
 }

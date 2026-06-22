@@ -782,8 +782,9 @@ namespace Bond.UI
 
         private void OpenCatalogDropdown(int slot)
         {
+            // 카탈로그 항목엔 대상·조건·행동 미리보기 부제가 붙어 더 넓게 연다(--wide).
             var anchor = _reactionHeaders[slot];
-            if (anchor != null) ToggleDropdown(anchor, c => BuildCatalogItems(slot, c));
+            if (anchor != null) ToggleDropdown(anchor, c => BuildCatalogItems(slot, c), "char-detail__dropdown--wide");
         }
 
         private void OpenObserveDropdown(int slot)
@@ -799,11 +800,11 @@ namespace Bond.UI
         }
 
         // 같은 앵커를 다시 누르면 토글로 닫는다.
-        private void ToggleDropdown(VisualElement anchor, Action<VisualElement> build)
+        private void ToggleDropdown(VisualElement anchor, Action<VisualElement> build, string variantClass = null)
         {
             if (_dropdown == null) return;
             if (_dropdown.CurrentAnchor == anchor) { _dropdown.Close(); return; }
-            _dropdown.Open(anchor, build);
+            _dropdown.Open(anchor, build, variantClass);
         }
 
         private void BuildCatalogItems(int slot, VisualElement container)

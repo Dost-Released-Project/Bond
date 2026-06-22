@@ -19,6 +19,7 @@ namespace Bond.UI
         private readonly VisualElement _root;   // 문서 루트 — 오버레이 부착 + 바깥클릭 감지
         private readonly VisualElement _layer;   // 위치/프레임(테두리·배경·max-height·clip)
         private readonly ScrollView   _content;  // 항목 컨테이너 — 길어지면 세로 스크롤(찌그러짐 방지)
+        private string _variantClass;            // 현재 적용된 변형 클래스(예: --wide) — 다음 Open/Close 때 제거
 
         /// <summary>현재 열려 있는 기준 앵커. 닫혀 있으면 null. (토글 판정용)</summary>
         public VisualElement CurrentAnchor { get; private set; }
@@ -51,11 +52,14 @@ namespace Bond.UI
             _root.RegisterCallback<PointerDownEvent>(OnRootPointerDown, TrickleDown.TrickleDown);
         }
 
-        /// <summary>앵커 기준으로 열고, builder 로 항목을 채운다. 같은 앵커 재호출 시에도 새로 채운다.</summary>
-        public void Open(VisualElement anchor, Action<VisualElement> buildItems)
+        /// <summary>앵커 기준으로 열고, builder 로 항목을 채운다. 같은 앵커 재호출 시에도 새로 채운다.
+        /// variantClass 를 주면 레이어에 그 클래스를 입혀(예: 카탈로그용 넓은 폭) 다음 Open/Close 때 자동 제거한다.</summary>
+        public void Open(VisualElement anchor, Action<VisualElement> buildItems, string variantClass = null)
         {
             if (anchor == null) return;
             CurrentAnchor = anchor;
+
+            ApplyVariant(variantClass);
 
             _content.Clear();
             buildItems?.Invoke(_content);
@@ -71,7 +75,16 @@ namespace Bond.UI
         {
             CurrentAnchor = null;
             _content.Clear();
+            ApplyVariant(null);
             _layer.style.display = DisplayStyle.None;
+        }
+
+        // 직전 variant 클래스를 제거하고 새 것을 입힌다(null 이면 제거만). 레이어 1개를 모든 드롭다운이 공유하므로 필요.
+        private void ApplyVariant(string variantClass)
+        {
+            if (_variantClass != null) _layer.RemoveFromClassList(_variantClass);
+            _variantClass = variantClass;
+            if (_variantClass != null) _layer.AddToClassList(_variantClass);
         }
 
         // 레이어/앵커 바깥을 누르면 닫는다. 앵커 자체 클릭은 호출부 토글에 맡긴다(여기선 유지).
