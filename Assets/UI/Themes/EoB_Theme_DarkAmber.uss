@@ -41,6 +41,7 @@
     --slot-trait-border: #3a1a1a;
     --slot-trait-dot:    #aa4a4a;
     --slot-trait-bg:     #120a0a;
+    --slot-unset:        #c05030;   /* 미할당 편집칸 경고(리액션 불발 신호) — 값·아이콘 테두리·다이아몬드 */
 
     /* Interactive — Button */
     --btn-primary-bg:       #2a1e10;
