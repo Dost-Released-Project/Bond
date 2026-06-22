@@ -45,7 +45,7 @@ namespace Reactions.Authoring
             // ── 탱커 ──────────────────────────────────────────
             // 3) 지정 아군이 공격 대상이 될 때 → 대신 맞기
             defs.Add(
-                Def("RACT_TANK_COVER", RoleType.Tanker).Name("엄호", "지정한 아군이 공격 대상이 되면 대신 맞는다")
+                Def("RACT_TANK_COVER_FOCUS", RoleType.Tanker).Name("집중 보호", "지정한 아군이 공격 대상이 되면 대신 맞는다")
                     .Phase(E_ReactionPhase.PreApply).Observe(E_ObserveFilter.Specific)
                     .When(SubjectIs(E_TargetFilter.Target), SkillTypeIs(SkillType.OFFENSIVE, SkillType.SPELL))
                     .Do(Intercept())
@@ -54,7 +54,7 @@ namespace Reactions.Authoring
 
             // 4) 아군(자기 제외)이 HP 20% 이하에서 공격 대상이 될 때 → 대신 맞기
             defs.Add(
-                Def("RACT_TANK_COVER_LOWHP", RoleType.Tanker).Name("위기 엄호", "체력 20% 이하 아군이 공격 대상이 되면 대신 맞는다")
+                Def("RACT_TANK_COVER_LOWHP", RoleType.Tanker).Name("위기 보호", "체력 20% 이하 아군이 공격 대상이 되면 대신 맞는다")
                     .Phase(E_ReactionPhase.PreApply).Observe(E_ObserveFilter.OtherAlly)
                     .When(SubjectIs(E_TargetFilter.Target), SkillTypeIs(SkillType.OFFENSIVE, SkillType.SPELL), HpBelow(0.2f))
                     .Do(Intercept())
