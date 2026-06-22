@@ -378,6 +378,13 @@
     opacity: 0.38;
 }
 
+.char-detail__skill-chip-icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    margin-bottom: 2px;
+}
+
 .char-detail__skill-name {
     font-size: var(--font-size-system);
     color: var(--text-secondary);
@@ -757,8 +764,8 @@
 
 /* ── 할당 아이콘 슬롯(문구 아래). 편집칸에만 표시, 미할당=빈 경고 테두리 ── */
 .char-detail__slot-part-icon {
-    width: 30px;
-    height: 30px;
+    width: 64px;
+    height: 64px;
     margin-top: 4px;
     border-width: 1px;
     border-color: var(--border-default);
