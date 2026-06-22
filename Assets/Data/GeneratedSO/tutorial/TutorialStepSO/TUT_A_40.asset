@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: TUT_A_40
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_40
-  _displayName: "\uD0D0\uC0AC \uCD9C\uBC1C"
-  _description: "\uC900\uBE44\uAC00 \uB2E4 \uB418\uC5C8\uC2B5\uB2C8\uB2E4 \uD0D0\uC0AC\uB97C
-    \uC9C4\uD589\uD558\uC138\uC694."
+  _displayName: "\uC2A4\uD0AC \uC124\uC815"
+  _description: "\uB2E4\uC74C\uC740 \uC2A4\uD0AC \uC124\uC815\uC785\uB2C8\uB2E4.
+    \uC2A4\uD0AC\uC740 4\uAC1C\uAE4C\uC9C0 \uC120\uD0DD\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: TownUi.btn-depart
+  _targetUiKey: CharacterDetailUi.char-detail__skill-grid
   _clickType: 2
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0
-  _rewardItemIds: 08000000,08010000,08020000
-  _rewardItemCounts: 1,1,1
+  _rewardItemIds: 
+  _rewardItemCounts: 

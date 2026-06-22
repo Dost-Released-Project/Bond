@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: TUT_A_25
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_25
-  _displayName: "\uD0D0\uC0AC \uC2A4\uD15D \uD655\uC778"
-  _description: "\uD0D0\uC0AC \uC2A4\uD0ED 1 \uD655\uC778"
+  _displayName: "\uD0D0\uC0AC \uC2A4\uD0ED \uD655\uC778"
+  _description: "\uCCAB\uBC88\uC9F8 \uD398\uC774\uC9C0\uC5D0\uC11C\uB294 \uD0D0\uC0AC
+    \uC9C0\uC5ED \uC124\uC815\uACFC \uD30C\uD2F0 \uC124\uC815\uC744 \uD560 \uC218
+    \uC788\uC2B5\uB2C8\uB2E4."
   _sequence: 0
   _targetUiKey: TownUi.embark__step1
   _clickType: 2

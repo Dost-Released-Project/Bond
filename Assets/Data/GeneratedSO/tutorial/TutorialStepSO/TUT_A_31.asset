@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: TUT_A_31
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_31
-  _displayName: "\uB300\uC6D0 \uD3B8\uC131 1"
-  _description: "\uB300\uC6D0 \uD074\uB9AD 1"
+  _displayName: "\uD0D0\uC0AC \uC778\uC6D0 \uD3B8\uC131"
+  _description: "\uD3B8\uC131\uD560 \uC218 \uC788\uB294 \uB300\uC6D0 \uBAA9\uB85D\uC785\uB2C8\uB2E4.
+    \uC6B0\uC120 \uC804\uC0AC\uB97C \uD074\uB9AD\uD558\uC5EC \uD3B8\uC131\uD558\uC138\uC694."
   _sequence: 0
   _targetUiKey: TownUi.embark-overlay.roster-panel
   _clickType: 2

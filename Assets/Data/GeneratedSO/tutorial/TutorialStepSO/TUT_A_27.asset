@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_27
   _displayName: "\uD0D0\uC0AC \uC2A4\uD15D \uD655\uC778"
-  _description: "\uD0D0\uC0AC \uC2A4\uD0ED 1 \uBCF5\uADC0"
+  _description: "\uB450\uBC88\uC9F8 \uD398\uC774\uC9C0\uC5D0\uC11C\uB294 \uBCF4\uAE09
+    \uBB3C\uC790\uB97C \uC815\uBE44\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: TownUi.tab-btn--step1
+  _targetUiKey: TownUi.embark__step2
   _clickType: 2
   _rewardFrontier: 0
   _rewardWood: 0
