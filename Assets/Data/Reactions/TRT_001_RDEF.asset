@@ -45,6 +45,7 @@ MonoBehaviour:
           Additional:
           - rid: 2064475332497375363
           - rid: 2064475332497375364
+          - rid: 2064475445984755788
     - rid: 2064475332497375361
       type: {class: CompositeReactionEffect, ns: Reactions, asm: Assembly-CSharp}
       data:
@@ -75,3 +76,7 @@ MonoBehaviour:
         Kind: 0
         Count: 1
         DurationTurns: 1
+    - rid: 2064475445984755788
+      type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
+      data:
+        Filter: 2

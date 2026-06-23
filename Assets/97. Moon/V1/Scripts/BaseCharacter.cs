@@ -512,7 +512,8 @@ public partial class BaseCharacter : ITurnUseUnit
         if (execution.Result != default) color = "yellow";
         Debug.Log($"<color={color}>{Name} 리액션 시작! 판정: {execution.Result}\n" +
                   $"Reaction:\n" +
-                  $"{execution.ToString()}</color>");
+                  $"{execution.ToString()}</color>\n" +
+                  $"Context: {context.DebugText}");
         
 
         List<CharacterSlot> targetSlots = new List<CharacterSlot>();
