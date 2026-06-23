@@ -143,8 +143,8 @@ public partial class BaseCharacter
     {
         const float baseRate     = 0f;
         const float relationCoef = 0.005f; // 관계↑ → 각성↑ (관계 스케일에 맞춰 튜닝)
-        const float stressCoef   = 0.001f; // 스트레스 임계에서 각성 보조
-        const float intCoef      = 0.005f; // 지능(통제력) → 각성 전환 보정(GDD)
+        const float stressCoef   = 0.001f;
+        const float intCoef      = 0.005f; // 지능(통제력) → 각성 전환 보정
         const float minRate      = 0f;
 
         float chance = baseRate - Insanity * stressCoef + Stat.INT * intCoef + relation * relationCoef;
