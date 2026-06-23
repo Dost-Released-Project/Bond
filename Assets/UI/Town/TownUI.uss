@@ -101,38 +101,6 @@
     padding-bottom: 8px;
 }
 
-.roster-panel__scroll .unity-scroller {
-    background-color: var(--bg-deep);
-    padding-top: 4px;
-    padding-bottom: 4px;
-}
-
-.roster-panel__scroll .unity-scroller__low-button,
-.roster-panel__scroll .unity-scroller__high-button {
-    display: none;
-}
-
-.roster-panel__scroll .unity-scroller .unity-base-slider {
-    flex-grow: 1;
-    margin-top: 0;
-    margin-bottom: 0;
-}
-
-.roster-panel__scroll .unity-scroller .unity-base-slider__tracker {
-    border-top-width: 1px;
-    border-bottom-width: 1px;
-    border-left-width: 1px;
-    border-right-width: 1px;
-    border-top-color: var(--bg-deep);
-    border-bottom-color: var(--bg-deep);
-    border-left-color: var(--bg-deep);
-    border-right-color: var(--bg-deep);
-    background-color: var(--bg-deep);
-}
-
-.roster-panel__scroll .unity-scroller .unity-base-slider__dragger {
-    background-color: var(--bg-surface);
-}
 
 /* ════════════════════════════════════════
    캐릭터 카드

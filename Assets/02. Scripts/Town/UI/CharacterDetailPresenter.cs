@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using BattleSystem.UI;
 using Bond.UI;
 using Cysharp.Threading.Tasks;
@@ -50,21 +51,26 @@ namespace Bond.UI
         private VisualElement _traitList;
         private VisualElement _skillGrid;
 
+        // 슬롯(0-5) — 헤더 + 3분할(대상/조건/행동) + 에코
         private readonly VisualElement[] _reactionSlots        = new VisualElement[6];
-        private readonly Label[]         _reactionTargetLabels = new Label[6];
-        private readonly Label[]         _reactionSkillLabels  = new Label[6];
+        private readonly VisualElement[] _reactionHeaders      = new VisualElement[6];
+        private readonly Label[]         _reactionHeaderLabels = new Label[6];
+        private readonly VisualElement[] _reactionParts        = new VisualElement[6];
         private readonly Label[]         _reactionEchoLabels   = new Label[6];
-        private readonly VisualElement[] _reactionTargetParts  = new VisualElement[6];
-        private readonly VisualElement[] _reactionSkillParts   = new VisualElement[6];
 
-        // 역할·트레잇 슬롯(0-5) 공통 필드 — reaction 헤드라인 + editables 컨테이너
-        private readonly VisualElement[] _reactionReactionParts = new VisualElement[6];
-        private readonly Label[]         _reactionReactionVals  = new Label[6];
-        private readonly VisualElement[] _reactionEditables     = new VisualElement[6];
+        private readonly VisualElement[] _reactionTargetParts   = new VisualElement[6];
+        private readonly Label[]         _reactionTargetVals    = new Label[6];
+        private readonly Image[]         _reactionTargetIcons   = new Image[6];
+        private readonly Label[]         _reactionConditionVals = new Label[6];
+        private readonly VisualElement[] _reactionActionParts   = new VisualElement[6];
+        private readonly Label[]         _reactionActionVals    = new Label[6];
+        private readonly Image[]         _reactionActionIcons   = new Image[6];
 
-        private readonly VisualElement[] _reactionPools = new VisualElement[6];
-        private int    _openPoolSlot = -1;
-        private string _openPoolPart = null;
+        // 떠있는 드롭다운(카탈로그/대상/행동 공용)
+        private SlotDropdown _dropdown;
+        // 슬롯 아이콘 비동기 로드 경합 가드 — 마지막 요청 주소를 기억해 stale 응답을 폐기
+        private readonly string[] _targetIconAddr = new string[6];
+        private readonly string[] _actionIconAddr = new string[6];
 
         private BaseCharacter _character;
         private CharacterDetailEditMode _editMode;
@@ -154,45 +160,50 @@ namespace Bond.UI
             _traitList = root.Q("char-detail__trait-list");
             _skillGrid  = root.Q("char-detail__skill-grid");
 
-            // 역할 슬롯(0-1) 쿼리
-            for (int i = 0; i < 2; i++)
-            {
-                _reactionSlots[i]           = root.Q($"reaction-slot-{i}");
-                _reactionReactionParts[i]   = root.Q($"reaction-slot-{i}__reaction-part");
-                _reactionReactionVals[i]    = root.Q<Label>($"reaction-slot-{i}__reaction");
-                _reactionEditables[i]       = root.Q($"reaction-slot-{i}__editables");
-                _reactionTargetParts[i]     = root.Q($"reaction-slot-{i}__target-part");
-                _reactionTargetLabels[i]    = root.Q<Label>($"reaction-slot-{i}__target");
-                _reactionSkillParts[i]      = root.Q($"reaction-slot-{i}__skill-part");
-                _reactionSkillLabels[i]     = root.Q<Label>($"reaction-slot-{i}__skill");
-                _reactionEchoLabels[i]      = root.Q<Label>($"reaction-slot-{i}__echo");
-            }
+            _dropdown = new SlotDropdown(root);
 
-            // 트레잇 슬롯(2-5) 쿼리
-            for (int i = 2; i < 6; i++)
+            // 슬롯(0-5) 쿼리 + 클릭 배선. 역할(0-1)은 헤더로 카탈로그를 열고, 성향(2-5)은 리액션 고정.
+            // 편집칸(대상/행동) 클릭은 해당 편집슬롯이 있을 때만(FullEdit) 드롭다운을 연다.
+            for (int i = 0; i < 6; i++)
             {
                 int idx = i;
-                _reactionSlots[idx]          = root.Q($"reaction-slot-{idx}");
-                _reactionReactionParts[idx]  = root.Q($"reaction-slot-{idx}__reaction-part");
-                _reactionReactionVals[idx]   = root.Q<Label>($"reaction-slot-{idx}__reaction");
-                _reactionEditables[idx]      = root.Q($"reaction-slot-{idx}__editables");
-                _reactionTargetParts[idx]    = root.Q($"reaction-slot-{idx}__target-part");
-                _reactionTargetLabels[idx]   = root.Q<Label>($"reaction-slot-{idx}__target");
-                _reactionSkillParts[idx]     = root.Q($"reaction-slot-{idx}__skill-part");
-                _reactionSkillLabels[idx]    = root.Q<Label>($"reaction-slot-{idx}__skill");
-                _reactionEchoLabels[idx]     = root.Q<Label>($"reaction-slot-{idx}__echo");
+                _reactionSlots[idx]         = root.Q($"reaction-slot-{idx}");
+                _reactionHeaders[idx]       = root.Q($"reaction-slot-{idx}__header");
+                _reactionHeaderLabels[idx]  = root.Q<Label>($"reaction-slot-{idx}__header-label");
+                _reactionParts[idx]         = root.Q($"reaction-slot-{idx}__parts");
+                _reactionEchoLabels[idx]    = root.Q<Label>($"reaction-slot-{idx}__echo");
 
-                // 트레잇은 리액션이 고정 — reaction-part 카탈로그 클릭 없음. 편집 빈칸만 클릭(FullEdit).
+                _reactionTargetParts[idx]   = root.Q($"reaction-slot-{idx}__target-part");
+                _reactionTargetVals[idx]    = root.Q<Label>($"reaction-slot-{idx}__target");
+                _reactionTargetIcons[idx]   = root.Q<Image>($"reaction-slot-{idx}__target-icon");
+                _reactionConditionVals[idx] = root.Q<Label>($"reaction-slot-{idx}__condition");
+                _reactionActionParts[idx]   = root.Q($"reaction-slot-{idx}__action-part");
+                _reactionActionVals[idx]    = root.Q<Label>($"reaction-slot-{idx}__action");
+                _reactionActionIcons[idx]   = root.Q<Image>($"reaction-slot-{idx}__action-icon");
+
+                if (_reactionTargetIcons[idx] != null) _reactionTargetIcons[idx].scaleMode = ScaleMode.ScaleAndCrop;
+                if (_reactionActionIcons[idx] != null) _reactionActionIcons[idx].scaleMode = ScaleMode.ScaleAndCrop;
+
+                if (idx < 2)
+                    _reactionHeaders[idx]?.RegisterCallback<ClickEvent>(evt =>
+                    {
+                        if (_editMode != CharacterDetailEditMode.FullEdit) return;
+                        OpenCatalogDropdown(idx);
+                        evt.StopPropagation();
+                    });
+
                 _reactionTargetParts[idx]?.RegisterCallback<ClickEvent>(evt =>
                 {
                     if (_editMode != CharacterDetailEditMode.FullEdit) return;
-                    TogglePool(idx, "observe");
+                    if (!_controller.HasObserveEditable(idx)) return;
+                    OpenObserveDropdown(idx);
                     evt.StopPropagation();
                 });
-                _reactionSkillParts[idx]?.RegisterCallback<ClickEvent>(evt =>
+                _reactionActionParts[idx]?.RegisterCallback<ClickEvent>(evt =>
                 {
                     if (_editMode != CharacterDetailEditMode.FullEdit) return;
-                    TogglePool(idx, "skill");
+                    if (!_controller.HasSkillEditable(idx)) return;
+                    OpenActionDropdown(idx);
                     evt.StopPropagation();
                 });
             }
@@ -210,34 +221,7 @@ namespace Bond.UI
             _equipSlots.OnDragDropRequested += HandleEquipSlotDragDrop;
 
             _controller.OnRoleChanged      += _ => RefreshIdentity();
-            _controller.OnReactionChanged  += idx => { if (idx < 2) RefreshRoleSlot(idx); else RefreshTraitSlot(idx); };
-
-            for (int i = 0; i < 6; i++)
-                _reactionPools[i] = root.Q($"inline-pool-{i}");
-
-            // 역할 슬롯(0-1) 클릭 핸들러
-            for (int i = 0; i < 2; i++)
-            {
-                int idx = i;
-                _reactionReactionParts[idx]?.RegisterCallback<ClickEvent>(evt =>
-                {
-                    if (_editMode != CharacterDetailEditMode.FullEdit) return;
-                    TogglePool(idx, "reaction");
-                    evt.StopPropagation();
-                });
-                _reactionTargetParts[idx]?.RegisterCallback<ClickEvent>(evt =>
-                {
-                    if (_editMode != CharacterDetailEditMode.FullEdit) return;
-                    TogglePool(idx, "observe");
-                    evt.StopPropagation();
-                });
-                _reactionSkillParts[idx]?.RegisterCallback<ClickEvent>(evt =>
-                {
-                    if (_editMode != CharacterDetailEditMode.FullEdit) return;
-                    TogglePool(idx, "skill");
-                    evt.StopPropagation();
-                });
-            }
+            _controller.OnReactionChanged  += RefreshReactionSlot;
 
             _panel.RegisterCallback<PointerDownEvent>(evt =>
             {
@@ -284,6 +268,7 @@ namespace Bond.UI
             character.OnInsanityChanged  += HandleInsanityChanged;
             character.OnStatRecalculated += HandleStatRecalculated;
             character.OnRoleChanged      += HandleRoleChanged;
+            character.OnSkillsChanged    += HandleSkillsChanged;
         }
 
         private void DetachCharacterEvents(BaseCharacter character)
@@ -293,6 +278,7 @@ namespace Bond.UI
             character.OnInsanityChanged  -= HandleInsanityChanged;
             character.OnStatRecalculated -= HandleStatRecalculated;
             character.OnRoleChanged      -= HandleRoleChanged;
+            character.OnSkillsChanged    -= HandleSkillsChanged;
         }
 
         // RefreshStats가 HP/광기 게이지까지 함께 갱신하므로 별도 분기는 두지 않는다
@@ -301,10 +287,20 @@ namespace Bond.UI
         private void HandleStatRecalculated(BaseCharacter c) => RefreshStats();
         private void HandleRoleChanged(BaseCharacter c)      => RefreshIdentity();
 
+        // 스킬 편성 변경 → 그리드 갱신 + 리액션 슬롯 재표시(압축으로 SkillIndex 가 재매핑/해제됐을 수 있음)
+        private void HandleSkillsChanged(BaseCharacter c)
+        {
+            // 열려 있던 드롭다운(행동 스킬 선택 등)은 후보가 바뀌었을 수 있으므로 닫는다.
+            _dropdown?.Close();
+            RefreshSkillGrid();
+            for (int i = 0; i < 6; i++) RefreshReactionSlot(i);
+        }
+
         private void OnDestroy()
         {
             DetachCharacterEvents(_character);
             _equipSlots?.Dispose();
+            _dropdown?.Dispose();
             CancelFireHold();
         }
 
@@ -313,7 +309,7 @@ namespace Bond.UI
             _panel.RemoveFromClassList("character-detail--visible");
             _panel.AddToClassList("character-detail--hidden");
             CancelFireHold();
-            CloseAllPools();
+            _dropdown?.Close();
             CloseRolePicker();
         }
 
@@ -346,6 +342,7 @@ namespace Bond.UI
 
             _equipSlots.SetEditable(canEquip);
 
+            if (!fullEdit) _dropdown?.Close();
             for (int i = 0; i < 6; i++)
             {
                 bool editable = fullEdit;
@@ -393,9 +390,9 @@ namespace Bond.UI
             RefreshStats();
             RefreshTraits();
             RefreshSkillGrid();
-            for (int i = 0; i < 2; i++) RefreshRoleSlot(i);
+            for (int i = 0; i < 2; i++) RefreshReactionSlot(i);
             _character.SyncTraitReactions();
-            for (int i = 2; i < 6; i++) RefreshTraitSlot(i);
+            for (int i = 2; i < 6; i++) RefreshReactionSlot(i);
             _equipSlots.SetCharacter(_character);
         }
 
@@ -534,144 +531,239 @@ namespace Bond.UI
             }
         }
 
+        // 직업이 사용 가능한 전체 스킬을 칩으로 표시하고, 장착된 것은 강조한다.
+        // FullEdit 에서만 클릭으로 편성/해제(최대 슬롯에서 미선택 칩은 비활성).
         private void RefreshSkillGrid()
         {
             _skillGrid.Clear();
-            if (_character?.Skills == null) return;
+            if (_character?.Profession == null) return;
 
-            foreach (var skill in _character.Skills)
+            bool editable = _editMode == CharacterDetailEditMode.FullEdit;
+            bool full     = _character.EquippedSkillCount >= _character.Skills.Length;
+
+            foreach (var data in _controller.GetProfessionSkills())
+                _skillGrid.Add(BuildSkillChip(data, editable, full));
+        }
+
+        private VisualElement BuildSkillChip(SkillData data, bool editable, bool full)
+        {
+            var chip = new VisualElement();
+            chip.AddToClassList("char-detail__skill-chip");
+
+            // 스킬 아이콘(주소는 SkillData.IconAddress, Addressables). 주소 없으면 빈 칸.
+            var icon = new Image { scaleMode = ScaleMode.ScaleToFit };
+            icon.AddToClassList("char-detail__skill-chip-icon");
+            chip.Add(icon);
+            if (!string.IsNullOrEmpty(data?.IconAddress))
+                LoadImageSpriteAsync(icon, data.IconAddress).Forget();
+
+            var nameLabel = new Label(data?.DisplayName ?? "?");
+            nameLabel.AddToClassList("char-detail__skill-name");
+            chip.Add(nameLabel);
+
+            // 미장착 풀 스킬도 툴팁을 위해 SkillBase 로 임시 래핑(Build 는 .Data 만 읽음).
+            var preview = new SampleSkill(data);
+            TooltipPopup.AttachFollow(chip, () => SkillTooltipContent.Build(preview));
+
+            bool equipped = _character.HasSkill(data);
+            if (equipped) chip.AddToClassList("char-detail__skill-chip--selected");
+
+            if (editable)
             {
-                var chip = new VisualElement();
-                chip.AddToClassList("char-detail__skill-chip");
-
-                if (skill == null)
-                {
-                    chip.AddToClassList("char-detail__skill-chip--empty");
-                }
+                bool blocked = full && !equipped;   // 만석 상태에서 새 스킬 추가 불가
+                if (blocked)
+                    chip.AddToClassList("char-detail__skill-chip--disabled");
                 else
+                    chip.RegisterCallback<ClickEvent>(_ => _controller.ToggleSkill(data));
+            }
+
+            return chip;
+        }
+
+        // 역할(0-1)·성향(2-5) 슬롯 공통 갱신. i<2 = 역할(헤더로 카탈로그 선택), 그 외 = 성향(고정).
+        private void RefreshReactionSlot(int i)
+        {
+            if (_character == null || i < 0 || i >= 6) return;
+            bool isRole = i < 2;
+            string kind = isRole ? "역할 리액션" : "성향 리액션";
+
+            var reaction = GetReactionAt(i);
+
+            // 리액션 미선택(역할) 또는 성향 미해금/무반응 → 3분할 숨김, 헤더만.
+            // 빈 상태를 헤더 문구로 알린다: 역할=선택 유도, 성향=비어 있음.
+            if (reaction == null)
+            {
+                if (_reactionHeaderLabels[i] != null)
                 {
-                    var nameLabel = new Label(skill.Data?.DisplayName ?? "?");
-                    nameLabel.AddToClassList("char-detail__skill-name");
-                    chip.Add(nameLabel);
-
-                    TooltipPopup.AttachFollow(chip, () => SkillTooltipContent.Build(skill));
+                    _reactionHeaderLabels[i].text = isRole ? $"{kind} - 리액션을 선택하세요" : $"{kind} - 비어 있음";
+                    _reactionHeaderLabels[i].AddToClassList("char-detail__slot-header-label--empty");
                 }
-
-                _skillGrid.Add(chip);
-            }
-        }
-
-        private void RefreshRoleSlot(int i)
-        {
-            if (_character == null || i < 0 || i >= 2) return;
-
-            var reaction = i < _character.RoleReactions.Length ? _character.RoleReactions[i] : null;
-            var def = _controller.GetSlotDefinition(i);
-
-            if (reaction == null)
-            {
-                _reactionReactionVals[i].text = "리액션 선택";
-                _reactionReactionVals[i].AddToClassList("char-detail__slot-part-val--placeholder");
-                if (_reactionEditables[i] != null)
-                    _reactionEditables[i].style.display = DisplayStyle.None;
-                _reactionSlots[i].RemoveFromClassList("char-detail__reaction-slot--locked");
-                _reactionEchoLabels[i].text = "○";
-                _reactionEchoLabels[i].AddToClassList("char-detail__slot-echo--empty");
-                return;
-            }
-
-            _reactionReactionVals[i].text = def?.Description ?? "(정의 없음)";
-            _reactionReactionVals[i].RemoveFromClassList("char-detail__slot-part-val--placeholder");
-
-            bool hasObserve = _controller.HasObserveEditable(i);
-            bool hasSkill   = _controller.HasSkillEditable(i);
-
-            if (_reactionEditables[i] != null)
-                _reactionEditables[i].style.display = (hasObserve || hasSkill) ? DisplayStyle.Flex : DisplayStyle.None;
-
-            if (_reactionTargetParts[i] != null)
-                _reactionTargetParts[i].style.display = hasObserve ? DisplayStyle.Flex : DisplayStyle.None;
-            if (_reactionSkillParts[i] != null)
-                _reactionSkillParts[i].style.display = hasSkill ? DisplayStyle.Flex : DisplayStyle.None;
-
-            if (hasObserve)
-            {
-                bool hasSub = !string.IsNullOrEmpty(reaction.SubjectCharacterId);
-                string targetName = hasSub && BaseCharacter.Dict.TryGetValue(reaction.SubjectCharacterId, out var subj)
-                    ? subj.Name
-                    : "미설정";
-                _reactionTargetLabels[i].text = targetName;
-                _reactionTargetLabels[i].EnableInClassList("char-detail__slot-part-val--placeholder", !hasSub);
-            }
-
-            if (hasSkill)
-            {
-                int skillIdx = (reaction.BaseEffect as SkillCastReactionEffect)?.SkillIndex ?? -1;
-                bool valid = skillIdx >= 0 && skillIdx < _character.Skills.Length && _character.Skills[skillIdx] != null;
-                _reactionSkillLabels[i].text = valid
-                    ? (_character.Skills[skillIdx].Data?.DisplayName ?? "미설정")
-                    : "미설정";
-                _reactionSkillLabels[i].EnableInClassList("char-detail__slot-part-val--placeholder", !valid);
-            }
-
-            bool complete = _controller.IsSlotComplete(i);
-            _reactionEchoLabels[i].text = complete ? "◈" : "○";
-            _reactionEchoLabels[i].EnableInClassList("char-detail__slot-echo--empty", !complete);
-        }
-
-        private void RefreshTraitSlot(int i)
-        {
-            if (_character == null || i < 2 || i >= 6) return;
-
-            int traitIdx = i - 2;
-            var reaction = traitIdx < _character.TraitReactions.Length ? _character.TraitReactions[traitIdx] : null;
-            var def = _controller.GetSlotDefinition(i);
-
-            if (reaction == null)
-            {
-                // 성향이 없거나 성향에 리액션이 없음
-                _reactionReactionVals[i].text = "—";
-                _reactionReactionVals[i].AddToClassList("char-detail__slot-part-val--placeholder");
-                if (_reactionEditables[i] != null) _reactionEditables[i].style.display = DisplayStyle.None;
-                _reactionSlots[i].AddToClassList("char-detail__reaction-slot--locked");
-                _reactionEchoLabels[i].text = "○";
-                _reactionEchoLabels[i].AddToClassList("char-detail__slot-echo--empty");
+                if (_reactionParts[i] != null) _reactionParts[i].style.display = DisplayStyle.None;
+                // 역할은 '선택 가능'(잠금 아님), 성향은 잠금 표시.
+                _reactionSlots[i].EnableInClassList("char-detail__reaction-slot--locked", !isRole);
+                SetEcho(i, complete: false, empty: true);
                 return;
             }
 
             _reactionSlots[i].RemoveFromClassList("char-detail__reaction-slot--locked");
-            _reactionReactionVals[i].text = def?.Description ?? "(정의 없음)";
-            _reactionReactionVals[i].RemoveFromClassList("char-detail__slot-part-val--placeholder");
 
-            bool hasObserve = _controller.HasObserveEditable(i);
-            bool hasSkill   = _controller.HasSkillEditable(i);
-
-            if (_reactionEditables[i] != null)
-                _reactionEditables[i].style.display = (hasObserve || hasSkill) ? DisplayStyle.Flex : DisplayStyle.None;
-            if (_reactionTargetParts[i] != null)
-                _reactionTargetParts[i].style.display = hasObserve ? DisplayStyle.Flex : DisplayStyle.None;
-            if (_reactionSkillParts[i] != null)
-                _reactionSkillParts[i].style.display = hasSkill ? DisplayStyle.Flex : DisplayStyle.None;
-
-            if (hasObserve)
+            // 헤더: "역할/성향 리액션 - [이름]"
+            var def = _controller.GetSlotDefinition(i);
+            string defName = def?.DisplayName;
+            if (_reactionHeaderLabels[i] != null)
             {
-                bool hasSub = !string.IsNullOrEmpty(reaction.SubjectCharacterId);
-                string targetName = hasSub && BaseCharacter.Dict.TryGetValue(reaction.SubjectCharacterId, out var subj)
-                    ? subj.Name : "미설정";
-                _reactionTargetLabels[i].text = targetName;
-                _reactionTargetLabels[i].EnableInClassList("char-detail__slot-part-val--placeholder", !hasSub);
-            }
-            if (hasSkill)
-            {
-                int skillIdx = (reaction.BaseEffect as SkillCastReactionEffect)?.SkillIndex ?? -1;
-                bool valid = skillIdx >= 0 && skillIdx < _character.Skills.Length && _character.Skills[skillIdx] != null;
-                _reactionSkillLabels[i].text = valid ? (_character.Skills[skillIdx].Data?.DisplayName ?? "미설정") : "미설정";
-                _reactionSkillLabels[i].EnableInClassList("char-detail__slot-part-val--placeholder", !valid);
+                _reactionHeaderLabels[i].RemoveFromClassList("char-detail__slot-header-label--empty");
+                _reactionHeaderLabels[i].text = string.IsNullOrEmpty(defName) ? kind : $"{kind} - {defName}";
             }
 
-            bool complete = _controller.IsSlotComplete(i);
-            _reactionEchoLabels[i].text = complete ? "◈" : "○";
-            _reactionEchoLabels[i].EnableInClassList("char-detail__slot-echo--empty", !complete);
+            if (_reactionParts[i] != null) _reactionParts[i].style.display = DisplayStyle.Flex;
+
+            var (targetText, conditionText, actionText) = _controller.GetPartTexts(i);
+
+            // 조건: 항상 고정(편집 불가), 아이콘 없음.
+            SetPartVal(_reactionConditionVals[i], conditionText, PartState.Fixed);
+
+            // 대상: 관찰 편집슬롯이 있으면 편집칸(할당 여부로 상태/아이콘), 없으면 고정.
+            bool targetEditable = _controller.HasObserveEditable(i);
+            UpdateEditablePart(
+                _reactionTargetParts[i], _reactionTargetVals[i], _reactionTargetIcons[i],
+                targetText, targetEditable,
+                filled: targetEditable && _controller.IsObserveFilled(i),
+                iconAddr: _controller.GetObserveIconAddress(i),
+                iconTip: _controller.GetObserveTargetName(i),
+                slot: i, isTarget: true);
+
+            // 행동: 행동 스킬 편집슬롯이 있으면 편집칸, 없으면 고정.
+            bool actionEditable = _controller.HasSkillEditable(i);
+            UpdateEditablePart(
+                _reactionActionParts[i], _reactionActionVals[i], _reactionActionIcons[i],
+                actionText, actionEditable,
+                filled: actionEditable && _controller.IsActionFilled(i),
+                iconAddr: _controller.GetActionIconAddress(i),
+                iconTip: _controller.GetActionSkill(i)?.Data?.DisplayName,
+                slot: i, isTarget: false);
+
+            SetEcho(i, complete: _controller.IsSlotComplete(i), empty: false);
+        }
+
+        private enum PartState { Fixed, Assigned, Unassigned }
+
+        // 칸 값 텍스트 + 3색 상태(고정/할당/미할당) 적용.
+        private static void SetPartVal(Label val, string text, PartState state)
+        {
+            if (val == null) return;
+            val.text = text;
+            val.RemoveFromClassList("char-detail__slot-part-val--fixed");
+            val.RemoveFromClassList("char-detail__slot-part-val--assigned");
+            val.RemoveFromClassList("char-detail__slot-part-val--unassigned");
+            val.AddToClassList(state switch
+            {
+                PartState.Assigned   => "char-detail__slot-part-val--assigned",
+                PartState.Unassigned => "char-detail__slot-part-val--unassigned",
+                _                    => "char-detail__slot-part-val--fixed",
+            });
+        }
+
+        // 편집 가능한 칸(대상/행동)의 값·색·클릭성·아이콘 갱신.
+        // editable=false 면 고정 칸(아이콘 숨김). editable=true 면 filled 에 따라 할당/미할당(빈 아이콘 슬롯).
+        private void UpdateEditablePart(VisualElement part, Label val, Image icon, string text,
+            bool editable, bool filled, string iconAddr, string iconTip, int slot, bool isTarget)
+        {
+            PartState state = !editable ? PartState.Fixed : (filled ? PartState.Assigned : PartState.Unassigned);
+            SetPartVal(val, text, state);
+            part?.EnableInClassList("char-detail__slot-part--editable", editable);
+
+            if (icon == null) return;
+
+            if (!editable)
+            {
+                icon.style.display = DisplayStyle.None;
+                icon.sprite = null;
+                icon.tooltip = string.Empty;
+                if (isTarget) _targetIconAddr[slot] = null; else _actionIconAddr[slot] = null;
+                return;
+            }
+
+            icon.style.display = DisplayStyle.Flex;
+            if (filled)
+            {
+                icon.RemoveFromClassList("char-detail__slot-part-icon--empty");
+                icon.tooltip = iconTip ?? string.Empty;
+                if (!string.IsNullOrEmpty(iconAddr))
+                {
+                    LoadSlotIcon(icon, iconAddr, slot, isTarget);
+                }
+                else
+                {
+                    icon.sprite = null;
+                    if (isTarget) _targetIconAddr[slot] = null; else _actionIconAddr[slot] = null;
+                }
+            }
+            else
+            {
+                icon.AddToClassList("char-detail__slot-part-icon--empty");
+                icon.sprite = null;
+                icon.tooltip = string.Empty;
+                if (isTarget) _targetIconAddr[slot] = null; else _actionIconAddr[slot] = null;
+            }
+        }
+
+        private void SetEcho(int i, bool complete, bool empty)
+        {
+            var echo = _reactionEchoLabels[i];
+            if (echo == null) return;
+            echo.text = complete ? "◆" : "◇";
+            echo.EnableInClassList("char-detail__slot-echo--complete", complete);
+            echo.EnableInClassList("char-detail__slot-echo--empty", empty);
+        }
+
+        // 슬롯 아이콘 비동기 로드. 같은 주소가 이미 요청됐으면 재로드 생략(중복 LoadAssetAsync 로 핸들 ref 누적 방지).
+        private void LoadSlotIcon(Image icon, string address, int slot, bool isTarget)
+        {
+            string prev = isTarget ? _targetIconAddr[slot] : _actionIconAddr[slot];
+            if (prev == address) return;   // 이미 이 주소를 로드(또는 로드 중/실패) — 재요청 안 함
+
+            if (isTarget) _targetIconAddr[slot] = address; else _actionIconAddr[slot] = address;
+            LoadSlotIconAsync(icon, address, slot, isTarget).Forget();
+        }
+
+        private async UniTaskVoid LoadSlotIconAsync(Image icon, string address, int slot, bool isTarget)
+        {
+            var sprite = await TryLoadSpriteAsync(address);
+            string current = isTarget ? _targetIconAddr[slot] : _actionIconAddr[slot];
+            // 로드 끝나기 전에 캐릭터/할당이 바뀌었으면 폐기.
+            if (sprite == null || icon == null || icon.panel == null || current != address) return;
+            icon.sprite = sprite;
+        }
+
+        // 주소→스프라이트 캐시. 그리드/드롭다운이 갱신 때마다 재빌드되므로 같은 주소를 매번
+        // 다시 로드(=Addressables 핸들 누적)하지 않도록 한 번 로드한 스프라이트를 재사용한다.
+        private static readonly Dictionary<string, Sprite> _iconSpriteCache = new Dictionary<string, Sprite>();
+
+        private static async UniTask<Sprite> TryLoadSpriteAsync(string address)
+        {
+            if (string.IsNullOrEmpty(address)) return null;
+
+            if (_iconSpriteCache.TryGetValue(address, out var cached))
+            {
+                if (cached != null) return cached;   // Unity-null 체크: 파괴된 스프라이트면 캐시 무효 → 재로드
+                _iconSpriteCache.Remove(address);
+            }
+
+            var locHandle = Addressables.LoadResourceLocationsAsync(address);
+            var locations = await locHandle.ToUniTask();
+            bool found = locations != null && locations.Count > 0;
+            Addressables.Release(locHandle);
+
+            if (!found)
+            {
+                Debug.LogWarning($"<color=orange>[CharacterDetail]</color> 아이콘 주소 없음 — '{address}'");
+                return null;
+            }
+
+            var sprite = await Addressables.LoadAssetAsync<Sprite>(address).ToUniTask();
+            if (sprite != null) _iconSpriteCache[address] = sprite;
+            return sprite;
         }
 
         private void ToggleRolePicker()
@@ -706,169 +798,142 @@ namespace Bond.UI
             _segAutoBtn.EnableInClassList("char-detail__control-seg__opt--active", !manual);
         }
 
-        private void TogglePool(int slotIndex, string part)
+        // ── 드롭다운(카탈로그 / 대상 / 행동) ────────────────────────────
+
+        private void OpenCatalogDropdown(int slot)
         {
-            if (_openPoolSlot == slotIndex && _openPoolPart == part)
-            {
-                CloseAllPools();
-                return;
-            }
-            CloseAllPools();
-            _openPoolSlot = slotIndex;
-            _openPoolPart = part;
-
-            var pool = _reactionPools[slotIndex];
-            if (pool == null) return;
-
-            // var header = new VisualElement();
-            // header.AddToClassList("char-detail__pool-header");
-            //
-            // var title = new Label(part switch
-            // {
-            //     "reaction" => "리액션",
-            //     "observe"  => "관찰 대상",
-            //     "skill"    => "행동",
-            //     _ => ""
-            // });
-            // title.AddToClassList("char-detail__pool-title");
-            // header.Add(title);
-            //
-            // var closeBtn = new Button(CloseAllPools);
-            // closeBtn.AddToClassList("char-detail__pool-close-btn");
-            // closeBtn.text = "닫기 ×";
-            // header.Add(closeBtn);
-            // pool.Add(header);
-
-            var chips = new VisualElement();
-            chips.AddToClassList("char-detail__pool-chips");
-            switch (part)
-            {
-                case "reaction": BuildReactionCatalogChips(slotIndex, chips); break;
-                case "observe":  BuildObserveChips(slotIndex, chips);         break;
-                case "skill":    BuildRoleSkillChips(slotIndex, chips);       break;
-                default: break;
-            }
-            pool.Add(chips);
-
-            pool.AddToClassList(part switch
-            {
-                "reaction" => "char-detail__inline-pool--target",
-                "observe"  => "char-detail__inline-pool--target",
-                "skill"    => "char-detail__inline-pool--skill",
-                _ => ""
-            });
+            // 카탈로그 항목엔 대상·조건·행동 미리보기 부제가 붙어 더 넓게 연다(--wide).
+            var anchor = _reactionHeaders[slot];
+            if (anchor != null) ToggleDropdown(anchor, c => BuildCatalogItems(slot, c), "char-detail__dropdown--wide");
         }
 
-        private void CloseAllPools()
+        private void OpenObserveDropdown(int slot)
         {
-            for (int i = 0; i < 6; i++)
-            {
-                var pool = _reactionPools[i];
-                if (pool == null) continue;
-                pool.RemoveFromClassList("char-detail__inline-pool--target");
-                pool.RemoveFromClassList("char-detail__inline-pool--skill");
-                pool.Clear();
-            }
-            _openPoolSlot = -1;
-            _openPoolPart = null;
+            var anchor = _reactionTargetParts[slot];
+            if (anchor != null) ToggleDropdown(anchor, c => BuildObserveItems(slot, c));
         }
 
-        private void BuildReactionCatalogChips(int slotIndex, VisualElement container)
+        private void OpenActionDropdown(int slot)
         {
-            var catalog = _controller.GetRoleReactionCatalog(slotIndex);
+            var anchor = _reactionActionParts[slot];
+            if (anchor != null) ToggleDropdown(anchor, c => BuildActionItems(slot, c));
+        }
+
+        // 같은 앵커를 다시 누르면 토글로 닫는다.
+        private void ToggleDropdown(VisualElement anchor, Action<VisualElement> build, string variantClass = null)
+        {
+            if (_dropdown == null) return;
+            if (_dropdown.CurrentAnchor == anchor) { _dropdown.Close(); return; }
+            _dropdown.Open(anchor, build, variantClass);
+        }
+
+        private void BuildCatalogItems(int slot, VisualElement container)
+        {
+            var catalog = _controller.GetRoleReactionCatalog(slot);
+            var currentDef = _controller.GetSlotDefinition(slot);
+            bool hasReaction = GetReactionAt(slot) != null;
+
+            if (hasReaction)
+            {
+                var clear = MakeDropdownItem("해제", null, null, false);
+                clear.AddToClassList("char-detail__dropdown-item--clear");
+                clear.RegisterCallback<ClickEvent>(_ => { _controller.ClearRoleReaction(slot); _dropdown.Close(); });
+                container.Add(clear);
+            }
+
             if (catalog.Count == 0)
             {
-                AddPoolEmpty(container, "선택 가능한 리액션 없음");
+                if (!hasReaction) AddDropdownEmpty(container, "선택 가능한 리액션 없음");
                 return;
-            }
-
-            var currentDef = _controller.GetSlotDefinition(slotIndex);
-            var reaction = GetReactionAt(slotIndex);
-
-            if (reaction != null)
-            {
-                var clearChip = new Button(() => { _controller.ClearRoleReaction(slotIndex); CloseAllPools(); });
-                clearChip.AddToClassList("char-detail__pool-chip");
-                clearChip.AddToClassList("char-detail__pool-chip--target");
-                var clearLabel = new Label("해제");
-                clearLabel.AddToClassList("char-detail__pool-chip-name");
-                clearChip.Add(clearLabel);
-                container.Add(clearChip);
             }
 
             foreach (var def in catalog)
             {
-                var capturedDef = def;
-                var chip = new Button(() => { _controller.SelectRoleReaction(slotIndex, capturedDef); CloseAllPools(); });
-                chip.AddToClassList("char-detail__pool-chip");
-                chip.AddToClassList("char-detail__pool-chip--target");
-                if (currentDef != null && currentDef.Id == capturedDef.Id)
-                    chip.AddToClassList("char-detail__pool-chip--selected");
-                var nameLabel = new Label(capturedDef.DisplayName);
-                nameLabel.AddToClassList("char-detail__pool-chip-name");
-                chip.Add(nameLabel);
-                container.Add(chip);
+                var captured = def;
+                var (t, cnd, a) = def.ResolvePartTexts();
+                var item = MakeDropdownItem(def.DisplayName, $"{t} · {cnd} · {a}", null,
+                    currentDef != null && currentDef.Id == def.Id);
+                item.RegisterCallback<ClickEvent>(_ => { _controller.SelectRoleReaction(slot, captured); _dropdown.Close(); });
+                container.Add(item);
             }
         }
 
-        private void BuildObserveChips(int slotIndex, VisualElement container)
+        private void BuildObserveItems(int slot, VisualElement container)
         {
-            var candidates = _controller.GetObserveTargetCandidates(slotIndex);
-            if (candidates.Count == 0)
-            {
-                AddPoolEmpty(container, "파티 아군 없음");
-                return;
-            }
+            var candidates = _controller.GetObserveTargetCandidates(slot);
+            if (candidates.Count == 0) { AddDropdownEmpty(container, "파티 아군 없음"); return; }
 
-            var reaction = GetReactionAt(slotIndex);
-            string currentId = reaction?.SubjectCharacterId;
-
+            string currentId = GetReactionAt(slot)?.SubjectCharacterId;
             foreach (var c in candidates)
             {
                 var captured = c;
-                var chip = new Button(() => { _controller.SetObserveTarget(slotIndex, captured.Id); CloseAllPools(); });
-                chip.AddToClassList("char-detail__pool-chip");
-                chip.AddToClassList("char-detail__pool-chip--target");
-                if (captured.Id == currentId)
-                    chip.AddToClassList("char-detail__pool-chip--selected");
-                var nameLabel = new Label(captured.Name);
-                nameLabel.AddToClassList("char-detail__pool-chip-name");
-                chip.Add(nameLabel);
-                container.Add(chip);
+                var item = MakeDropdownItem(captured.Name, null, captured.EffectiveIdleImageAddress, captured.Id == currentId);
+                item.RegisterCallback<ClickEvent>(_ => { _controller.SetObserveTarget(slot, captured.Id); _dropdown.Close(); });
+                container.Add(item);
             }
         }
 
-        private void BuildRoleSkillChips(int slotIndex, VisualElement container)
+        private void BuildActionItems(int slot, VisualElement container)
         {
-            var candidates = _controller.GetActionSkillCandidates(slotIndex);
-            if (candidates.Count == 0)
-            {
-                AddPoolEmpty(container, "사용 가능한 스킬 없음");
-                return;
-            }
+            var candidates = _controller.GetActionSkillCandidates(slot);
+            if (candidates.Count == 0) { AddDropdownEmpty(container, "사용 가능한 스킬 없음"); return; }
 
-            var reaction = GetReactionAt(slotIndex);
-            int currentIndex = (reaction?.BaseEffect as SkillCastReactionEffect)?.SkillIndex ?? -1;
-
+            int currentIndex = (GetReactionAt(slot)?.BaseEffect as SkillCastReactionEffect)?.SkillIndex ?? -1;
             foreach (var (index, skill) in candidates)
             {
                 int capturedIndex = index;
-                var chip = new Button(() => { _controller.SetActionSkill(slotIndex, capturedIndex); CloseAllPools(); });
-                chip.AddToClassList("char-detail__pool-chip");
-                chip.AddToClassList("char-detail__pool-chip--skill");
-                if (capturedIndex == currentIndex)
-                    chip.AddToClassList("char-detail__pool-chip--selected");
-                var nameLabel = new Label(skill.Data?.DisplayName ?? "?");
-                nameLabel.AddToClassList("char-detail__pool-chip-name");
-                chip.Add(nameLabel);
-                container.Add(chip);
+                var capturedSkill = skill;
+                var item = MakeDropdownItem(skill.Data?.DisplayName ?? "?", null, skill.Data?.IconAddress, capturedIndex == currentIndex);
+                // 행동 후보는 스킬 리치 툴팁 재사용
+                TooltipPopup.AttachFollow(item, () => SkillTooltipContent.Build(capturedSkill));
+                item.RegisterCallback<ClickEvent>(_ => { _controller.SetActionSkill(slot, capturedIndex); _dropdown.Close(); });
+                container.Add(item);
             }
         }
 
-        private static void AddPoolEmpty(VisualElement container, string msg)
+        // 드롭다운 1행: (옵션)아이콘 + 이름(+부제). 아이콘 주소가 있으면 비동기 로드.
+        private VisualElement MakeDropdownItem(string displayName, string sub, string iconAddress, bool selected)
+        {
+            var item = new VisualElement();
+            item.AddToClassList("char-detail__dropdown-item");
+            if (selected) item.AddToClassList("char-detail__dropdown-item--selected");
+
+            if (!string.IsNullOrEmpty(iconAddress))
+            {
+                var icon = new Image { scaleMode = ScaleMode.ScaleAndCrop };
+                icon.AddToClassList("char-detail__dropdown-item-icon");
+                item.Add(icon);
+                LoadImageSpriteAsync(icon, iconAddress).Forget();
+            }
+
+            var textCol = new VisualElement();
+            textCol.AddToClassList("char-detail__dropdown-item-text");
+            var nameLabel = new Label(displayName);
+            nameLabel.AddToClassList("char-detail__dropdown-item-name");
+            textCol.Add(nameLabel);
+            if (!string.IsNullOrEmpty(sub))
+            {
+                var subLabel = new Label(sub);
+                subLabel.AddToClassList("char-detail__dropdown-item-sub");
+                textCol.Add(subLabel);
+            }
+            item.Add(textCol);
+            return item;
+        }
+
+        // 새로 만들어 재사용하지 않는 Image(드롭다운 행·스킬 그리드 칩)에 스프라이트를 비동기 로드.
+        // 패널 부착 전에 로드가 끝나도 sprite 는 유지됐다가 부착 시 렌더되므로 panel 체크로 폐기하지 않는다.
+        private static async UniTaskVoid LoadImageSpriteAsync(Image icon, string address)
+        {
+            var sprite = await TryLoadSpriteAsync(address);
+            if (sprite == null || icon == null) return;
+            icon.sprite = sprite;
+        }
+
+        private static void AddDropdownEmpty(VisualElement container, string msg)
         {
             var label = new Label(msg);
-            label.AddToClassList("char-detail__pool-empty");
+            label.AddToClassList("char-detail__dropdown-empty");
             container.Add(label);
         }
 

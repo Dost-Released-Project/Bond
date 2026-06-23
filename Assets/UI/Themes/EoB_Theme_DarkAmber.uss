@@ -41,6 +41,7 @@
     --slot-trait-border: #3a1a1a;
     --slot-trait-dot:    #aa4a4a;
     --slot-trait-bg:     #120a0a;
+    --slot-unset:        #c05030;   /* 미할당 편집칸 경고(리액션 불발 신호) — 값·아이콘 테두리·다이아몬드 */
 
     /* Interactive — Button */
     --btn-primary-bg:       #2a1e10;
@@ -71,4 +72,38 @@
     --font-size-button: 15.4px;
     --font-size-system: 12.6px;
     --font-scale:       1.40;
+}
+
+/* ════════════════════════════════════════
+   스크롤바 기본 — 테마 공통(Unity 기본 흰 스크롤바 대체).
+   화살표 버튼 숨김 · 거터/트랙 = bg-deep(배경에 묻힘) · 썸(dragger) = bg-surface.
+   개별 화면이 더 구체적인 선택자로 덮어쓸 수 있다(예: Journal 은 자체 톤 유지).
+   ════════════════════════════════════════ */
+.unity-scroller {
+    background-color: var(--bg-deep);
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+.unity-scroller__low-button,
+.unity-scroller__high-button {
+    display: none;
+}
+.unity-scroller .unity-base-slider {
+    flex-grow: 1;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.unity-scroller .unity-base-slider__tracker {
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-color: var(--bg-deep);
+    border-bottom-color: var(--bg-deep);
+    border-left-color: var(--bg-deep);
+    border-right-color: var(--bg-deep);
+    background-color: var(--bg-deep);
+}
+.unity-scroller .unity-base-slider__dragger {
+    background-color: var(--bg-surface);
 }

@@ -65,6 +65,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1c36749bad605d8438d79378625af101
+    m_Address: 0106
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1e95f98d5ffb52b48a2ad9a4293fbb1d
     m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13170000.asset
     m_ReadOnly: 0
@@ -100,6 +105,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a3df901b4effa247a1aa8fc21dbabdc
+    m_Address: 010A
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2aa5773f5b84eb6468eecfc1e317446a
     m_Address: Assets/Data/GeneratedSO/journaldata/JournalData/JO_EVT_BATTLE_END.asset
     m_ReadOnly: 0
@@ -107,6 +117,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2b0673ddd35a58a45bb66bc80bd9f880
     m_Address: Assets/Data/GeneratedSO/journaldata/JournalData/JO_EVT_FIND_OLD_ITEM.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b2384366b70a79458a029e853e3b567
+    m_Address: 0101
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -150,8 +165,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 37a80121951c34744b6f2110271f0ff0
+    m_Address: 0111
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3b674c7940c3c9a48af559b4db59c988
     m_Address: Assets/Data/GeneratedSO/building/BuildingDataSO/BU_09010000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 42637a7da1329fe4d8c2125b8fda0dd5
+    m_Address: 010B
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 48201d530fc0d2b4cb4eebf0be72625b
+    m_Address: 010C
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -185,6 +215,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 50a055d7ffafe1e4d9a1778e53099048
+    m_Address: 010D
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 50ebcaf7dc8e79840a98931427427510
     m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13120000.asset
     m_ReadOnly: 0
@@ -200,13 +235,33 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55213363d1a01394a8dbe7905911323d
+    m_Address: 0109
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 58426c1785a68bc408b4c93ad404fc76
     m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13090000.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 59a4d450dd3d51d4a9a89cd0da2a6397
+    m_Address: 0107
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5a9914d6adc46a04182f6d0d21259741
     m_Address: Assets/Data/GeneratedSO/monsterstat/MonsterDataSO/MN_10010000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e059901541d4fe49bb93b4d7a787f76
+    m_Address: 010E
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5ec891e358659194ebfa795309514ca9
+    m_Address: 0113
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -240,6 +295,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6cfec37799f8e774b9bedfaf4289f3e3
+    m_Address: 010F
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6d3b3e2511b34344e8a6d51485eab6f3
     m_Address: Assets/Data/GeneratedSO/statmodifier/StatModifierDataSO/MOD_13070000.asset
     m_ReadOnly: 0
@@ -250,8 +310,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 713803271b38a2d4cbb9edf0477379b6
+    m_Address: 0110
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 727141f091fa5594d802c2536f8165f4
     m_Address: Assets/Data/GeneratedSO/monstergroup/MonsterGroupDataSO/MG_11020000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7328dc766f3d8d743ac8caf3722c4fef
+    m_Address: 0102
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -305,6 +375,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8848142d55b290f4d9091bb32261b990
+    m_Address: 0112
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 89a3e9c9daec7f447a6cfe11cda1a0b4
     m_Address: Assets/Data/GeneratedSO/journaldata/JournalData/JO_EVT_MONSTER_ENCOUNTER.asset
     m_ReadOnly: 0
@@ -320,8 +395,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8fb1d642a6338314295b692a2ca2c4e6
+    m_Address: 0100
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 903120641103a4b47841aef23abc6caf
     m_Address: Assets/Data/GeneratedSO/journaldata/JournalData/JO_EVT_DECODE_WALL.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 93c78214e8e685a42b1a22e68705e31c
+    m_Address: 0103
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -335,8 +420,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 954c7094156d7174dad33c60a19ef866
+    m_Address: 0104
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 963dbd7ea6fa9bc46ac9daf74cf1f1d8
     m_Address: Assets/Data/GeneratedSO/skill/SkillDataSO/SK_01040000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9a6ea55a763f66c47a2857dab7d0e7f6
+    m_Address: 0108
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -402,6 +497,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ae8ffbbc7d0930941b0199144bb2edbb
     m_Address: Assets/Data/GeneratedSO/eventdata/EventDataSO/EV_12040000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b074ce17f6164aa48ac499457a4f03b5
+    m_Address: 0105
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -69,14 +69,22 @@ namespace Bond.UI
             _itemService.UnequipToInventory(_character, index, targetInventory);
         }
 
-        // 직업이 보유 가능한 전체 스킬 목록 반환 (스킬 그리드용)
-        // TODO: 스태틱하게 db 접근 후에 그걸 기반으로 반환하도록 구현
-        // public List<SkillData> GetAllProfessionSkills()
-        // {
-        //     if (_character?.Profession == null) return new List<SkillData>();
-        //     int profId = _character.Profession.Id;
-        //     return _skillDb.Query<SkillData>(s => s.UseableClasses == profId).ToList();
-        // }
+        // ── 스킬 편성 (스킬 그리드) ──────────────────────────────────────
+
+        /// <summary>현재 캐릭터 직업이 사용 가능한 전체 스킬 목록(그리드 표시용). DBSORegistry 정적 조회.</summary>
+        public IReadOnlyList<SkillData> GetProfessionSkills()
+        {
+            if (_character?.Profession == null) return Array.Empty<SkillData>();
+            int profId = _character.Profession.Id;
+            return DBSORegistry.QuerySO<SkillData>(s => s != null && s.UseableClasses == profId).ToList();
+        }
+
+        /// <summary>그리드 토글: 편성↔해제. 추가는 최대 슬롯에서 차단(BaseCharacter). 변경 시 true.</summary>
+        public bool ToggleSkill(SkillData data)
+        {
+            if (_character == null || data == null) return false;
+            return _character.ToggleSkill(data);
+        }
 
         public BaseCharacter CurrentCharacter => _character;
 
@@ -201,6 +209,61 @@ namespace Bond.UI
             var def = GetSlotDefinition(slotIndex);
             if (def == null) return true;
             return def.AllEditablesFilled(reaction);
+        }
+
+        // ── 3분할 표시(대상/조건/행동) 헬퍼 ──────────────────────────────
+
+        /// <summary>슬롯의 3분할 표시 문구(대상/조건/행동). 정의 없으면 "—".</summary>
+        public (string target, string condition, string action) GetPartTexts(int slotIndex)
+            => GetSlotDefinition(slotIndex)?.ResolvePartTexts() ?? ("—", "—", "—");
+
+        /// <summary>관찰 대상 편집칸이 실제로 채워졌는가(아군 지정됨).</summary>
+        public bool IsObserveFilled(int slotIndex)
+        {
+            var slot = GetObserveSlot(slotIndex);
+            return slot != null && slot.IsFilled(GetReaction(slotIndex));
+        }
+
+        /// <summary>행동 스킬 편집칸이 실제로 채워졌는가(스킬 지정됨).</summary>
+        public bool IsActionFilled(int slotIndex)
+        {
+            var slot = GetActionSkillSlot(slotIndex);
+            return slot != null && slot.IsFilled(GetReaction(slotIndex));
+        }
+
+        /// <summary>지정된 관찰 대상(아군)의 초상 주소. 미지정/미탐색이면 null.</summary>
+        public string GetObserveIconAddress(int slotIndex)
+        {
+            var reaction = GetReaction(slotIndex);
+            if (reaction == null || string.IsNullOrEmpty(reaction.SubjectCharacterId)) return null;
+            return BaseCharacter.Dict.TryGetValue(reaction.SubjectCharacterId, out var subj)
+                ? subj.EffectiveIdleImageAddress : null;
+        }
+
+        /// <summary>지정된 관찰 대상(아군) 이름. 미지정/미탐색이면 null.</summary>
+        public string GetObserveTargetName(int slotIndex)
+        {
+            var reaction = GetReaction(slotIndex);
+            if (reaction == null || string.IsNullOrEmpty(reaction.SubjectCharacterId)) return null;
+            return BaseCharacter.Dict.TryGetValue(reaction.SubjectCharacterId, out var subj) ? subj.Name : null;
+        }
+
+        /// <summary>지정된 행동 스킬의 아이콘 주소. 미지정/범위밖이면 null.</summary>
+        public string GetActionIconAddress(int slotIndex)
+        {
+            var reaction = GetReaction(slotIndex);
+            int idx = (reaction?.BaseEffect as SkillCastReactionEffect)?.SkillIndex ?? -1;
+            if (_character?.Skills == null || idx < 0 || idx >= _character.Skills.Length) return null;
+            return _character.Skills[idx]?.Data?.IconAddress;
+        }
+
+        /// <summary>지정된 행동 스킬(툴팁/식별용). 미지정/범위밖이면 null.</summary>
+        public SkillBase GetActionSkill(int slotIndex)
+        {
+            var reaction = GetReaction(slotIndex);
+            int idx = (reaction?.BaseEffect as SkillCastReactionEffect)?.SkillIndex ?? -1;
+            if (_character?.Skills == null || idx < 0 || idx >= _character.Skills.Length) return null;
+            return _character.Skills[idx];
         }
 
         /// <summary>가방 인벤토리 슬롯에서 장신구 슬롯 방향으로 드래그 장착/스왑을 수행합니다.</summary>
