@@ -17,7 +17,7 @@ public class ReactionBranchDebugWindow : EditorWindow
     private int _iterations = 10000;
     private string _mcResult;
 
-    [MenuItem("Bond/리액션 분기 디버그")]
+    [MenuItem("Bond/Reactions/리액션 분기 디버그", priority = 10)]
     public static void Open() => GetWindow<ReactionBranchDebugWindow>("리액션 분기");
 
     // 플레이 진입/종료 등 외부 상태 변화를 윈도우에 반영.
