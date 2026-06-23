@@ -33,7 +33,7 @@ public class CharacterSlotVisualizer : ImmediateModePanel, ICharacterSlotVisuali
         }
 
         // 3. 테두리 그리기
-        // Draw.RectangleBorder(drawRect, thickness, cornerRadius, m_currentColor);
+        //Draw.RectangleBorder(drawRect, thickness, cornerRadius, m_currentColor);
     }
     
     private Rect Inset(Rect r, float amount)

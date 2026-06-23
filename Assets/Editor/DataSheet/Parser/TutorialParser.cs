@@ -12,6 +12,12 @@ public class TutorialDTO
     public string Description { get; set; }
     public TutorialSequence SequenceType { get; set; }
     public string TargetUiKey { get; set; }
+    public int Frontier { get; set; }
+    public int Wood { get; set; }
+    public int Ore { get; set; }
+    public string ItemIds { get; set; }
+    public string ItemCounts { get; set; }
+    public TutorialClickType ClickType { get; set; }
 }
 
 public class TutorialParser : TSVParserBase<TutorialDTO, TutorialStepSO>
@@ -22,7 +28,7 @@ public class TutorialParser : TSVParserBase<TutorialDTO, TutorialStepSO>
     
     protected override void Populate(TutorialStepSO so, TutorialDTO dto)
     {
-        so.SetData(dto.ID, dto.Name, dto.Description, dto.SequenceType, dto.TargetUiKey);
+        so.SetData(dto.ID, dto.Name, dto.Description, dto.SequenceType, dto.TargetUiKey, dto.Frontier, dto.Wood ,dto.Ore, dto.ItemIds, dto.ItemCounts, dto.ClickType);
     }
 
     protected override void OnPostImport(string outputDir)
@@ -69,5 +75,11 @@ public sealed class TutorialMap : ClassMap<TutorialDTO>
         Map(m => m.Description).Name("Description");
         Map(m => m.SequenceType).Name("SequenceType");
         Map(m => m.TargetUiKey).Name("TargetUiKey");
+        Map(m => m.Frontier).Name("Frontier");
+        Map(m => m.Wood).Name("Wood");
+        Map(m => m.Ore).Name("Ore");
+        Map(m => m.ItemIds).Name("ItemIds");
+        Map(m => m.ItemCounts).Name("ItemCounts");
+        Map(m => m.ClickType).Name("ClickType");
     }
 }

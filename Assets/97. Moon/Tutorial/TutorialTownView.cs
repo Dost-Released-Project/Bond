@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.InputSystem; 
 using VContainer;
 
 namespace Bond.Tutorial
@@ -9,12 +10,26 @@ namespace Bond.Tutorial
         private TutorialSystemController _controller;
 
         [SerializeField] private UIDocument townUiDocument;
-        
+        [Header("카메라 (월드 좌표 변환용)")]
+        [SerializeField] private Camera mainCamera;
+
         private VisualElement _root;
         private VisualElement _barrier;
         private VisualElement _focusBox;
         private Label _guideLabel;
         private Button _skipButton;
+
+        private VisualElement _maskTop;
+        private VisualElement _maskBottom;
+        private VisualElement _maskLeft;
+        private VisualElement _maskRight;
+
+        // 상태 제어 데이터
+        private string _targetKey;
+        private Rect _calculatedBounds;
+        private bool _isTrackingWorld;
+        private bool _isStepPendingAdvance;
+        private TutorialStepSO _currentStepData;
 
         [Inject]
         public void Construct(TutorialSystemController controller)
@@ -25,26 +40,203 @@ namespace Bond.Tutorial
         private void Start()
         {
             if (townUiDocument == null) return;
-            
+            if (mainCamera == null) mainCamera = Camera.main;
+
             _root = townUiDocument.rootVisualElement;
             _barrier = _root.Q<VisualElement>("TutorialBarrier");
             _focusBox = _barrier?.Q<VisualElement>("FocusBox");
             _guideLabel = _root.Q<Label>("GuideTextLabel");
             _skipButton = _root.Q<Button>("SkipButton");
 
+            _maskTop = _barrier?.Q<VisualElement>("Mask_Top");
+            _maskBottom = _barrier?.Q<VisualElement>("Mask_Bottom");
+            _maskLeft = _barrier?.Q<VisualElement>("Mask_Left");
+            _maskRight = _barrier?.Q<VisualElement>("Mask_Right");
+
+            if (_barrier != null) _barrier.pickingMode = PickingMode.Position;
+            if (_focusBox != null) _focusBox.pickingMode = PickingMode.Ignore;
+            if (_guideLabel != null) _guideLabel.pickingMode = PickingMode.Ignore;
+
+            if (_maskTop != null) _maskTop.pickingMode = PickingMode.Position;
+            if (_maskBottom != null) _maskBottom.pickingMode = PickingMode.Position;
+            if (_maskLeft != null) _maskLeft.pickingMode = PickingMode.Position;
+            if (_maskRight != null) _maskRight.pickingMode = PickingMode.Position;
+            if (_skipButton != null) _skipButton.pickingMode = PickingMode.Position;
+
             if (_skipButton != null) _skipButton.clicked += OnSkipButtonTriggered;
 
-            // 이벤트 바인딩
+            _root.panel.visualTree.RegisterCallback<PointerDownEvent>(OnCapturedPointerDown, TrickleDown.TrickleDown);
+            _root.panel.visualTree.RegisterCallback<PointerUpEvent>(OnCapturedPointerUp, TrickleDown.TrickleDown);
+
             _controller.OnStepChanged += OnStepUpdated;
             _controller.OnTutorialFinished += OnTutorialCleared;
 
-            // 현재 씬이 마을(Sequence_A)일 때만 작동하도록 동기화 트리거 개시
             _controller.LoadProgress();
+        }
+
+        private void Update()
+        {
+            if (_barrier == null || _barrier.style.display == DisplayStyle.None || string.IsNullOrEmpty(_targetKey)) return;
+
+            if (_isTrackingWorld)
+            {
+                GameObject targetObj = GameObject.Find(_targetKey);
+                if (targetObj != null)
+                {
+                    _calculatedBounds = CalculateWorldBoundsToScreen(targetObj);
+                    ApplyLayout(_calculatedBounds);
+                }
+            }
+            else
+            {
+                VisualElement targetUi = FindTargetVisualElement(_targetKey);
+                if (targetUi != null)
+                {
+                    Rect rect = targetUi.worldBound;
+                    if (!float.IsNaN(rect.width) && rect.width > 0 && rect.x > -1000 && rect.y > -1000)
+                    {
+                        _calculatedBounds = rect;
+                        ApplyLayout(rect);
+                    }
+                }
+            }
+        }
+
+        private void OnCapturedPointerDown(PointerDownEvent evt)
+        {
+            if (_barrier == null || _barrier.style.display == DisplayStyle.None) return;
+            if (_skipButton != null && _skipButton.worldBound.Contains(evt.position)) return;
+
+            if (!IsValidClickRequirement(evt.button))
+            {
+                evt.StopPropagation();
+            }
+        }
+
+        private void OnCapturedPointerUp(PointerUpEvent evt)
+        {
+            if (_barrier == null || _barrier.style.display == DisplayStyle.None) return;
+            if (_skipButton != null && _skipButton.worldBound.Contains(evt.position)) return;
+
+            if (!IsValidClickRequirement(evt.button))
+            {
+                evt.StopPropagation();
+            }
+        }
+
+        private bool IsValidClickRequirement(int mouseButton)
+        {
+            if (mouseButton != 0 && mouseButton != 1) return false;
+
+            TutorialClickType inputClickType = mouseButton == 0 ? TutorialClickType.LeftClick : TutorialClickType.RightClick;
+            TutorialClickType requiredClickType = _currentStepData != null ? _currentStepData.ClickType : TutorialClickType.AnyClick;
+
+            if (requiredClickType != TutorialClickType.AnyClick && inputClickType != requiredClickType)
+            {
+                return false; 
+            }
+            return true; 
+        }
+
+        private void HandleUniversalInputTracking()
+        {
+            if (_isStepPendingAdvance) return;
+
+            Mouse mouse = Mouse.current;
+            if (mouse == null) return;
+            
+            // 🔒 잘못된 버튼을 누르거나 유지 중일 때는 배리어가 무조건 마우스를 막아 상호작용 차단
+            if (_currentStepData != null && _currentStepData.ClickType != TutorialClickType.AnyClick)
+            {
+                if (_currentStepData.ClickType == TutorialClickType.LeftClick && mouse.rightButton.isPressed)
+                {
+                    _barrier.pickingMode = PickingMode.Position;
+                    return;
+                }
+                if (_currentStepData.ClickType == TutorialClickType.RightClick && mouse.leftButton.isPressed)
+                {
+                    _barrier.pickingMode = PickingMode.Position;
+                    return;
+                }
+            }
+
+            // 마우스 포인터의 현재 위치 계산
+            Vector2 mo = mouse.position.ReadValue();
+            Vector2 lo = new Vector2(mo.x, Screen.height - mo.y);
+
+            // 타겟 영역 안에 마우스가 들어가 있을 때만 하부 UI가 클릭되도록 pickingMode를 열어줍니다.
+            if (_calculatedBounds.Contains(lo))
+            {
+                _barrier.pickingMode = PickingMode.Ignore; // 클릭 허용
+            }
+            else
+            {
+                _barrier.pickingMode = PickingMode.Position; // 클릭 차단
+            }
+
+            bool leftReleased = mouse.leftButton.wasReleasedThisFrame;
+            bool rightReleased = mouse.rightButton.wasReleasedThisFrame;
+
+            if (leftReleased || rightReleased)
+            {
+                int currentButton = leftReleased ? 0 : 1;
+                
+                if (!IsValidClickRequirement(currentButton)) return;
+
+                Vector2 mousePos = mouse.position.ReadValue();
+                Vector2 localMousePos = new Vector2(mousePos.x, Screen.height - mousePos.y);
+
+                if (_skipButton != null && _skipButton.worldBound.Contains(localMousePos)) return;
+
+                if (_isTrackingWorld)
+                {
+                    if (_calculatedBounds.Contains(localMousePos))
+                    {
+                        TriggerAdvanceDeferred();
+                    }
+                }
+                else
+                {
+                    VisualElement expectedTarget = FindTargetVisualElement(_targetKey);
+                    if (expectedTarget != null)
+                    {
+                        if (_calculatedBounds.Contains(localMousePos))
+                        {
+                            TriggerAdvanceDeferred();
+                            return;
+                        }
+
+                        VisualElement pickedElement = _root.panel.Pick(localMousePos);
+                        if (pickedElement != null && (pickedElement == expectedTarget || expectedTarget.Contains(pickedElement)))
+                        {
+                            TriggerAdvanceDeferred();
+                        }
+                    }
+                }
+            }
+        }
+
+        private void LateUpdate()
+        {
+            if (_barrier != null && _barrier.style.display == DisplayStyle.Flex && !string.IsNullOrEmpty(_targetKey))
+            {
+                HandleUniversalInputTracking();
+            }
+        }
+
+        private void TriggerAdvanceDeferred()
+        {
+            _isStepPendingAdvance = true;
+            _barrier.schedule.Execute(() =>
+            {
+                _controller.Advance();
+            }).ExecuteLater(20);
         }
 
         private void OnStepUpdated(TutorialStepSO stepData)
         {
-            // 만약 현재 단계가 탐사 씬 소관이라면 마을 뷰는 화면을 열지 않고 대기합니다.
+            _currentStepData = stepData; 
+
             if (stepData.Sequence != TutorialSequence.Sequence_A_Town)
             {
                 if (_barrier != null) _barrier.style.display = DisplayStyle.None;
@@ -53,28 +245,152 @@ namespace Bond.Tutorial
 
             if (_barrier == null) return;
 
-            // 1. 전체 화면 락 (패널 배리어 가동)
             _barrier.style.display = DisplayStyle.Flex;
-            _barrier.pickingMode = PickingMode.Position;
+            _targetKey = stepData.TargetUiKey;
+            _calculatedBounds = new Rect(0, 0, 0, 0);
+            _isStepPendingAdvance = false;
+
+            // 💥 점(.)대신 쉼표(,)를 구분자로 사용하므로 월드 오브젝트 체크 조건도 변경합니다.
+            _isTrackingWorld = !string.IsNullOrEmpty(_targetKey) && !_targetKey.Contains(",") && GameObject.Find(_targetKey) != null;
 
             if (_guideLabel != null) _guideLabel.text = stepData.Description;
+        }
 
-            // 2. 동적 좌표 연산: 지정된 타겟 UI 요소를 찾아서 하이라이트 박스를 씌움
-            VisualElement targetElement = _root.Q<VisualElement>(stepData.TargetUiKey);
-            if (targetElement != null && _focusBox != null)
+        // 🔄 이름과 클래스를 모두 유연하게 찾아주는 핵심 리팩토링 구역
+        private VisualElement FindTargetVisualElement(string key)
+        {
+            if (string.IsNullOrEmpty(key)) return null;
+
+            // /를 구분 기호로 사용하여 split을 수행합니다.
+            string[] split = key.Split('/');
+
+            // 1. 계층형 경로 검색 (예: TownUi, embark-overlay, .btn-style)
+            if (split.Length > 1)
             {
-                // 타겟의 절대 좌표 Bounds를 구함
-                Rect bounds = targetElement.worldBound;
+                // 첫 번째 요소는 무조건 템플릿을 소유한 GameObject 이름 (클래스일 수 없으므로 Trim만 처리)
+                GameObject docGo = GameObject.Find(split[0].Trim());
+                if (docGo != null && docGo.TryGetComponent<UIDocument>(out var specDoc))
+                {
+                    VisualElement current = specDoc.rootVisualElement;
+                    if (current == null) return null;
 
+                    for (int i = 1; i < split.Length; i++)
+                    {
+                        // 내부 헬퍼 메서드(QueryElement)를 통해 이름 혹은 클래스로 다음 분기를 검색합니다.
+                        current = QueryElement(current, split[i].Trim());
+                        if (current == null) return null; 
+                    }
+                    return current;
+                }
+            }
+            // 2. 단일 키 검색 (백업용)
+            else
+            {
+                var uiDocuments = FindObjectsByType<UIDocument>(FindObjectsSortMode.None);
+                foreach (var doc in uiDocuments)
+                {
+                    if (doc != null && doc != townUiDocument && doc.rootVisualElement != null)
+                    {
+                        var el = QueryElement(doc.rootVisualElement, key.Trim());
+                        if (el != null) return el;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 점(.)의 유무를 판별하여 이름 또는 USS 클래스로 요소를 정밀 검색하는 헬퍼 메서드
+        /// </summary>
+        private VisualElement QueryElement(VisualElement root, string target)
+        {
+            if (root == null || string.IsNullOrEmpty(target)) return null;
+
+            VisualElement result = null;
+
+            // 1. 기본 검색 (클래스 vs 이름)
+            if (target.StartsWith("."))
+            {
+                string className = target.Substring(1);
+                result = root.Q<VisualElement>(name: null, className: className);
+        
+                if (result == null && root is TemplateContainer template)
+                {
+                    result = template.contentContainer.Q<VisualElement>(name: null, className: className);
+                }
+            }
+            else
+            {
+                result = root.Q<VisualElement>(target);
+        
+                if (result == null && root is TemplateContainer template)
+                {
+                    result = template.contentContainer.Q<VisualElement>(target);
+                }
+            }
+
+            // 💥 [핵심 보강] 만약 자식 중에 못 찾았는데, 현재 root가 Label처럼 자식을 가질 수 없는 엘리먼트라면?
+            // 부모(parent)로 한 단계 올라가서 그 부모의 전체 자식 중에서 다시 검색해봅니다. (형제 노드 검색)
+            if (result == null && root.parent != null)
+            {
+                if (target.StartsWith("."))
+                {
+                    string className = target.Substring(1);
+                    result = root.parent.Q<VisualElement>(name: null, className: className);
+                }
+                else
+                {
+                    result = root.parent.Q<VisualElement>(target);
+                }
+            }
+
+            return result;
+        }
+
+        private void ApplyLayout(Rect bounds)
+        {
+            float sw = Screen.width;
+            float sh = Screen.height;
+
+            if (_focusBox != null)
+            {
                 _focusBox.style.position = Position.Absolute;
                 _focusBox.style.left = bounds.x;
                 _focusBox.style.top = bounds.y;
                 _focusBox.style.width = bounds.width;
                 _focusBox.style.height = bounds.height;
-
-                // 타겟 엘리먼트 자체의 마우스 클릭 입력 차단 완전 해제
-                targetElement.pickingMode = PickingMode.Ignore; 
             }
+
+            if (_maskTop != null) { _maskTop.style.left = 0; _maskTop.style.top = 0; _maskTop.style.width = sw; _maskTop.style.height = bounds.y; }
+            if (_maskBottom != null) { _maskBottom.style.left = 0; _maskBottom.style.top = bounds.y + bounds.height; _maskBottom.style.width = sw; _maskBottom.style.height = sh - (bounds.y + bounds.height); }
+            if (_maskLeft != null) { _maskLeft.style.left = 0; _maskLeft.style.top = bounds.y; _maskLeft.style.width = bounds.x; _maskLeft.style.height = bounds.height; }
+            if (_maskRight != null) { _maskRight.style.left = bounds.x + bounds.width; _maskRight.style.top = bounds.y; _maskRight.style.width = sw - (bounds.x + bounds.width); _maskRight.style.height = bounds.height; }
+
+            if (_guideLabel != null)
+            {
+                _guideLabel.style.position = Position.Absolute;
+                _guideLabel.style.width = 450;
+                float centerLeft = bounds.x + (bounds.width / 2f) - 225f;
+                _guideLabel.style.left = Mathf.Clamp(centerLeft, 30f, sw - 480f);
+
+                if (bounds.y + bounds.height + 140f > sh) _guideLabel.style.top = Mathf.Max(10f, bounds.y - 110f);
+                else _guideLabel.style.top = bounds.y + bounds.height + 20f;
+            }
+        }
+
+        private Rect CalculateWorldBoundsToScreen(GameObject targetGo)
+        {
+            Bounds objectBounds = new Bounds(targetGo.transform.position, Vector3.one * 1.5f);
+            if (targetGo.TryGetComponent<Collider>(out var collider)) objectBounds = collider.bounds;
+            else if (targetGo.TryGetComponent<SpriteRenderer>(out var renderer)) objectBounds = renderer.bounds;
+
+            Vector3 minScreen = mainCamera.WorldToScreenPoint(objectBounds.min);
+            Vector3 maxScreen = mainCamera.WorldToScreenPoint(objectBounds.max);
+
+            float x = Mathf.Min(minScreen.x, maxScreen.x);
+            float y = Screen.height - Mathf.Max(minScreen.y, maxScreen.y);
+            return new Rect(x, y, Mathf.Abs(maxScreen.x - minScreen.x), Mathf.Abs(maxScreen.y - minScreen.y));
         }
 
         private void OnSkipButtonTriggered()
@@ -82,14 +398,22 @@ namespace Bond.Tutorial
             var buildingDB = DBSORegistry.GetDb<BuildingDataBaseSO>();
             BuildingData supplySO = buildingDB?.FindSO<BuildingData>(d => d.buildingType == BuildingType.Supply);
             BuildingData storageSO = buildingDB?.FindSO<BuildingData>(d => d.buildingType == BuildingType.Storage);
-
             _controller.Skip(supplySO, storageSO);
         }
 
         private void OnTutorialCleared()
         {
             if (_barrier != null) _barrier.style.display = DisplayStyle.None;
-            Debug.Log("<color=lime>[Tutorial Visual]</color> 마을 튜토리얼 뷰 정상 종료.");
+            UnregisterGlobalCallbacks();
+        }
+
+        private void UnregisterGlobalCallbacks()
+        {
+            if (_root?.panel?.visualTree != null)
+            {
+                _root.panel.visualTree.UnregisterCallback<PointerDownEvent>(OnCapturedPointerDown, TrickleDown.TrickleDown);
+                _root.panel.visualTree.UnregisterCallback<PointerUpEvent>(OnCapturedPointerUp, TrickleDown.TrickleDown);
+            }
         }
 
         private void OnDestroy()
@@ -99,6 +423,7 @@ namespace Bond.Tutorial
                 _controller.OnStepChanged -= OnStepUpdated;
                 _controller.OnTutorialFinished -= OnTutorialCleared;
             }
+            UnregisterGlobalCallbacks();
         }
     }
 }

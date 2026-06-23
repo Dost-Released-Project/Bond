@@ -13,9 +13,15 @@ MonoBehaviour:
   m_Name: TUT_A_01
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_01
-  _displayName: "\uCD5C\uCD08 \uC9C4\uC785 \uC790\uC6D0 \uAC00\uC774\uB4DC"
+  _displayName: "\uCD5C\uCD08 \uC9C4\uC785 \uC790\uC6D0 \uD655\uC778"
   _description: "\uD654\uBA74 \uC0C1\uB2E8\uC758 \uC601\uC9C0 \uC790\uC6D0\uC744
-    \uD655\uC778\uD558\uC138\uC694. \uAE30\uBCF8 \uBCF4\uAE09 \uBE44\uC6A9\uC774
-    \uCDA9\uC804\uB429\uB2C8\uB2E4."
+    \uD655\uC778\uD558\uC138\uC694. \uAC74\uBB3C \uAC74\uC124 \uBC0F \uBCF4\uAE09
+    \uC694\uCCAD\uC5D0 \uC0AC\uC6A9\uB429\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: ResourceStatusBar
+  _targetUiKey: Resource/resource-container
+  _clickType: 2
+  _rewardFrontier: 1100
+  _rewardWood: 100
+  _rewardOre: 100
+  _rewardItemIds: 
+  _rewardItemCounts: 

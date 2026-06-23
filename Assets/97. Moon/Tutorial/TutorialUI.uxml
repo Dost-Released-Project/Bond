@@ -1,0 +1,14 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/97.%20Moon/Tutorial/TutorialStyle.uss?fileID=7433441132597879392&amp;guid=04fa040d1441ca242bde48f779dca75b&amp;type=3#TutorialStyle"/>
+    <ui:VisualElement name="TutorialBarrier" picking-mode="Ignore" style="flex-grow: 1; position: absolute; left: 0; right: 0; top: 0; bottom: 0;">
+        <ui:VisualElement name="FocusBox" picking-mode="Ignore" style="position: absolute;"/>
+        <ui:VisualElement name="Mask_Top" style="flex-grow: 1; position: absolute; background-color: rgba(0, 0, 0, 0.65);"/>
+        <ui:VisualElement name="Mask_Bottom" style="flex-grow: 1; position: absolute; background-color: rgba(0, 0, 0, 0.65);"/>
+        <ui:VisualElement name="Mask_Left" style="flex-grow: 1; position: absolute; background-color: rgba(0, 0, 0, 0.65);"/>
+        <ui:VisualElement name="Mask_Right" style="flex-grow: 1; position: absolute; background-color: rgba(0, 0, 0, 0.65);"/>
+        <ui:VisualElement name="GuideContainer" picking-mode="Ignore" style="flex-grow: 1; position: absolute; top: 0; right: 0; bottom: 0; left: 0;">
+            <ui:Button text="Skip" name="SkipButton" style="right: 40px; bottom: 40px; position: absolute;"/>
+            <ui:Label text="Label" name="GuideTextLabel"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,25 @@
+#FocusBox
+{
+    position: absolute;
+
+    /* 노란색 하이라이트 테두리 선언 */
+    border-left-color: #FFFF00;
+    border-right-color: #FFFF00;
+    border-top-color: #FFFF00;
+    border-bottom-color: #FFFF00;
+
+    border-left-width: 3px;
+    border-right-width: 3px;
+    border-top-width: 3px;
+    border-bottom-width: 3px;
+}
+
+#GuideTextLabel
+{
+    white-space: normal;
+    flex-shrink: 0;
+    color: white ;
+    background-color: rgba(0, 0, 0, 0.85);
+    padding: 12px;
+    border-radius: 6px;
+}
