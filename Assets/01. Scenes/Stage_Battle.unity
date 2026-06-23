@@ -882,10 +882,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7170329808473262844, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
-      propertyPath: side
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1099,6 +1095,22 @@ PrefabInstance:
     - target: {fileID: 5718782545273320520, guid: a89cdd7fe3dc956409e3fb793963a739, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8004178338331398444, guid: a89cdd7fe3dc956409e3fb793963a739, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8004178338331398444, guid: a89cdd7fe3dc956409e3fb793963a739, type: 3}
+      propertyPath: m_Color.b
+      value: 0.31132078
+      objectReference: {fileID: 0}
+    - target: {fileID: 8004178338331398444, guid: a89cdd7fe3dc956409e3fb793963a739, type: 3}
+      propertyPath: m_Color.g
+      value: 0.31132078
+      objectReference: {fileID: 0}
+    - target: {fileID: 8004178338331398444, guid: a89cdd7fe3dc956409e3fb793963a739, type: 3}
+      propertyPath: m_Color.r
+      value: 0.31132078
       objectReference: {fileID: 0}
     - target: {fileID: 9078333816197698050, guid: a89cdd7fe3dc956409e3fb793963a739, type: 3}
       propertyPath: m_Camera
@@ -1461,14 +1473,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7170329808473262844, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
-      propertyPath: rank
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7170329808473262844, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
-      propertyPath: side
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1659,14 +1663,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7170329808473262844, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
-      propertyPath: rank
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 7170329808473262844, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
-      propertyPath: m_CharacterSlotBar
-      value: 
-      objectReference: {fileID: 1444995347}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1688,17 +1684,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f25c83b6afce6d8459a5bb051a863222, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02._Scripts.BattleSystem.CharacterSlot
---- !u!114 &1444995347 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2108399142230142152, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
-  m_PrefabInstance: {fileID: 1444995344}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 715ced12083b7f54a89b8c8f3bcceec5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1504683922
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1790,14 +1775,6 @@ PrefabInstance:
     - target: {fileID: 5937003464936598925, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7170329808473262844, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
-      propertyPath: rank
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 7170329808473262844, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
-      propertyPath: side
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1989,14 +1966,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7170329808473262844, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
-      propertyPath: rank
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 7170329808473262844, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
-      propertyPath: side
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2176,14 +2145,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7170329808473262844, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
-      propertyPath: rank
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 7170329808473262844, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
-      propertyPath: m_CharacterSlotBar
-      value: 
-      objectReference: {fileID: 1922522090}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2205,17 +2166,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f25c83b6afce6d8459a5bb051a863222, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02._Scripts.BattleSystem.CharacterSlot
---- !u!114 &1922522090 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2108399142230142152, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
-  m_PrefabInstance: {fileID: 1922522087}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 715ced12083b7f54a89b8c8f3bcceec5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &2030130099
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2308,14 +2258,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7170329808473262844, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
-      propertyPath: rank
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7170329808473262844, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
-      propertyPath: m_CharacterSlotBar
-      value: 
-      objectReference: {fileID: 2030130102}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2337,17 +2279,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f25c83b6afce6d8459a5bb051a863222, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02._Scripts.BattleSystem.CharacterSlot
---- !u!114 &2030130102 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2108399142230142152, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
-  m_PrefabInstance: {fileID: 2030130099}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 715ced12083b7f54a89b8c8f3bcceec5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &455856069565309980
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2559,18 +2490,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5937003464936598925, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8122403744604830988, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
-      propertyPath: m_currentColor.b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8122403744604830988, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
-      propertyPath: m_currentColor.g
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8122403744604830988, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
-      propertyPath: m_currentColor.r
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
