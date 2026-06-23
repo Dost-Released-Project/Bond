@@ -13,12 +13,11 @@ MonoBehaviour:
   m_Name: TUT_A_56
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_56
-  _displayName: "\uC131\uD5A5"
-  _description: "\uC131\uD5A5 \uBAA9\uB85D\uC785\uB2C8\uB2E4. \uBA87\uBA87 \uC131\uD5A5\uC740
-    \uC7A0\uACA8\uC788\uACE0 \uC815\uC2E0\uAC01\uC131\uC81C\uB97C \uD1B5\uD574 \uD574\uAE08\uD560
-    \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+  _displayName: "\uB9AC\uC561\uC158 \uC124\uC815"
+  _description: "\uC870\uAC74\uC744 \uCDA9\uC871\uD560 \uC2DC \uC9C4\uD589\uD558\uB294
+    \uD589\uB3D9\uC785\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: CharacterDetailUi/char-detail__trait-list
+  _targetUiKey: CharacterDetailUi/reaction-slot-1__action-part
   _clickType: 2
   _rewardFrontier: 0
   _rewardWood: 0

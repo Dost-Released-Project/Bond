@@ -7,9 +7,9 @@ namespace Bond.Tutorial
 {
     public class TutorialSystemController
     {
-        private readonly ResourceManager _resourceManager;
-        private readonly TotalInventory _totalInventory;
-        private readonly SettlementManager _settlementManager;
+            private readonly ResourceManager _resourceManager;
+            private readonly TotalInventory _totalInventory;
+            private readonly SettlementManager _settlementManager;
 
         // 세이브 데이터 키 고정
         private const string SAVE_KEY = "tutorial_progress";
@@ -156,6 +156,8 @@ namespace Bond.Tutorial
             _totalInventory.AddItemId("08000000", 1);
             _totalInventory.AddItemId("08010000", 1);
             _totalInventory.AddItemId("08020000", 1);
+
+            _resourceManager.ConsumeResources(1100, 100, 100);
 
             // 3. 인벤토리 수납 영구 각인
             _totalInventory.SaveTotalInventory();

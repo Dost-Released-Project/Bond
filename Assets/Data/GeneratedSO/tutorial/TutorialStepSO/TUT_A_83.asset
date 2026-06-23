@@ -14,12 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_83
   _displayName: "\uD0D0\uC0AC \uCD9C\uBC1C"
-  _description: "\uD0D0\uC0AC \uCD9C\uBC1C\uC744 \uD074\uB9AD\uD558\uC138\uC694."
+  _description: "\uC774\uC804 \uB2E8\uACC4\uB97C \uB204\uB974\uBA74 \uCCAB\uBC88\uC9F8
+    \uD398\uC774\uC9C0\uB85C \uB3CC\uC544\uAC00\uACE0 \uD0D0\uC0AC \uCD9C\uBC1C\uC744
+    \uB204\uB974\uBA74 \uD0D0\uC0AC\uB97C \uC2DC\uC791\uD569\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: TownUi/btn-depart
-  _clickType: 0
+  _targetUiKey: TownUi/embark__footer--step2
+  _clickType: 1
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0
-  _rewardItemIds: 08000000,08010000,08020000
-  _rewardItemCounts: 1,1,1
+  _rewardItemIds: 
+  _rewardItemCounts: 
