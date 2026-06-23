@@ -17,7 +17,7 @@ MonoBehaviour:
   _description: "\uCC3D\uACE0\uC5D0\uC11C\uB294 \uD604\uC7AC \uC9C0\uB2CC \uC544\uC774\uD15C\uC744
     \uD655\uC778\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: Inventory.inventory-container
+  _targetUiKey: Inventory/inventory-container
   _clickType: 1
   _rewardFrontier: 0
   _rewardWood: 0

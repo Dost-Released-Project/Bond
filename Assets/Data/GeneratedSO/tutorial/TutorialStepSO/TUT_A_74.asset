@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: TUT_A_74
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_74
-  _displayName: "\uBB3C\uC790 \uD3B8\uC131"
-  _description: "\uC544\uC774\uD15C\uC744 \uD074\uB9AD\uD574\uC11C \uD0D0\uC0AC \uBB3C\uD488\uC5D0
-    \uCD94\uAC00\uD558\uC138\uC694."
+  _displayName: "\uC124\uC815"
+  _description: "\uBAA8\uB4E0 \uC124\uC815\uC774 \uB05D\uB0AC\uC2B5\uB2C8\uB2E4.
+    \uC0C1\uC138\uCC3D\uC744 \uB2EB\uC73C\uC138\uC694."
   _sequence: 0
-  _targetUiKey: TownUi.embark__town-inventory__list
-  _clickType: 2
+  _targetUiKey: CharacterDetailUi/character-detail__close-btn
+  _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

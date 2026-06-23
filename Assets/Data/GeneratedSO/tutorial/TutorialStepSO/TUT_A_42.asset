@@ -18,8 +18,8 @@ MonoBehaviour:
     \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uC774\uC81C \uD14C\uB450\uB9AC\uAC00 \uC5C6\uB294
     \uC2A4\uD0AC \uC911 \uD558\uB098\uB97C \uD074\uB9AD\uD558\uC138\uC694."
   _sequence: 0
-  _targetUiKey: CharacterDetailUi.char-detail__skill-grid
-  _clickType: 2
+  _targetUiKey: CharacterDetailUi/char-detail__skill-grid
+  _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_37
   _displayName: "\uC5ED\uD560 \uC124\uC815"
-  _description: "\uD0F1\uCEE4 \uBC84\uD2BC\uC744 \uD074\uB9AD\uD558\uC138\uC694."
+  _description: "\uD0F1\uCEE4\uB97C \uD074\uB9AD\uD558\uC138\uC694."
   _sequence: 0
-  _targetUiKey: CharacterDetailUi.role-btn-current
-  _clickType: 2
+  _targetUiKey: CharacterDetailUi/role-btn-current
+  _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

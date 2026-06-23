@@ -18,8 +18,8 @@ MonoBehaviour:
     \uC9C0\uC5ED \uC124\uC815\uACFC \uD30C\uD2F0 \uC124\uC815\uC744 \uD560 \uC218
     \uC788\uC2B5\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: TownUi.embark__step1
-  _clickType: 2
+  _targetUiKey: TownUi/embark__step1
+  _clickType: 1
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

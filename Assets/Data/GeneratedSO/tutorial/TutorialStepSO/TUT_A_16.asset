@@ -19,7 +19,7 @@ MonoBehaviour:
     \uC774\uC804\uC5D0 \uC9C0\uAE09\uB41C \uC790\uC6D0\uC744 \uC0AC\uC6A9\uD574\uC11C
     \uAC74\uBB3C\uC744 \uAC74\uC124\uD558\uC138\uC694."
   _sequence: 0
-  _targetUiKey: Construction.btn-confirm
+  _targetUiKey: Construction/btn-confirm
   _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0

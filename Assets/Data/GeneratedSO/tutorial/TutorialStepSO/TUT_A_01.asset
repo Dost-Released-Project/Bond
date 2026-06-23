@@ -18,7 +18,7 @@ MonoBehaviour:
     \uD655\uC778\uD558\uC138\uC694. \uAC74\uBB3C \uAC74\uC124 \uBC0F \uBCF4\uAE09
     \uC694\uCCAD\uC5D0 \uC0AC\uC6A9\uB429\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: Resource.resource-container
+  _targetUiKey: Resource/resource-container
   _clickType: 2
   _rewardFrontier: 1100
   _rewardWood: 100

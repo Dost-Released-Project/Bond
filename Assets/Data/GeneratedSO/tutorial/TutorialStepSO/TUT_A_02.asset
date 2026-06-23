@@ -17,7 +17,7 @@ MonoBehaviour:
   _description: "\uC790\uC6D0\uC774 \uC9C0\uAE09\uB418\uC5C8\uC2B5\uB2C8\uB2E4. \uC790\uC6D0\uC740
     \uC21C\uC11C\uB300\uB85C \uB370\uC774\uD130, \uBAA9\uC7AC, \uAD11\uC11D\uC785\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: Resource.resource-container
+  _targetUiKey: Resource/resource-container
   _clickType: 2
   _rewardFrontier: 0
   _rewardWood: 0

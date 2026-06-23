@@ -13,11 +13,10 @@ MonoBehaviour:
   m_Name: TUT_A_72
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_72
-  _displayName: "\uC9C0\uB2CC \uC544\uC774\uD15C"
-  _description: "\uD604\uC7AC \uC9C0\uB2C8\uACE0 \uC788\uB294 \uBB3C\uC790\uC785\uB2C8\uB2E4.
-    \uCC3D\uACE0\uC5D0\uC11C \uC790\uC138\uD55C \uD655\uC778\uC774 \uAC00\uB2A5\uD569\uB2C8\uB2E4."
+  _displayName: "\uC131\uD5A5"
+  _description: "\uC131\uD5A5\uC744 \uD655\uC778\uD558\uC138\uC694"
   _sequence: 0
-  _targetUiKey: TownUi.embark__step2.unity-content-and-vertical-scroll-container
+  _targetUiKey: CharacterDetailUi/char-detail__trait-list
   _clickType: 2
   _rewardFrontier: 0
   _rewardWood: 0

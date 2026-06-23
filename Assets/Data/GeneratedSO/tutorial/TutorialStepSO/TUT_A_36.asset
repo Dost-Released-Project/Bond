@@ -16,8 +16,8 @@ MonoBehaviour:
   _displayName: "\uC5ED\uD560 \uC124\uC815"
   _description: "\uC6B0\uC120 \uC5ED\uD560 \uC124\uC815\uC785\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: CharacterDetailUi.char-detail__role-area
-  _clickType: 2
+  _targetUiKey: CharacterDetailUi/char-detail__role-area
+  _clickType: 1
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

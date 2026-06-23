@@ -53,7 +53,7 @@ namespace Bond.Tutorial
             _maskLeft = _barrier?.Q<VisualElement>("Mask_Left");
             _maskRight = _barrier?.Q<VisualElement>("Mask_Right");
 
-            if (_barrier != null) _barrier.pickingMode = PickingMode.Ignore;
+            if (_barrier != null) _barrier.pickingMode = PickingMode.Position;
             if (_focusBox != null) _focusBox.pickingMode = PickingMode.Ignore;
             if (_guideLabel != null) _guideLabel.pickingMode = PickingMode.Ignore;
 
@@ -65,7 +65,6 @@ namespace Bond.Tutorial
 
             if (_skipButton != null) _skipButton.clicked += OnSkipButtonTriggered;
 
-            // 💥 [핵심 개혁] 잘못된 클릭 유형이 하부 인게임 UI를 자극하기 전에 '이벤트 터널링 단계'에서 가로챕니다.
             _root.panel.visualTree.RegisterCallback<PointerDownEvent>(OnCapturedPointerDown, TrickleDown.TrickleDown);
             _root.panel.visualTree.RegisterCallback<PointerUpEvent>(OnCapturedPointerUp, TrickleDown.TrickleDown);
 
@@ -103,20 +102,17 @@ namespace Bond.Tutorial
             }
         }
 
-        // 💥 [인게임 클릭 원천 차단기 1] 누르는 순간 필터링
         private void OnCapturedPointerDown(PointerDownEvent evt)
         {
             if (_barrier == null || _barrier.style.display == DisplayStyle.None) return;
             if (_skipButton != null && _skipButton.worldBound.Contains(evt.position)) return;
 
-            // 허용되지 않은 마우스 입력이 들어왔을 때 이벤트 전파 자체를 말소시킵니다.
             if (!IsValidClickRequirement(evt.button))
             {
                 evt.StopPropagation();
             }
         }
 
-        // 💥 [인게임 클릭 원천 차단기 2] 뗄 때도 동일하게 차단하여 완벽 방어
         private void OnCapturedPointerUp(PointerUpEvent evt)
         {
             if (_barrier == null || _barrier.style.display == DisplayStyle.None) return;
@@ -128,7 +124,6 @@ namespace Bond.Tutorial
             }
         }
 
-        // 💥 클릭 조건 일치 여부 정밀 검증기
         private bool IsValidClickRequirement(int mouseButton)
         {
             if (mouseButton != 0 && mouseButton != 1) return false;
@@ -138,18 +133,46 @@ namespace Bond.Tutorial
 
             if (requiredClickType != TutorialClickType.AnyClick && inputClickType != requiredClickType)
             {
-                return false; // 조건 불일치
+                return false; 
             }
-            return true; // 정상 유효 클릭
+            return true; 
         }
 
-        // 전역 물리 마우스 해제 시점에 단약을 안전하게 전진시키는 감시 루프
         private void HandleUniversalInputTracking()
         {
             if (_isStepPendingAdvance) return;
 
             Mouse mouse = Mouse.current;
             if (mouse == null) return;
+            
+            // 🔒 잘못된 버튼을 누르거나 유지 중일 때는 배리어가 무조건 마우스를 막아 상호작용 차단
+            if (_currentStepData != null && _currentStepData.ClickType != TutorialClickType.AnyClick)
+            {
+                if (_currentStepData.ClickType == TutorialClickType.LeftClick && mouse.rightButton.isPressed)
+                {
+                    _barrier.pickingMode = PickingMode.Position;
+                    return;
+                }
+                if (_currentStepData.ClickType == TutorialClickType.RightClick && mouse.leftButton.isPressed)
+                {
+                    _barrier.pickingMode = PickingMode.Position;
+                    return;
+                }
+            }
+
+            // 마우스 포인터의 현재 위치 계산
+            Vector2 mo = mouse.position.ReadValue();
+            Vector2 lo = new Vector2(mo.x, Screen.height - mo.y);
+
+            // 타겟 영역 안에 마우스가 들어가 있을 때만 하부 UI가 클릭되도록 pickingMode를 열어줍니다.
+            if (_calculatedBounds.Contains(lo))
+            {
+                _barrier.pickingMode = PickingMode.Ignore; // 클릭 허용
+            }
+            else
+            {
+                _barrier.pickingMode = PickingMode.Position; // 클릭 차단
+            }
 
             bool leftReleased = mouse.leftButton.wasReleasedThisFrame;
             bool rightReleased = mouse.rightButton.wasReleasedThisFrame;
@@ -158,7 +181,6 @@ namespace Bond.Tutorial
             {
                 int currentButton = leftReleased ? 0 : 1;
                 
-                // 이번 프레임 물리 입력이 데이터 요구 조건과 다르면 단약 전진 프로세스 패스
                 if (!IsValidClickRequirement(currentButton)) return;
 
                 Vector2 mousePos = mouse.position.ReadValue();
@@ -196,7 +218,6 @@ namespace Bond.Tutorial
 
         private void LateUpdate()
         {
-            // Update 단계에서 좌표 계산 및 차단이 끝난 후 안전하게 입력 상태를 감시합니다.
             if (_barrier != null && _barrier.style.display == DisplayStyle.Flex && !string.IsNullOrEmpty(_targetKey))
             {
                 HandleUniversalInputTracking();
@@ -229,20 +250,24 @@ namespace Bond.Tutorial
             _calculatedBounds = new Rect(0, 0, 0, 0);
             _isStepPendingAdvance = false;
 
-            _isTrackingWorld = !string.IsNullOrEmpty(_targetKey) && !_targetKey.Contains(".") && GameObject.Find(_targetKey) != null;
+            // 💥 점(.)대신 쉼표(,)를 구분자로 사용하므로 월드 오브젝트 체크 조건도 변경합니다.
+            _isTrackingWorld = !string.IsNullOrEmpty(_targetKey) && !_targetKey.Contains(",") && GameObject.Find(_targetKey) != null;
 
             if (_guideLabel != null) _guideLabel.text = stepData.Description;
         }
 
+        // 🔄 이름과 클래스를 모두 유연하게 찾아주는 핵심 리팩토링 구역
         private VisualElement FindTargetVisualElement(string key)
         {
             if (string.IsNullOrEmpty(key)) return null;
 
-            string[] split = key.Split('.');
+            // /를 구분 기호로 사용하여 split을 수행합니다.
+            string[] split = key.Split('/');
 
-            // 1. 계층형 경로 검색 (예: TownUi.embark-overlay.roster-panel)
+            // 1. 계층형 경로 검색 (예: TownUi, embark-overlay, .btn-style)
             if (split.Length > 1)
             {
+                // 첫 번째 요소는 무조건 템플릿을 소유한 GameObject 이름 (클래스일 수 없으므로 Trim만 처리)
                 GameObject docGo = GameObject.Find(split[0].Trim());
                 if (docGo != null && docGo.TryGetComponent<UIDocument>(out var specDoc))
                 {
@@ -251,17 +276,9 @@ namespace Bond.Tutorial
 
                     for (int i = 1; i < split.Length; i++)
                     {
-                        string targetName = split[i].Trim();
-                
-                        // 일반 검색 후, 실패 시 템플릿 내부(contentContainer) 스코프에서 재검색
-                        VisualElement next = current.Q<VisualElement>(targetName);
-                        if (next == null && current is TemplateContainer template)
-                        {
-                            next = template.contentContainer.Q<VisualElement>(targetName);
-                        }
-
-                        current = next;
-                        if (current == null) return null; // 중간 경로가 끊기면 즉시 예외 반환
+                        // 내부 헬퍼 메서드(QueryElement)를 통해 이름 혹은 클래스로 다음 분기를 검색합니다.
+                        current = QueryElement(current, split[i].Trim());
+                        if (current == null) return null; 
                     }
                     return current;
                 }
@@ -274,13 +291,61 @@ namespace Bond.Tutorial
                 {
                     if (doc != null && doc != townUiDocument && doc.rootVisualElement != null)
                     {
-                        var el = doc.rootVisualElement.Q<VisualElement>(key);
+                        var el = QueryElement(doc.rootVisualElement, key.Trim());
                         if (el != null) return el;
                     }
                 }
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// 점(.)의 유무를 판별하여 이름 또는 USS 클래스로 요소를 정밀 검색하는 헬퍼 메서드
+        /// </summary>
+        private VisualElement QueryElement(VisualElement root, string target)
+        {
+            if (root == null || string.IsNullOrEmpty(target)) return null;
+
+            VisualElement result = null;
+
+            // 1. 기본 검색 (클래스 vs 이름)
+            if (target.StartsWith("."))
+            {
+                string className = target.Substring(1);
+                result = root.Q<VisualElement>(name: null, className: className);
+        
+                if (result == null && root is TemplateContainer template)
+                {
+                    result = template.contentContainer.Q<VisualElement>(name: null, className: className);
+                }
+            }
+            else
+            {
+                result = root.Q<VisualElement>(target);
+        
+                if (result == null && root is TemplateContainer template)
+                {
+                    result = template.contentContainer.Q<VisualElement>(target);
+                }
+            }
+
+            // 💥 [핵심 보강] 만약 자식 중에 못 찾았는데, 현재 root가 Label처럼 자식을 가질 수 없는 엘리먼트라면?
+            // 부모(parent)로 한 단계 올라가서 그 부모의 전체 자식 중에서 다시 검색해봅니다. (형제 노드 검색)
+            if (result == null && root.parent != null)
+            {
+                if (target.StartsWith("."))
+                {
+                    string className = target.Substring(1);
+                    result = root.parent.Q<VisualElement>(name: null, className: className);
+                }
+                else
+                {
+                    result = root.parent.Q<VisualElement>(target);
+                }
+            }
+
+            return result;
         }
 
         private void ApplyLayout(Rect bounds)

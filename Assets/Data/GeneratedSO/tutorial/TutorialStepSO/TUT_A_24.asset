@@ -18,7 +18,7 @@ MonoBehaviour:
     \uD655\uC778\uD588\uB2E4\uBA74, \uC774\uC81C \uD0D0\uC0AC \uCD9C\uBC1C \uBC84\uD2BC\uC744
     \uB20C\uB7EC \uCD9C\uBC1C\uD558\uC138\uC694"
   _sequence: 0
-  _targetUiKey: TownUi.embark-btn
+  _targetUiKey: TownUi/embark-btn
   _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0
