@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using BattleSystem.UI;
 using Bond.UI;
 using Cysharp.Threading.Tasks;
@@ -549,6 +550,13 @@ namespace Bond.UI
             var chip = new VisualElement();
             chip.AddToClassList("char-detail__skill-chip");
 
+            // 스킬 아이콘(주소는 SkillData.IconAddress, Addressables). 주소 없으면 빈 칸.
+            var icon = new Image { scaleMode = ScaleMode.ScaleToFit };
+            icon.AddToClassList("char-detail__skill-chip-icon");
+            chip.Add(icon);
+            if (!string.IsNullOrEmpty(data?.IconAddress))
+                LoadImageSpriteAsync(icon, data.IconAddress).Forget();
+
             var nameLabel = new Label(data?.DisplayName ?? "?");
             nameLabel.AddToClassList("char-detail__skill-name");
             chip.Add(nameLabel);
@@ -582,9 +590,14 @@ namespace Bond.UI
             var reaction = GetReactionAt(i);
 
             // 리액션 미선택(역할) 또는 성향 미해금/무반응 → 3분할 숨김, 헤더만.
+            // 빈 상태를 헤더 문구로 알린다: 역할=선택 유도, 성향=비어 있음.
             if (reaction == null)
             {
-                if (_reactionHeaderLabels[i] != null) _reactionHeaderLabels[i].text = kind;
+                if (_reactionHeaderLabels[i] != null)
+                {
+                    _reactionHeaderLabels[i].text = isRole ? $"{kind} - 리액션을 선택하세요" : $"{kind} - 비어 있음";
+                    _reactionHeaderLabels[i].AddToClassList("char-detail__slot-header-label--empty");
+                }
                 if (_reactionParts[i] != null) _reactionParts[i].style.display = DisplayStyle.None;
                 // 역할은 '선택 가능'(잠금 아님), 성향은 잠금 표시.
                 _reactionSlots[i].EnableInClassList("char-detail__reaction-slot--locked", !isRole);
@@ -598,7 +611,10 @@ namespace Bond.UI
             var def = _controller.GetSlotDefinition(i);
             string defName = def?.DisplayName;
             if (_reactionHeaderLabels[i] != null)
+            {
+                _reactionHeaderLabels[i].RemoveFromClassList("char-detail__slot-header-label--empty");
                 _reactionHeaderLabels[i].text = string.IsNullOrEmpty(defName) ? kind : $"{kind} - {defName}";
+            }
 
             if (_reactionParts[i] != null) _reactionParts[i].style.display = DisplayStyle.Flex;
 
@@ -720,9 +736,19 @@ namespace Bond.UI
             icon.sprite = sprite;
         }
 
+        // 주소→스프라이트 캐시. 그리드/드롭다운이 갱신 때마다 재빌드되므로 같은 주소를 매번
+        // 다시 로드(=Addressables 핸들 누적)하지 않도록 한 번 로드한 스프라이트를 재사용한다.
+        private static readonly Dictionary<string, Sprite> _iconSpriteCache = new Dictionary<string, Sprite>();
+
         private static async UniTask<Sprite> TryLoadSpriteAsync(string address)
         {
             if (string.IsNullOrEmpty(address)) return null;
+
+            if (_iconSpriteCache.TryGetValue(address, out var cached))
+            {
+                if (cached != null) return cached;   // Unity-null 체크: 파괴된 스프라이트면 캐시 무효 → 재로드
+                _iconSpriteCache.Remove(address);
+            }
 
             var locHandle = Addressables.LoadResourceLocationsAsync(address);
             var locations = await locHandle.ToUniTask();
@@ -735,7 +761,9 @@ namespace Bond.UI
                 return null;
             }
 
-            return await Addressables.LoadAssetAsync<Sprite>(address).ToUniTask();
+            var sprite = await Addressables.LoadAssetAsync<Sprite>(address).ToUniTask();
+            if (sprite != null) _iconSpriteCache[address] = sprite;
+            return sprite;
         }
 
         private void ToggleRolePicker()
@@ -774,8 +802,9 @@ namespace Bond.UI
 
         private void OpenCatalogDropdown(int slot)
         {
+            // 카탈로그 항목엔 대상·조건·행동 미리보기 부제가 붙어 더 넓게 연다(--wide).
             var anchor = _reactionHeaders[slot];
-            if (anchor != null) ToggleDropdown(anchor, c => BuildCatalogItems(slot, c));
+            if (anchor != null) ToggleDropdown(anchor, c => BuildCatalogItems(slot, c), "char-detail__dropdown--wide");
         }
 
         private void OpenObserveDropdown(int slot)
@@ -791,11 +820,11 @@ namespace Bond.UI
         }
 
         // 같은 앵커를 다시 누르면 토글로 닫는다.
-        private void ToggleDropdown(VisualElement anchor, Action<VisualElement> build)
+        private void ToggleDropdown(VisualElement anchor, Action<VisualElement> build, string variantClass = null)
         {
             if (_dropdown == null) return;
             if (_dropdown.CurrentAnchor == anchor) { _dropdown.Close(); return; }
-            _dropdown.Open(anchor, build);
+            _dropdown.Open(anchor, build, variantClass);
         }
 
         private void BuildCatalogItems(int slot, VisualElement container)
@@ -874,7 +903,7 @@ namespace Bond.UI
                 var icon = new Image { scaleMode = ScaleMode.ScaleAndCrop };
                 icon.AddToClassList("char-detail__dropdown-item-icon");
                 item.Add(icon);
-                LoadDropdownIconAsync(icon, iconAddress).Forget();
+                LoadImageSpriteAsync(icon, iconAddress).Forget();
             }
 
             var textCol = new VisualElement();
@@ -892,10 +921,12 @@ namespace Bond.UI
             return item;
         }
 
-        private static async UniTaskVoid LoadDropdownIconAsync(Image icon, string address)
+        // 새로 만들어 재사용하지 않는 Image(드롭다운 행·스킬 그리드 칩)에 스프라이트를 비동기 로드.
+        // 패널 부착 전에 로드가 끝나도 sprite 는 유지됐다가 부착 시 렌더되므로 panel 체크로 폐기하지 않는다.
+        private static async UniTaskVoid LoadImageSpriteAsync(Image icon, string address)
         {
             var sprite = await TryLoadSpriteAsync(address);
-            if (sprite == null || icon == null || icon.panel == null) return;
+            if (sprite == null || icon == null) return;
             icon.sprite = sprite;
         }
 

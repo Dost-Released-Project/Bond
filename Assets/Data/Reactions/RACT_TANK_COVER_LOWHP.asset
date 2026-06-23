@@ -23,34 +23,40 @@ MonoBehaviour:
     SubjectCharacterId: 
     DefinitionId: 
     Trigger:
-      rid: 2064474984977793109
-    Effect:
-      rid: 6587028310960111693
+      rid: 2064475423826247857
+    BaseEffect:
+      rid: 2064475423826247858
+    AltEffect:
+      rid: -2
   EditableSlots: []
+  TargetTextOverride: 
+  ConditionTextOverride: 
+  ActionTextOverride: 
   references:
     version: 2
     RefIds:
-    - rid: 2064474984977793109
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 2064475423826247857
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:
         _condition:
           Additional:
-          - rid: 2064474984977793111
-          - rid: 2064474984977793112
-          - rid: 2064474984977793113
-    - rid: 2064474984977793111
+          - rid: 2064475423826247859
+          - rid: 2064475423826247860
+          - rid: 2064475423826247861
+    - rid: 2064475423826247858
+      type: {class: InterceptReactionEffect, ns: Reactions, asm: Assembly-CSharp}
+      data: 
+    - rid: 2064475423826247859
       type: {class: SubjectCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
         Filter: 2
-    - rid: 2064474984977793112
+    - rid: 2064475423826247860
       type: {class: SkillTypeCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
         Types: 0100000003000000
-    - rid: 2064474984977793113
+    - rid: 2064475423826247861
       type: {class: HpBelowCondition, ns: Reactions, asm: Assembly-CSharp}
       data:
         Threshold: 0.2
-    - rid: 6587028310960111693
-      type: {class: CompositeReactionEffect, ns: Reactions, asm: Assembly-CSharp}
-      data:
-        Effects: []
