@@ -1,4 +1,7 @@
 using UnityEngine;
+using System.Collections.Generic;
+using Buffs;
+using BattleSystem;
 
 namespace Shapes {
 
@@ -13,6 +16,40 @@ namespace Shapes {
 		public Color currentColor = Color.gray;
 		[Range( 0, 1 )]
 		public float alpha = 1f;
+		public Color defaultBorderColor = new Color(0.5f, 0.5f, 0.5f, 1f);
+
+		[Header("Turn Indicator Settings")]
+		[SerializeField] private Rectangle turnIndicatorRect;
+		[SerializeField] private float blinkSpeed = 4f;
+
+		private bool _isTurnActive = false;
+		public bool isTurnActive {
+			get => _isTurnActive;
+			set {
+				if (_isTurnActive != value) {
+					_isTurnActive = value;
+					if (turnIndicatorRect != null) {
+						turnIndicatorRect.gameObject.SetActive(value);
+					}
+				}
+			}
+		}
+
+		private void Start() {
+			if (turnIndicatorRect != null) {
+				CharacterSlot slot = GetComponentInParent<CharacterSlot>();
+				_isTurnActive = slot != null && slot.IsActing;
+				turnIndicatorRect.gameObject.SetActive(_isTurnActive);
+			}
+		}
+
+		private void Update() {
+			if (_isTurnActive && turnIndicatorRect != null) {
+				Color col = turnIndicatorRect.Color;
+				col.a = 0.5f + Mathf.Sin(Time.unscaledTime * blinkSpeed) * 0.3f;
+				turnIndicatorRect.Color = col;
+			}
+		}
 
 		public override void DrawPanelShapes( Rect rect, ImCanvasContext ctx ) {
 			if( colorGradient1 == null || colorGradient2 == null ) 
