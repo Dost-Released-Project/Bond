@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_69
   _displayName: "\uB9AC\uC561\uC158 \uC124\uC815"
-  _description: "\uC870\uAC74\uC744 \uD655\uC778\uD558\uC138\uC694."
+  _description: "\uB51C\uB7EC\uB294 \uC790\uC2E0\uC758 \uD589\uB3D9\uC5D0 \uB530\uB77C
+    \uB9AC\uC561\uC158\uC744 \uBC1C\uB3D9\uD569\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: CharacterDetailUi/reaction-slot-1__condition-part
+  _targetUiKey: CharacterDetailUi/reaction-slot-1__target-part
   _clickType: 2
   _rewardFrontier: 0
   _rewardWood: 0

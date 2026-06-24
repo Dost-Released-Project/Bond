@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b4d21d8be30e47844a21b0e8770670b4, type: 3}
-  m_Name: TUT_A_55
+  m_Name: TUT_A_84
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
-  _id: TUT_A_55
-  _displayName: "\uB9AC\uC561\uC158 \uC124\uC815"
-  _description: "\uB9AC\uC561\uC158\uC774 \uBC1C\uB3D9\uB418\uAE30 \uC704\uD55C \uC870\uAC74\uC785\uB2C8\uB2E4."
+  _id: TUT_A_84
+  _displayName: "\uD0D0\uC0AC \uCD9C\uBC1C"
+  _description: "\uD0D0\uC0AC \uCD9C\uBC1C\uC744 \uD074\uB9AD\uD558\uC138\uC694."
   _sequence: 0
-  _targetUiKey: CharacterDetailUi/reaction-slot-1__condition-part
-  _clickType: 2
+  _targetUiKey: TownUi/btn-depart
+  _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0
-  _rewardItemIds: 
-  _rewardItemCounts: 
+  _rewardItemIds: 08000000,08010000,08020000
+  _rewardItemCounts: 1,1,1

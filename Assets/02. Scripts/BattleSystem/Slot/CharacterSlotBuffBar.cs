@@ -27,23 +27,34 @@ namespace Shapes {
 			List<string> debuffLines = new List<string>();
 
 			foreach (var buff in _activeBuffs) {
-				if (buff.Modifiers == null || buff.Modifiers.Count == 0) continue;
-				
-				var targetMod = buff.Modifiers.Find(m => m.type == StatType.STR || m.type == StatType.INT || m.type == StatType.AGI);
-				if (targetMod == null) continue;
+				// 1. 기존 스탯 버프/디버프 처리
+				if (buff.Modifiers != null && buff.Modifiers.Count > 0) {
+					var targetMod = buff.Modifiers.Find(m => m.type == StatType.STR || m.type == StatType.INT || m.type == StatType.AGI);
+					if (targetMod != null) {
+						string statName = targetMod.type switch {
+							StatType.STR => "<color=#E63333>힘</color>",
+							StatType.INT => "<color=#3380E6>지능</color>",
+							StatType.AGI => "<color=#33CC4D>민첩</color>",
+							_ => "스탯"
+						};
 
-				string statName = targetMod.type switch {
-					StatType.STR => "<color=#E63333>힘</color>",
-					StatType.INT => "<color=#3380E6>지능</color>",
-					StatType.AGI => "<color=#33CC4D>민첩</color>",
-					_ => "스탯"
-				};
+						if (targetMod.value >= 0) {
+							string sign = "+";
+							buffLines.Add($"{statName} {sign}{targetMod.value} ({buff.RemainingTurns}턴 지속)");
+						} else {
+							debuffLines.Add($"{statName} {targetMod.value} ({buff.RemainingTurns}턴 지속)");
+						}
+					}
+				}
 
-				if (targetMod.value >= 0) {
-					string sign = "+";
-					buffLines.Add($"{statName} {sign}{targetMod.value} ({buff.RemainingTurns}턴 지속)");
-				} else {
-					debuffLines.Add($"{statName} {targetMod.value} ({buff.RemainingTurns}턴 지속)");
+				// 2. 도트 뎀/힐 처리
+				if (buff.HpChangePerTurn != 0) {
+					int amount = Mathf.RoundToInt(buff.HpChangePerTurn);
+					if (amount > 0) {
+						buffLines.Add($"<color=#33CCCC>도트 힐</color> +{amount} ({buff.RemainingTurns}턴 지속)");
+					} else {
+						debuffLines.Add($"<color=#CC33C2>도트 피해</color> {amount} ({buff.RemainingTurns}턴 지속)");
+					}
 				}
 			}
 

@@ -14,11 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_53
   _displayName: "\uB9AC\uC561\uC158 \uC124\uC815"
-  _description: "\uBA87\uBA87 \uB9AC\uC561\uC158\uC740 \uC790\uAE30 \uC790\uC2E0
-    \uB610\uB294 \uC544\uAD70 \uC804\uCCB4\uB97C \uB300\uC0C1\uC73C\uB85C \uD569\uB2C8\uB2E4."
+  _description: "\uC704\uAE30 \uBCF4\uD638\uB97C \uD074\uB9AD\uD558\uC138\uC694."
   _sequence: 0
-  _targetUiKey: CharacterDetailUi/reaction-slot-1__target-part
-  _clickType: 2
+  _targetUiKey: CharacterDetailUi/__slot-dropdown
+  _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0
