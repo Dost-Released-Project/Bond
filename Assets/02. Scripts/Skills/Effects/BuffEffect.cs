@@ -53,10 +53,43 @@ namespace Skills.Effects
                 duration
             );
 
+            // 적용 전 스탯 획득
+            float beforeValue = GetStatValue(context.target, statType);
+
             // 대상 캐릭터에게 버프 적용
             context.target.ApplyBuff(buff);
+            context.target.CalcStat();
 
-            Debug.Log($"[{skill.Data.DisplayName}] {context.target.Name}에게 버프 적용 완료 (스탯: {statType}, 수치: {finalAmount}, 지속: {duration}턴)");
+            // 적용 후 스탯 획득
+            float afterValue = GetStatValue(context.target, statType);
+
+            Debug.Log($"[{skill.Data.DisplayName}] {context.target.Name}에게 버프 적용 완료 (스탯: {statType}, 수치: {finalAmount}, Before: {beforeValue} -> After: {afterValue}, 지속: {duration}턴)");
+        }
+
+        private float GetStatValue(BaseCharacter character, StatType statType)
+        {
+            if (character == null || character.Stat == null) return 0f;
+
+            return statType switch
+            {
+                StatType.STR => character.Stat.STR,
+                StatType.AGI => character.Stat.AGI,
+                StatType.INT => character.Stat.INT,
+                StatType.MaxHP => character.Stat.max_Hp,
+                StatType.Atk => character.Stat.atk,
+                StatType.Def => character.Stat.def,
+                StatType.Speed => character.Stat.speed,
+                StatType.Cri => character.Stat.crt,
+                StatType.Acc => character.Stat.acc,
+                StatType.Eva => character.Stat.eva,
+                StatType.ReactionCtrl => character.Stat.Reaction_Ctrl,
+                StatType.SpAtk => character.Stat.Sp_Atk,
+                StatType.DamageMultiplier => character.StatController.ApplyModifiers(StatType.DamageMultiplier, 1f),
+                StatType.DamageReduction => character.StatController.ApplyModifiers(StatType.DamageReduction, 1f),
+                StatType.HealEfficiency => character.StatController.ApplyModifiers(StatType.HealEfficiency, 1f),
+                StatType.StressResistance => character.StatController.ApplyModifiers(StatType.StressResistance, 1f),
+                _ => 0f
+            };
         }
     }
 }

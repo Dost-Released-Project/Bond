@@ -52,6 +52,8 @@ namespace Bond.UI
         {
             if (content == null || anchor?.panel == null) return;
 
+            EnsureDefaultStyle(anchor.panel);
+
             var layer = GetOrCreateLayer(ResolveDocumentRoot(anchor));
             var st = (State)layer.userData;
             st.Anchor = anchor;
@@ -75,6 +77,8 @@ namespace Bond.UI
         public static void ShowAt(VisualElement content, Vector2 panelPosition, VisualElement context, Placement prefer = Placement.Auto)
         {
             if (content == null || context?.panel == null) return;
+
+            EnsureDefaultStyle(context.panel);
 
             var layer = GetOrCreateLayer(ResolveDocumentRoot(context));
             var st = (State)layer.userData;

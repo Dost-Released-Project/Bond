@@ -41,6 +41,9 @@ public class CompositeSkill : SkillBase
                 case SkillEffectType.버프_스탯_지능:
                     _effects.Add(new BuffEffect(type, effectValue));
                     break;
+                case SkillEffectType.도트:
+                    _effects.Add(new DotEffect(type, effectValue));
+                    break;
                 default:
                     Debug.LogWarning($"[CompositeSkill] 정의되지 않은 SkillEffectType: {type}");
                     break;
