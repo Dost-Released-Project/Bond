@@ -802,6 +802,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy Slot 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2715594403879276589, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5625310232045571983, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5937003464936598925, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1393,6 +1401,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy Slot 2
       objectReference: {fileID: 0}
+    - target: {fileID: 2715594403879276589, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5625310232045571983, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5937003464936598925, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1583,6 +1599,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player Slot 3
       objectReference: {fileID: 0}
+    - target: {fileID: 2715594403879276589, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5625310232045571983, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5937003464936598925, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1695,6 +1719,14 @@ PrefabInstance:
     - target: {fileID: 1503356969114657205, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
       propertyPath: m_Name
       value: Enemy Slot 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2715594403879276589, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5625310232045571983, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5937003464936598925, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
       propertyPath: m_Pivot.x
@@ -1886,6 +1918,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy Slot 4
       objectReference: {fileID: 0}
+    - target: {fileID: 2715594403879276589, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5625310232045571983, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5937003464936598925, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2065,6 +2105,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player Slot 4
       objectReference: {fileID: 0}
+    - target: {fileID: 2715594403879276589, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5625310232045571983, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5937003464936598925, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2177,6 +2225,14 @@ PrefabInstance:
     - target: {fileID: 1503356969114657205, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
       propertyPath: m_Name
       value: Player Slot 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2715594403879276589, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5625310232045571983, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5937003464936598925, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
       propertyPath: m_Pivot.x
@@ -2297,7 +2353,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3534244045299327502, guid: 17cf0fb96bebd5048a568d9e84235ec7, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7016878932621624777, guid: 17cf0fb96bebd5048a568d9e84235ec7, type: 3}
       propertyPath: m_Color.a
@@ -2411,6 +2467,14 @@ PrefabInstance:
     - target: {fileID: 1503356969114657205, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
       propertyPath: m_Name
       value: Player Slot 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2715594403879276589, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5625310232045571983, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5937003464936598925, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
       propertyPath: m_Pivot.x

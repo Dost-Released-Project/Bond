@@ -13,7 +13,6 @@ namespace BattleSystem.VContainer
     {
         [SerializeField] 
         private BattlePipeLineSo battlePipeLineSo;
-        
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterEntryPoint<BattleManager>(Lifetime.Singleton).As<IBattleManager>();
