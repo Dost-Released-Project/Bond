@@ -28,6 +28,11 @@ namespace PipeLine
                 cs.SetReactionSystem(reactionSystem);
             }
         }
+
+        public void SetPortraitCanvas(IReactionPortraitCanvas canvas)
+        {
+            throw new System.NotImplementedException();
+        }
     }
     #region [L] Logic Steps (구현부 대기)
 
