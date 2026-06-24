@@ -19,11 +19,13 @@ namespace BattleSystem
         private readonly IFormationManager m_formationManager;
         private readonly BattlePresentationManager m_presentationManager;
         private readonly ISkillEffectPool m_skillEffectPool;
+        private readonly IReactionPortraitCanvas m_portraitCanvas;
         private bool m_isBattle;
 
         public BattleManager(ReactionSystem reactionSystem,
-            IBattlePipeLine  skillApplyPipeline, IBattleFlowManager expeditionFlowManager,
-            IFormationManager formationManager, ISkillEffectPool skillEffectPool)
+            IBattlePipeLine skillApplyPipeline, IBattleFlowManager expeditionFlowManager,
+            IFormationManager formationManager, ISkillEffectPool skillEffectPool,
+            IReactionPortraitCanvas portraitCanvas)
         {
             m_battleFlowManager = expeditionFlowManager;
             m_reactionSystem = reactionSystem;
@@ -32,6 +34,7 @@ namespace BattleSystem
             m_formationManager = formationManager;
             m_presentationManager = new BattlePresentationManager();
             m_skillEffectPool = skillEffectPool;
+            m_portraitCanvas = portraitCanvas;
             Init();
         }
         
@@ -49,6 +52,7 @@ namespace BattleSystem
         {
             m_skillApplyPipeline.SetReactionSystem(m_reactionSystem);
             m_reactionSystem.SetBattleManager(this);
+            m_skillApplyPipeline.SetPortraitCanvas(m_portraitCanvas);
         }
 
         public async UniTask StartFocusEffect(CharacterSlot caster, List<CharacterSlot> targets)

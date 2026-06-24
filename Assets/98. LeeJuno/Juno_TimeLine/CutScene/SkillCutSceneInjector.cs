@@ -81,8 +81,12 @@ public class SkillCutSceneInjector
 
     private static string[] CollectTargetSpriteAddresses(BattleContext context, BaseCharacter[] allEnemies)
     {
-        // 단일 타겟 스킬
-        if (context.target != null)
+        // targetMask 비트가 정확히 1개면 단일 타겟 스킬이다.
+        // context.target != null로는 판단할 수 없다 — 광역기도 _selectedTarget이 설정되어 있으면 non-null이기 때문이다.
+        int mask = context.targetMask;
+        bool isSingleTarget = mask != 0 && (mask & (mask - 1)) == 0;
+
+        if (isSingleTarget && context.target != null)
             return new string[] { context.target.IdleImageAddress };
 
         // 광역 스킬 — 살아있는 적 전원의 Idle 주소 수집
