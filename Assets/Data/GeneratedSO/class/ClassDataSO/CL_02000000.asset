@@ -18,15 +18,6 @@ MonoBehaviour:
   STR: 3
   AGI: 2
   INT: 1
-  HP: 0
-  Def: 0
-  Atk: 0
-  Speed: 0
-  Cri: 0
-  Acc: 0
-  Eva: 0
-  ReactionCtrl: 0
-  SpAtk: 0
   DefaultArmorId: 03040000
   DefaultWeaponId: 03000000
   IconId: Warrior_Icon

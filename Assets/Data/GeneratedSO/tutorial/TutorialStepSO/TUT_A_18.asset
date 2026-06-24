@@ -20,3 +20,9 @@ MonoBehaviour:
     3\uD68C\uC5D0 \uD69F\uC218 \uC81C\uD55C\uC774 \uC788\uC2B5\uB2C8\uB2E4."
   _sequence: 0
   _targetUiKey: SupplyView/supply-window
+  _clickType: 1
+  _rewardFrontier: 300
+  _rewardWood: 0
+  _rewardOre: 0
+  _rewardItemIds: 
+  _rewardItemCounts: 

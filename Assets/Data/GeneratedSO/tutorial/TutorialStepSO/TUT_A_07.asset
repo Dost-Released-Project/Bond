@@ -17,3 +17,9 @@ MonoBehaviour:
   _description: "X\uB97C \uB20C\uB7EC \uCC3D\uC744 \uB2EB\uC744 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
   _sequence: 0
   _targetUiKey: TownUi/roster-panel__close-btn
+  _clickType: 0
+  _rewardFrontier: 0
+  _rewardWood: 0
+  _rewardOre: 0
+  _rewardItemIds: 
+  _rewardItemCounts: 

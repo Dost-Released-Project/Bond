@@ -18,3 +18,9 @@ MonoBehaviour:
     \uC6B0\uD074\uB9AD\uC744 \uD1B5\uD574 \uB2E4\uC74C \uB2E8\uACC4\uB85C \uB118\uC5B4\uAC00\uC138\uC694."
   _sequence: 0
   _targetUiKey: CharacterDetailUi/char-detail__skill-grid
+  _clickType: 1
+  _rewardFrontier: 0
+  _rewardWood: 0
+  _rewardOre: 0
+  _rewardItemIds: 
+  _rewardItemCounts: 

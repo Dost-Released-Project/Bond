@@ -17,3 +17,9 @@ MonoBehaviour:
   _description: "\uC704\uAE30 \uBCF4\uD638\uB97C \uD074\uB9AD\uD558\uC138\uC694."
   _sequence: 0
   _targetUiKey: CharacterDetailUi/__slot-dropdown
+  _clickType: 0
+  _rewardFrontier: 0
+  _rewardWood: 0
+  _rewardOre: 0
+  _rewardItemIds: 
+  _rewardItemCounts: 

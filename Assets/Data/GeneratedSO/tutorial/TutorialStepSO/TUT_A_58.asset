@@ -18,3 +18,9 @@ MonoBehaviour:
     \uC0C1\uC138\uCC3D\uC744 \uB2EB\uC73C\uC138\uC694."
   _sequence: 0
   _targetUiKey: CharacterDetailUi/character-detail__close-btn
+  _clickType: 0
+  _rewardFrontier: 0
+  _rewardWood: 0
+  _rewardOre: 0
+  _rewardItemIds: 
+  _rewardItemCounts: 

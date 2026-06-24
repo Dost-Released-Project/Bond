@@ -18,3 +18,9 @@ MonoBehaviour:
     \uBB3C\uC790\uB97C \uC815\uBE44\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
   _sequence: 0
   _targetUiKey: TownUi/embark__step2
+  _clickType: 1
+  _rewardFrontier: 0
+  _rewardWood: 0
+  _rewardOre: 0
+  _rewardItemIds: 
+  _rewardItemCounts: 

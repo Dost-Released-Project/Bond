@@ -18,15 +18,6 @@ MonoBehaviour:
   STR: 1
   AGI: 2
   INT: 3
-  HP: 0
-  Def: 0
-  Atk: 0
-  Speed: 0
-  Cri: 0
-  Acc: 0
-  Eva: 0
-  ReactionCtrl: 0
-  SpAtk: 0
   DefaultArmorId: 03070000
   DefaultWeaponId: 03030000
   IconId: Cleric_Icon

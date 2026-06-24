@@ -1,17 +1,19 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/97.%20Moon/V2/Scripts/UI/USS/ResourceStyle.uss?fileID=7433441132597879392&amp;guid=44e3ee76966cfcb49ae8927cfb296b48&amp;type=3#ResourceStyle"/>
-    <ui:VisualElement name="resource-container" style="flex-grow: 1;">
-        <ui:VisualElement name="resource-group" class="resource-group" style="flex-grow: 1;">
-            <ui:Label text="Label" name="label-frontier" class="resource-label" style="-unity-text-align: middle-right;"/>
-            <ui:VisualElement name="VisualElement" class="resource-icon" style="background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/money.png?fileID=2800000&amp;guid=05894312944cb444b835ce7ad0bff641&amp;type=3#money&quot;); -unity-background-image-tint-color: rgb(180, 140, 10);"/>
-        </ui:VisualElement>
-        <ui:VisualElement name="resource-group" class="resource-group" style="flex-grow: 1;">
-            <ui:Label text="Label" name="label-wood" class="resource-label" style="-unity-text-align: middle-right;"/>
-            <ui:VisualElement name="VisualElement" class="resource-icon" style="background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/tree-small.png?fileID=2800000&amp;guid=8ebc6fb546c63964292316f80719c458&amp;type=3#tree-small&quot;); -unity-background-image-tint-color: rgb(200, 100, 0);"/>
-        </ui:VisualElement>
-        <ui:VisualElement name="resource-group" class="resource-group" style="flex-grow: 1;">
-            <ui:Label text="Label" name="label-ore" class="resource-label" style="-unity-text-align: middle-right;"/>
-            <ui:VisualElement name="VisualElement" class="resource-icon" style="background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/metal.png?fileID=2800000&amp;guid=2998acfe829d44345ba68b5366ad8737&amp;type=3#metal&quot;); -unity-background-image-tint-color: rgb(150, 150, 150);"/>
+    <ui:VisualElement picking-mode="Ignore" style="flex-grow: 1; position: absolute; width: 100%; height: 60px; background-color: rgba(14, 16, 22, 0.7);">
+        <ui:VisualElement name="resource-container" style="flex-grow: 1; width: 1795px; background-color: rgba(14, 16, 22, 0);">
+            <ui:VisualElement name="resource-group" class="resource-group" style="flex-grow: 1; position: absolute; left: auto; right: 67%;">
+                <ui:Label text="Label" name="label-frontier" class="resource-label" style="-unity-text-align: middle-right;"/>
+                <ui:VisualElement name="VisualElement" class="resource-icon" style="background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/money.png?fileID=2800000&amp;guid=05894312944cb444b835ce7ad0bff641&amp;type=3#money&quot;); -unity-background-image-tint-color: rgb(180, 140, 10);"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="resource-group" class="resource-group" style="flex-grow: 1; position: absolute; right: 34%;">
+                <ui:Label text="Label" name="label-wood" class="resource-label" style="-unity-text-align: middle-right;"/>
+                <ui:VisualElement name="VisualElement" class="resource-icon" style="background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/tree-small.png?fileID=2800000&amp;guid=8ebc6fb546c63964292316f80719c458&amp;type=3#tree-small&quot;); -unity-background-image-tint-color: rgb(200, 100, 0);"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="resource-group" class="resource-group" style="flex-grow: 1; align-items: stretch; position: absolute; right: 1%;">
+                <ui:Label text="Label" name="label-ore" class="resource-label" style="-unity-text-align: middle-right;"/>
+                <ui:VisualElement name="VisualElement" class="resource-icon" style="background-image: url(&quot;project://database/Assets/97.%20Moon/V2/Image/metal.png?fileID=2800000&amp;guid=2998acfe829d44345ba68b5366ad8737&amp;type=3#metal&quot;); -unity-background-image-tint-color: rgb(150, 150, 150);"/>
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

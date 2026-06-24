@@ -18,15 +18,6 @@ MonoBehaviour:
   STR: 2
   AGI: 3
   INT: 1
-  HP: 0
-  Def: 0
-  Atk: 0
-  Speed: 0
-  Cri: 0
-  Acc: 0
-  Eva: 0
-  ReactionCtrl: 0
-  SpAtk: 0
   DefaultArmorId: 03050000
   DefaultWeaponId: 03010000
   IconId: Assassin_Icon
