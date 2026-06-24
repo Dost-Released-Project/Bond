@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4d21d8be30e47844a21b0e8770670b4, type: 3}
+  m_Name: TUT_A_64
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
+  _id: TUT_A_64
+  _displayName: "\uB9AC\uC561\uC158 \uC124\uC815"
+  _description: "\uC870\uAC74 \uCDA9\uC871 \uC2DC \uC9C4\uD589\uD560 \uD589\uB3D9\uC744
+    \uC120\uD0DD\uD558\uC138\uC694. \uC120\uD0DD\uD55C \uC2A4\uD0AC\uC744 \uD1B5\uD574
+    \uBC18\uACA9\uC774 \uC9C4\uD589\uB429\uB2C8\uB2E4."
+  _sequence: 0
+  _targetUiKey: CharacterDetailUi/reaction-slot-0__action-part

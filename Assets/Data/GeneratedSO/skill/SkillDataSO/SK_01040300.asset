@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
   _id: 01040300
   _displayName: 
-  _description: "\uD30C\uD2F0 \uD790"
+  _description: "\uD2B9\uC218 \uD30C\uD2F0 \uD790"
   _type: 4
   _target: 1
   _targetingType: 1

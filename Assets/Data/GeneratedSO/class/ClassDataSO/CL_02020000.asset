@@ -18,15 +18,15 @@ MonoBehaviour:
   STR: 1
   AGI: 1
   INT: 4
-  HP: 8
-  Def: 1
-  Atk: 1
-  Speed: 2
-  Cri: 6
-  Acc: 2
-  Eva: 2
-  ReactionCtrl: 5
-  SpAtk: 8
+  HP: 0
+  Def: 0
+  Atk: 0
+  Speed: 0
+  Cri: 0
+  Acc: 0
+  Eva: 0
+  ReactionCtrl: 0
+  SpAtk: 0
   DefaultArmorId: 03060000
   DefaultWeaponId: 03020000
   IconId: Wizard_Icon

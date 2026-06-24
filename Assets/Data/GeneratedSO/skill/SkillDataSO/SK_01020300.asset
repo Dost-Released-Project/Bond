@@ -18,7 +18,7 @@ MonoBehaviour:
   _type: 4
   _target: 1
   _targetingType: 0
-  _effectTypes: 0b000000
+  _effectTypes: 0b0000001e000000
   _values:
   - 1
   _coolTime: 0
