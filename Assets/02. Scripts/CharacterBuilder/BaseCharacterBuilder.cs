@@ -42,10 +42,6 @@ public partial class BaseCharacter
             chara.Id = System.Guid.NewGuid().ToString();
             chara.Init();
             chara.isPlayable = true;
-
-#if UNITY_EDITOR
-            chara.TraitIds = new string[4];
-#endif
             
             return chara;
         }

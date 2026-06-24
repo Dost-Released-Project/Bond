@@ -46,19 +46,19 @@ public class Profession
 
         // 2. ClassSO의 보정치 적용 및 모디파이어 합산 후 최종 산출
         // STR 영향군
-        stat.max_Hp = Mathf.FloorToInt(controller.ApplyModifiers(StatType.MaxHP, stat.STR * _classData.HP));
-        stat.atk = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Atk, stat.STR * _classData.Atk));
-        stat.def = controller.ApplyModifiers(StatType.Def, stat.STR * _classData.Def) * 0.01f;
+        stat.max_Hp = Mathf.FloorToInt(controller.ApplyModifiers(StatType.MaxHP, stat.STR * 7));
+        stat.atk = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Atk, stat.STR * 4));
+        stat.def = controller.ApplyModifiers(StatType.Def, stat.STR * 4) * 0.01f;
         
         // AGI 영향군
-        stat.speed = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Speed, stat.AGI * _classData.Speed));
-        stat.crt = controller.ApplyModifiers(StatType.Cri, stat.AGI * _classData.Cri) * 0.01f;
-        stat.acc = (controller.ApplyModifiers(StatType.Acc, stat.AGI * _classData.Acc) * 0.01f) + 0.8f;
-        stat.eva = controller.ApplyModifiers(StatType.Eva, stat.AGI * _classData.Eva) * 0.01f;
+        stat.speed = Mathf.FloorToInt(controller.ApplyModifiers(StatType.Speed, stat.AGI * 3));
+        stat.crt = controller.ApplyModifiers(StatType.Cri, stat.AGI * 3) * 0.01f;
+        stat.acc = (controller.ApplyModifiers(StatType.Acc, stat.AGI * 3) * 0.01f) + 0.8f;
+        stat.eva = controller.ApplyModifiers(StatType.Eva, stat.AGI * 3) * 0.01f;
         
         // INT 영향군
         stat.Reaction_Ctrl =
-            controller.ApplyModifiers(StatType.ReactionCtrl, stat.INT * _classData.ReactionCtrl) * 0.01f;
-        stat.Sp_Atk = Mathf.FloorToInt(controller.ApplyModifiers(StatType.SpAtk, stat.INT * _classData.SpAtk));
+            controller.ApplyModifiers(StatType.ReactionCtrl, stat.INT * 5) * 0.01f;
+        stat.Sp_Atk = Mathf.FloorToInt(controller.ApplyModifiers(StatType.SpAtk, stat.INT * 4));
     }
 }

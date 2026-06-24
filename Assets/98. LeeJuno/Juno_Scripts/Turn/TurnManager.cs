@@ -141,6 +141,7 @@ public class TurnManager : ITurnManager, IStartable, IDisposable
                 {
                     ownerChar.TickBuffs();
                     ownerChar.TickSeals();
+                    ownerChar.TickDistrust(); // 불협조(특정 아군 비협조) 지속 감소 (봉인과 동일 타이밍)
                     ownerChar.ClearRecentAnomaly(); // 자기 턴 도달 → '최근 돌발' 플래그 리셋 (아군 돌발 관찰 창)
 
                     if (ownerChar.ConsumeSkipTurn())

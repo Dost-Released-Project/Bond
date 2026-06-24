@@ -162,7 +162,7 @@ namespace PipeLine
             // 난수가 명중 확률보다 크면 공격을 회피한 것으로 판정합니다.
             context.isEvaded = Random.value > hitRate;
 
-            context.isEvaded = true;
+            //context.isEvaded = true;
             // 회피 테스트 확률 100퍼 
             if (context.isEvaded)
             {
@@ -193,7 +193,7 @@ namespace PipeLine
 
             // TODO: 개별 타겟 치명타 확률 로직 (현재는 임시로 시전자 crt 사용)
             context.isCritical = Random.value < context.caster.Stat.crt;
-            
+                
             if (context.isCritical)
             {
                 float bonus = context.value * criticalBonus;
@@ -274,12 +274,12 @@ namespace PipeLine
                 var executions = reactionSystem.Resolve(context, Phase);
                 foreach (var execution in executions)
                 {
-                    Debug.Log($"<color=lightblue>Reaction:\n" +
-                              $"{execution.ToString()}</color>");
                     await execution.Agent.ExecuteReaction(execution, context, reactionSystem.BattleManager);
                     execution.Agent.IncrementReactionCount(); // '연속' 리액션 카운트 증가 (자기 턴에 리셋)
                     if (execution.Result == ReactionResult.Anomaly)
-                        execution.Agent.MarkAnomaly(); // 아군 돌발 관찰용 플래그
+                        execution.Agent.MarkAnomaly(); // 아군 돌발(특이행동) 관찰용 플래그
+                    else if (execution.Result == ReactionResult.BondAwakening)
+                        Debug.Log($"<color=cyan>[유대적 각성]</color> {execution.Agent.Name} 의 성향이 강화 행동으로 발현. (전용 연출 훅 자리)");
                 }
             }
             return context;

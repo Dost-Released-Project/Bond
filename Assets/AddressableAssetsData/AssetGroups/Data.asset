@@ -99,6 +99,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - DBSO
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f6a26f6af8bfa6a4aa2dddb7bc00f9cf
+    m_Address: TutorialStep
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DBSO
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 2844d279e9fd27e4a9c0e38b898d6b70, type: 2}
   m_SchemaSet:

@@ -1,0 +1,24 @@
+/* 툴팁 디자인 */
+.inventory-tooltip {
+    position: absolute;
+    padding: 14px;
+    border-width: 1px;
+    min-width: 220px;
+    max-width: 300px;
+    background-color: rgba(14, 16, 22, 0.98) !important;
+    border-color: #8e7045 !important;
+    border-radius: 4px;
+}
+
+.tooltip-title {
+    color: #e5c185 !important; /* 앤티크 화이트골드로 통일 */
+    font-size: 18px;
+    -unity-font-style: bold;
+    margin-bottom: 8px;
+}
+
+.tooltip-text {
+    color: white;
+    font-size: 13px;
+    white-space: normal;
+}

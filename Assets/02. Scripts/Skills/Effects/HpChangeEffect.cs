@@ -22,14 +22,14 @@ namespace Skills.Effects
             int finalAmount = Mathf.RoundToInt(context.value);
 
             // 스킬 카테고리가 SUPPORT거나 효과 타입이 체력_회복인 경우 회복 처리
-            if (skill.Data.Type == SkillType.SUPPORT || _type == SkillEffectType.체력_회복)
+            if (_type == SkillEffectType.체력_회복)
             {
-                context.target.RecoverHp(finalAmount);
+                context.target.RecoverHp(finalAmount, context.isCritical);
                 Debug.Log($"[{skill.Data.DisplayName}] {context.target.Name}에게 {finalAmount} 회복 적용 (HpChangeEffect)");
             }
             else
             {
-                context.target.ReduceHP(finalAmount);
+                context.target.ReduceHP(finalAmount, context.isCritical);
                 Debug.Log($"[{skill.Data.DisplayName}] {context.target.Name}에게 {finalAmount} 데미지 적용 (HpChangeEffect)");
             }
         }

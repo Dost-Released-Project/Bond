@@ -20,7 +20,6 @@ namespace Skills
             _effects[SkillEffectType.버프_스탯_힘] = new BuffEffect(SkillEffectType.버프_스탯_힘, 0f);
             _effects[SkillEffectType.버프_스탯_민첩] = new BuffEffect(SkillEffectType.버프_스탯_민첩, 0f);
             _effects[SkillEffectType.버프_스탯_지능] = new BuffEffect(SkillEffectType.버프_스탯_지능, 0f);
-            _effects[SkillEffectType.버프_스탯_방어] = new BuffEffect(SkillEffectType.버프_스탯_방어, 0f);
             // 새로운 효과가 추가되면 여기에 등록합니다.
         }
 

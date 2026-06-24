@@ -8,6 +8,7 @@ namespace BattleSystem.UI
     {
         [SerializeField] private TextMeshProUGUI m_Text;
         [SerializeField] private Color m_DamageColor = Color.red;
+        [SerializeField] private Color m_CriticalColor = Color.yellow;
         [SerializeField] private Color m_HealColor = Color.green;
         [SerializeField] private Color m_MissColor = Color.white;
         [SerializeField] private float m_Duration = 0.8f;
@@ -30,7 +31,7 @@ namespace BattleSystem.UI
             }
         }
 
-        public void Show(int amount, bool isHeal)
+        public void Show(int amount, bool isHeal, bool isCritical = false)
         {
             if (m_Text == null) return;
 
@@ -45,8 +46,25 @@ namespace BattleSystem.UI
             m_Text.color = new Color(m_Text.color.r, m_Text.color.g, m_Text.color.b, 1f);
             
             // 수치 및 색상 설정
-            m_Text.text = amount.ToString();
-            m_Text.color = isHeal ? m_HealColor : m_DamageColor;
+            switch ((isHeal, isCritical))
+            {
+                case (true, true):
+                    m_Text.text = $"치명타\n{amount}!";
+                    m_Text.color = m_HealColor;
+                    break;
+                case (true, false):
+                    m_Text.text = amount.ToString();
+                    m_Text.color = m_HealColor;
+                    break;
+                case (false, true):
+                    m_Text.text = $"치명타\n{amount}!";
+                    m_Text.color = m_CriticalColor;
+                    break;
+                case (false, false):
+                    m_Text.text = amount.ToString();
+                    m_Text.color = m_DamageColor;
+                    break;
+            }
             
             m_Text.gameObject.SetActive(true);
 

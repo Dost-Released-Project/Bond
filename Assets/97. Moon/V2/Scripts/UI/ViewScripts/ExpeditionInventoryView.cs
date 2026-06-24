@@ -21,11 +21,18 @@ public class ExpeditionInventoryView : MonoBehaviour
     private VisualElement _slotContainer;
     private List<VisualElement> _slots = new();
     private VisualElement _root;
+    private VisualElement _tooltip; // 상세 정보를 띄울 최상위 오버레이 레이어
 
     private void Start()
     {
         _root = GetComponent<UIDocument>().rootVisualElement;
         _slotContainer = _root.Q<VisualElement>("expedition-container");
+
+        // [툴팁 초기화]: 마우스를 올렸을 때 화면 클리핑(잘림) 없이 자유롭게 떠다닐 수 있는 정석 오버레이 요소 배치
+        _tooltip = new VisualElement { style = { position = Position.Absolute, visibility = Visibility.Hidden } };
+        _tooltip.pickingMode = PickingMode.Ignore; // 툴팁 자체가 마우스를 가로막아 끊기는 버그 방어
+        _tooltip.AddToClassList("inventory-tooltip"); // 공용 USS 스타일 스킨 입히기
+        _root.Add(_tooltip);
         
         // [개선] 마우스 커서가 하얀 영역(_slotContainer)을 완전히 벗어났을 때만 버리기 판정
         _root.RegisterCallback<PointerUpEvent>(evt => {
@@ -117,6 +124,7 @@ public class ExpeditionInventoryView : MonoBehaviour
                 if (data.IsEmpty) return;
                 
                 if (evt.button == 0) { // 좌클릭 드래그 시작
+                    HideTooltip();
                     _transferService.StartDrag(_payload.Supplies, index);
                 }
                 else if (evt.button == 1) { // 우클릭 자동 사용/장착
@@ -143,6 +151,16 @@ public class ExpeditionInventoryView : MonoBehaviour
                     evt.StopPropagation(); // 차단
                 }
             });
+            
+            // [툴팁 연동]: 마우스가 슬롯에 진입하거나 이탈할 때 실시간으로 툴팁을 조율합니다.
+            slot.RegisterCallback<MouseEnterEvent>(evt => {
+                var data = _payload.Supplies.GetSlot(index);
+                ShowTooltip(data, evt.mousePosition);
+            });
+
+            slot.RegisterCallback<MouseLeaveEvent>(evt => {
+                HideTooltip();
+            });
 
             _slotContainer.Add(slot);
             _slots.Add(slot);
@@ -151,42 +169,75 @@ public class ExpeditionInventoryView : MonoBehaviour
         }
     }
     
-    private void LoadExpeditionInventory(params DataBaseSO[] dbs)
+    /// <summary>마우스 좌표를 수신하여 아이템 상세 정보를 오버레이에 출력하고 이탈을 방지합니다.</summary>
+    private void ShowTooltip(InventorySlot slot, Vector2 position)
     {
-        if (_payload == null || _payload.Supplies == null) return;
-        
-        var save = new InventorySaveData("exp_inv");
-        // SaveLoadSystem의 GetPath와 Key를 조합하여 경로 생성 (시스템 수정 없이 대응)
-        string saveKey = save.Key;
-        string path = Path.Combine(Application.dataPath, "Data", "Save", $"{saveKey}.json");
+        // 슬롯이 비어있거나 현재 마우스로 무언가를 드래그 중일 때는 가독성을 위해 툴팁 출력을 거부합니다.
+        if (slot.IsEmpty || _transferService.CurrentSourceInventory != null ||
+            _transferService.IsEquipmentDragging) return;
 
-        if (File.Exists(path))
+        _tooltip.Clear();
+
+        // 타이틀 라벨 생성 및 클래스 부여
+        var title = new Label(slot.item.DisplayName);
+        title.AddToClassList("tooltip-title");
+        _tooltip.Add(title);
+
+        // 공용 텍스트 필러
+        AddTooltipLabel($"{(string.IsNullOrEmpty(slot.item.Description) ? "내용 없음" : slot.item.Description)}");
+        AddTooltipLabel($"보유량: {slot.quantity} / {slot.item.expeditionSlotMax}");
+
+        // 아이템 종류별 파싱 분기
+        if (slot.item is ConsumableItem con && con.healValue != 0)
+            AddTooltipLabel($"회복량: <color=#00FF00>{con.healValue}</color>");
+
+        if (slot.item is AccessoryItem acc && acc.specialEffects.Count > 0)
         {
-            try 
+            AddTooltipLabel("\n[장착 효과]");
+            foreach (var effect in acc.specialEffects)
             {
-                SaveLoadSystem.Load(save);
-                
-                // 1. 기존 슬롯을 완전히 비우고 저장된 용량만큼 재생성
-                _payload.Supplies.ClearAll(); 
-                _payload.Supplies.ExpandStorage(save.capacity); 
-
-                // 2. 아이템 복구
-                foreach (var s in save.slots)
-                {
-                    BaseItem item = dbs.Select(db => db.GetSO<BaseItem>(s.id)).FirstOrDefault(i => i != null);
-                    if (item != null) _payload.Supplies.AddItemAuto(item, s.count);
-                }
-                
-                Debug.Log("ExpeditionInventory: 데이터 로드 성공");
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"ExpeditionInventory: 로드 중 오류 발생 - {e.Message}");
+                var valueMode = effect.mode == ModifierMode.Flat ? $"{effect.value} 증가" : $"{effect.value:P1} 증가";
+                AddTooltipLabel($"- {effect.name}: {effect.type} + {valueMode}");
             }
         }
-        else
+
+        // 🖥️ [툴팁 스크린 이탈 방지 배리어] 
+        float tooltipWidth = 280f;
+        float tooltipHeight = 220f;
+
+        // 가로 화면 벽 뚫기 방어 연산
+        float finalX = position.x + 20f;
+        if (finalX + tooltipWidth > Screen.width)
         {
-            Debug.Log("ExpeditionInventory: 기존 세이브 없음. 기본값으로 시작.");
+            finalX = position.x - tooltipWidth - 20f;
         }
+
+        // 세로 화면 바닥 뚫기 방어 연산
+        float finalY = position.y + 20f;
+        if (finalY + tooltipHeight > Screen.height)
+        {
+            finalY = position.y - tooltipHeight - 20f;
+        }
+
+        // 극단적인 외곽 스크린 보정 최소값 배리어
+        if (finalX < 10f) finalX = 10f;
+        if (finalY < 10f) finalY = 10f;
+
+        _tooltip.style.left = finalX;
+        _tooltip.style.top = finalY;
+        _tooltip.style.visibility = Visibility.Visible;
+        _tooltip.BringToFront();
+    }
+
+    private void AddTooltipLabel(string text)
+    {
+        var label = new Label(text);
+        label.AddToClassList("tooltip-text");
+        _tooltip.Add(label);
+    }
+
+    private void HideTooltip()
+    {
+        if (_tooltip != null) _tooltip.style.visibility = Visibility.Hidden;
     }
 }

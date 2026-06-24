@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4d21d8be30e47844a21b0e8770670b4, type: 3}
+  m_Name: TUT_A_85
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
+  _id: TUT_A_85
+  _displayName: " \uB9F5 \uC544\uC774\uCF58 \uC124\uBA85"
+  _description: "\uC77C\uBC18 \uC804\uD22C \uC2A4\uD14C\uC774\uC9C0"
+  _sequence: 1
+  _targetUiKey: 'Map_Node_Button(Clone)[0]'
+  _clickType: 1
+  _rewardFrontier: 0
+  _rewardWood: 0
+  _rewardOre: 0
+  _rewardItemIds: 
+  _rewardItemCounts: 

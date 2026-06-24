@@ -51,6 +51,47 @@
     color: var(--text-accent);
 }
 
+/* ── 해고 버튼 (헤더, 이름 왼쪽) — 꾹 눌러 확정, 진행도는 테두리를 시계방향으로 채움 ── */
+.character-detail__fire-btn {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    margin-right: 8px;
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+    border-width: 2px;
+    border-color: var(--border-danger);
+    background-color: var(--btn-danger-bg);
+}
+
+.character-detail__fire-btn:hover {
+    border-color: var(--border-danger-hover);
+    background-color: var(--btn-danger-bg-hover);
+}
+
+.character-detail__fire-btn--holding {
+    background-color: var(--btn-danger-bg-active);
+}
+
+.character-detail__fire-label {
+    font-size: var(--font-size-system);
+    letter-spacing: 0;
+    color: var(--btn-danger-text);
+    -unity-text-align: middle-center;
+}
+
+/* 시계방향 진행 링 — Painter2D 가 resolvedStyle.color 로 테두리 위에 정확히 띠를 그린다.
+   인셋은 코드(SyncFireRingInset)가 -border-width 로 동기화한다. 아래 값은 첫 레이아웃 전 폴백(현재 테두리 2px 기준). */
+.character-detail__fire-ring {
+    position: absolute;
+    left: -2px;
+    top: -2px;
+    right: -2px;
+    bottom: -2px;
+    color: var(--border-danger-strong);
+}
+
 .character-detail__body {
     flex-grow: 1;
     overflow: hidden;
@@ -74,7 +115,7 @@
 
 .char-detail__left-col {
     flex-direction: column;
-    flex-grow: 4;
+    flex-grow: 3;
     flex-basis: 0;
     margin-right: 8px;
     padding-left: 8px;
@@ -82,7 +123,7 @@
 
 .char-detail__right-col {
     flex-direction: column;
-    flex-grow: 6;
+    flex-grow: 7;
     flex-basis: 0;
 }
 
@@ -317,6 +358,31 @@
 
 .char-detail__skill-chip--empty {
     opacity: 0.3;
+}
+
+/* 편성된(장착) 스킬 — 강조: 두꺼운 강조 테두리 + 배경 상승 + 강조 텍스트 */
+.char-detail__skill-chip--selected {
+    border-width: 2px;
+    border-color: var(--border-accent);
+    background-color: var(--bg-raised);
+}
+.char-detail__skill-chip--selected:hover {
+    border-color: var(--border-accent);
+}
+.char-detail__skill-chip--selected .char-detail__skill-name {
+    color: var(--text-accent);
+}
+
+/* 최대 슬롯이 차서 추가 불가한 미선택 칩 */
+.char-detail__skill-chip--disabled {
+    opacity: 0.38;
+}
+
+.char-detail__skill-chip-icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    margin-bottom: 2px;
 }
 
 .char-detail__skill-name {
@@ -624,72 +690,104 @@
 /* ════════════════════════════════════════
    Task 5 — 리액션 슬롯 3분할
    ════════════════════════════════════════ */
-.char-detail__slot-part {
-    flex-direction: column;
-    justify-content: center;
-    padding: 6px 10px;
-    border-right-width: 1px;
-    border-right-color: var(--border-default);
-    flex-shrink: 0;
-}
-.char-detail__slot-part--target  { width: 100px; }
-.char-detail__slot-part--trigger { width: 100px; }
-.char-detail__slot-part--skill   { flex-grow: 1; flex-shrink: 1; }
-.char-detail__slot-part--fixed   { opacity: 0.6; }
+/* 슬롯 본문: 헤더(위) + 3분할(아래) 세로 스택 */
 .char-detail__slot-main {
     flex-direction: column;
     flex-grow: 1;
     flex-shrink: 1;
     overflow: hidden;
 }
-.char-detail__slot-editables {
-    flex-direction: row;
-    border-top-width: 1px;
-    border-top-color: var(--border-default);
-}
-.char-detail__slot-part--reaction {
-    flex-grow: 1;
-    flex-shrink: 1;
-    border-right-width: 0;
-}
 
-.char-detail__reaction-slot--role .char-detail__slot-part:hover {
+/* ── 헤더: "역할/성향 리액션 - [이름]" (역할은 카탈로그 열기 버튼) ── */
+.char-detail__slot-header {
+    flex-direction: row;
+    align-items: center;
+    padding: 4px 10px;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--border-default);
+}
+.char-detail__slot-header-label {
+    font-size: var(--font-size-class);
+    letter-spacing: 2px;
+    -unity-font-style: bold;
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    -unity-text-overflow-position: end;
+}
+.char-detail__reaction-slot--role  .char-detail__slot-header-label { color: var(--slot-role-dot);  }
+.char-detail__reaction-slot--trait .char-detail__slot-header-label { color: var(--slot-trait-dot); }
+/* 빈 슬롯 헤더 문구("리액션을 선택하세요" / "비어 있음")는 이탤릭 placeholder 톤 — 설정된 이름과 구분 */
+.char-detail__slot-header-label--empty { -unity-font-style: italic; }
+.char-detail__reaction-slot--role .char-detail__slot-header:hover {
     background-color: var(--slot-role-bg);
 }
-.char-detail__reaction-slot--role .char-detail__slot-part--fixed:hover {
-    background-color: transparent;
+
+/* ── 3분할 행(대상/조건/행동): 1:3:2 비율 ── */
+.char-detail__slot-parts {
+    flex-direction: row;
 }
-.char-detail__reaction-slot--trait .char-detail__slot-part--skill:hover {
-    background-color: var(--slot-trait-bg);
+.char-detail__slot-part {
+    flex-direction: column;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    padding: 6px 10px;
+    border-right-width: 1px;
+    border-right-color: var(--border-default);
 }
+/* 대상:조건:행동 = 1:3:2 (flex-basis:0 유지 + flex-grow 가중). 조건이 절반, 행동이 대상보다 넓음. */
+.char-detail__slot-part--target    { flex-grow: 1; }
+.char-detail__slot-part--condition { flex-grow: 3; }
+.char-detail__slot-part--action    { flex-grow: 2; border-right-width: 0; }
+
+/* 편집 가능한 칸(대상/행동)만 호버 피드백 */
+.char-detail__reaction-slot--role  .char-detail__slot-part--editable:hover { background-color: var(--slot-role-bg);  }
+.char-detail__reaction-slot--trait .char-detail__slot-part--editable:hover { background-color: var(--slot-trait-bg); }
 
 .char-detail__slot-part-label {
     font-size: var(--font-size-system);
     letter-spacing: 2px;
     margin-bottom: 3px;
+    color: var(--text-label);
 }
-.char-detail__reaction-slot--role  .char-detail__slot-part-label { color: var(--slot-role-dot);  }
-.char-detail__reaction-slot--trait .char-detail__slot-part-label { color: var(--slot-trait-dot); }
 
 .char-detail__slot-part-val {
     font-size: var(--font-size-body);
-    color: var(--text-secondary);
-    white-space: nowrap;
-    overflow: hidden;
-    -unity-text-overflow-position: end;
+    white-space: normal;
 }
-.char-detail__slot-part-val--placeholder { color: var(--text-disabled); }
+/* 칸 상태 3색: 고정 / 편집·할당 / 편집·미할당(불발 경고) */
+.char-detail__slot-part-val--fixed      { color: var(--text-secondary); }
+.char-detail__slot-part-val--assigned   { color: var(--slot-role-dot);  }
+.char-detail__reaction-slot--trait .char-detail__slot-part-val--assigned { color: var(--slot-trait-dot); }
+.char-detail__slot-part-val--unassigned { color: var(--slot-unset); }
 
+/* ── 할당 아이콘 슬롯(문구 아래). 편집칸에만 표시, 미할당=빈 경고 테두리 ── */
+.char-detail__slot-part-icon {
+    width: 64px;
+    height: 64px;
+    margin-top: 4px;
+    border-width: 1px;
+    border-color: var(--border-default);
+    background-color: var(--bg-raised);
+}
+.char-detail__slot-part-icon--empty {
+    border-color: var(--slot-unset);
+    background-color: transparent;
+}
+
+/* ── 다이아몬드 에코(준비 표시): 기본=미완성(불발) 경고, 완성=슬롯색, 빈 슬롯=비활성 ── */
 .char-detail__slot-echo {
-    width: 28px;
+    width: 30px;
     flex-shrink: 0;
     -unity-text-align: middle-center;
-    font-size: var(--font-size-body);
+    font-size: var(--font-size-name);
     align-self: stretch;
     justify-content: center;
+    color: var(--slot-unset);
 }
-.char-detail__reaction-slot--role  .char-detail__slot-echo { color: var(--slot-role-dot);  }
-.char-detail__reaction-slot--trait .char-detail__slot-echo { color: var(--slot-trait-dot); }
+.char-detail__reaction-slot--role  .char-detail__slot-echo--complete { color: var(--slot-role-dot);  }
+.char-detail__reaction-slot--trait .char-detail__slot-echo--complete { color: var(--slot-trait-dot); }
 .char-detail__slot-echo--empty { color: var(--text-disabled); }
 
 .char-detail__reaction-slot--locked {
@@ -699,97 +797,84 @@
 .char-detail__reaction-slot--disabled {
     opacity: 0.38;
 }
-.char-detail__reaction-locked-text {
-    flex-grow: 1;
-    padding: 8px 14px;
-    font-size: var(--font-size-system);
-    color: var(--text-disabled);
-    letter-spacing: 2px;
-    -unity-text-align: middle-left;
-}
 
 /* ════════════════════════════════════════
-   리액션 인라인 풀
+   리액션 드롭다운 (카탈로그 / 대상 / 행동 공용 오버레이)
+   문서 루트에 절대배치로 떠서 슬롯 리스트를 밀지 않는다.
    ════════════════════════════════════════ */
-.char-detail__inline-pool {
-    display: none;
+/* 폭 고정 + 내부 스크롤. max-height 로 자르되 항목은 flex-shrink:0 이라 세로로 찌그러지지 않고 넘치면 스크롤된다. */
+.char-detail__dropdown {
     flex-direction: column;
-    padding: 10px;
-    margin-top: -3px;
-    margin-bottom: 5px;
+    width: 250px;
+    max-height: 256px;
+    background-color: var(--bg-deep);
     border-width: 1px;
-    border-radius: 0 0 3px 3px;
+    border-color: var(--border-active);
+    border-radius: 3px;
+    padding: 3px;
+    overflow: hidden;
 }
-.char-detail__inline-pool--target {
-    display: flex;
-    background-color: var(--bg-deep);
-    border-color: var(--slot-role-border);
+/* 카탈로그(역할 리액션 선택): 대상·조건·행동 미리보기 부제가 있어 더 넓게 */
+.char-detail__dropdown--wide {
+    width: 340px;
 }
-.char-detail__inline-pool--trigger {
-    display: flex;
-    background-color: var(--bg-deep);
-    border-color: var(--slot-trait-border);
+.char-detail__dropdown-scroll {
+    flex-grow: 1;
+    flex-shrink: 1;
 }
-.char-detail__inline-pool--skill {
-    display: flex;
-    background-color: var(--bg-deep);
-    border-color: var(--border-highlight);
-}
-.char-detail__inline-pool--trait-skill {
-    display: flex;
-    background-color: var(--bg-deep);
-    border-color: var(--slot-trait-border);
-}
-.char-detail__pool-header {
+.char-detail__dropdown-item {
     flex-direction: row;
     align-items: center;
-    border-bottom-width: 1px;
-    border-bottom-color: var(--border-default);
-    padding-bottom: 5px;
-    margin-bottom: 8px;
-}
-.char-detail__pool-title {
-    font-size: var(--font-size-system);
-    letter-spacing: 3px;
-    color: var(--text-label);
-    flex-grow: 1;
-}
-.char-detail__pool-close-btn {
-    font-size: var(--font-size-system);
-    color: var(--text-disabled);
+    flex-shrink: 0;
+    padding: 5px 8px;
+    margin: 0;
     background-color: transparent;
+    border-width: 0;
+    border-radius: 2px;
+}
+.char-detail__dropdown-item:hover {
+    background-color: var(--bg-raised);
+}
+.char-detail__dropdown-item--selected {
+    background-color: var(--bg-surface);
+    border-left-width: 2px;
+    border-left-color: var(--border-accent);
+}
+.char-detail__dropdown-item-icon {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    margin-right: 8px;
     border-width: 1px;
     border-color: var(--border-default);
-    padding: 2px 6px;
+    background-color: var(--bg-raised);
 }
-.char-detail__pool-close-btn:hover {
-    border-color: var(--border-highlight);
-    color: var(--text-secondary);
-}
-.char-detail__pool-chips {
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-.char-detail__pool-chip {
+.char-detail__dropdown-item-text {
     flex-direction: column;
-    padding: 6px 12px;
-    border-width: 1px;
-    border-radius: 2px;
-    margin-right: 6px;
-    margin-bottom: 4px;
-    background-color: transparent;
+    flex-grow: 1;
+    flex-shrink: 1;
+    overflow: hidden;
 }
-.char-detail__pool-chip--target  { border-color: var(--slot-role-border);  color: var(--slot-role-dot);  }
-.char-detail__pool-chip--trigger { border-color: var(--slot-trait-border); color: var(--slot-trait-dot); }
-.char-detail__pool-chip--skill   { border-color: var(--border-default);    color: var(--text-secondary); }
-.char-detail__pool-chip:hover    { border-color: var(--border-highlight);  color: var(--text-primary);   }
-.char-detail__pool-chip--selected { border-color: var(--border-active); color: var(--text-accent); }
-.char-detail__pool-chip-name {
+.char-detail__dropdown-item-name {
     font-size: var(--font-size-body);
-    -unity-text-align: middle-center;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    -unity-text-overflow-position: end;
 }
-.char-detail__pool-empty {
+.char-detail__dropdown-item-sub {
+    font-size: var(--font-size-system);
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    -unity-text-overflow-position: end;
+}
+.char-detail__dropdown-item--clear .char-detail__dropdown-item-name {
+    color: var(--slot-unset);
+}
+.char-detail__dropdown-empty {
     font-size: var(--font-size-system);
     color: var(--text-disabled);
-    padding: 4px 8px;
+    padding: 6px 8px;
 }

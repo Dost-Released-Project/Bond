@@ -33,7 +33,7 @@ public class CharacterSlotVisualizer : ImmediateModePanel, ICharacterSlotVisuali
         }
 
         // 3. 테두리 그리기
-        Draw.RectangleBorder(drawRect, thickness, cornerRadius, m_currentColor);
+        //Draw.RectangleBorder(drawRect, thickness, cornerRadius, m_currentColor);
     }
     
     private Rect Inset(Rect r, float amount)
@@ -41,10 +41,10 @@ public class CharacterSlotVisualizer : ImmediateModePanel, ICharacterSlotVisuali
         return new Rect(r.x + amount, r.y + amount, r.width - amount * 2, r.height - amount * 2);
     }
 
-    public void SetBG(Color bgColor)
-    {
-        this.m_bgColor = bgColor;
-    }
+    // public void SetBG(Color bgColor)
+    // {
+    //     this.m_bgColor = bgColor;
+    // }
 
     public void SetCurrentColor(Color currentColor)
     {

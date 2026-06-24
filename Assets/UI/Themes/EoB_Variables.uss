@@ -11,12 +11,16 @@
     --bg-surface: transparent;
     --bg-raised:  transparent;
     --bg-divider: transparent;
+    --bg-overlay: transparent;   /* 떠 있는 반투명 면 (툴팁·모달·팝업) */
 
     /* Border */
     --border-default:   transparent;
     --border-active:    transparent;
     --border-highlight: transparent;
     --border-danger:    transparent;
+    --border-danger-hover:  transparent;
+    --border-danger-strong: transparent;
+    --border-accent:    transparent;
 
     /* Text */
     --text-primary:   rgba(0,0,0,0);
@@ -40,14 +44,21 @@
     --slot-trait-border: transparent;
     --slot-trait-dot:    transparent;
     --slot-trait-bg:     transparent;
+    --slot-unset:        transparent;
 
     /* Interactive — Button */
     --btn-primary-bg:       transparent;
     --btn-primary-border:   transparent;
     --btn-primary-text:     rgba(0,0,0,0);
     --btn-action-bg:        transparent;
+    --btn-hover-bg:         transparent;   /* 호버 시 배경 하이라이트 (filled 버튼) */
+    --btn-active-bg:        transparent;   /* 클릭(눌림) 시 배경 */
     --btn-secondary-border: transparent;
     --btn-secondary-text:   rgba(0,0,0,0);
+    --btn-danger-text:      rgba(0,0,0,0);
+    --btn-danger-bg:        transparent;
+    --btn-danger-bg-hover:  transparent;
+    --btn-danger-bg-active: transparent;
 
     /* Echo System */
     --echo-ready-border: transparent;
