@@ -43,6 +43,7 @@ namespace Bond.WT.Journal
         Action<JournalOption> OnOptionSelected { get; set; }
         
         void SetPrevButtonEnabled(bool isEnabled);
+        void SetNextButtonEnabled(bool isEnabled);
         void SetNextButtonText(string text);
     }
 }
