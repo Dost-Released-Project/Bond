@@ -21,7 +21,7 @@ MonoBehaviour:
   IdleImageId: Assassin_Idle
   BattleImageId: Assassin_Battle
   MaxHP: 30
-  Atk: 7
+  Atk: 5
   Def: 0
   Speed: 15
   Cri: 40

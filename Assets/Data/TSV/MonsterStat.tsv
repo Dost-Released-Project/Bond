@@ -5,9 +5,9 @@
 				def, cri, acc, eva	0~100										
 															
 															
-									기본값 50퍼 제공						
+									기본값 80퍼 제공						
 ID	Name	RoleType	Level	MaxHP	Atk	Def	Speed	Cri	Acc	Eva	SpAtk	ImageAddress	SkillIds	IdleImageID	BattleImageID
-10010000	GoblinAssassin	Dealer	1	30	7	0	15	40	20	10	3	Assassin_Icon	01010000;01010000;01010000;01010000	Assassin_Idle	Assassin_Battle
+10010000	GoblinAssassin	Dealer	1	30	5	0	15	40	20	10	3	Assassin_Icon	01010000;01010000;01010000;01010000	Assassin_Idle	Assassin_Battle
 10020000	OrkWarrior	Tanker	3	50	10	20	4	20	5	0	2	Warrior_Icon	01010000;01020000;01010000;01020000	Warrior_Idle	Warrior_Battle
 10030000	SkeletonArcher	Dealer	1	40	5	10	15	30	25	5	5	Assassin_Icon	01010000;01020000;01010000;01020000	Assassin_Idle	Assassin_Battle
 10040000	Slime	Tanker	1	40	5	10	5	10	5	0	2	Warrior_Icon	01010000;01020000;01010000;01020000	Warrior_Idle	Warrior_Battle
