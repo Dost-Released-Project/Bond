@@ -20,13 +20,17 @@ namespace Buffs
         /// <summary>남은 지속(버프 받은 캐릭터의 자기 턴 수). 0 이하가 되면 만료·제거된다.</summary>
         public int RemainingTurns;
 
+        /// <summary>매 턴마다 적용할 HP 변화량 (데미지: 음수, 힐: 양수)</summary>
+        public float HpChangePerTurn;
+
         public ActiveBuff() { }
 
-        public ActiveBuff(string id, List<StatModifier> modifiers, int durationTurns)
+        public ActiveBuff(string id, List<StatModifier> modifiers, int durationTurns, float hpChangePerTurn = 0f)
         {
             Id = id;
             Modifiers = modifiers;
             RemainingTurns = durationTurns;
+            HpChangePerTurn = hpChangePerTurn;
         }
     }
 }
