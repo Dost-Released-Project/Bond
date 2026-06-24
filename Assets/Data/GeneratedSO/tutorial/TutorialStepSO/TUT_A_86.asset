@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: TUT_A_86
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_86
-  _displayName: " \uB9F5 \uC544\uC774\uCF58 \uC124\uBA85"
-  _description: "\uC0AC\uAC74 \uC2A4\uD14C\uC774\uC9C0"
-  _sequence: 1
-  _targetUiKey: 'Canvas/MapPanel/MapParent/Map_Node_Button(Clone)[1]'
+  _displayName: "\uD0D0\uC0AC \uCD9C\uBC1C"
+  _description: "\uC774\uC804 \uB2E8\uACC4\uB97C \uB204\uB974\uBA74 \uCCAB\uBC88\uC9F8
+    \uD398\uC774\uC9C0\uB85C \uB3CC\uC544\uAC00\uACE0 \uD0D0\uC0AC \uCD9C\uBC1C\uC744
+    \uB204\uB974\uBA74 \uD0D0\uC0AC\uB97C \uC2DC\uC791\uD569\uB2C8\uB2E4."
+  _sequence: 0
+  _targetUiKey: TownUi/embark__footer--step2
   _clickType: 1
   _rewardFrontier: 0
   _rewardWood: 0

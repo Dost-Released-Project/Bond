@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: TUT_A_38
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_38
-  _displayName: "\uC5ED\uD560 \uC124\uC815"
-  _description: "\uD0F1\uCEE4\uB97C \uD074\uB9AD\uD558\uC138\uC694."
+  _displayName: "\uB300\uC6D0 \uD3B8\uC131"
+  _description: "\uC554\uC0B4\uC790\uB3C4 \uC81C\uB300\uB85C \uD3B8\uC131\uB41C \uAC83\uC744
+    \uD655\uC778\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: CharacterDetailUi/role-btn-current
-  _clickType: 0
+  _targetUiKey: TownUi/embark__party-slot-2
+  _clickType: 1
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

@@ -470,30 +470,39 @@ namespace Bond.Tutorial
 
         private Rect CalculateWorldBoundsToScreen(GameObject targetGo)
         {
-            // 🎯 [정밀 보정] uGUI 컴포넌트의 실제 스크린 매핑 오차 전면 교정
+            // 🎯 uGUI RectTransform 스크린 실측 좌표 정산 엔진 (카메라/오버레이 전천후 대응)
             if (targetGo.TryGetComponent<RectTransform>(out var rectTransform))
             {
                 Canvas rootCanvas = rectTransform.GetComponentInParent<Canvas>();
-                Camera cam = (rootCanvas != null && rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay) ? null : mainCamera;
-        
-                // 중심점(position)의 정확한 스크린 픽셀 좌표 확보
-                Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(cam, rectTransform.position);
-                
-                // UI Toolkit 마스킹 판넬은 원본 스크린 픽셀 크기에 그대로 1:1 매칭되어야 하므로, 
-                // 캔버스 스케일러 조정을 통과한 후의 물리적 픽셀 실측 사이즈를 연산합니다.
+
+                // 💥 중요: 캔버스가 ScreenSpace-Overlay 모드라면 카메라를 무조건 null로 주어야 하고,
+                // Camera 모드라면 해당 Canvas를 비추고 있는 정확한 Event Camera(혹은 mainCamera)를 매핑해야 꼬이지 않습니다.
+                Camera cam = null;
+                if (rootCanvas != null && rootCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
+                {
+                    cam = rootCanvas.worldCamera != null ? rootCanvas.worldCamera : mainCamera;
+                }
+
+                // 월드 공간상의 4개 모서리 좌표를 획득합니다.
                 Vector3[] corners = new Vector3[4];
                 rectTransform.GetWorldCorners(corners);
-                
-                Vector2 screenCorner0 = RectTransformUtility.WorldToScreenPoint(cam, corners[0]);
-                Vector2 screenCorner2 = RectTransformUtility.WorldToScreenPoint(cam, corners[2]);
-                
+
+                // 각 모서리를 카메라와 해상도 스케일에 맞춰 순수 스크린 픽셀 좌표로 변환합니다.
+                Vector2 screenCorner0 = RectTransformUtility.WorldToScreenPoint(cam, corners[0]); // 좌하단
+                Vector2 screenCorner2 = RectTransformUtility.WorldToScreenPoint(cam, corners[2]); // 우상단
+
+                // UI Toolkit 마스킹 시스템과 1:1 매칭되는 물리적 픽셀 크기 산출
                 float width = Mathf.Abs(screenCorner2.x - screenCorner0.x);
                 float height = Mathf.Abs(screenCorner2.y - screenCorner0.y);
-        
-                // UI Toolkit 좌표계 규칙 (좌상단 원점)에 맞춰 정렬
-                float x = screenPos.x - (width * rectTransform.pivot.x);
-                float y = Screen.height - (screenPos.y + (height * (1f - rectTransform.pivot.y)));
-                
+
+                // UI Toolkit의 원점 규칙(좌측 상단이 0,0)에 맞춰 정확하게 Pivot 오차를 보정합니다.
+                float x = screenCorner0.x;
+                float y = Screen.height - screenCorner2.y;
+
+                // 🔍 디버깅용 실측 로그 추가
+                Debug.Log(
+                    $"<color=lime>[uGUI Coordinate Custom]</color> 오브젝트: {targetGo.name} | CanvasMode: {rootCanvas?.renderMode} | 적용된 카메라: {(cam != null ? cam.name : "Null(Overlay)")} | 최종 Rect: {x}, {y}, {width}, {height}");
+
                 return new Rect(x, y, width, height);
             }
 
@@ -512,7 +521,7 @@ namespace Bond.Tutorial
 
         private void OnSkipButtonTriggered()
         {
-            _controller.Skip(null, null);
+            _controller.Skip();
         }
 
         private void OnTutorialCleared()

@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: TUT_A_22
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_22
-  _displayName: "\uB300\uC6D0 \uBA85\uBD80 \uC2A4\uD06C\uB864"
-  _description: "\uB300\uC6D0 \uBA85\uBD80\uB97C \uC2A4\uD06C\uB864 \uD558\uBA74
-    \uCD94\uAC00\uB41C \uC694\uC6D0\uC744 \uD655\uC778\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+  _displayName: "\uC99D\uC6D0 \uC694\uCCAD"
+  _description: "\uC99D\uC6D0 \uC694\uCCAD\uC5D0 \uD544\uC694\uD55C \uC790\uC6D0\uC744
+    \uC9C0\uAE09\uD588\uC2B5\uB2C8\uB2E4. \uC99D\uC6D0\uC744 \uC694\uCCAD\uD558\uC138\uC694."
   _sequence: 0
-  _targetUiKey: TownUi/roster-panel
+  _targetUiKey: SupplyView/btn-reinforce
   _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0

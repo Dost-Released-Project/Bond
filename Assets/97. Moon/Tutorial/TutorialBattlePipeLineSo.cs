@@ -110,7 +110,7 @@ namespace PipeLine
             }
 
             // [수정] 시전자 명중률(acc)에서 타겟 회피율(eva)을 차감하여 최종 명중 확률 계산 (0~1 범위)
-            float hitRate = context.caster.Stat.acc - context.target.Stat.eva;
+            float hitRate = (context.caster.Stat.acc + 1f) - context.target.Stat.eva;
         
             // 최소 명중률 보장 (예: 아무리 회피가 높아도 5% 확률로는 맞음 - 필요 시 조정 가능)
             hitRate = Mathf.Max(0.05f, hitRate);

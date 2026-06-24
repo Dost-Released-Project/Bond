@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: TUT_A_87
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_87
-  _displayName: " \uB9F5 \uC544\uC774\uCF58 \uC124\uBA85"
-  _description: "\uC815\uC608 \uC804\uD22C \uC2A4\uD14C\uC774\uC9C0"
-  _sequence: 1
-  _targetUiKey: 'Canvas/MapPanel/MapParent/Map_Node_Button(Clone)[2]'
-  _clickType: 1
+  _displayName: "\uD0D0\uC0AC \uCD9C\uBC1C"
+  _description: "\uD0D0\uC0AC \uCD9C\uBC1C\uC744 \uD074\uB9AD\uD558\uC138\uC694."
+  _sequence: 0
+  _targetUiKey: TownUi/btn-depart
+  _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0
-  _rewardItemIds: 
-  _rewardItemCounts: 
+  _rewardItemIds: 08000000,08010000,08020000
+  _rewardItemCounts: 1,1,1

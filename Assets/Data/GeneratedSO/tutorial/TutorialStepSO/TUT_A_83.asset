@@ -13,13 +13,12 @@ MonoBehaviour:
   m_Name: TUT_A_83
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_83
-  _displayName: "\uD0D0\uC0AC \uCD9C\uBC1C"
-  _description: "\uC774\uC804 \uB2E8\uACC4\uB97C \uB204\uB974\uBA74 \uCCAB\uBC88\uC9F8
-    \uD398\uC774\uC9C0\uB85C \uB3CC\uC544\uAC00\uACE0 \uD0D0\uC0AC \uCD9C\uBC1C\uC744
-    \uB204\uB974\uBA74 \uD0D0\uC0AC\uB97C \uC2DC\uC791\uD569\uB2C8\uB2E4."
+  _displayName: "\uBB3C\uC790 \uD3B8\uC131"
+  _description: "\uC544\uC774\uD15C\uC744 \uD074\uB9AD\uD574\uC11C \uD0D0\uC0AC \uBB3C\uD488\uC5D0
+    \uCD94\uAC00\uD558\uC138\uC694."
   _sequence: 0
-  _targetUiKey: TownUi/embark__footer--step2
-  _clickType: 1
+  _targetUiKey: TownUi/embark__step2/unity-content-and-vertical-scroll-container
+  _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

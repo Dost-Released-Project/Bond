@@ -13,14 +13,12 @@ MonoBehaviour:
   m_Name: TUT_A_16
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_16
-  _displayName: "\uAC74\uC124 \uD655\uC778 UI"
-  _description: "\uBCF4\uAE09\uC18C\uB294 \uC5C5\uADF8\uB808\uC774\uB4DC\uAC00 \uBD88\uAC00\uB2A5\uD558\uC5EC
-    \uCD08\uAE30 \uAC74\uC124 \uBE44\uC6A9\uC774 \uBE44\uC2FC \uD3B8\uC785\uB2C8\uB2E4.
-    \uC774\uC804\uC5D0 \uC9C0\uAE09\uB41C \uC790\uC6D0\uC744 \uC0AC\uC6A9\uD574\uC11C
-    \uAC74\uBB3C\uC744 \uAC74\uC124\uD558\uC138\uC694."
+  _displayName: "\uC778\uBCA4\uD1A0\uB9AC"
+  _description: "\uCC3D\uACE0\uC5D0\uC11C\uB294 \uD604\uC7AC \uC9C0\uB2CC \uC544\uC774\uD15C\uC744
+    \uD655\uC778\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: Construction/btn-confirm
-  _clickType: 0
+  _targetUiKey: Inventory/inventory-container
+  _clickType: 1
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0
