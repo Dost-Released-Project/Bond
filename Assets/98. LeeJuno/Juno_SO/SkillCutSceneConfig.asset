@@ -19,3 +19,5 @@ MonoBehaviour:
     SceneId: Timeline_Assassin_CutScene
   - SkillId: 01030200
     SceneId: Timeline_Wizard_CutScene
+  - SkillId: 01040300
+    SceneId: Timeline_Healer_CutScene
