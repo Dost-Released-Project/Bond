@@ -1,3 +1,4 @@
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -38,12 +39,19 @@ public class SkillCutSceneController : MonoBehaviour
 
     private void OnDestroy()
     {
+        // Time.timeScale = 0 상태에서 설정한 오버라이드를 기본값으로 복원한다
+        CinemachineCore.UniformDeltaTimeOverride = -1f;
+
         if (_director != null)
             _director.stopped -= OnDirectorStopped;
     }
 
     private void Update()
     {
+        // Time.timeScale = 0 상태에서 Cinemachine 노이즈(카메라 흔들림)가 멈추는 문제를 방지한다.
+        // UniformDeltaTimeOverride를 unscaledDeltaTime으로 설정하면 timeScale과 무관하게 노이즈가 업데이트된다.
+        CinemachineCore.UniformDeltaTimeOverride = Time.unscaledDeltaTime;
+
         // stopped 이벤트가 누락된 경우를 대비한 폴백 감지
         // Paused 상태이고 재생 시간이 전체 길이에 근접하면 완료로 판정한다
         if (_hasInvoked)
