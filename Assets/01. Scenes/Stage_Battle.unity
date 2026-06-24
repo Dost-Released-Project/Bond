@@ -785,11 +785,6 @@ RectTransform:
   m_AnchoredPosition: {x: 20, y: -20}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0, y: 1}
---- !u!223 &453712401 stripped
-Canvas:
-  m_CorrespondingSourceObject: {fileID: 1388117148650720773, guid: 17cf0fb96bebd5048a568d9e84235ec7, type: 3}
-  m_PrefabInstance: {fileID: 455856069565309980}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &555249277
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -969,8 +964,6 @@ MonoBehaviour:
   autoInjectGameObjects: []
   _ui: {fileID: 1521924634}
   _skillCutSceneConfig: {fileID: 11400000, guid: 0047c455c9d58ea4bad7f9ad712a4aa3, type: 2}
-  _portraitCanvas: {fileID: 453712401}
-  _portraitDuration: 1.5
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -2409,7 +2402,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3534244045299327502, guid: 17cf0fb96bebd5048a568d9e84235ec7, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7016878932621624777, guid: 17cf0fb96bebd5048a568d9e84235ec7, type: 3}
       propertyPath: m_Color.a
