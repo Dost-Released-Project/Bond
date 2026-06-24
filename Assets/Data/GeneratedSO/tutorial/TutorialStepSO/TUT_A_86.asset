@@ -16,7 +16,7 @@ MonoBehaviour:
   _displayName: " \uB9F5 \uC544\uC774\uCF58 \uC124\uBA85"
   _description: "\uC0AC\uAC74 \uC2A4\uD14C\uC774\uC9C0"
   _sequence: 1
-  _targetUiKey: 'Map_Node_Button(Clone)[1]'
+  _targetUiKey: 'Canvas/MapPanel/Mapview/MapParent/Map_Node_Button(Clone)[1]'
   _clickType: 1
   _rewardFrontier: 0
   _rewardWood: 0
