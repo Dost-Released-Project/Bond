@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Bond.Embark;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -17,6 +19,7 @@ namespace Bond.WT.Journal
         private readonly IJournalVisualizer _view;
         private readonly JournalSystem _system;
         private readonly ISpriteLoader _spriteLoader;
+        private readonly IPartyController _partyController;
 
         private AsyncOperationHandle<Sprite>? _currentIconHandle;
 
@@ -34,12 +37,13 @@ namespace Bond.WT.Journal
         private readonly ObserverWrapper<bool> _lastPageObserver = new ObserverWrapper<bool>();
 
         [Inject]
-        public JournalBinder(JournalModel model, IJournalVisualizer view, JournalSystem system, ISpriteLoader spriteLoader)
+        public JournalBinder(JournalModel model, IJournalVisualizer view, JournalSystem system, ISpriteLoader spriteLoader, IPartyController partyController)
         {
             _model = model;
             _view = view;
             _system = system;
             _spriteLoader = spriteLoader;
+            _partyController = partyController;
 
             // 핸들러 설정
             _paragraphObserver.EventHandler = text => 
@@ -58,7 +62,17 @@ namespace Bond.WT.Journal
 
             _reportObserver.EventHandler = report => 
             {
-                if (report != null) LoadAndSetIconAsync(report.IconId).Forget();
+                if (report != null)
+                {
+                    var manualChar = _partyController.GetCurrentParty()?
+                        .FirstOrDefault(c => c.isPlayable);
+                    
+                    string address = (manualChar != null && !string.IsNullOrEmpty(manualChar.ImageAddress)) 
+                        ? manualChar.ImageAddress 
+                        : report.IconId;
+                    
+                    LoadAndSetIconAsync(address).Forget();
+                }
             };
 
             _completeObserver.EventHandler = isComplete => 
