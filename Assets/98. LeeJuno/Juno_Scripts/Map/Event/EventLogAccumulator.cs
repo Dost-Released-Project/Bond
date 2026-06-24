@@ -120,7 +120,11 @@ public class EventLogAccumulator
             };
 
             if (selectedOption.HasValue)
-                _pendingReport.SelectedOption = selectedOption;
+            {
+                JournalOption opt = selectedOption.Value;
+                opt.actionKey = string.Empty;
+                _pendingReport.SelectedOption = opt;
+            }
         }
         else
         {
