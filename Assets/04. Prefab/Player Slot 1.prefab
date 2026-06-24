@@ -209,8 +209,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f25c83b6afce6d8459a5bb051a863222, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02._Scripts.BattleSystem.CharacterSlot
-  side: 1
-  rank: 8
+  side: 0
+  rank: 1
   m_TextVisualizer: {fileID: 6022173341796306985}
   m_CharacterSlotBar: {fileID: 2108399142230142152}
   m_CharacterSlotBuffBar: {fileID: 4398422410623459095}
@@ -263,7 +263,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1897737845735500598
 RectTransform:
   m_ObjectHideFlags: 0
@@ -297,7 +297,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ShapesRuntime::Shapes.Rectangle
   blendMode: 1
   scaleMode: 0
-  color: {r: 1, g: 1, b: 1, a: 1}
+  color: {r: 0.80303, g: 1, b: 0, a: 1}
   detailLevel: 2
   culling: 0
   boundsPadding: 0
@@ -354,7 +354,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2715594403879276589}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
