@@ -33,6 +33,8 @@ MonoBehaviour:
   TargetTextOverride: "\uC790\uC2E0\uC774"
   ConditionTextOverride: "\uCE58\uBA85\uD0C0 \uACF5\uACA9 \uC2DC"
   ActionTextOverride: "\uC9C0\uC815 \uC2A4\uD0AC \uCD94\uAC00 \uC0AC\uC6A9"
+  SentenceTemplate: "\uC790\uC2E0\uC774 \uCE58\uBA85\uD0C0 \uACF5\uACA9 \uC2DC {action}
+    \uCD94\uAC00 \uC0AC\uC6A9"
   references:
     version: 2
     RefIds:

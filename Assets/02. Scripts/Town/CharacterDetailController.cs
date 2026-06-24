@@ -213,9 +213,8 @@ namespace Bond.UI
 
         // ── 3분할 표시(대상/조건/행동) 헬퍼 ──────────────────────────────
 
-        /// <summary>슬롯의 3분할 표시 문구(대상/조건/행동). 정의 없으면 "—".</summary>
-        public (string target, string condition, string action) GetPartTexts(int slotIndex)
-            => GetSlotDefinition(slotIndex)?.ResolvePartTexts() ?? ("—", "—", "—");
+        /// <summary>슬롯의 문장 템플릿(편집 토큰 {observe}/{action} 포함). 정의 없으면 "—".</summary>
+        public string GetSentence(int slotIndex) => GetSlotDefinition(slotIndex)?.ResolveSentence() ?? "—";
 
         /// <summary>관찰 대상 편집칸이 실제로 채워졌는가(아군 지정됨).</summary>
         public bool IsObserveFilled(int slotIndex)
