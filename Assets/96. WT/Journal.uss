@@ -42,7 +42,7 @@
 
 .journal-panel__content {
     white-space: normal;
-    font-size: var(--font-size-body);
+    font-size: 34px;
     color: var(--text-primary);
     letter-spacing: 0.5px;
     -unity-font-style: italic; /* 일지 본문 규칙 적용 */
@@ -77,9 +77,11 @@
 }
 
 .journal-panel__options {
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
+    align-self: center;
+    width: auto;
     margin-bottom: 20px;
 }
 
@@ -116,11 +118,13 @@
 
 /* JournalChoice Button Style */
 .journal-panel__choice-btn {
-    width: 60px;
-    height: 60px;
-    margin: 0 10px;
+    min-width: 160px;
+    width: auto;
+    height: 50px;
+    margin: 6px 0;
+    padding: 0 24px;
     border-radius: 4px;
-    font-size: var(--font-size-button);
+    font-size: 34;
     color: var(--text-accent);
     background-color: var(--btn-primary-bg);
     border-width: 1px;

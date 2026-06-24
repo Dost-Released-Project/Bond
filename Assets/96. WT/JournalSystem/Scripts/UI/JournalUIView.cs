@@ -71,6 +71,14 @@ namespace Bond.WT.Journal
             }
         }
 
+        public void SetNextButtonEnabled(bool isEnabled)
+        {
+            if (_nextButton != null)
+            {
+                _nextButton.SetEnabled(isEnabled);
+            }
+        }
+
         public void SetNextButtonText(string text)
         {
             if (_nextButton != null)
@@ -172,8 +180,6 @@ namespace Bond.WT.Journal
 
                 _optionButtonContainer.Add(buttonInstance);
             }
-            
-            if (_nextButton != null) _nextButton.style.display = DisplayStyle.None;
         }
     }
 }

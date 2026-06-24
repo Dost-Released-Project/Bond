@@ -80,9 +80,29 @@ public class EventLogAccumulator
         {
             _pendingChoiceLabelIndex = -1;
 
+            string locationName = eventData != null ? eventData.DisplayName : string.Empty;
+            string itemName = string.Empty;
+
+            if (choice != null && choice.Effect != null)
+            {
+                string itemId = choice.Effect.GuaranteedItemId;
+                if (!string.IsNullOrEmpty(itemId))
+                {
+                    itemName = GetItemDisplayName(itemId);
+                }
+            }
+
             // Title 을 Paragraphs 첫 번째 줄로 추가한다 — JournalModel 이 Title 필드를 표시하지 않으므로 Paragraphs 에 포함한다
             List<string> paragraphs = new List<string> { "이벤트 기록" };
-            paragraphs.AddRange(template.Paragraphs);
+            foreach (var para in template.Paragraphs)
+            {
+                string formatted = para;
+                if (para != null && (para.Contains("{0}") || para.Contains("{1}")))
+                {
+                    formatted = string.Format(para, locationName, itemName);
+                }
+                paragraphs.Add(formatted);
+            }
             List<JournalOption> options = new List<JournalOption>(template.Options);
 
             JournalOption? selectedOption = null;
@@ -217,8 +237,16 @@ public class EventLogAccumulator
     /// <param name="itemId">획득한 아이템 ID.</param>
     public void FlushItemRewardLogById(string itemId)
     {
-        string itemDisplayName = itemId;
+        string itemDisplayName = GetItemDisplayName(itemId);
+        FlushItemRewardLog(itemDisplayName);
+    }
 
+    public string GetItemDisplayName(string itemId)
+    {
+        if (string.IsNullOrEmpty(itemId))
+            return string.Empty;
+
+        string itemDisplayName = itemId;
         AccessoryDataBaseSO accessoryDB = _mapConfigCache?.AccessoryDB;
         if (accessoryDB != null)
         {
@@ -232,8 +260,7 @@ public class EventLogAccumulator
         {
             Debug.LogWarning("[EventLogAccumulator] AccessoryDB가 아직 로드되지 않았습니다.");
         }
-
-        FlushItemRewardLog(itemDisplayName);
+        return itemDisplayName;
     }
 
     /// <summary>
