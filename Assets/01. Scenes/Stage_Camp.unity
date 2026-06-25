@@ -905,7 +905,7 @@ MonoBehaviour:
   cornerRadius: 1.99
   thickness: 10
   padding: 10
-  m_bgColor: {r: 0, g: 0, b: 0, a: 1}
+  m_bgColor: {r: 0, g: 0, b: 0, a: 0}
   m_currentColor: {r: 0, g: 0, b: 0, a: 0}
   m_portrait: {fileID: 0}
 --- !u!114 &1194974106
@@ -922,6 +922,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::_02._Scripts.BattleSystem.CharacterSlot
   side: 0
   rank: 4
+  m_TextVisualizer: {fileID: 0}
+  m_CharacterSlotBar: {fileID: 0}
+  m_CharacterSlotBuffBar: {fileID: 0}
   colorData: {fileID: 11400000, guid: 1b6ce13548bc05e419c7272eb4a33971, type: 2}
 --- !u!114 &1194974107
 MonoBehaviour:
@@ -1209,6 +1212,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::_02._Scripts.BattleSystem.CharacterSlot
   side: 0
   rank: 8
+  m_TextVisualizer: {fileID: 0}
+  m_CharacterSlotBar: {fileID: 0}
+  m_CharacterSlotBuffBar: {fileID: 0}
   colorData: {fileID: 11400000, guid: 1b6ce13548bc05e419c7272eb4a33971, type: 2}
 --- !u!114 &1377312408
 MonoBehaviour:
@@ -1275,7 +1281,7 @@ MonoBehaviour:
   cornerRadius: 1.99
   thickness: 10
   padding: 10
-  m_bgColor: {r: 0, g: 0, b: 0, a: 1}
+  m_bgColor: {r: 0, g: 0, b: 0, a: 0}
   m_currentColor: {r: 0, g: 0, b: 0, a: 0}
   m_portrait: {fileID: 0}
 --- !u!1 &1395806744
@@ -1465,7 +1471,7 @@ MonoBehaviour:
   cornerRadius: 1.99
   thickness: 10
   padding: 10
-  m_bgColor: {r: 0, g: 0, b: 0, a: 1}
+  m_bgColor: {r: 0, g: 0, b: 0, a: 0}
   m_currentColor: {r: 0, g: 0, b: 0, a: 0}
   m_portrait: {fileID: 0}
 --- !u!114 &1410344349
@@ -1482,6 +1488,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::_02._Scripts.BattleSystem.CharacterSlot
   side: 0
   rank: 1
+  m_TextVisualizer: {fileID: 0}
+  m_CharacterSlotBar: {fileID: 0}
+  m_CharacterSlotBuffBar: {fileID: 0}
   colorData: {fileID: 11400000, guid: 1b6ce13548bc05e419c7272eb4a33971, type: 2}
 --- !u!114 &1410344350
 MonoBehaviour:
@@ -1654,7 +1663,7 @@ MonoBehaviour:
   cornerRadius: 1.99
   thickness: 10
   padding: 10
-  m_bgColor: {r: 0, g: 0, b: 0, a: 1}
+  m_bgColor: {r: 0, g: 0, b: 0, a: 0}
   m_currentColor: {r: 0, g: 0, b: 0, a: 0}
   m_portrait: {fileID: 0}
 --- !u!114 &1680525791
@@ -1671,6 +1680,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::_02._Scripts.BattleSystem.CharacterSlot
   side: 0
   rank: 2
+  m_TextVisualizer: {fileID: 0}
+  m_CharacterSlotBar: {fileID: 0}
+  m_CharacterSlotBuffBar: {fileID: 0}
   colorData: {fileID: 11400000, guid: 1b6ce13548bc05e419c7272eb4a33971, type: 2}
 --- !u!114 &1680525792
 MonoBehaviour:

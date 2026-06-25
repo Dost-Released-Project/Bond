@@ -2509,14 +2509,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player Slot 1
       objectReference: {fileID: 0}
-    - target: {fileID: 2715594403879276589, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5625310232045571983, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5937003464936598925, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
