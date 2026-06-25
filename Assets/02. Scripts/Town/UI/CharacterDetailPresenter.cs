@@ -219,7 +219,7 @@ namespace Bond.UI
             _equipSlots.OnDragDropRequested -= HandleEquipSlotDragDrop;
             _equipSlots.OnDragDropRequested += HandleEquipSlotDragDrop;
 
-            _controller.OnRoleChanged      += _ => RefreshIdentity();
+            _controller.OnRoleChanged      += HandleControllerRoleChanged;
             _controller.OnReactionChanged  += RefreshReactionSlot;
 
             _panel.RegisterCallback<PointerDownEvent>(evt =>
@@ -286,6 +286,10 @@ namespace Bond.UI
         private void HandleStatRecalculated(BaseCharacter c) => RefreshStats();
         private void HandleRoleChanged(BaseCharacter c)      => RefreshIdentity();
 
+        // 컨트롤러발 역할 변경(Action<RoleType>). 캐릭터발 HandleRoleChanged 와 시그니처가 달라 별도 메서드로 둔다
+        // (익명 람다로 두면 OnDestroy 에서 -= 가 불가능).
+        private void HandleControllerRoleChanged(RoleType role) => RefreshIdentity();
+
         // 스킬 편성 변경 → 그리드 갱신 + 리액션 슬롯 재표시(압축으로 SkillIndex 가 재매핑/해제됐을 수 있음)
         private void HandleSkillsChanged(BaseCharacter c)
         {
@@ -297,6 +301,17 @@ namespace Bond.UI
 
         private void OnDestroy()
         {
+            // 주입된 컨트롤러/셀렉터 구독 해제. 지금은 셋이 같은 스코프라 동시 소멸하지만,
+            // 컨벤션(구독 측이 OnDestroy 에서 해제) 준수 + 향후 셀렉터/컨트롤러가 상위 스코프로 올라가도 안전하도록.
+            if (_controller != null)
+            {
+                _controller.OnCharacterSet    -= RefreshCharacter;
+                _controller.OnRoleChanged     -= HandleControllerRoleChanged;
+                _controller.OnReactionChanged -= RefreshReactionSlot;
+                if (_selector != null)
+                    _selector.OnSelectionChanged -= _controller.SetCharacter;
+            }
+
             DetachCharacterEvents(_character);
             _equipSlots?.Dispose();
             _dropdown?.Dispose();
