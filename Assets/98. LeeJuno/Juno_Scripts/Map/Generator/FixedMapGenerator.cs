@@ -5,7 +5,8 @@ using VContainer;
 
 /// <summary>
 /// 테스트용 고정 맵 생성기.
-/// Normal(Layer 0) → Event(Layer 1) → Elite(Layer 2) → Camping(Layer 3) → Boss(Layer 4) 5노드를 항상 반환한다.
+/// Normal(Layer 0) → Event(Layer 1) → Elite or Camping(Layer 2, 선택) → Boss(Layer 3) 구조를 반환한다.
+/// Layer 2에서 Elite / Camping 두 노드 중 하나를 선택할 수 있다.
 /// IMapGenerator를 구현하므로 TestMapLifetimeScope의 DI 바인딩만 교체하면
 /// MapInitializer 파이프라인 전체가 동일하게 동작한다.
 /// </summary>
@@ -32,8 +33,8 @@ public class FixedMapGenerator : IMapGenerator
         MapData data = new MapData
         {
             Seed = seed,
-            TotalLayers = 5,
-            MaxNodesPerLayer = 1,
+            TotalLayers = 4,
+            MaxNodesPerLayer = 2,
         };
 
         // Layer 0: Normal — 시작 노드
@@ -44,32 +45,35 @@ public class FixedMapGenerator : IMapGenerator
         // Layer 1: Event
         MapNode eventNode = new MapNode(1, 0);
         eventNode.StageType = StageType.Event;
-        eventNode.NormalizedPosition = new Vector2(0.5f, 0.25f);
+        eventNode.NormalizedPosition = new Vector2(0.5f, 0.33f);
 
-        // Layer 2: Elite
+        // Layer 2: Elite (왼쪽 선택지)
         MapNode eliteNode = new MapNode(2, 0);
         eliteNode.StageType = StageType.Elite;
-        eliteNode.NormalizedPosition = new Vector2(0.5f, 0.5f);
+        eliteNode.NormalizedPosition = new Vector2(0.3f, 0.66f);
 
-        // Layer 3: Camping
-        MapNode campingNode = new MapNode(3, 0);
+        // Layer 2: Camping (오른쪽 선택지)
+        MapNode campingNode = new MapNode(2, 1);
         campingNode.StageType = StageType.Camping;
-        campingNode.NormalizedPosition = new Vector2(0.5f, 0.75f);
+        campingNode.NormalizedPosition = new Vector2(0.7f, 0.66f);
 
-        // Layer 4: Boss — 마지막 노드
-        MapNode bossNode = new MapNode(4, 0);
+        // Layer 3: Boss — 마지막 노드
+        MapNode bossNode = new MapNode(3, 0);
         bossNode.StageType = StageType.Boss;
         bossNode.NormalizedPosition = new Vector2(0.5f, 1f);
 
-        // 단선 연결: Normal → Event → Elite → Camping → Boss
+        // 연결: Normal → Event → (Elite | Camping) → Boss
         normalNode.NextNodeIds.Add(eventNode.Id);
         eventNode.PrevNodeIds.Add(normalNode.Id);
 
         eventNode.NextNodeIds.Add(eliteNode.Id);
         eliteNode.PrevNodeIds.Add(eventNode.Id);
 
-        eliteNode.NextNodeIds.Add(campingNode.Id);
-        campingNode.PrevNodeIds.Add(eliteNode.Id);
+        eventNode.NextNodeIds.Add(campingNode.Id);
+        campingNode.PrevNodeIds.Add(eventNode.Id);
+
+        eliteNode.NextNodeIds.Add(bossNode.Id);
+        bossNode.PrevNodeIds.Add(eliteNode.Id);
 
         campingNode.NextNodeIds.Add(bossNode.Id);
         bossNode.PrevNodeIds.Add(campingNode.Id);
