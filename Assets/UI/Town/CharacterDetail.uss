@@ -763,7 +763,7 @@
 .char-detail__reaction-slot--trait .char-detail__slot-part-val--assigned { color: var(--slot-trait-dot); }
 .char-detail__slot-part-val--unassigned { color: var(--slot-unset); }
 
-/* ── 할당 아이콘 슬롯(문구 아래). 편집칸에만 표시, 미할당=빈 경고 테두리 ── */
+/* ── 할당 아이콘 슬롯(문구 아래). 할당된 경우에만 표시(미할당/편집 전엔 코드에서 숨김) ── */
 .char-detail__slot-part-icon {
     width: 64px;
     height: 64px;
@@ -771,10 +771,6 @@
     border-width: 1px;
     border-color: var(--border-default);
     background-color: var(--bg-raised);
-}
-.char-detail__slot-part-icon--empty {
-    border-color: var(--slot-unset);
-    background-color: transparent;
 }
 
 /* 칸 본문 = 문장영역(가로): 편집칩 + 나머지 문구가 가로로 흐르고, 세로는 중앙 정렬.

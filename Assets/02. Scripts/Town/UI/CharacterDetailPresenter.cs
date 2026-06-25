@@ -691,20 +691,24 @@ namespace Bond.UI
             int tk = before.IndexOf("{icon}", StringComparison.Ordinal);
             if (tk >= 0) { afterText = before.Substring(tk + 6).TrimStart(); before = before.Substring(0, tk).TrimEnd(); }
 
+            // 상태 색(할당/미할당)은 아이콘 위 문구(val)에만. 옆 문구(after)는 항상 중립색(서술 문구).
             SetPartVal(val, before, state);
             if (after != null)
             {
                 bool hasAfter = !string.IsNullOrEmpty(afterText);
                 after.style.display = hasAfter ? DisplayStyle.Flex : DisplayStyle.None;
-                if (hasAfter) SetPartVal(after, afterText, state);
+                if (hasAfter) SetPartVal(after, afterText, PartState.Fixed);
             }
             part?.EnableInClassList("char-detail__slot-part--editable", editable);
 
             if (icon == null) return;
 
-            if (!editable)
+            // 고정 칸이거나 아직 미할당(편집 전)이면 아이콘을 숨긴다. 할당돼야 비로소 아이콘 표시.
+            // (미할당 경고는 값 문구의 빨강 색 + 다이아몬드 에코로 충분히 드러난다.)
+            if (!editable || !filled)
             {
                 icon.style.display = DisplayStyle.None;
+                icon.RemoveFromClassList("char-detail__slot-part-icon--empty");
                 icon.sprite = null;
                 icon.tooltip = string.Empty;
                 if (isTarget) _targetIconAddr[slot] = null; else _actionIconAddr[slot] = null;
@@ -712,25 +716,14 @@ namespace Bond.UI
             }
 
             icon.style.display = DisplayStyle.Flex;
-            if (filled)
+            icon.tooltip = iconTip ?? string.Empty;
+            if (!string.IsNullOrEmpty(iconAddr))
             {
-                icon.RemoveFromClassList("char-detail__slot-part-icon--empty");
-                icon.tooltip = iconTip ?? string.Empty;
-                if (!string.IsNullOrEmpty(iconAddr))
-                {
-                    LoadSlotIcon(icon, iconAddr, slot, isTarget);
-                }
-                else
-                {
-                    icon.sprite = null;
-                    if (isTarget) _targetIconAddr[slot] = null; else _actionIconAddr[slot] = null;
-                }
+                LoadSlotIcon(icon, iconAddr, slot, isTarget);
             }
             else
             {
-                icon.AddToClassList("char-detail__slot-part-icon--empty");
                 icon.sprite = null;
-                icon.tooltip = string.Empty;
                 if (isTarget) _targetIconAddr[slot] = null; else _actionIconAddr[slot] = null;
             }
         }
