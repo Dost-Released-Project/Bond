@@ -755,6 +755,7 @@
 .char-detail__slot-part-val {
     font-size: var(--font-size-body);
     white-space: normal;
+    flex-shrink: 1;
 }
 /* 칸 상태 3색: 고정 / 편집·할당 / 편집·미할당(불발 경고) */
 .char-detail__slot-part-val--fixed      { color: var(--text-secondary); }
@@ -766,7 +767,7 @@
 .char-detail__slot-part-icon {
     width: 64px;
     height: 64px;
-    margin-top: 4px;
+    margin-top: 3px;
     border-width: 1px;
     border-color: var(--border-default);
     background-color: var(--bg-raised);
@@ -774,6 +775,27 @@
 .char-detail__slot-part-icon--empty {
     border-color: var(--slot-unset);
     background-color: transparent;
+}
+
+/* 칸 본문 = 문장영역(가로): 편집칩 + 나머지 문구가 가로로 흐르고, 세로는 중앙 정렬.
+   → 나머지 문구가 다른 칸(단일 문구)의 중앙정렬 문구와 같은 높이에 온다. */
+.char-detail__slot-part-body {
+    flex-grow: 1;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 4px;
+}
+/* 편집칩(편집 영역) = 세로 분할: 문구(위) + 아이콘(아래) */
+.char-detail__slot-part-iconcol {
+    flex-direction: column;
+    align-items: center;
+}
+/* 아이콘 칩 뒤(오른쪽) 나머지 문구 — 칩 높이의 세로 중앙에 정렬 */
+.char-detail__slot-part-after {
+    font-size: var(--font-size-body);
+    white-space: normal;
+    margin-left: 6px;
+    flex-shrink: 1;
 }
 
 /* ── 다이아몬드 에코(준비 표시): 기본=미완성(불발) 경고, 완성=슬롯색, 빈 슬롯=비활성 ── */

@@ -66,6 +66,10 @@ namespace Bond.UI
         private readonly Label[]         _reactionActionVals    = new Label[6];
         private readonly Image[]         _reactionActionIcons   = new Image[6];
 
+        // 아이콘 뒤 문구(편집칸 {icon} 토큰 뒤) — 아이콘 오른쪽에 가로 배치
+        private readonly Label[]         _reactionTargetAfter   = new Label[6];
+        private readonly Label[]         _reactionActionAfter   = new Label[6];
+
         // 떠있는 드롭다운(카탈로그/대상/행동 공용)
         private SlotDropdown _dropdown;
         // 슬롯 아이콘 비동기 로드 경합 가드 — 마지막 요청 주소를 기억해 stale 응답을 폐기
@@ -179,6 +183,9 @@ namespace Bond.UI
                 _reactionActionParts[idx]   = root.Q($"reaction-slot-{idx}__action-part");
                 _reactionActionVals[idx]    = root.Q<Label>($"reaction-slot-{idx}__action");
                 _reactionActionIcons[idx]   = root.Q<Image>($"reaction-slot-{idx}__action-icon");
+
+                _reactionTargetAfter[idx]   = root.Q<Label>($"reaction-slot-{idx}__target-after");
+                _reactionActionAfter[idx]   = root.Q<Label>($"reaction-slot-{idx}__action-after");
 
                 if (_reactionTargetIcons[idx] != null) _reactionTargetIcons[idx].scaleMode = ScaleMode.ScaleAndCrop;
                 if (_reactionActionIcons[idx] != null) _reactionActionIcons[idx].scaleMode = ScaleMode.ScaleAndCrop;
@@ -634,7 +641,7 @@ namespace Bond.UI
             // 대상: 관찰 편집슬롯이 있으면 편집칸(할당 여부로 상태/아이콘), 없으면 고정.
             bool targetEditable = _controller.HasObserveEditable(i);
             UpdateEditablePart(
-                _reactionTargetParts[i], _reactionTargetVals[i], _reactionTargetIcons[i],
+                _reactionTargetParts[i], _reactionTargetVals[i], _reactionTargetAfter[i], _reactionTargetIcons[i],
                 targetText, targetEditable,
                 filled: targetEditable && _controller.IsObserveFilled(i),
                 iconAddr: _controller.GetObserveIconAddress(i),
@@ -644,7 +651,7 @@ namespace Bond.UI
             // 행동: 행동 스킬 편집슬롯이 있으면 편집칸, 없으면 고정.
             bool actionEditable = _controller.HasSkillEditable(i);
             UpdateEditablePart(
-                _reactionActionParts[i], _reactionActionVals[i], _reactionActionIcons[i],
+                _reactionActionParts[i], _reactionActionVals[i], _reactionActionAfter[i], _reactionActionIcons[i],
                 actionText, actionEditable,
                 filled: actionEditable && _controller.IsActionFilled(i),
                 iconAddr: _controller.GetActionIconAddress(i),
@@ -674,11 +681,23 @@ namespace Bond.UI
 
         // 편집 가능한 칸(대상/행동)의 값·색·클릭성·아이콘 갱신.
         // editable=false 면 고정 칸(아이콘 숨김). editable=true 면 filled 에 따라 할당/미할당(빈 아이콘 슬롯).
-        private void UpdateEditablePart(VisualElement part, Label val, Image icon, string text,
+        // text 에 {icon} 토큰이 있으면 앞 문구(val, 아이콘 위)와 뒤 문구(after, 아이콘 오른쪽)로 나눈다. 없으면 전부 val.
+        private void UpdateEditablePart(VisualElement part, Label val, Label after, Image icon, string text,
             bool editable, bool filled, string iconAddr, string iconTip, int slot, bool isTarget)
         {
             PartState state = !editable ? PartState.Fixed : (filled ? PartState.Assigned : PartState.Unassigned);
-            SetPartVal(val, text, state);
+
+            string before = text ?? string.Empty, afterText = string.Empty;
+            int tk = before.IndexOf("{icon}", StringComparison.Ordinal);
+            if (tk >= 0) { afterText = before.Substring(tk + 6).TrimStart(); before = before.Substring(0, tk).TrimEnd(); }
+
+            SetPartVal(val, before, state);
+            if (after != null)
+            {
+                bool hasAfter = !string.IsNullOrEmpty(afterText);
+                after.style.display = hasAfter ? DisplayStyle.Flex : DisplayStyle.None;
+                if (hasAfter) SetPartVal(after, afterText, state);
+            }
             part?.EnableInClassList("char-detail__slot-part--editable", editable);
 
             if (icon == null) return;
