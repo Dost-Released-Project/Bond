@@ -132,17 +132,29 @@
                                 <ui:VisualElement name="reaction-slot-0__parts" class="char-detail__slot-parts">
                                     <ui:VisualElement name="reaction-slot-0__target-part" class="char-detail__slot-part char-detail__slot-part--target">
                                         <ui:Label text="대상" class="char-detail__slot-part-label"/>
-                                        <ui:Label name="reaction-slot-0__target" text="" class="char-detail__slot-part-val"/>
-                                        <ui:Image name="reaction-slot-0__target-icon" class="char-detail__slot-part-icon"/>
+                                        <ui:VisualElement class="char-detail__slot-part-body">
+                                            <ui:VisualElement class="char-detail__slot-part-iconcol">
+                                                <ui:Label name="reaction-slot-0__target" text="" class="char-detail__slot-part-val"/>
+                                                <ui:Image name="reaction-slot-0__target-icon" class="char-detail__slot-part-icon"/>
+                                            </ui:VisualElement>
+                                            <ui:Label name="reaction-slot-0__target-after" text="" class="char-detail__slot-part-after"/>
+                                        </ui:VisualElement>
                                     </ui:VisualElement>
                                     <ui:VisualElement name="reaction-slot-0__condition-part" class="char-detail__slot-part char-detail__slot-part--condition">
                                         <ui:Label text="조건" class="char-detail__slot-part-label"/>
-                                        <ui:Label name="reaction-slot-0__condition" text="" class="char-detail__slot-part-val"/>
+                                        <ui:VisualElement class="char-detail__slot-part-body">
+                                            <ui:Label name="reaction-slot-0__condition" text="" class="char-detail__slot-part-val"/>
+                                        </ui:VisualElement>
                                     </ui:VisualElement>
                                     <ui:VisualElement name="reaction-slot-0__action-part" class="char-detail__slot-part char-detail__slot-part--action">
                                         <ui:Label text="행동" class="char-detail__slot-part-label"/>
-                                        <ui:Label name="reaction-slot-0__action" text="" class="char-detail__slot-part-val"/>
-                                        <ui:Image name="reaction-slot-0__action-icon" class="char-detail__slot-part-icon"/>
+                                        <ui:VisualElement class="char-detail__slot-part-body">
+                                            <ui:VisualElement class="char-detail__slot-part-iconcol">
+                                                <ui:Label name="reaction-slot-0__action" text="" class="char-detail__slot-part-val"/>
+                                                <ui:Image name="reaction-slot-0__action-icon" class="char-detail__slot-part-icon"/>
+                                            </ui:VisualElement>
+                                            <ui:Label name="reaction-slot-0__action-after" text="" class="char-detail__slot-part-after"/>
+                                        </ui:VisualElement>
                                     </ui:VisualElement>
                                 </ui:VisualElement>
                             </ui:VisualElement>
@@ -157,17 +169,29 @@
                                 <ui:VisualElement name="reaction-slot-1__parts" class="char-detail__slot-parts">
                                     <ui:VisualElement name="reaction-slot-1__target-part" class="char-detail__slot-part char-detail__slot-part--target">
                                         <ui:Label text="대상" class="char-detail__slot-part-label"/>
-                                        <ui:Label name="reaction-slot-1__target" text="" class="char-detail__slot-part-val"/>
-                                        <ui:Image name="reaction-slot-1__target-icon" class="char-detail__slot-part-icon"/>
+                                        <ui:VisualElement class="char-detail__slot-part-body">
+                                            <ui:VisualElement class="char-detail__slot-part-iconcol">
+                                                <ui:Label name="reaction-slot-1__target" text="" class="char-detail__slot-part-val"/>
+                                                <ui:Image name="reaction-slot-1__target-icon" class="char-detail__slot-part-icon"/>
+                                            </ui:VisualElement>
+                                            <ui:Label name="reaction-slot-1__target-after" text="" class="char-detail__slot-part-after"/>
+                                        </ui:VisualElement>
                                     </ui:VisualElement>
                                     <ui:VisualElement name="reaction-slot-1__condition-part" class="char-detail__slot-part char-detail__slot-part--condition">
                                         <ui:Label text="조건" class="char-detail__slot-part-label"/>
-                                        <ui:Label name="reaction-slot-1__condition" text="" class="char-detail__slot-part-val"/>
+                                        <ui:VisualElement class="char-detail__slot-part-body">
+                                            <ui:Label name="reaction-slot-1__condition" text="" class="char-detail__slot-part-val"/>
+                                        </ui:VisualElement>
                                     </ui:VisualElement>
                                     <ui:VisualElement name="reaction-slot-1__action-part" class="char-detail__slot-part char-detail__slot-part--action">
                                         <ui:Label text="행동" class="char-detail__slot-part-label"/>
-                                        <ui:Label name="reaction-slot-1__action" text="" class="char-detail__slot-part-val"/>
-                                        <ui:Image name="reaction-slot-1__action-icon" class="char-detail__slot-part-icon"/>
+                                        <ui:VisualElement class="char-detail__slot-part-body">
+                                            <ui:VisualElement class="char-detail__slot-part-iconcol">
+                                                <ui:Label name="reaction-slot-1__action" text="" class="char-detail__slot-part-val"/>
+                                                <ui:Image name="reaction-slot-1__action-icon" class="char-detail__slot-part-icon"/>
+                                            </ui:VisualElement>
+                                            <ui:Label name="reaction-slot-1__action-after" text="" class="char-detail__slot-part-after"/>
+                                        </ui:VisualElement>
                                     </ui:VisualElement>
                                 </ui:VisualElement>
                             </ui:VisualElement>
@@ -182,17 +206,29 @@
                                 <ui:VisualElement name="reaction-slot-2__parts" class="char-detail__slot-parts">
                                     <ui:VisualElement name="reaction-slot-2__target-part" class="char-detail__slot-part char-detail__slot-part--target">
                                         <ui:Label text="대상" class="char-detail__slot-part-label"/>
-                                        <ui:Label name="reaction-slot-2__target" text="" class="char-detail__slot-part-val"/>
-                                        <ui:Image name="reaction-slot-2__target-icon" class="char-detail__slot-part-icon"/>
+                                        <ui:VisualElement class="char-detail__slot-part-body">
+                                            <ui:VisualElement class="char-detail__slot-part-iconcol">
+                                                <ui:Label name="reaction-slot-2__target" text="" class="char-detail__slot-part-val"/>
+                                                <ui:Image name="reaction-slot-2__target-icon" class="char-detail__slot-part-icon"/>
+                                            </ui:VisualElement>
+                                            <ui:Label name="reaction-slot-2__target-after" text="" class="char-detail__slot-part-after"/>
+                                        </ui:VisualElement>
                                     </ui:VisualElement>
                                     <ui:VisualElement name="reaction-slot-2__condition-part" class="char-detail__slot-part char-detail__slot-part--condition">
                                         <ui:Label text="조건" class="char-detail__slot-part-label"/>
-                                        <ui:Label name="reaction-slot-2__condition" text="" class="char-detail__slot-part-val"/>
+                                        <ui:VisualElement class="char-detail__slot-part-body">
+                                            <ui:Label name="reaction-slot-2__condition" text="" class="char-detail__slot-part-val"/>
+                                        </ui:VisualElement>
                                     </ui:VisualElement>
                                     <ui:VisualElement name="reaction-slot-2__action-part" class="char-detail__slot-part char-detail__slot-part--action">
                                         <ui:Label text="행동" class="char-detail__slot-part-label"/>
-                                        <ui:Label name="reaction-slot-2__action" text="" class="char-detail__slot-part-val"/>
-                                        <ui:Image name="reaction-slot-2__action-icon" class="char-detail__slot-part-icon"/>
+                                        <ui:VisualElement class="char-detail__slot-part-body">
+                                            <ui:VisualElement class="char-detail__slot-part-iconcol">
+                                                <ui:Label name="reaction-slot-2__action" text="" class="char-detail__slot-part-val"/>
+                                                <ui:Image name="reaction-slot-2__action-icon" class="char-detail__slot-part-icon"/>
+                                            </ui:VisualElement>
+                                            <ui:Label name="reaction-slot-2__action-after" text="" class="char-detail__slot-part-after"/>
+                                        </ui:VisualElement>
                                     </ui:VisualElement>
                                 </ui:VisualElement>
                             </ui:VisualElement>
@@ -207,17 +243,29 @@
                                 <ui:VisualElement name="reaction-slot-3__parts" class="char-detail__slot-parts">
                                     <ui:VisualElement name="reaction-slot-3__target-part" class="char-detail__slot-part char-detail__slot-part--target">
                                         <ui:Label text="대상" class="char-detail__slot-part-label"/>
-                                        <ui:Label name="reaction-slot-3__target" text="" class="char-detail__slot-part-val"/>
-                                        <ui:Image name="reaction-slot-3__target-icon" class="char-detail__slot-part-icon"/>
+                                        <ui:VisualElement class="char-detail__slot-part-body">
+                                            <ui:VisualElement class="char-detail__slot-part-iconcol">
+                                                <ui:Label name="reaction-slot-3__target" text="" class="char-detail__slot-part-val"/>
+                                                <ui:Image name="reaction-slot-3__target-icon" class="char-detail__slot-part-icon"/>
+                                            </ui:VisualElement>
+                                            <ui:Label name="reaction-slot-3__target-after" text="" class="char-detail__slot-part-after"/>
+                                        </ui:VisualElement>
                                     </ui:VisualElement>
                                     <ui:VisualElement name="reaction-slot-3__condition-part" class="char-detail__slot-part char-detail__slot-part--condition">
                                         <ui:Label text="조건" class="char-detail__slot-part-label"/>
-                                        <ui:Label name="reaction-slot-3__condition" text="" class="char-detail__slot-part-val"/>
+                                        <ui:VisualElement class="char-detail__slot-part-body">
+                                            <ui:Label name="reaction-slot-3__condition" text="" class="char-detail__slot-part-val"/>
+                                        </ui:VisualElement>
                                     </ui:VisualElement>
                                     <ui:VisualElement name="reaction-slot-3__action-part" class="char-detail__slot-part char-detail__slot-part--action">
                                         <ui:Label text="행동" class="char-detail__slot-part-label"/>
-                                        <ui:Label name="reaction-slot-3__action" text="" class="char-detail__slot-part-val"/>
-                                        <ui:Image name="reaction-slot-3__action-icon" class="char-detail__slot-part-icon"/>
+                                        <ui:VisualElement class="char-detail__slot-part-body">
+                                            <ui:VisualElement class="char-detail__slot-part-iconcol">
+                                                <ui:Label name="reaction-slot-3__action" text="" class="char-detail__slot-part-val"/>
+                                                <ui:Image name="reaction-slot-3__action-icon" class="char-detail__slot-part-icon"/>
+                                            </ui:VisualElement>
+                                            <ui:Label name="reaction-slot-3__action-after" text="" class="char-detail__slot-part-after"/>
+                                        </ui:VisualElement>
                                     </ui:VisualElement>
                                 </ui:VisualElement>
                             </ui:VisualElement>
@@ -232,17 +280,29 @@
                                 <ui:VisualElement name="reaction-slot-4__parts" class="char-detail__slot-parts">
                                     <ui:VisualElement name="reaction-slot-4__target-part" class="char-detail__slot-part char-detail__slot-part--target">
                                         <ui:Label text="대상" class="char-detail__slot-part-label"/>
-                                        <ui:Label name="reaction-slot-4__target" text="" class="char-detail__slot-part-val"/>
-                                        <ui:Image name="reaction-slot-4__target-icon" class="char-detail__slot-part-icon"/>
+                                        <ui:VisualElement class="char-detail__slot-part-body">
+                                            <ui:VisualElement class="char-detail__slot-part-iconcol">
+                                                <ui:Label name="reaction-slot-4__target" text="" class="char-detail__slot-part-val"/>
+                                                <ui:Image name="reaction-slot-4__target-icon" class="char-detail__slot-part-icon"/>
+                                            </ui:VisualElement>
+                                            <ui:Label name="reaction-slot-4__target-after" text="" class="char-detail__slot-part-after"/>
+                                        </ui:VisualElement>
                                     </ui:VisualElement>
                                     <ui:VisualElement name="reaction-slot-4__condition-part" class="char-detail__slot-part char-detail__slot-part--condition">
                                         <ui:Label text="조건" class="char-detail__slot-part-label"/>
-                                        <ui:Label name="reaction-slot-4__condition" text="" class="char-detail__slot-part-val"/>
+                                        <ui:VisualElement class="char-detail__slot-part-body">
+                                            <ui:Label name="reaction-slot-4__condition" text="" class="char-detail__slot-part-val"/>
+                                        </ui:VisualElement>
                                     </ui:VisualElement>
                                     <ui:VisualElement name="reaction-slot-4__action-part" class="char-detail__slot-part char-detail__slot-part--action">
                                         <ui:Label text="행동" class="char-detail__slot-part-label"/>
-                                        <ui:Label name="reaction-slot-4__action" text="" class="char-detail__slot-part-val"/>
-                                        <ui:Image name="reaction-slot-4__action-icon" class="char-detail__slot-part-icon"/>
+                                        <ui:VisualElement class="char-detail__slot-part-body">
+                                            <ui:VisualElement class="char-detail__slot-part-iconcol">
+                                                <ui:Label name="reaction-slot-4__action" text="" class="char-detail__slot-part-val"/>
+                                                <ui:Image name="reaction-slot-4__action-icon" class="char-detail__slot-part-icon"/>
+                                            </ui:VisualElement>
+                                            <ui:Label name="reaction-slot-4__action-after" text="" class="char-detail__slot-part-after"/>
+                                        </ui:VisualElement>
                                     </ui:VisualElement>
                                 </ui:VisualElement>
                             </ui:VisualElement>
@@ -257,17 +317,29 @@
                                 <ui:VisualElement name="reaction-slot-5__parts" class="char-detail__slot-parts">
                                     <ui:VisualElement name="reaction-slot-5__target-part" class="char-detail__slot-part char-detail__slot-part--target">
                                         <ui:Label text="대상" class="char-detail__slot-part-label"/>
-                                        <ui:Label name="reaction-slot-5__target" text="" class="char-detail__slot-part-val"/>
-                                        <ui:Image name="reaction-slot-5__target-icon" class="char-detail__slot-part-icon"/>
+                                        <ui:VisualElement class="char-detail__slot-part-body">
+                                            <ui:VisualElement class="char-detail__slot-part-iconcol">
+                                                <ui:Label name="reaction-slot-5__target" text="" class="char-detail__slot-part-val"/>
+                                                <ui:Image name="reaction-slot-5__target-icon" class="char-detail__slot-part-icon"/>
+                                            </ui:VisualElement>
+                                            <ui:Label name="reaction-slot-5__target-after" text="" class="char-detail__slot-part-after"/>
+                                        </ui:VisualElement>
                                     </ui:VisualElement>
                                     <ui:VisualElement name="reaction-slot-5__condition-part" class="char-detail__slot-part char-detail__slot-part--condition">
                                         <ui:Label text="조건" class="char-detail__slot-part-label"/>
-                                        <ui:Label name="reaction-slot-5__condition" text="" class="char-detail__slot-part-val"/>
+                                        <ui:VisualElement class="char-detail__slot-part-body">
+                                            <ui:Label name="reaction-slot-5__condition" text="" class="char-detail__slot-part-val"/>
+                                        </ui:VisualElement>
                                     </ui:VisualElement>
                                     <ui:VisualElement name="reaction-slot-5__action-part" class="char-detail__slot-part char-detail__slot-part--action">
                                         <ui:Label text="행동" class="char-detail__slot-part-label"/>
-                                        <ui:Label name="reaction-slot-5__action" text="" class="char-detail__slot-part-val"/>
-                                        <ui:Image name="reaction-slot-5__action-icon" class="char-detail__slot-part-icon"/>
+                                        <ui:VisualElement class="char-detail__slot-part-body">
+                                            <ui:VisualElement class="char-detail__slot-part-iconcol">
+                                                <ui:Label name="reaction-slot-5__action" text="" class="char-detail__slot-part-val"/>
+                                                <ui:Image name="reaction-slot-5__action-icon" class="char-detail__slot-part-icon"/>
+                                            </ui:VisualElement>
+                                            <ui:Label name="reaction-slot-5__action-after" text="" class="char-detail__slot-part-after"/>
+                                        </ui:VisualElement>
                                     </ui:VisualElement>
                                 </ui:VisualElement>
                             </ui:VisualElement>
