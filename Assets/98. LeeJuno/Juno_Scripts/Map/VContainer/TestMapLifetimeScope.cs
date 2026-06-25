@@ -1,3 +1,4 @@
+using Bond.Tutorial;
 using Bond.WT.Journal;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -64,5 +65,12 @@ public class TestMapLifetimeScope : LifetimeScope
         // Inspector 에서 _journalUIPrefab 슬롯에 JournalUIView 프리팹 연결 필요
         // 프리팹이 null 이면 JournalScopeExtensions 내부에서 씬 내 인스턴스를 자동 탐색
         builder.RegisterJournalUI(_journalUIPrefab);
+        
+        // 튜토리얼
+        // 순수 C# 코어 컨트롤러 등록 (이미 등록되어 있으므로 구조 인지용)
+        builder.Register<ExpeditionTutorialSystemController>(Lifetime.Singleton);
+        builder.Register<ExpeditionTutorialEntryPoint>(Lifetime.Singleton).AsImplementedInterfaces();
+        // 씬에 배치된 UI Toolkit 마스킹 뷰 등록 파트
+        builder.RegisterComponentInHierarchy<TutorialExpeditionView>();
     }
 }

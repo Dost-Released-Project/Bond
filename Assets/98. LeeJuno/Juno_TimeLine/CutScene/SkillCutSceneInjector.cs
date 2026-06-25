@@ -16,10 +16,37 @@ public class SkillCutSceneInjector
     private readonly CutSceneLoader _cutSceneLoader;
     private readonly SkillCutSceneConfig _config;
 
+    // 스테이지마다 WrapBattleActions가 재호출될 때 이중 래핑을 방지하기 위해
+    // 직전에 씌운 래퍼 delegate를 캐릭터별로 저장한다
+    private readonly Dictionary<BaseCharacter, Func<BattleContext, UniTask>> _wrapperDelegates
+        = new Dictionary<BaseCharacter, Func<BattleContext, UniTask>>();
+
+    // 배틀씬은 스테이지마다 Additive 로드/언로드되어 인스턴스가 새로 생성된다.
+    // 이전 인스턴스가 플레이어에 남긴 래퍼를 새 인스턴스 생성 시점에 제거하기 위해 static으로 추적한다.
+    private static SkillCutSceneInjector _current;
+
     public SkillCutSceneInjector(CutSceneLoader cutSceneLoader, SkillCutSceneConfig config)
     {
+        if (_current != null)
+            _current.Cleanup();
+        _current = this;
+
         _cutSceneLoader = cutSceneLoader;
         _config         = config;
+    }
+
+    /// <summary>
+    /// 이 인스턴스가 플레이어에 씌운 래퍼를 모두 제거한다.
+    /// 새 배틀씬 로드 시 이전 인스턴스의 래퍼가 체인에 잔류하는 것을 방지한다.
+    /// </summary>
+    private void Cleanup()
+    {
+        foreach (KeyValuePair<BaseCharacter, Func<BattleContext, UniTask>> pair in _wrapperDelegates)
+        {
+            if (pair.Key != null)
+                pair.Key.onBattleAction -= pair.Value;
+        }
+        _wrapperDelegates.Clear();
     }
 
     /// <summary>
@@ -52,12 +79,19 @@ public class SkillCutSceneInjector
             if (character == null)
                 continue;
 
+            // 이전 스테이지에서 씌운 래퍼가 있으면 제거해 이중 래핑을 방지한다
+            if (_wrapperDelegates.TryGetValue(character, out Func<BattleContext, UniTask> prevWrapper))
+            {
+                character.onBattleAction -= prevWrapper;
+                _wrapperDelegates.Remove(character);
+            }
+
             // 래핑 시점의 원본을 클로저로 캡처한다
             // 람다식: 원본 delegate 참조를 클로저로 캡처해 래핑 전후 참조를 분리하기 위해 사용한다
             Func<BattleContext, UniTask> original = character.onBattleAction;
 
             // 람다식: 비동기 래퍼를 인라인으로 정의하기 위해 사용한다 — 별도 메서드로 분리하면 per-character 클로저를 만들 수 없다
-            character.onBattleAction = async (BattleContext context) =>
+            Func<BattleContext, UniTask> wrapper = async (BattleContext context) =>
             {
                 if (context.runtimeSkill != null && context.runtimeSkill.Data != null)
                 {
@@ -72,17 +106,22 @@ public class SkillCutSceneInjector
                 }
 
                 if (original != null)
-                {
                     await original.Invoke(context);
-                }
             };
+
+            character.onBattleAction = wrapper;
+            _wrapperDelegates[character] = wrapper;
         }
     }
 
     private static string[] CollectTargetSpriteAddresses(BattleContext context, BaseCharacter[] allEnemies)
     {
-        // 단일 타겟 스킬
-        if (context.target != null)
+        // targetMask 비트가 정확히 1개면 단일 타겟 스킬이다.
+        // context.target != null로는 판단할 수 없다 — 광역기도 _selectedTarget이 설정되어 있으면 non-null이기 때문이다.
+        int mask = context.targetMask;
+        bool isSingleTarget = mask != 0 && (mask & (mask - 1)) == 0;
+
+        if (isSingleTarget && context.target != null)
             return new string[] { context.target.IdleImageAddress };
 
         // 광역 스킬 — 살아있는 적 전원의 Idle 주소 수집

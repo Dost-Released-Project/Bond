@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
+using Bond.Expedition;
 using UnityEngine;
 using Bond.Persistence;
+using VContainer;
 
 namespace Bond.Tutorial
 {
-    public class TutorialSystemController
+    public class ExpeditionTutorialSystemController
     {
-            private readonly ResourceManager _resourceManager;
-            private readonly TotalInventory _totalInventory;
-            private readonly SettlementManager _settlementManager;
+        [Inject] private ExpeditionPayload _payload;
 
         // 세이브 데이터 키 고정
         private const string SAVE_KEY = "tutorial_progress";
@@ -21,16 +21,6 @@ namespace Bond.Tutorial
 
         public event Action<TutorialStepSO> OnStepChanged;
         public event Action OnTutorialFinished;
-
-        public TutorialSystemController(
-            ResourceManager resourceManager, 
-            TotalInventory totalInventory, 
-            SettlementManager settlementManager)
-        {
-            _resourceManager = resourceManager;
-            _totalInventory = totalInventory;
-            _settlementManager = settlementManager;
-        }
 
         // 튜토리얼 스텝 리스트 빌드
         public void SetupSteps(List<TutorialStepSO> steps)
@@ -95,8 +85,7 @@ namespace Bond.Tutorial
                 // 1. 자원 보상 처리
                 if (currentStepSO.RewardFrontier > 0 || currentStepSO.RewardWood > 0 || currentStepSO.RewardOre > 0)
                 {
-                    _resourceManager.AddFrontierData(currentStepSO.RewardFrontier);
-                    _resourceManager.AddMaterials(currentStepSO.RewardWood, currentStepSO.RewardOre);
+                    _payload.AddReward(currentStepSO.RewardFrontier, currentStepSO.RewardWood, currentStepSO.RewardOre);
                 }
 
                 // 2. 💥 [콤마 분리형 다중 아이템 자동 안착 엔진]
@@ -114,7 +103,7 @@ namespace Bond.Tutorial
                         string itemId = ids[i].Trim();
                         if (int.TryParse(counts[i].Trim(), out int count) && !string.IsNullOrEmpty(itemId))
                         {
-                            _totalInventory.AddItemId(itemId, count);
+                            _payload.Supplies.AddItemId(itemId, count);
                             hasAddedAny = true;
                             Debug.Log($"<color=orange>[Tutorial Auto-Reward]</color> 보상 수납: Item {itemId} x{count}개 완공.");
                         }
@@ -122,7 +111,7 @@ namespace Bond.Tutorial
 
                     if (hasAddedAny)
                     {
-                        _totalInventory.SaveTotalInventory(); // 단 한 번만 디스크 물리 인쇄 실행
+                        _payload.Supplies.SaveExpeditionInventory();
                     }
                 }
             }
@@ -148,20 +137,6 @@ namespace Bond.Tutorial
 
             Debug.Log("<color=cyan>[Tutorial Core]</color> 스킵 요청 감지 -> 무결성 정산 시작.");
 
-            // 1. 마을 건물 강제 인쇄 완공 정산 (명세 기준 슬롯 고정 배치)
-            _settlementManager.LoadBuilding(1, supplyData, 1);
-            _settlementManager.LoadBuilding(4, storageData, 1);
-
-            // 2. 고정된 목걸이 ID 3종 인벤토리 자동 수납
-            _totalInventory.AddItemId("08000000", 1);
-            _totalInventory.AddItemId("08010000", 1);
-            _totalInventory.AddItemId("08020000", 1);
-
-            _resourceManager.ConsumeResources(1100, 100, 100);
-
-            // 3. 인벤토리 수납 영구 각인
-            _totalInventory.SaveTotalInventory();
-
             // 4. 완료 처리
             FinishTutorial();
         }
@@ -178,26 +153,6 @@ namespace Bond.Tutorial
         {
             var dummySaveable = new GenericSaveableWrapper<TutorialRawSaveData>(SAVE_KEY, _saveData, null);
             SaveLoadSystem.Save(dummySaveable);
-        }
-    }
-
-    // 세이브로드시스템 규격을 우회하여 원자적 데이터를 보존하기 위한 불변 프록시 래퍼
-    public class GenericSaveableWrapper<T> : ISaveable
-    {
-        public string Key { get; }
-        public object Data { get; }
-        private readonly Action<T> _onRestore;
-
-        public GenericSaveableWrapper(string key, T data, Action<T> onRestore)
-        {
-            Key = key;
-            Data = data;
-            _onRestore = onRestore;
-        }
-
-        public void Restore(object data)
-        {
-            if (data is T castedData) _onRestore?.Invoke(castedData);
         }
     }
 }
