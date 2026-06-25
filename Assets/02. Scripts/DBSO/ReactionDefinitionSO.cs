@@ -36,11 +36,6 @@ namespace Reactions
         [Tooltip("행동 칸 문구. 비우면 행동 편집슬롯 유무/BaseEffect 설명에서 파생. 예) \"대신 맞는다.\"")]
         public string ActionTextOverride;
 
-        [Header("문장 템플릿 (비우면 위 3분할에서 합성)")]
-        [Tooltip("리액션을 한 문장으로. 편집 슬롯 자리에 토큰: {observe}(관찰 대상), {action}(행동 스킬). 예) \"{observe}이 공격 받을 때 대신 맞는다\", \"적 공격 회피 시 {action}로 반격\". 고정부엔 Unity 리치텍스트(<color> 등) 가능.")]
-        [TextArea]
-        public string SentenceTemplate;
-
         /// <summary>관찰 대상(아군 지정) 편집슬롯을 갖는가 — 대상 칸 편집 가능 여부.</summary>
         public bool HasObserveEditable => EditableSlots != null && EditableSlots.OfType<ObserveTargetEditableSlot>().Any();
 
@@ -66,20 +61,6 @@ namespace Reactions
                 : (HasActionEditable ? "행동 선택" : (Template?.BaseEffect?.Description ?? "—"));
 
             return (target, condition, action);
-        }
-
-        /// <summary>
-        /// 한 문장 표시 템플릿(토큰 포함). SentenceTemplate 가 있으면 그대로,
-        /// 없으면 기존 3분할(ResolvePartTexts)에서 합성하고 편집 가능 부분을 토큰({observe}/{action})으로 치환한다.
-        /// </summary>
-        public string ResolveSentence()
-        {
-            if (!string.IsNullOrEmpty(SentenceTemplate)) return SentenceTemplate;
-
-            var (target, condition, action) = ResolvePartTexts();
-            if (HasObserveEditable) target = "{observe}";
-            if (HasActionEditable)  action = "{action}";
-            return $"{target} {condition} {action}";
         }
 
         private static string DescribeObserveFilter(E_ObserveFilter f) => f switch
