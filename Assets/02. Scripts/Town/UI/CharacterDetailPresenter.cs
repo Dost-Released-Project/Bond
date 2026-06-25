@@ -51,23 +51,26 @@ namespace Bond.UI
         private VisualElement _traitList;
         private VisualElement _skillGrid;
 
-        // 슬롯(0-5) — 헤더 + 문장(세그먼트 흐름) + 에코
+        // 슬롯(0-5) — 헤더 + 3분할(대상/조건/행동) + 에코
         private readonly VisualElement[] _reactionSlots        = new VisualElement[6];
         private readonly VisualElement[] _reactionHeaders      = new VisualElement[6];
         private readonly Label[]         _reactionHeaderLabels = new Label[6];
-        private readonly VisualElement[] _reactionSentences    = new VisualElement[6];
+        private readonly VisualElement[] _reactionParts        = new VisualElement[6];
         private readonly Label[]         _reactionEchoLabels   = new Label[6];
 
-        // 문장 안 편집 칩(대상/행동) — 드롭다운 앵커. 갱신마다 재생성.
-        private readonly VisualElement[] _reactionObserveChips = new VisualElement[6];
-        private readonly VisualElement[] _reactionActionChips  = new VisualElement[6];
+        private readonly VisualElement[] _reactionTargetParts   = new VisualElement[6];
+        private readonly Label[]         _reactionTargetVals    = new Label[6];
+        private readonly Image[]         _reactionTargetIcons   = new Image[6];
+        private readonly Label[]         _reactionConditionVals = new Label[6];
+        private readonly VisualElement[] _reactionActionParts   = new VisualElement[6];
+        private readonly Label[]         _reactionActionVals    = new Label[6];
+        private readonly Image[]         _reactionActionIcons   = new Image[6];
 
         // 떠있는 드롭다운(카탈로그/대상/행동 공용)
         private SlotDropdown _dropdown;
-
-        // 편집 칩 문구(아이콘이 구체 대상을 식별 — 텍스트는 고정 서술)
-        private const string ObserveChipText = "지정한 아군";
-        private const string ActionChipText  = "지정한 스킬";
+        // 슬롯 아이콘 비동기 로드 경합 가드 — 마지막 요청 주소를 기억해 stale 응답을 폐기
+        private readonly string[] _targetIconAddr = new string[6];
+        private readonly string[] _actionIconAddr = new string[6];
 
         private BaseCharacter _character;
         private CharacterDetailEditMode _editMode;
@@ -163,13 +166,23 @@ namespace Bond.UI
             for (int i = 0; i < 6; i++)
             {
                 int idx = i;
-                _reactionSlots[idx]        = root.Q($"reaction-slot-{idx}");
-                _reactionHeaders[idx]      = root.Q($"reaction-slot-{idx}__header");
-                _reactionHeaderLabels[idx] = root.Q<Label>($"reaction-slot-{idx}__header-label");
-                _reactionSentences[idx]    = root.Q($"reaction-slot-{idx}__sentence");
-                _reactionEchoLabels[idx]   = root.Q<Label>($"reaction-slot-{idx}__echo");
+                _reactionSlots[idx]         = root.Q($"reaction-slot-{idx}");
+                _reactionHeaders[idx]       = root.Q($"reaction-slot-{idx}__header");
+                _reactionHeaderLabels[idx]  = root.Q<Label>($"reaction-slot-{idx}__header-label");
+                _reactionParts[idx]         = root.Q($"reaction-slot-{idx}__parts");
+                _reactionEchoLabels[idx]    = root.Q<Label>($"reaction-slot-{idx}__echo");
 
-                // 역할(0-1) 헤더 클릭 → 카탈로그. 대상/행동 편집은 문장 안 칩(BuildSentence)이 직접 배선.
+                _reactionTargetParts[idx]   = root.Q($"reaction-slot-{idx}__target-part");
+                _reactionTargetVals[idx]    = root.Q<Label>($"reaction-slot-{idx}__target");
+                _reactionTargetIcons[idx]   = root.Q<Image>($"reaction-slot-{idx}__target-icon");
+                _reactionConditionVals[idx] = root.Q<Label>($"reaction-slot-{idx}__condition");
+                _reactionActionParts[idx]   = root.Q($"reaction-slot-{idx}__action-part");
+                _reactionActionVals[idx]    = root.Q<Label>($"reaction-slot-{idx}__action");
+                _reactionActionIcons[idx]   = root.Q<Image>($"reaction-slot-{idx}__action-icon");
+
+                if (_reactionTargetIcons[idx] != null) _reactionTargetIcons[idx].scaleMode = ScaleMode.ScaleAndCrop;
+                if (_reactionActionIcons[idx] != null) _reactionActionIcons[idx].scaleMode = ScaleMode.ScaleAndCrop;
+
                 if (idx < 2)
                     _reactionHeaders[idx]?.RegisterCallback<ClickEvent>(evt =>
                     {
@@ -177,6 +190,21 @@ namespace Bond.UI
                         OpenCatalogDropdown(idx);
                         evt.StopPropagation();
                     });
+
+                _reactionTargetParts[idx]?.RegisterCallback<ClickEvent>(evt =>
+                {
+                    if (_editMode != CharacterDetailEditMode.FullEdit) return;
+                    if (!_controller.HasObserveEditable(idx)) return;
+                    OpenObserveDropdown(idx);
+                    evt.StopPropagation();
+                });
+                _reactionActionParts[idx]?.RegisterCallback<ClickEvent>(evt =>
+                {
+                    if (_editMode != CharacterDetailEditMode.FullEdit) return;
+                    if (!_controller.HasSkillEditable(idx)) return;
+                    OpenActionDropdown(idx);
+                    evt.StopPropagation();
+                });
             }
 
             var equipRoot = root.Q("char-detail__equip-slots");
@@ -545,7 +573,7 @@ namespace Bond.UI
             return chip;
         }
 
-        // 역할(0-1)·성향(2-5) 슬롯 공통 갱신. i<2 = 역할(헤더로 카탈로그 선택), 그 외 = 성향.
+        // 역할(0-1)·성향(2-5) 슬롯 공통 갱신. i<2 = 역할(헤더로 카탈로그 선택), 그 외 = 성향(고정).
         private void RefreshReactionSlot(int i)
         {
             if (_character == null || i < 0 || i >= 6) return;
@@ -554,7 +582,8 @@ namespace Bond.UI
 
             var reaction = GetReactionAt(i);
 
-            // 리액션 미선택(역할) 또는 성향 미해금/무반응 → 문장 숨김, 헤더만.
+            // 리액션 미선택(역할) 또는 성향 미해금/무반응 → 3분할 숨김, 헤더만.
+            // 빈 상태를 헤더 문구로 알린다: 역할=선택 유도, 성향=비어 있음.
             if (reaction == null)
             {
                 if (_reactionHeaderLabels[i] != null)
@@ -562,13 +591,7 @@ namespace Bond.UI
                     _reactionHeaderLabels[i].text = isRole ? $"{kind} - 리액션을 선택하세요" : $"{kind} - 비어 있음";
                     _reactionHeaderLabels[i].AddToClassList("char-detail__slot-header-label--empty");
                 }
-                _reactionObserveChips[i] = null;
-                _reactionActionChips[i]  = null;
-                if (_reactionSentences[i] != null)
-                {
-                    _reactionSentences[i].Clear();
-                    _reactionSentences[i].style.display = DisplayStyle.None;
-                }
+                if (_reactionParts[i] != null) _reactionParts[i].style.display = DisplayStyle.None;
                 // 역할은 '선택 가능'(잠금 아님), 성향은 잠금 표시.
                 _reactionSlots[i].EnableInClassList("char-detail__reaction-slot--locked", !isRole);
                 SetEcho(i, complete: false, empty: true);
@@ -586,106 +609,97 @@ namespace Bond.UI
                 _reactionHeaderLabels[i].text = string.IsNullOrEmpty(defName) ? kind : $"{kind} - {defName}";
             }
 
-            if (_reactionSentences[i] != null) _reactionSentences[i].style.display = DisplayStyle.Flex;
-            BuildSentence(i, _controller.GetSentence(i));
+            if (_reactionParts[i] != null) _reactionParts[i].style.display = DisplayStyle.Flex;
+
+            var (targetText, conditionText, actionText) = _controller.GetPartTexts(i);
+
+            // 조건: 항상 고정(편집 불가), 아이콘 없음.
+            SetPartVal(_reactionConditionVals[i], conditionText, PartState.Fixed);
+
+            // 대상: 관찰 편집슬롯이 있으면 편집칸(할당 여부로 상태/아이콘), 없으면 고정.
+            bool targetEditable = _controller.HasObserveEditable(i);
+            UpdateEditablePart(
+                _reactionTargetParts[i], _reactionTargetVals[i], _reactionTargetIcons[i],
+                targetText, targetEditable,
+                filled: targetEditable && _controller.IsObserveFilled(i),
+                iconAddr: _controller.GetObserveIconAddress(i),
+                iconTip: _controller.GetObserveTargetName(i),
+                slot: i, isTarget: true);
+
+            // 행동: 행동 스킬 편집슬롯이 있으면 편집칸, 없으면 고정.
+            bool actionEditable = _controller.HasSkillEditable(i);
+            UpdateEditablePart(
+                _reactionActionParts[i], _reactionActionVals[i], _reactionActionIcons[i],
+                actionText, actionEditable,
+                filled: actionEditable && _controller.IsActionFilled(i),
+                iconAddr: _controller.GetActionIconAddress(i),
+                iconTip: _controller.GetActionSkill(i)?.Data?.DisplayName,
+                slot: i, isTarget: false);
 
             SetEcho(i, complete: _controller.IsSlotComplete(i), empty: false);
         }
 
-        // 편집 슬롯 토큰: {observe}=관찰 대상, {action}=행동 스킬
-        private static readonly System.Text.RegularExpressions.Regex SentenceTokenRx =
-            new System.Text.RegularExpressions.Regex(@"\{(observe|action)\}");
+        private enum PartState { Fixed, Assigned, Unassigned }
 
-        // 문장 템플릿을 고정 텍스트 라벨 + 편집 칩(대상/행동)으로 풀어 슬롯 본문에 채운다(세그먼트 흐름·줄바꿈).
-        private void BuildSentence(int slot, string sentence)
+        // 칸 값 텍스트 + 3색 상태(고정/할당/미할당) 적용.
+        private static void SetPartVal(Label val, string text, PartState state)
         {
-            var container = _reactionSentences[slot];
-            _reactionObserveChips[slot] = null;
-            _reactionActionChips[slot]  = null;
-            if (container == null) return;
-            container.Clear();
-            if (string.IsNullOrEmpty(sentence)) return;
-
-            int last = 0;
-            foreach (System.Text.RegularExpressions.Match m in SentenceTokenRx.Matches(sentence))
+            if (val == null) return;
+            val.text = text;
+            val.RemoveFromClassList("char-detail__slot-part-val--fixed");
+            val.RemoveFromClassList("char-detail__slot-part-val--assigned");
+            val.RemoveFromClassList("char-detail__slot-part-val--unassigned");
+            val.AddToClassList(state switch
             {
-                if (m.Index > last) AddSentenceText(container, sentence.Substring(last, m.Index - last));
-                if (m.Groups[1].Value == "observe") AddObserveChip(container, slot);
-                else                                AddActionChip(container, slot);
-                last = m.Index + m.Length;
-            }
-            if (last < sentence.Length) AddSentenceText(container, sentence.Substring(last));
-        }
-
-        private static void AddSentenceText(VisualElement container, string text)
-        {
-            if (string.IsNullOrEmpty(text)) return;
-            var label = new Label(text);
-            label.AddToClassList("char-detail__sentence-text");
-            container.Add(label);
-        }
-
-        private void AddObserveChip(VisualElement container, int slot)
-        {
-            // 토큰만 있고 편집 슬롯이 없으면 서술 텍스트로 폴백.
-            if (!_controller.HasObserveEditable(slot)) { AddSentenceText(container, ObserveChipText); return; }
-            var chip = MakeChip(ObserveChipText, _controller.IsObserveFilled(slot),
-                _controller.GetObserveIconAddress(slot), _controller.GetObserveTargetName(slot),
-                slot, isTarget: true);
-            _reactionObserveChips[slot] = chip;
-            container.Add(chip);
-        }
-
-        private void AddActionChip(VisualElement container, int slot)
-        {
-            if (!_controller.HasSkillEditable(slot)) { AddSentenceText(container, ActionChipText); return; }
-            var chip = MakeChip(ActionChipText, _controller.IsActionFilled(slot),
-                _controller.GetActionIconAddress(slot), _controller.GetActionSkill(slot)?.Data?.DisplayName,
-                slot, isTarget: false);
-            _reactionActionChips[slot] = chip;
-            container.Add(chip);
-        }
-
-        // 편집 칩: 텍스트(위) + 아이콘(아래) 세로 배치. 할당=슬롯색, 미할당=빨강 빈 박스. FullEdit 클릭→드롭다운.
-        private VisualElement MakeChip(string text, bool filled, string iconAddr, string iconTip, int slot, bool isTarget)
-        {
-            var chip = new VisualElement();
-            chip.AddToClassList("char-detail__chip");
-            chip.AddToClassList(filled ? "char-detail__chip--assigned" : "char-detail__chip--unassigned");
-
-            var label = new Label(text);
-            label.AddToClassList("char-detail__chip-text");
-            chip.Add(label);
-
-            // 할당된 경우에만 아이콘 표시. 미할당(편집 전)엔 아이콘 슬롯을 두지 않아 칩 문구가 주변 문구와 같은 높이로 정렬된다.
-            if (filled && !string.IsNullOrEmpty(iconAddr))
-            {
-                var icon = new Image { scaleMode = ScaleMode.ScaleAndCrop };
-                icon.AddToClassList("char-detail__chip-icon");
-                icon.tooltip = iconTip ?? string.Empty;
-                LoadImageSpriteAsync(icon, iconAddr).Forget();
-                chip.Add(icon);
-            }
-
-            chip.RegisterCallback<ClickEvent>(evt =>
-            {
-                if (_editMode != CharacterDetailEditMode.FullEdit) return;
-                if (isTarget) OpenObserveDropdown(slot); else OpenActionDropdown(slot);
-                evt.StopPropagation();
+                PartState.Assigned   => "char-detail__slot-part-val--assigned",
+                PartState.Unassigned => "char-detail__slot-part-val--unassigned",
+                _                    => "char-detail__slot-part-val--fixed",
             });
-
-            // 행동 칩(할당)엔 스킬 리치 툴팁.
-            if (!isTarget && filled)
-            {
-                var skill = _controller.GetActionSkill(slot);
-                if (skill != null) TooltipPopup.AttachFollow(chip, () => SkillTooltipContent.Build(skill));
-            }
-            return chip;
         }
 
-        // 카탈로그 부제용: 문장에서 편집 토큰을 서술어로 치환한 미리보기.
-        private static string PreviewSentence(ReactionDefinitionSO def)
-            => def.ResolveSentence().Replace("{observe}", ObserveChipText).Replace("{action}", ActionChipText);
+        // 편집 가능한 칸(대상/행동)의 값·색·클릭성·아이콘 갱신.
+        // editable=false 면 고정 칸(아이콘 숨김). editable=true 면 filled 에 따라 할당/미할당(빈 아이콘 슬롯).
+        private void UpdateEditablePart(VisualElement part, Label val, Image icon, string text,
+            bool editable, bool filled, string iconAddr, string iconTip, int slot, bool isTarget)
+        {
+            PartState state = !editable ? PartState.Fixed : (filled ? PartState.Assigned : PartState.Unassigned);
+            SetPartVal(val, text, state);
+            part?.EnableInClassList("char-detail__slot-part--editable", editable);
+
+            if (icon == null) return;
+
+            if (!editable)
+            {
+                icon.style.display = DisplayStyle.None;
+                icon.sprite = null;
+                icon.tooltip = string.Empty;
+                if (isTarget) _targetIconAddr[slot] = null; else _actionIconAddr[slot] = null;
+                return;
+            }
+
+            icon.style.display = DisplayStyle.Flex;
+            if (filled)
+            {
+                icon.RemoveFromClassList("char-detail__slot-part-icon--empty");
+                icon.tooltip = iconTip ?? string.Empty;
+                if (!string.IsNullOrEmpty(iconAddr))
+                {
+                    LoadSlotIcon(icon, iconAddr, slot, isTarget);
+                }
+                else
+                {
+                    icon.sprite = null;
+                    if (isTarget) _targetIconAddr[slot] = null; else _actionIconAddr[slot] = null;
+                }
+            }
+            else
+            {
+                icon.AddToClassList("char-detail__slot-part-icon--empty");
+                icon.sprite = null;
+                icon.tooltip = string.Empty;
+                if (isTarget) _targetIconAddr[slot] = null; else _actionIconAddr[slot] = null;
+            }
+        }
 
         private void SetEcho(int i, bool complete, bool empty)
         {
@@ -694,6 +708,25 @@ namespace Bond.UI
             echo.text = complete ? "◆" : "◇";
             echo.EnableInClassList("char-detail__slot-echo--complete", complete);
             echo.EnableInClassList("char-detail__slot-echo--empty", empty);
+        }
+
+        // 슬롯 아이콘 비동기 로드. 같은 주소가 이미 요청됐으면 재로드 생략(중복 LoadAssetAsync 로 핸들 ref 누적 방지).
+        private void LoadSlotIcon(Image icon, string address, int slot, bool isTarget)
+        {
+            string prev = isTarget ? _targetIconAddr[slot] : _actionIconAddr[slot];
+            if (prev == address) return;   // 이미 이 주소를 로드(또는 로드 중/실패) — 재요청 안 함
+
+            if (isTarget) _targetIconAddr[slot] = address; else _actionIconAddr[slot] = address;
+            LoadSlotIconAsync(icon, address, slot, isTarget).Forget();
+        }
+
+        private async UniTaskVoid LoadSlotIconAsync(Image icon, string address, int slot, bool isTarget)
+        {
+            var sprite = await TryLoadSpriteAsync(address);
+            string current = isTarget ? _targetIconAddr[slot] : _actionIconAddr[slot];
+            // 로드 끝나기 전에 캐릭터/할당이 바뀌었으면 폐기.
+            if (sprite == null || icon == null || icon.panel == null || current != address) return;
+            icon.sprite = sprite;
         }
 
         // 주소→스프라이트 캐시. 그리드/드롭다운이 갱신 때마다 재빌드되므로 같은 주소를 매번
@@ -769,13 +802,13 @@ namespace Bond.UI
 
         private void OpenObserveDropdown(int slot)
         {
-            var anchor = _reactionObserveChips[slot];
+            var anchor = _reactionTargetParts[slot];
             if (anchor != null) ToggleDropdown(anchor, c => BuildObserveItems(slot, c));
         }
 
         private void OpenActionDropdown(int slot)
         {
-            var anchor = _reactionActionChips[slot];
+            var anchor = _reactionActionParts[slot];
             if (anchor != null) ToggleDropdown(anchor, c => BuildActionItems(slot, c));
         }
 
@@ -810,7 +843,8 @@ namespace Bond.UI
             foreach (var def in catalog)
             {
                 var captured = def;
-                var item = MakeDropdownItem(def.DisplayName, PreviewSentence(def), null,
+                var (t, cnd, a) = def.ResolvePartTexts();
+                var item = MakeDropdownItem(def.DisplayName, $"{t} · {cnd} · {a}", null,
                     currentDef != null && currentDef.Id == def.Id);
                 item.RegisterCallback<ClickEvent>(_ => { _controller.SelectRoleReaction(slot, captured); _dropdown.Close(); });
                 container.Add(item);
