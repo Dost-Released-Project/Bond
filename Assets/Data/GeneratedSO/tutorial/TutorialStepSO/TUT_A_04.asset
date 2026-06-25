@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TUT_A_04
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_04
-  _displayName: "\uB300\uC6D0 \uBA85\uBD80 \uD655\uC778"
+  _displayName: "\uB300\uC6D0 \uBA85\uBD80"
   _description: "\uB300\uC6D0\uC744 \uC6B0\uD074\uB9AD \uD558\uC138\uC694."
   _sequence: 0
   _targetUiKey: TownUi/roster-panel

@@ -15,11 +15,11 @@ MonoBehaviour:
   _id: TUT_A_42
   _displayName: "\uC5ED\uD560 \uC124\uC815"
   _description: "\uD0F1\uCEE4, \uB51C\uB7EC, \uC11C\uD3EC\uD130 \uC911\uC5D0\uC11C
-    \uD558\uB098\uB97C \uC9C0\uC815\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC
-    \uD0F1\uCEE4\uB97C \uD074\uB9AD\uD558\uC138\uC694."
+    \uD558\uB098\uB97C \uC9C0\uC815\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uC120\uD0DD\uD558\uC9C0
+    \uC54A\uC73C\uBA74 \uAE30\uC874 \uC5ED\uD560\uC744 \uC720\uC9C0\uD569\uB2C8\uB2E4."
   _sequence: 0
   _targetUiKey: CharacterDetailUi/char-detail__role-picker
-  _clickType: 0
+  _clickType: 1
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

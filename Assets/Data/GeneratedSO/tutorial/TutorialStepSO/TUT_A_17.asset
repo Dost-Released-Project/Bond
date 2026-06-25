@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TUT_A_17
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_17
-  _displayName: "\uC778\uBCA4\uD1A0\uB9AC \uB2EB\uAE30"
+  _displayName: "\uAC74\uBB3C"
   _description: "\uC774\uC81C \uC778\uBCA4\uD1A0\uB9AC\uB97C \uB2EB\uC73C\uC138\uC694."
   _sequence: 0
   _targetUiKey: Inventory/btn-close

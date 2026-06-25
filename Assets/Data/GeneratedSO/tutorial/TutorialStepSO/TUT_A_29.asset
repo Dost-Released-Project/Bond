@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TUT_A_29
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_29
-  _displayName: "\uD0D0\uC0AC \uC2A4\uD0ED \uD655\uC778"
+  _displayName: "\uD0D0\uC0AC \uC900\uBE44"
   _description: "\uB450\uBC88\uC9F8 \uD398\uC774\uC9C0 \uD0ED\uC744 \uD074\uB9AD\uD558\uC138\uC694"
   _sequence: 0
   _targetUiKey: TownUi/tab-btn--step2
