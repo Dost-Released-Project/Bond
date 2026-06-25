@@ -21,10 +21,32 @@ public class SkillCutSceneInjector
     private readonly Dictionary<BaseCharacter, Func<BattleContext, UniTask>> _wrapperDelegates
         = new Dictionary<BaseCharacter, Func<BattleContext, UniTask>>();
 
+    // 배틀씬은 스테이지마다 Additive 로드/언로드되어 인스턴스가 새로 생성된다.
+    // 이전 인스턴스가 플레이어에 남긴 래퍼를 새 인스턴스 생성 시점에 제거하기 위해 static으로 추적한다.
+    private static SkillCutSceneInjector _current;
+
     public SkillCutSceneInjector(CutSceneLoader cutSceneLoader, SkillCutSceneConfig config)
     {
+        if (_current != null)
+            _current.Cleanup();
+        _current = this;
+
         _cutSceneLoader = cutSceneLoader;
         _config         = config;
+    }
+
+    /// <summary>
+    /// 이 인스턴스가 플레이어에 씌운 래퍼를 모두 제거한다.
+    /// 새 배틀씬 로드 시 이전 인스턴스의 래퍼가 체인에 잔류하는 것을 방지한다.
+    /// </summary>
+    private void Cleanup()
+    {
+        foreach (KeyValuePair<BaseCharacter, Func<BattleContext, UniTask>> pair in _wrapperDelegates)
+        {
+            if (pair.Key != null)
+                pair.Key.onBattleAction -= pair.Value;
+        }
+        _wrapperDelegates.Clear();
     }
 
     /// <summary>
@@ -84,9 +106,7 @@ public class SkillCutSceneInjector
                 }
 
                 if (original != null)
-                {
                     await original.Invoke(context);
-                }
             };
 
             character.onBattleAction = wrapper;
