@@ -13,10 +13,13 @@ namespace PipeLine
     {
         public BaseCharacter caster;
         public BaseCharacter target; // 개별 타겟
-        public int targetMask => (runtimeSkill.Data.Target == SkillTarget.Enemy)?
-            runtimeSkill.Data.EnemyTargetMask : runtimeSkill.Data.AllyTargetMask;
+
+        public int targetMask => (runtimeSkill.Data.Target == SkillTarget.Enemy)
+            ? runtimeSkill.Data.EnemyTargetMask
+            : runtimeSkill.Data.AllyTargetMask;
+
         public SkillBase runtimeSkill; // 캐릭터의 스탯, 장비, 버프 등이 적용된 스킬
-        
+
         public bool isCritical;
         public bool isEvaded;
         public bool isReaction;
@@ -43,6 +46,14 @@ namespace PipeLine
             this.isCritical = origin.isCritical;
             this.target = target;
         }
+        
+        public string DebugText =>
+            $"Caster: {caster?.Name}\n" +
+            $"Target: {target?.Name}\n" +
+            $"Skill: {runtimeSkill.Data.DisplayName}\n" +
+            $"SkillType: {runtimeSkill.Data.Type}\n" +
+            $"IsCritical: {isCritical}\n" +
+            $"IsEvaded: {isEvaded}\n";
     }
 
     // 혹시 동일한 Type이 들어가는 파이프라인이 여러 개 생길 수 있으므로, 인터페이스로 구분해줌

@@ -30,6 +30,10 @@ MonoBehaviour:
     AltEffect:
       rid: 2064475332497375369
   EditableSlots: []
+  TargetTextOverride: "\uC790\uC2E0\uC774"
+  ConditionTextOverride: "\uC801 \uCC98\uCE58 \uC2DC"
+  ActionTextOverride: "\uC804\uC5F4\uB85C \uC774\uB3D9, \uC804\uC5F4\uC758 \uC801
+    \uACF5\uACA9"
   references:
     version: 2
     RefIds:

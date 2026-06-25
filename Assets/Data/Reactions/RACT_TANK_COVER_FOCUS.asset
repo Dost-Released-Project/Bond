@@ -24,13 +24,20 @@ MonoBehaviour:
     DefinitionId: 
     Trigger:
       rid: 2064474984977793104
-    Effect:
+    BaseEffect:
       rid: 2064474984977793105
+    AltEffect:
+      rid: -2
   EditableSlots:
   - rid: 2064474984977793106
+  TargetTextOverride: "\uC9C0\uC815 \uC544\uAD70\uC774"
+  ConditionTextOverride: "\uACF5\uACA9 \uBC1B\uC744 \uB54C"
+  ActionTextOverride: "\uB300\uC2E0 \uB9DE\uB294\uB2E4"
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 2064474984977793104
       type: {class: Trigger, ns: Reactions, asm: Assembly-CSharp}
       data:

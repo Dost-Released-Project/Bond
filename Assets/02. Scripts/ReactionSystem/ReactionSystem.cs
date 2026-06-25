@@ -105,13 +105,7 @@ namespace Reactions
             Debug.Log($"<color=lightblue>" +
                       $"Reaction Count [{phase}]: {executions.Count}\n" +
                       $"{sb.ToString()}\n" +
-                      $"BattleContext:\n" +
-                      $"Caster: {context.caster?.Name}\n" +
-                      $"Target: {context.target?.Name}\n" +
-                      $"Skill: {context.runtimeSkill.Data.DisplayName}\n" +
-                      $"SkillType: {context.runtimeSkill.Data.Type}\n" +
-                      $"IsCritical: {context.isCritical}\n" +
-                      $"IsEvaded: {context.isEvaded}\n" +
+                      $"BattleContext:{context.DebugText}\n" +
                       $"</color>");
 
             return executions.AsReadOnly();
