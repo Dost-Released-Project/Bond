@@ -52,7 +52,34 @@ public partial class BaseCharacter
         bool changed = false;
         for (int i = _activeBuffs.Count - 1; i >= 0; i--)
         {
+            if (IsDead) break;
+
             var buff = _activeBuffs[i];
+
+            // 도트 효과 적용 (피해: 음수, 회복: 양수)
+            if (buff.HpChangePerTurn != 0)
+            {
+                int amount = Mathf.RoundToInt(buff.HpChangePerTurn);
+                if (amount > 0)
+                {
+                    RecoverHp(amount, false);
+                    Debug.Log($"<color=green>[도트 힐]</color> {Name} 이(가) '{buff.Id}' 로 인해 {amount} 회복되었습니다.");
+                }
+                else if (amount < 0)
+                {
+                    ReduceHP(-amount, false);
+                    Debug.Log($"<color=red>[도트 피해]</color> {Name} 이(가) '{buff.Id}' 로 인해 {-amount} 피해를 입었습니다.");
+                }
+            }
+
+            if (IsDead)
+            {
+                StatController.RemoveModifiersFromSource(buff, buff.Modifiers.Count);
+                _activeBuffs.RemoveAt(i);
+                changed = true;
+                continue;
+            }
+
             buff.RemainingTurns--;
             if (buff.RemainingTurns <= 0)
             {

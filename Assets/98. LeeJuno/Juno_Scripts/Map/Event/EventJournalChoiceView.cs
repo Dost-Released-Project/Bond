@@ -50,6 +50,7 @@ public class EventJournalChoiceView : IEventChoiceView, IStartable, IDisposable
     public void Start()
     {
         _savedOnOptionSelected = _view.OnOptionSelected;
+        _view.SetPrevButtonEnabled(false);
     }
 
     /// <summary>
@@ -71,6 +72,7 @@ public class EventJournalChoiceView : IEventChoiceView, IStartable, IDisposable
         _view.ClearUI();
         _view.SetVisible(true);
         _view.ShowText(description ?? string.Empty, isTyping: false);
+        _view.SetPrevButtonEnabled(false);
     }
 
     /// <summary>
@@ -180,6 +182,7 @@ public class EventJournalChoiceView : IEventChoiceView, IStartable, IDisposable
     {
         string text = paragraphs != null ? string.Join("\n\n", paragraphs) : string.Empty;
         _view.ShowText(text, isTyping: false);
+        _view.SetPrevButtonEnabled(false);
 
         // 람다식: 2차 선택지 클릭 시 OnSecondaryOptionSelected 핸들러에 선택된 JournalOption 을 전달하기 위해 사용한다
         _view.OnOptionSelected = option =>

@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: TUT_A_30
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_30
-  _displayName: "\uD0D0\uC0AC \uC778\uC6D0 \uD3B8\uC131(\uC218\uC815 \uD544\uC694)"
-  _description: "\uD30C\uD2F0 \uC2AC\uB86F\uC785\uB2C8\uB2E4. \uD3B8\uC131\uB41C
-    \uB300\uC6D0\uC740 \uC774\uACF3\uC5D0 \uBCF4\uC785\uB2C8\uB2E4."
+  _displayName: "\uD0D0\uC0AC \uC2A4\uD15D \uD655\uC778"
+  _description: "\uB450\uBC88\uC9F8 \uD398\uC774\uC9C0\uC5D0\uC11C\uB294 \uBCF4\uAE09
+    \uBB3C\uC790\uB97C \uC815\uBE44\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: TownUi/.embark__party-slots
-  _clickType: 0
+  _targetUiKey: TownUi/embark__step2
+  _clickType: 1
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

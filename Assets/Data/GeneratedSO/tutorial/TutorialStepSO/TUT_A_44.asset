@@ -13,14 +13,12 @@ MonoBehaviour:
   m_Name: TUT_A_44
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_44
-  _displayName: "\uB9AC\uC561\uC158 \uC124\uC815"
-  _description: "\uB9AC\uC561\uC158 \uC124\uC815\uC785\uB2C8\uB2E4. \uB9AC\uC561\uC158\uC740
-    \uD2B9\uC815 \uC870\uAC74\uC5D0\uC11C \uBC1C\uC0DD\uD558\uB294 \uCD94\uAC00\uC801\uC778
-    \uD589\uB3D9\uC774\uACE0 \uC9C0\uC815\uB41C \uC5ED\uD560\uAD70\uC5D0 \uB530\uB77C
-    \uB2EC\uB77C\uC9D1\uB2C8\uB2E4."
+  _displayName: "\uC2A4\uD0AC \uC124\uC815"
+  _description: "\uB2E4\uC74C\uC740 \uC2A4\uD0AC \uC124\uC815\uC785\uB2C8\uB2E4.
+    \uC2A4\uD0AC\uC740 4\uAC1C\uAE4C\uC9C0 \uC120\uD0DD\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: CharacterDetailUi/reaction-slot-0
-  _clickType: 0
+  _targetUiKey: CharacterDetailUi/char-detail__skill-grid
+  _clickType: 1
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

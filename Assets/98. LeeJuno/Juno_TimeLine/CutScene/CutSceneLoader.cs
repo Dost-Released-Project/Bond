@@ -24,27 +24,16 @@ using UnityEngine.UIElements;
 /// </summary>
 public class CutSceneLoader
 {
-    private readonly Canvas _portraitCanvas;
-    private readonly float _portraitDuration;
-
-    private bool _isLoading;
-
     // 컷씬 로드 중 비활성화한 컴포넌트 목록 — 언로드 후 복구한다
     private readonly List<Behaviour> _disabledBehaviours = new List<Behaviour>();
     private readonly List<UIDocument> _hiddenUIDocuments = new List<UIDocument>();
 
     private SceneInstance _cutSceneInstance;
-    private bool _hasCutScene;
+   
     private readonly List<AsyncOperationHandle<Sprite>> _spriteHandles = new List<AsyncOperationHandle<Sprite>>();
-
-    public CutSceneLoader(Canvas portraitCanvas, float portraitDuration)
-    {
-        _portraitCanvas  = portraitCanvas;
-        _portraitDuration = portraitDuration;
-        _isLoading        = false;
-        _hasCutScene      = false;
-    }
-
+    
+    private bool _isLoading = false;
+    private bool _hasCutScene = false;
     /// <summary>
     /// sceneId 에 대응하는 컷씬 씬을 Additive 로 로드하고 타임라인 완료까지 대기한 뒤 언로드한다.
     /// 반환 시점에 씬 로드·재생·언로드가 모두 완료되어 있음이 보장된다(자기완결형).
@@ -76,14 +65,6 @@ public class CutSceneLoader
             // 시간 정지 및 다른 씬 컴포넌트 비활성화
             Time.timeScale = 0f;
             DisableSceneComponents();
-
-            // 초상화 캔버스를 지정 시간 동안 표시한 뒤 컷씬으로 넘어간다
-            // if (_portraitCanvas != null)
-            // {
-            //     _portraitCanvas.gameObject.SetActive(true);
-            //     await UniTask.Delay(TimeSpan.FromSeconds(_portraitDuration), DelayType.UnscaledDeltaTime);
-            //     _portraitCanvas.gameObject.SetActive(false);
-            // }
 
             // 완료 신호 채널에 콜백 등록
             CutSceneCompletionChannel.Register(onCompleted);
@@ -205,7 +186,6 @@ public class CutSceneLoader
         Canvas[] canvases = UnityEngine.Object.FindObjectsByType<Canvas>(FindObjectsSortMode.None);
         foreach (Canvas canvas in canvases)
         {
-            if (canvas == _portraitCanvas) continue;
             if (canvas.enabled)
             {
                 canvas.enabled = false;

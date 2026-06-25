@@ -13,13 +13,12 @@ MonoBehaviour:
   m_Name: TUT_A_59
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_59
-  _displayName: "\uB300\uC6D0 \uD3B8\uC131"
-  _description: "\uC774\uC5B4\uC11C \uC554\uC0B4\uC790\uB97C \uC124\uC815\uD558\uACA0\uC2B5\uB2C8\uB2E4.
-    \uC554\uC0B4\uC790\uB97C \uC6B0\uD074\uB9AD\uD558\uC5EC \uC0C1\uC138\uCC3D\uC744
-    \uC5EC\uC138\uC694."
+  _displayName: "\uB9AC\uC561\uC158 \uC124\uC815"
+  _description: "\uC870\uAC74\uC744 \uCDA9\uC871\uD560 \uC2DC \uC9C4\uD589\uD558\uB294
+    \uD589\uB3D9\uC785\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: TownUi/embark-overlay/roster-panel
-  _clickType: 1
+  _targetUiKey: CharacterDetailUi/reaction-slot-1__action-part
+  _clickType: 2
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

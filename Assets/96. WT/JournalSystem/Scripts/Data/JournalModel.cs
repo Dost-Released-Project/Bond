@@ -19,6 +19,7 @@ namespace Bond.WT.Journal
         public readonly ObservableValue<JournalReport> CurrentReport = new ObservableValue<JournalReport>(null);
         public readonly ObservableValue<bool> HasPrevPage = new ObservableValue<bool>(false);
         public readonly ObservableValue<bool> IsLastPage = new ObservableValue<bool>(false);
+        public readonly ObservableValue<bool> IsNextButtonEnabled = new ObservableValue<bool>(true);
 
         public void Clear()
         {
@@ -32,6 +33,7 @@ namespace Bond.WT.Journal
             CurrentOptions.Value = null;
             HasPrevPage.Value = false;
             IsLastPage.Value = false;
+            IsNextButtonEnabled.Value = true;
             IsJournalComplete.Value = true;
         }
 
@@ -105,6 +107,37 @@ namespace Bond.WT.Journal
             IsLastPage.Value = isLast;
 
             CurrentOptions.Value = report.Options;
+
+            // 다음 버튼 활성화 여부 결정
+            if (report.Options != null && report.Options.Count > 0)
+            {
+                // 다른 씬 이동 기능 내제 여부 판단
+                bool hasSceneTransition = false;
+                foreach (var opt in report.Options)
+                {
+                    if (opt.actionKey == "ACTION_RETURN_MAP")
+                    {
+                        hasSceneTransition = true;
+                        break;
+                    }
+                }
+
+                if (hasSceneTransition)
+                {
+                    // 씬 이동 기능이 있으면 닫기 버튼 영구 비활성화
+                    IsNextButtonEnabled.Value = false;
+                }
+                else
+                {
+                    // 일반 선택지가 있는 경우(마지막 페이지 포함) 선택 완료 여부에 따라 제어
+                    IsNextButtonEnabled.Value = report.SelectedOption.HasValue;
+                }
+            }
+            else
+            {
+                // 선택지가 없는 정보전달 챕터는 항시 활성화
+                IsNextButtonEnabled.Value = true;
+            }
         }
     }
 }

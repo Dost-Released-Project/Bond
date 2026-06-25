@@ -57,9 +57,17 @@ namespace PipeLine
     }
 
     // 혹시 동일한 Type이 들어가는 파이프라인이 여러 개 생길 수 있으므로, 인터페이스로 구분해줌
+    /// <summary>
+    /// 배틀 파이프라인 인터페이스.
+    /// </summary>
     public interface IBattlePipeLine : IPipeLine<BattleContext>
     {
         public void SetReactionSystem(ReactionSystem reactionSystem);
+
+        /// <summary>
+        /// 리액션 발동 시 활성화할 초상화 캔버스를 파이프라인 내 모든 ReactionCall 에 주입한다.
+        /// </summary>
+        public void SetPortraitCanvas(IReactionPortraitCanvas canvas);
     }
 
     [CreateAssetMenu(fileName = "BattlePipeLineSO", menuName = "PipeLine/BattlePipeLineSO")]
@@ -77,9 +85,21 @@ namespace PipeLine
         public void SetReactionSystem(ReactionSystem reactionSystem)
         {
             List<ReactionCall> allReactionCalls = steps.OfType<ReactionCall>().ToList();
-            foreach (var cs in allReactionCalls)
+            foreach (ReactionCall cs in allReactionCalls)
             {
                 cs.SetReactionSystem(reactionSystem);
+            }
+        }
+
+        /// <summary>
+        /// 리액션 발동 시 활성화할 초상화 캔버스를 파이프라인 내 모든 ReactionCall 에 주입한다.
+        /// </summary>
+        public void SetPortraitCanvas(IReactionPortraitCanvas canvas)
+        {
+            List<ReactionCall> allReactionCalls = steps.OfType<ReactionCall>().ToList();
+            foreach (ReactionCall cs in allReactionCalls)
+            {
+                cs.SetPortraitCanvas(canvas);
             }
         }
     }
@@ -269,10 +289,19 @@ namespace PipeLine
         public E_ReactionPhase Phase = E_ReactionPhase.None;
 
         private ReactionSystem reactionSystem;
+        private IReactionPortraitCanvas portraitCanvas;
 
         public void SetReactionSystem(ReactionSystem reactionSystem)
         {
             this.reactionSystem = reactionSystem;
+        }
+
+        /// <summary>
+        /// 리액션 발동 시 활성화할 초상화 캔버스를 주입한다.
+        /// </summary>
+        public void SetPortraitCanvas(IReactionPortraitCanvas canvas)
+        {
+            portraitCanvas = canvas;
         }
 
         public async UniTask<BattleContext> Execute(BattleContext context)
@@ -280,19 +309,31 @@ namespace PipeLine
             if (context.target == null) return context;
 
             Debug.Log($"<color=lightblue>Executing ReactionCall [{Phase}]</color>");
-            if (reactionSystem != null)
+            if (reactionSystem == null) return context;
+
+            IReadOnlyList<ReactionExecution> executions = reactionSystem.Resolve(context, Phase);
+
+            foreach (ReactionExecution execution in executions)
             {
-                var executions = reactionSystem.Resolve(context, Phase);
-                foreach (var execution in executions)
+                // ShowAsync 내부에서 timeScale 정지·대기·복원·숨김을 모두 처리한다
+                if (portraitCanvas != null)
                 {
-                    await execution.Agent.ExecuteReaction(execution, context, reactionSystem.BattleManager);
-                    execution.Agent.IncrementReactionCount(); // '연속' 리액션 카운트 증가 (자기 턴에 리셋)
-                    if (execution.Result == ReactionResult.Anomaly)
-                        execution.Agent.MarkAnomaly(); // 아군 돌발(특이행동) 관찰용 플래그
-                    else if (execution.Result == ReactionResult.BondAwakening)
-                        Debug.Log($"<color=cyan>[유대적 각성]</color> {execution.Agent.Name} 의 성향이 강화 행동으로 발현. (전용 연출 훅 자리)");
+                    await portraitCanvas.ShowAsync(execution.Agent.ImageAddress, execution.Result);
+                }
+
+                await execution.Agent.ExecuteReaction(execution, context, reactionSystem.BattleManager);
+                execution.Agent.IncrementReactionCount(); // '연속' 리액션 카운트 증가 (자기 턴에 리셋)
+
+                if (execution.Result == ReactionResult.Anomaly)
+                {
+                    execution.Agent.MarkAnomaly(); // 아군 돌발(특이행동) 관찰용 플래그
+                }
+                else if (execution.Result == ReactionResult.BondAwakening)
+                {
+                    Debug.Log($"<color=cyan>[유대적 각성]</color> {execution.Agent.Name} 의 성향이 강화 행동으로 발현. (전용 연출 훅 자리)");
                 }
             }
+
             return context;
         }
     }

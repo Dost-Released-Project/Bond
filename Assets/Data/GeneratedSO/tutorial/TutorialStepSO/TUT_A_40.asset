@@ -13,11 +13,10 @@ MonoBehaviour:
   m_Name: TUT_A_40
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_40
-  _displayName: "\uC2A4\uD0AC \uC124\uC815"
-  _description: "\uB2E4\uC74C\uC740 \uC2A4\uD0AC \uC124\uC815\uC785\uB2C8\uB2E4.
-    \uC2A4\uD0AC\uC740 4\uAC1C\uAE4C\uC9C0 \uC120\uD0DD\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+  _displayName: "\uC5ED\uD560 \uC124\uC815"
+  _description: "\uC6B0\uC120 \uC5ED\uD560 \uC124\uC815\uC785\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: CharacterDetailUi/char-detail__skill-grid
+  _targetUiKey: CharacterDetailUi/char-detail__role-area
   _clickType: 1
   _rewardFrontier: 0
   _rewardWood: 0

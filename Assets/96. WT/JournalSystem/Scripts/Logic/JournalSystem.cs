@@ -135,6 +135,11 @@ namespace Bond.WT.Journal
                 {
                     var opt = report.SelectedOption.Value;
                     
+                    if (string.IsNullOrEmpty(opt.actionKey))
+                    {
+                        continue;
+                    }
+                    
                     bool handled = false;
                     
                     // 등록된 외부 핸들러들에게 액션 실행 위임
@@ -179,11 +184,19 @@ namespace Bond.WT.Journal
         /// </summary>
         public void SelectOption(JournalOption? option)
         {
-            // 1. 현재 리포트에 선택 결과를 임시 저장만 함 (실행은 마지막 장에서)
+            // 1. 현재 리포트에 선택 결과를 임시 저장
             _model.SaveSelectedOption(option);
 
-            // 2. 선택지를 골랐으면 다음 사건으로 진행 (페이지네이션 완료 처리)
-            NextPage();
+            // 2. 선택지를 골랐으므로 다음 버튼을 활성화
+            if (!_model.IsLastPage.Value)
+            {
+                _model.IsNextButtonEnabled.Value = true;
+            }
+            else
+            {
+                // 마지막 페이지라면 바로 다음으로 진행하여 닫기(액션 실행 포함) 유도
+                NextPage();
+            }
         }    
     }
 }

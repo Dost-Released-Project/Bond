@@ -21,10 +21,5 @@ public class EventSceneLifetimeScope : LifetimeScope
             .AsImplementedInterfaces();
         builder.RegisterEntryPoint<EventChoicePresenter>(Lifetime.Scoped);
 
-        // 2차 선택지 actionKey 처리 핸들러 등록
-        // MapLifetimeScope 에 IJournalActionHandler 등록이 없으므로 이벤트 씬 스코프에서 직접 등록한다
-        // AsImplementedInterfaces() 로 IReadOnlyList<IJournalActionHandler> 자동 주입이 가능하다
-        builder.Register<JournalInventoryActionHandler>(Lifetime.Scoped)
-            .AsImplementedInterfaces();
     }
 }

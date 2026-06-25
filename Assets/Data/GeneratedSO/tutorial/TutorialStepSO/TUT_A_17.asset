@@ -13,11 +13,10 @@ MonoBehaviour:
   m_Name: TUT_A_17
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_17
-  _displayName: "\uBCF4\uAE09\uC18C \uAE30\uB2A5 \uC774\uC6A9"
-  _description: "\uBCF4\uAE09\uC18C\uB97C \uD074\uB9AD\uD558\uC5EC \uBCF4\uAE09 UI\uB97C
-    \uB744\uC6B8 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+  _displayName: "\uC778\uBCA4\uD1A0\uB9AC \uB2EB\uAE30"
+  _description: "\uC774\uC81C \uC778\uBCA4\uD1A0\uB9AC\uB97C \uB2EB\uC73C\uC138\uC694."
   _sequence: 0
-  _targetUiKey: "Building_\uC655\uC2E4 \uBCF4\uAE09\uC18C"
+  _targetUiKey: Inventory/btn-close
   _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0

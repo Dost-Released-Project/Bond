@@ -13,12 +13,11 @@ MonoBehaviour:
   m_Name: TUT_A_12
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_12
-  _displayName: "\uCC3D\uACE0 \uC774\uC6A9"
-  _description: "\uAC74\uBB3C\uC758 \uAE30\uB2A5\uC740 \uC88C\uD074\uB9AD\uC744 \uD1B5\uD574
-    \uC774\uC6A9\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uCC3D\uACE0\uB97C \uC88C\uD074\uB9AD
-    \uD558\uC138\uC694."
+  _displayName: "\uAC74\uC124 \uD655\uC778 UI"
+  _description: "\uAC74\uBB3C\uC758 \uAE30\uB2A5\uACFC \uAC74\uC124 \uBE44\uC6A9\uC744
+    \uD655\uC778\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uD655\uC778\uC744 \uB204\uB974\uC138\uC694."
   _sequence: 0
-  _targetUiKey: "Building_\uCC3D\uACE0"
+  _targetUiKey: Construction/btn-confirm
   _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0

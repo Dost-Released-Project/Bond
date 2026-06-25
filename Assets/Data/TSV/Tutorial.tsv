@@ -1,92 +1,128 @@
 ﻿시트 페이지 2자리										
 16				완료 표시	0: 좌클릭					
-				수정 필요 표시	1: 우클릭					
-		추가될 튜토리얼 = 리액션 지정		더미 데이터(튜토리얼 스탭 확장용)						
+		리액션 분기		수정 필요 표시	1: 우클릭					
+		타운 보상 = 리소스 매니저와 전체 인벤토리로 지급.		더미 데이터(튜토리얼 스탭 확장용)	2: 클릭					
+		탐사 보상 = 페이로드의 적립되는 자원 + 탐사 인벤토리 지급(이 부분은 탐사에서 쓰일 일 없음, 보통 칸이 부족해서 안 들어감)								
 										
-				__slot-dropdown(리액션 선택 및 파티원 지정 등의 역할)						
-				targetpart = 아군 지정		보상 지급 정보				
-				컨디션 파트는 설명, 액션 파트	클릭 타입	재화	자원	자원	아이템	수량
+						보상 지급 정보				
+					클릭 타입	재화	자원	자원	아이템	수량
 ID	Name	Description	SequenceType	TargetUiKey	ClickType	Frontier	Wood	Ore	ItemIds	ItemCounts
 TUT_A_01	최초 진입 자원 확인	화면 상단의 영지 자원을 확인하세요. 건물 건설 및 보급 요청에 사용됩니다.	0	Resource/resource-container	2	1100	100	100		
 TUT_A_02	자원 지급 확인	자원이 지급되었습니다. 자원은 순서대로 데이터, 목재, 광석입니다.	0	Resource/resource-container	2	0	0	0		
 TUT_A_03	대원 명부 열기	대원 명부 버튼을 클릭하여 소속 대원들의 성미와 기질 가이드를 확인하세요.	0	TownUi/roster-toggle-btn	0	0	0	0		
 TUT_A_04	대원 명부 확인	대원을 우클릭 하세요.	0	TownUi/roster-panel	1	0	0	0		
 TUT_A_05	대원 상세 정보	대원의 상세 정보를 확인할 수 있으며, 이름 옆에 붉은 버튼을 누르면 대원을 해고할 수 있습니다.	0	CharacterDetailUi/character-detail	1	0	0	0		
-TUT_A_06	상세창 닫기	상세 정보창을 닫으세요.	0	CharacterDetailUi/character-detail__close-btn	0	0	0	0		
-TUT_A_07	대원 명부 닫기	X를 눌러 창을 닫을 수 있습니다.	0	TownUi/roster-panel__close-btn	0	0	0	0		
-TUT_A_08	창고 건설 슬롯	이어서 아이템 수납을 안정적으로 관리할 '창고 Lv.1'을 건설하세요.	0	Construction_Slot05	0	0	0	0		
-TUT_A_09	건설 확인 UI	건물의 기능과 건설 비용을 확인할 수 있습니다. 확인을 누르세요.	0	Construction/btn-confirm	0	0	0	0		
-TUT_A_10	창고 건설	창고를 건설했습니다. 창고를 우클릭 하세요.	0	Building_창고	1	0	0	0		
-TUT_A_11	건물 업그레이드	건물의 경우 우클릭으로 업그레이드를 할 수 있습니다. 취소를 누르세요.	0	Construction/btn-cancel	0	0	0	0		
-TUT_A_12	창고 이용	건물의 기능은 좌클릭을 통해 이용할 수 있습니다. 창고를 좌클릭 하세요.	0	Building_창고	0	0	0	0		
-TUT_A_13	인벤토리	창고에서는 현재 지닌 아이템을 확인할 수 있습니다.	0	Inventory/inventory-container	1	0	0	0		
-TUT_A_14	인벤토리 닫기	이제 인벤토리를 닫으세요.	0	Inventory/btn-close	0	0	0	0		
-TUT_A_15	보급소 건설 슬롯	건설 슬롯 영역을 선택하여 대원 증원을 담당할 '보급소 Lv.1'을 건설하세요.	0	Construction_Slot02	0	0	0	0		
-TUT_A_16	건설 확인 UI	보급소는 업그레이드가 불가능하여 초기 건설 비용이 비싼 편입니다. 이전에 지급된 자원을 사용해서 건물을 건설하세요.	0	Construction/btn-confirm	0	0	0	0		
-TUT_A_17	보급소 기능 이용	보급소를 클릭하여 보급 UI를 띄울 수 있습니다.	0	Building_왕실 보급소	0	0	0	0		
-TUT_A_18	보급소 기능 이용	보급소는 증원 요청, 일반 보급 요청, 특수 보급 요청을 진행할 수 있습니다. 모든 보급을 포함해 3회에 횟수 제한이 있습니다.	0	SupplyView/supply-window	1	300	0	0		
-TUT_A_19	증원 요청	증원 요청에 필요한 자원을 지급했습니다. 증원을 요청하세요.	0	SupplyView/btn-reinforce	0	0	0	0		
-TUT_A_20	UI 닫기	증원된 대원을 확인하기 위해 우선 보급 UI를 닫으세요.	0	btn-close-supply	0	0	0	0		
-TUT_A_21	대원 명부 열기2	다시 한 번 대원 명부를 클릭하세요.	0	TownUi/roster-toggle-btn	0	0	0	0		
-TUT_A_22	대원 명부 스크롤	대원 명부를 스크롤 하면 추가된 요원을 확인할 수 있습니다.	0	TownUi/roster-panel	0	0	0	0		
-TUT_A_23	대원 명부 닫기2	대원 명부 창을 닫으세요.	0	TownUi/roster-panel__close-btn	0	0	0	0		
-TUT_A_24	탐사 출발 트리거	늘어난 인원과 보급 자원을 확인했다면, 이제 탐사 출발 버튼을 눌러 출발하세요	0	TownUi/embark-btn	0	0	0	0		
-TUT_A_25	탐사 스탭 확인	첫번째 페이지에서는 탐사 지역 설정과 파티 설정을 할 수 있습니다.	0	TownUi/embark__step1	1	0	0	0		
-TUT_A_26	탐사 스탭 확인	두번째 페이지 탭을 클릭하세요	0	TownUi/tab-btn--step2	0	0	0	0		
-TUT_A_27	탐사 스텝 확인	두번째 페이지에서는 보급 물자를 정비할 수 있습니다.	0	TownUi/embark__step2	1	0	0	0		
-TUT_A_28	탐사 스텝 확인	다시 첫번째 페이지 탭을 클릭하세요.	0	TownUi/tab-btn--step1	0	0	0	0		
-TUT_A_29	탐사 맵 확인	현재 탐사 가능한 맵입니다, 속삭이는 숲을 클릭하세요.	0	TownUi/embark__region-list	0	0	0	0		
-TUT_A_30	탐사 인원 편성(수정 필요)	파티 슬롯입니다. 편성된 대원은 이곳에 보입니다.	0	TownUi/.embark__party-slots	0	0	0	0		
-TUT_A_31	탐사 인원 편성	편성할 수 있는 대원 목록입니다. 우선 전사를 클릭하여 편성하세요.	0	TownUi/embark-overlay/roster-panel	0	0	0	0		
-TUT_A_32	편성 확인(슬롯3)	전사가 제대로 편성된 것을 확인할 수 있습니다.	0	TownUi/embark__party-slot-3	1	0	0	0		
-TUT_A_33	대원 편성	이어서 암살자를 클릭하여 편성하세요	0	TownUi/embark-overlay/roster-panel	0	0	0	0		
-TUT_A_34	대원 편성	암살자도 제대로 편성된 것을 확인할 수 있습니다.	0	TownUi/embark__party-slot-2	1	0	0	0		
-TUT_A_35	대원 편성	이제 편성된 대원을 설정하겠습니다. 전사를 우클릭하여 상세창을 여세요.	0	TownUi/embark-overlay/roster-panel	1	0	0	0		
-TUT_A_36	역할 설정	우선 역할 설정입니다.	0	CharacterDetailUi/char-detail__role-area	1	0	0	0		
-TUT_A_37	역할 설정	탱커를 클릭하세요.	0	CharacterDetailUi/role-btn-current	0	0	0	0		
-TUT_A_38	역할 설정	탱커, 딜러, 서포터 중에서 하나를 지정할 수 있습니다. 다시 탱커를 클릭하세요.	0	CharacterDetailUi/char-detail__role-picker	0	0	0	0		
-TUT_A_39	역할 설정	역할을 탱커로 지정했습니다. 우클릭을 통해 다음 단계로 넘어가세요.	0	CharacterDetailUi/char-detail__role-area	1	0	0	0		
-TUT_A_40	스킬 설정	다음은 스킬 설정입니다. 스킬은 4개까지 선택할 수 있습니다.	0	CharacterDetailUi/char-detail__skill-grid	1	0	0	0		
-TUT_A_41	스킬 설정	선택되어 있는 스킬은 테두리가 표시됩니다. 테두리가 있는 스킬 중 하나를 클릭하세요.	0	CharacterDetailUi/char-detail__skill-grid	0	0	0	0		
-TUT_A_42	스킬 설정	테두리가 사라진 것을 볼 수 있습니다. 이제 테두리가 없는 스킬 중 하나를 클릭하세요.	0	CharacterDetailUi/char-detail__skill-grid	0	0	0	0		
-TUT_A_43	스킬 설정	스킬 창에 테두리가 추가됐습니다. 우클릭을 통해 다음 단계로 넘어가세요.	0	CharacterDetailUi/char-detail__skill-grid	1	0	0	0		
-TUT_A_44	리액션 설정	리액션 설정입니다. 리액션은 특정 조건에서 발생하는 추가적인 행동이고 지정된 역할군에 따라 달라집니다.	0	CharacterDetailUi/reaction-slot-0	0	0	0	0		
-TUT_A_45	리액션 설정	집중 보호를 클릭하세요.	0	CharacterDetailUi/__slot-dropdown	0	0	0	0		
-TUT_A_46	리액션 설정	아군을 지정해야 되며 클릭해서 편성 대원을 지정할 수 있습니다.	0	CharacterDetailUi/reaction-slot-0__target-part	0	0	0	0		
-TUT_A_47	리액션 설정	암살자를 클릭하세요.	0	CharacterDetailUi/__slot-dropdown	0	0	0	0		
-TUT_A_48	리액션 설정	아군이 지정되었습니다.	0	CharacterDetailUi/reaction-slot-0__target-part	2	0	0	0		
-TUT_A_49	리액션 설정	리액션이 발동되기 위한 조건입니다.	0	CharacterDetailUi/reaction-slot-0__condition-part	2	0	0	0		
-TUT_A_50	리액션 설정	조건을 충족할 시 진행하는 행동입니다.	0	CharacterDetailUi/reaction-slot-0__action-part	2	0	0	0		
-TUT_A_51	리액션 설정	다시 한 번 리액션 슬롯을 클릭하세요.	0	CharacterDetailUi/reaction-slot-1	0	0	0	0		
-TUT_A_52	리액션 설정	위기 보호를 클릭하세요.	0	CharacterDetailUi/__slot-dropdown	0	0	0	0		
-TUT_A_53	리액션 설정	몇몇 리액션은 자기 자신 또는 아군 전체를 대상으로 합니다.	0	CharacterDetailUi/reaction-slot-1__target-part	2	0	0	0		
-TUT_A_54	리액션 설정	리액션이 발동되기 위한 조건입니다.	0	CharacterDetailUi/reaction-slot-1__condition-part	2	0	0	0		
-TUT_A_55	리액션 설정	조건을 충족할 시 진행하는 행동입니다.	0	CharacterDetailUi/reaction-slot-1__action-part	2	0	0	0		
-TUT_A_56	성향	성향 목록입니다. 몇몇 성향은 잠겨있고 정신각성제를 통해 해금할 수 있습니다.	0	CharacterDetailUi/char-detail__trait-list	2	0	0	0		
-TUT_A_57	성향	성향의 리액션입니다. 고정되어 있는 리액션으로 성향에 따라 행동을 진행합니다.	0	CharacterDetailUi/reaction-slot-2	2	0	0	0		
-TUT_A_58	설정	모든 설정이 끝났습니다. 상세창을 닫으세요.	0	CharacterDetailUi/character-detail__close-btn	0	0	0	0		
-TUT_A_59	대원 편성	이어서 암살자를 설정하겠습니다. 암살자를 우클릭하여 상세창을 여세요.	0	TownUi/embark-overlay/roster-panel	1	0	0	0		
-TUT_A_60	리액션 설정	리액션 슬롯을 클릭하세요.	0	CharacterDetailUi/reaction-slot-0	0	0	0	0		
-TUT_A_61	리액션 설정	회피 반격을 클릭하세요	0	CharacterDetailUi/__slot-dropdown	0	0	0	0		
-TUT_A_62	리액션 설정	딜러는 자신의 행동에 따라 리액션을 발동합니다.	0	CharacterDetailUi/reaction-slot-0__target-part	2	0	0	0		
-TUT_A_63	리액션 설정	조건을 확인하세요	0	CharacterDetailUi/reaction-slot-0__condition-part	2	0	0	0		
-TUT_A_64	리액션 설정	조건 충족 시 진행할 행동을 선택하세요. 선택한 스킬을 통해 반격이 진행됩니다.	0	CharacterDetailUi/reaction-slot-0__action-part	0	0	0	0		
-TUT_A_65	리액션 설정	원하는 스킬을 선택하세요.	0	CharacterDetailUi/__slot-dropdown	0	0	0	0		
-TUT_A_66	리액션 설정	다시 한 번 리액션 슬롯을 클릭하세요.	0	CharacterDetailUi/reaction-slot-1	0	0	0	0		
-TUT_A_67	리액션 설정	치명타 추격을 클릭하세요.	0	CharacterDetailUi/__slot-dropdown	0	0	0	0		
-TUT_A_68	리액션 설정	딜러는 자신의 행동에 따라 리액션을 발동합니다.	0	CharacterDetailUi/reaction-slot-1__target-part	2	0	0	0		
-TUT_A_69	리액션 설정	조건을 확인하세요.	0	CharacterDetailUi/reaction-slot-1__condition-part	2	0	0	0		
-TUT_A_70	리액션 설정	조건 충족 시 진행할 행동을 선택하세요. 선택한 스킬을 통해 반격이 진행됩니다.	0	CharacterDetailUi/reaction-slot-1__action-part	0	0	0	0		
-TUT_A_71	리액션 설정	원하는 스킬을 선택하세요.	0	CharacterDetailUi/__slot-dropdown	0	0	0	0		
-TUT_A_72	성향	성향을 확인하세요	0	CharacterDetailUi/char-detail__trait-list	2	0	0	0		
-TUT_A_73	성향	성향의 리액션을 확인하세요	0	CharacterDetailUi/reaction-slot-2	2	0	0	0		
-TUT_A_74	설정	모든 설정이 끝났습니다. 상세창을 닫으세요.	0	CharacterDetailUi/character-detail__close-btn	0	0	0	0		
-TUT_A_75	아이템 적재	취소를 누르면 마을로 돌아가고 다음 단계를 누르면 탐사 물품을 조정할 수 있습니다.	0	TownUi/embark__footer--step1	1	0	0	0		
-TUT_A_76	아이템 적재	 다음 단계를 클릭하세요.	0	TownUi/btn-next	0	0	0	0		
-TUT_A_77	지닌 아이템	현재 지니고 있는 물자입니다. 창고에서 자세한 확인이 가능합니다.	0	TownUi/embark__step2/unity-content-and-vertical-scroll-container	1	0	0	0		
-TUT_A_78	탐사 물자	탐사에 들고 갈 물자를 담는 공간입니다.	0	TownUi/embark__exp-name/unity-content-and-vertical-scroll-container	1	0	0	0		
-TUT_A_79	물자 편성	아이템을 클릭해서 탐사 물품에 추가하세요.	0	TownUi/embark__step2/unity-content-and-vertical-scroll-container	0	0	0	0		
-TUT_A_80	물자 편성	추가로 아이템을 클릭해서 탐사 물품에 추가하세요.	0	TownUi/embark__step2/unity-content-and-vertical-scroll-container	0	0	0	0		
-TUT_A_81	물자 편성	추가한 아이템을 확인할 수 있으며 아이템을 클릭하면 뺄 수 있습니다.	0	TownUi/embark__exp-name/unity-content-and-vertical-scroll-container	1	0	0	0		
-TUT_A_82	탐사 출발	이전 단계를 누르면 첫번째 페이지로 돌아가고 탐사 출발을 누르면 탐사를 시작합니다.	0	TownUi/embark__footer--step2	1	0	0	0		
-TUT_A_83	탐사 출발	탐사 출발을 클릭하세요.	0	TownUi/btn-depart	0	0	0	0	08000000,08010000,08020000	1,1,1
+TUT_A_06	장신구 열기	장신구 칸을 클릭하세요	0	CharacterDetailUi/equip-chip-acc0	0	0	0	0		
+TUT_A_07	장신구 가방	장신구 가방을 통해서 장신구를 장착할 수 있습니다.	0	AccesorryInventoryView/accessory-grid	0	0	0	0		
+TUT_A_08	장신구 닫기	장신구 슬롯을 한 번 더 클릭하면 가방을 닫을 수 있습니다.	0	CharacterDetailUi/equip-chip-acc0	0	0	0	0		
+TUT_A_09	상세창 닫기	상세 정보창을 닫으세요.	0	CharacterDetailUi/character-detail__close-btn	0	0	0	0		
+TUT_A_10	대원 명부 닫기	X를 눌러 창을 닫을 수 있습니다.	0	TownUi/roster-panel__close-btn	0	0	0	0		
+TUT_A_11	창고 건설 슬롯	이어서 아이템 수납을 안정적으로 관리할 '창고 Lv.1'을 건설하세요.	0	Construction_Slot05	0	0	0	0		
+TUT_A_12	건설 확인 UI	건물의 기능과 건설 비용을 확인할 수 있습니다. 확인을 누르세요.	0	Construction/btn-confirm	0	0	0	0		
+TUT_A_13	창고 건설	창고를 건설했습니다. 창고를 우클릭 하세요.	0	Building_창고	1	0	0	0		
+TUT_A_14	건물 업그레이드	건물의 경우 우클릭으로 업그레이드를 할 수 있습니다. 취소를 누르세요.	0	Construction/btn-cancel	0	0	0	0		
+TUT_A_15	창고 이용	건물의 기능은 좌클릭을 통해 이용할 수 있습니다. 창고를 좌클릭 하세요.	0	Building_창고	0	0	0	0		
+TUT_A_16	인벤토리	창고에서는 현재 지닌 아이템을 확인할 수 있습니다.	0	Inventory/inventory-container	1	0	0	0		
+TUT_A_17	인벤토리 닫기	이제 인벤토리를 닫으세요.	0	Inventory/btn-close	0	0	0	0		
+TUT_A_18	보급소 건설 슬롯	건설 슬롯 영역을 선택하여 대원 증원을 담당할 '보급소 Lv.1'을 건설하세요.	0	Construction_Slot02	0	0	0	0		
+TUT_A_19	건설 확인 UI	보급소는 업그레이드가 불가능하여 초기 건설 비용이 비싼 편입니다. 이전에 지급된 자원을 사용해서 건물을 건설하세요.	0	Construction/btn-confirm	0	0	0	0		
+TUT_A_20	보급소 기능 이용	보급소를 클릭하여 보급 UI를 띄울 수 있습니다.	0	Building_왕실 보급소	0	0	0	0		
+TUT_A_21	보급소 기능 이용	보급소는 증원 요청, 일반 보급 요청, 특수 보급 요청을 진행할 수 있습니다. 모든 보급을 포함해 3회에 횟수 제한이 있습니다.	0	SupplyView/supply-window	1	300	0	0		
+TUT_A_22	증원 요청	증원 요청에 필요한 자원을 지급했습니다. 증원을 요청하세요.	0	SupplyView/btn-reinforce	0	0	0	0		
+TUT_A_23	UI 닫기	증원된 대원을 확인하기 위해 우선 보급 UI를 닫으세요.	0	btn-close-supply	0	0	0	0		
+TUT_A_24	대원 명부 열기2	다시 한 번 대원 명부를 클릭하세요.	0	TownUi/roster-toggle-btn	0	0	0	0		
+TUT_A_25	대원 명부 스크롤	대원 명부를 스크롤 하면 추가된 요원을 확인할 수 있습니다.	0	TownUi/roster-panel	0	0	0	0		
+TUT_A_26	대원 명부 닫기2	대원 명부 창을 닫으세요.	0	TownUi/roster-panel__close-btn	0	0	0	0		
+TUT_A_27	탐사 출발 트리거	늘어난 인원과 보급 자원을 확인했다면, 이제 탐사 출발 버튼을 눌러 출발하세요	0	TownUi/embark-btn	0	0	0	0		
+TUT_A_28	탐사 스탭 확인	첫번째 페이지에서는 탐사 지역 설정과 파티 설정을 할 수 있습니다.	0	TownUi/embark__step1	1	0	0	0		
+TUT_A_29	탐사 스탭 확인	두번째 페이지 탭을 클릭하세요	0	TownUi/tab-btn--step2	0	0	0	0		
+TUT_A_30	탐사 스텝 확인	두번째 페이지에서는 보급 물자를 정비할 수 있습니다.	0	TownUi/embark__step2	1	0	0	0		
+TUT_A_31	탐사 스텝 확인	다시 첫번째 페이지 탭을 클릭하세요.	0	TownUi/tab-btn--step1	0	0	0	0		
+TUT_A_32	탐사 맵 확인	현재 탐사 가능한 맵입니다.	0	TownUi/embark__region-list/unity-content-container	1	0	0	0		
+TUT_A_33	탐사 맵 확인	속삭이는 숲을 클릭하세요.	0	TownUi/embark__region-list/unity-content-container/.embark__region-card	0	0	0	0		
+TUT_A_34	탐사 인원 편성(수정 필요)	파티 슬롯입니다. 편성된 대원은 이곳에 보입니다.	0	TownUi/.embark__party-slots	0	0	0	0		
+TUT_A_35	탐사 인원 편성	편성할 수 있는 대원 목록입니다. 우선 전사를 클릭하여 편성하세요.	0	TownUi/embark-overlay/roster-panel	0	0	0	0		
+TUT_A_36	편성 확인(슬롯3)	전사가 제대로 편성된 것을 확인할 수 있습니다.	0	TownUi/embark__party-slot-3	1	0	0	0		
+TUT_A_37	대원 편성	이어서 암살자를 클릭하여 편성하세요	0	TownUi/embark-overlay/roster-panel	0	0	0	0		
+TUT_A_38	대원 편성	암살자도 제대로 편성된 것을 확인할 수 있습니다.	0	TownUi/embark__party-slot-2	1	0	0	0		
+TUT_A_39	대원 편성	이제 편성된 대원을 설정하겠습니다. 전사를 우클릭하여 상세창을 여세요.	0	TownUi/embark-overlay/roster-panel	1	0	0	0		
+TUT_A_40	역할 설정	우선 역할 설정입니다.	0	CharacterDetailUi/char-detail__role-area	1	0	0	0		
+TUT_A_41	역할 설정	탱커를 클릭하세요.	0	CharacterDetailUi/role-btn-current	0	0	0	0		
+TUT_A_42	역할 설정	탱커, 딜러, 서포터 중에서 하나를 지정할 수 있습니다. 다시 탱커를 클릭하세요.	0	CharacterDetailUi/char-detail__role-picker	0	0	0	0		
+TUT_A_43	역할 설정	역할을 탱커로 지정했습니다. 우클릭을 통해 다음 단계로 넘어가세요.	0	CharacterDetailUi/char-detail__role-area	1	0	0	0		
+TUT_A_44	스킬 설정	다음은 스킬 설정입니다. 스킬은 4개까지 선택할 수 있습니다.	0	CharacterDetailUi/char-detail__skill-grid	1	0	0	0		
+TUT_A_45	스킬 설정	선택되어 있는 스킬은 테두리가 표시됩니다. 테두리가 있는 스킬 중 하나를 클릭하세요.	0	CharacterDetailUi/char-detail__skill-grid	0	0	0	0		
+TUT_A_46	스킬 설정	테두리가 사라진 것을 볼 수 있습니다. 이제 테두리가 없는 스킬 중 하나를 클릭하세요.	0	CharacterDetailUi/char-detail__skill-grid	0	0	0	0		
+TUT_A_47	스킬 설정	스킬 창에 테두리가 추가됐습니다. 우클릭을 통해 다음 단계로 넘어가세요.	0	CharacterDetailUi/char-detail__skill-grid	1	0	0	0		
+TUT_A_48	리액션 설정	리액션 설정입니다. 리액션은 특정 조건에서 발생하는 추가적인 행동이고 지정된 역할군에 따라 달라집니다.	0	CharacterDetailUi/reaction-slot-0	0	0	0	0		
+TUT_A_49	리액션 설정	집중 보호를 클릭하세요.	0	CharacterDetailUi/__slot-dropdown	0	0	0	0		
+TUT_A_50	리액션 설정	아군을 지정해야 되며 클릭해서 편성 대원을 지정할 수 있습니다.	0	CharacterDetailUi/reaction-slot-0__target-part	0	0	0	0		
+TUT_A_51	리액션 설정	암살자를 클릭하세요.	0	CharacterDetailUi/__slot-dropdown	0	0	0	0		
+TUT_A_52	리액션 설정	아군이 지정되었습니다.	0	CharacterDetailUi/reaction-slot-0__target-part	2	0	0	0		
+TUT_A_53	리액션 설정	리액션이 발동되기 위한 조건입니다.	0	CharacterDetailUi/reaction-slot-0__condition-part	2	0	0	0		
+TUT_A_54	리액션 설정	조건을 충족할 시 진행하는 행동입니다.	0	CharacterDetailUi/reaction-slot-0__action-part	2	0	0	0		
+TUT_A_55	리액션 설정	다시 한 번 리액션 슬롯을 클릭하세요.	0	CharacterDetailUi/reaction-slot-1	0	0	0	0		
+TUT_A_56	리액션 설정	위기 보호를 클릭하세요.	0	CharacterDetailUi/__slot-dropdown	0	0	0	0		
+TUT_A_57	리액션 설정	몇몇 리액션은 자기 자신 또는 아군 전체를 대상으로 합니다.	0	CharacterDetailUi/reaction-slot-1__target-part	2	0	0	0		
+TUT_A_58	리액션 설정	리액션이 발동되기 위한 조건입니다.	0	CharacterDetailUi/reaction-slot-1__condition-part	2	0	0	0		
+TUT_A_59	리액션 설정	조건을 충족할 시 진행하는 행동입니다.	0	CharacterDetailUi/reaction-slot-1__action-part	2	0	0	0		
+TUT_A_60	성향	성향 목록입니다. 몇몇 성향은 잠겨있고 정신각성제를 통해 해금할 수 있습니다.	0	CharacterDetailUi/char-detail__trait-list	2	0	0	0		
+TUT_A_61	성향	성향의 리액션입니다. 고정되어 있는 리액션으로 성향에 따라 행동을 진행합니다.	0	CharacterDetailUi/reaction-slot-2	2	0	0	0		
+TUT_A_62	설정	모든 설정이 끝났습니다. 상세창을 닫으세요.	0	CharacterDetailUi/character-detail__close-btn	0	0	0	0		
+TUT_A_63	대원 편성	이어서 암살자를 설정하겠습니다. 암살자를 우클릭하여 상세창을 여세요.	0	TownUi/embark-overlay/roster-panel	1	0	0	0		
+TUT_A_64	리액션 설정	리액션 슬롯을 클릭하세요.	0	CharacterDetailUi/reaction-slot-0	0	0	0	0		
+TUT_A_65	리액션 설정	회피 반격을 클릭하세요	0	CharacterDetailUi/__slot-dropdown	0	0	0	0		
+TUT_A_66	리액션 설정	딜러는 자신의 행동에 따라 리액션을 발동합니다.	0	CharacterDetailUi/reaction-slot-0__target-part	2	0	0	0		
+TUT_A_67	리액션 설정	조건을 확인하세요	0	CharacterDetailUi/reaction-slot-0__condition-part	2	0	0	0		
+TUT_A_68	리액션 설정	조건 충족 시 진행할 행동을 선택하세요. 선택한 스킬을 통해 반격이 진행됩니다.	0	CharacterDetailUi/reaction-slot-0__action-part	0	0	0	0		
+TUT_A_69	리액션 설정	원하는 스킬을 선택하세요.	0	CharacterDetailUi/__slot-dropdown	0	0	0	0		
+TUT_A_70	리액션 설정	다시 한 번 리액션 슬롯을 클릭하세요.	0	CharacterDetailUi/reaction-slot-1	0	0	0	0		
+TUT_A_71	리액션 설정	치명타 추격을 클릭하세요.	0	CharacterDetailUi/__slot-dropdown	0	0	0	0		
+TUT_A_72	리액션 설정	딜러는 자신의 행동에 따라 리액션을 발동합니다.	0	CharacterDetailUi/reaction-slot-1__target-part	2	0	0	0		
+TUT_A_73	리액션 설정	조건을 확인하세요.	0	CharacterDetailUi/reaction-slot-1__condition-part	2	0	0	0		
+TUT_A_74	리액션 설정	조건 충족 시 진행할 행동을 선택하세요. 선택한 스킬을 통해 반격이 진행됩니다.	0	CharacterDetailUi/reaction-slot-1__action-part	0	0	0	0		
+TUT_A_75	리액션 설정	원하는 스킬을 선택하세요.	0	CharacterDetailUi/__slot-dropdown	0	0	0	0		
+TUT_A_76	성향	성향을 확인하세요	0	CharacterDetailUi/char-detail__trait-list	2	0	0	0		
+TUT_A_77	성향	성향의 리액션을 확인하세요	0	CharacterDetailUi/reaction-slot-2	2	0	0	0		
+TUT_A_78	설정	모든 설정이 끝났습니다. 상세창을 닫으세요.	0	CharacterDetailUi/character-detail__close-btn	0	0	0	0		
+TUT_A_79	아이템 적재	취소를 누르면 마을로 돌아가고 다음 단계를 누르면 탐사 물품을 조정할 수 있습니다.	0	TownUi/embark__footer--step1	1	0	0	0		
+TUT_A_80	아이템 적재	 다음 단계를 클릭하세요.	0	TownUi/btn-next	0	0	0	0		
+TUT_A_81	지닌 아이템	현재 지니고 있는 물자입니다. 창고에서 자세한 확인이 가능합니다.	0	TownUi/embark__step2/unity-content-and-vertical-scroll-container	1	0	0	0		
+TUT_A_82	탐사 물자	탐사에 들고 갈 물자를 담는 공간입니다.	0	TownUi/embark__exp-name/unity-content-and-vertical-scroll-container	1	0	0	0		
+TUT_A_83	물자 편성	아이템을 클릭해서 탐사 물품에 추가하세요.	0	TownUi/embark__step2/unity-content-and-vertical-scroll-container	0	0	0	0		
+TUT_A_84	물자 편성	추가로 아이템을 클릭해서 탐사 물품에 추가하세요.	0	TownUi/embark__step2/unity-content-and-vertical-scroll-container	0	0	0	0		
+TUT_A_85	물자 편성	추가한 아이템을 확인할 수 있으며 아이템을 클릭하면 뺄 수 있습니다.	0	TownUi/embark__exp-name/unity-content-and-vertical-scroll-container	1	0	0	0		
+TUT_A_86	탐사 출발	이전 단계를 누르면 첫번째 페이지로 돌아가고 탐사 출발을 누르면 탐사를 시작합니다.	0	TownUi/embark__footer--step2	1	0	0	0		
+TUT_A_87	탐사 출발	탐사 출발을 클릭하세요.	0	TownUi/btn-depart	0	0	0	0	08000000,08010000,08020000	1,1,1
+TUT_B_01	 맵 아이콘 설명	전투 스테이지. 일반적인 몬스터와의 전투가 진행됩니다.	1	Canvas/MapPanel/MapParent/Map_Node_Button(Clone)[0]	1	0	0	0		
+TUT_B_02	 맵 아이콘 설명	사건 스테이지. 랜덤한 사건을 마주하게 됩니다.	1	Canvas/MapPanel/MapParent/Map_Node_Button(Clone)[1]	1	0	0	0		
+TUT_B_03	 맵 아이콘 설명	정예 스테이지. 강력한 몬스터와의 전투가 진행됩니다.	1	Canvas/MapPanel/MapParent/Map_Node_Button(Clone)[2]	1	0	0	0		
+TUT_B_04	 맵 아이콘 설명	캠프 스테이지. 캠프 아이템을 소모하여 다양한 활동을 진행할 수 있습니다.	1	Canvas/MapPanel/MapParent/Map_Node_Button(Clone)[3]	1	0	0	0		
+TUT_B_05	 맵 아이콘 설명	보스 스테이지. 보스 몬스터와의 전투가 진행됩니다.	1	Canvas/MapPanel/MapParent/Map_Node_Button(Clone)[4]	1	0	0	0		
+TUT_B_06	 맵 아이콘 설명	전투 스테이지를 클릭하여 전투에 진입하세요.	1	Canvas/MapPanel/MapParent/Map_Node_Button(Clone)[0]	0	0	0	0		
+TUT_B_07	전투 스테이지	턴 UI 입니다. 속도가 빠를 수록 먼저 행동할 수 있습니다.	1	Juno_Canvas/TurnUI_A	1	0	0	0		
+TUT_B_08	전투 스테이지	라운드 표시입니다. 모든 대상의 행동이 끝나면 증가합니다.	1	Juno_Canvas/TurnUI_A/TurnCount	1	0	0	0		
+TUT_B_09	전투 스테이지	현재 행동 대상입니다.	1	Juno_Canvas/TurnUI_A/UnitTurn	1	0	0	0		
+TUT_B_10	전투 스테이지	다음 행동 대상입니다.	1	Juno_Canvas/TurnUI_A/UnitTurn (1)	1	0	0	0		
+TUT_B_11	전투 스테이지	전투 퇴각 버튼입니다.	1	Canvas/Button	1	0	0	0		
+TUT_B_12	전투 스테이지	탐사 인벤토리입니다. 캐릭터의 차례일 때, 아이템을 우클릭하여 사용할 수 있으며 아이템 사용은 턴을 소모하지 않습니다.	1	ExpeditionInventoryView/VisualElement	0	0	0	0		
+TUT_B_13	전투 스테이지	탐사 중 인벤토리에 있는 아이템을 버리고 싶다면 이 영역으로 드래그 하면 됩니다.	1	ExpeditionInventoryView/Image	1	0	0	0		
+TUT_B_14	전투 스테이지	암살자의 차례입니다.	1	Canvas/Party 1/Player Slot 2	1	0	0	0		
+TUT_B_15	전투 스테이지	현재 차례인 대원은 체력바가 강조됩니다.	1	Canvas/Party 1/Player Slot 2/Health bar	1	0	0	0		
+TUT_B_16	전투 스테이지	탐사 중 캐릭터의 정보 확인은 하단 UI를 통해 가능합니다.	1	CharacterCombatUi/.character-combat-panel	1	0	0	0		
+TUT_B_17	전투 스테이지	암살자의 스킬을 클릭하세요.	1	CharacterCombatUi/.combat-panel__skill-row	0	0	0	0		
+TUT_B_18	전투 스테이지	지정 가능한 타겟을 클릭하세요. 지정 가능한 타겟은 빨간색으로 표시됩니다.	1	Canvas	0	0	0	0		
+TUT_B_19	전투 스테이지	암살자의 공격이 치명타로 적중하여 리액션이 발동됐습니다.	1	Canvas	1	0	0	0		
+TUT_B_20	전투 스테이지	전사의 턴이 되었습니다.	1	Canvas/Party 1/Player Slot 1	1	0	0	0		
+TUT_B_21	전투 스테이지	스킬을 클릭하세요.	1	CharacterCombatUi/.combat-panel__skill-row	0	0	0	0		
+TUT_B_22	전투 스테이지	타겟을 지정하세요.	1	Canvas	0	0	0	0		
+TUT_B_23	전투 스테이지	다시 암살자의 턴이 되었습니다. 스킬을 클릭하세요.	1	CharacterCombatUi/.combat-panel__skill-row	0	0	0	0		
+TUT_B_24	전투 스테이지	대상을 지정하세요.	1	Canvas	0	0	0	0		
+TUT_B_25	전투 스테이지	모든 적을 처치했습니다. 이번 전투 기록은 일지에 저장됩니다.	1	Canvas	1	0	0	0		
+TUT_B_26	전투 스테이지	맵으로 돌아가기를 클릭하세요.	1	Canvas	0	0	0	0		
+TUT_B_27	전투 스테이지	전투를 마치고 맵으로 돌아왔습니다. 탐사를 이어서 진행하거나 퇴각하여 마을에서 재정비 시간을 가질 수 있습니다.	1	Canvas/Button	1	0	0	0		
+TUT_B_28	전투 스테이지	탐사를 이어서 진행할려면 다음 노드를 클릭하면 됩니다.	1	Canvas/MapPanel/MapParent/Map_Node_Button(Clone)[1]	1	0	0	0		
+TUT_B_29	전투 스테이지	탐사를 마치고 마을로 돌아갈려면 퇴각 버튼을 클릭하면 됩니다.	1	Canvas/Button	1	0	0	0		
+TUT_B_30	전투 스테이지	확인 버튼을 누르세요	1	Canvas/Button	0	0	0	0		
+TUT_B_31	전투 스테이지	퇴각 시에는 이번 탐사동안 있었던 일을 확인할 수 있습니다. 다음 장을 클릭하세요.	1	Canvas	2	0	0	0		
+TUT_B_32	전투 스테이지	닫기를 클릭하세요.	1	Canvas	2	0	0	0		

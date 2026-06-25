@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Bond.Embark;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -17,6 +19,7 @@ namespace Bond.WT.Journal
         private readonly IJournalVisualizer _view;
         private readonly JournalSystem _system;
         private readonly ISpriteLoader _spriteLoader;
+        private readonly IPartyController _partyController;
 
         private AsyncOperationHandle<Sprite>? _currentIconHandle;
 
@@ -32,14 +35,16 @@ namespace Bond.WT.Journal
         private readonly ObserverWrapper<bool> _completeObserver = new ObserverWrapper<bool>();
         private readonly ObserverWrapper<bool> _prevPageObserver = new ObserverWrapper<bool>();
         private readonly ObserverWrapper<bool> _lastPageObserver = new ObserverWrapper<bool>();
+        private readonly ObserverWrapper<bool> _nextPageEnabledObserver = new ObserverWrapper<bool>();
 
         [Inject]
-        public JournalBinder(JournalModel model, IJournalVisualizer view, JournalSystem system, ISpriteLoader spriteLoader)
+        public JournalBinder(JournalModel model, IJournalVisualizer view, JournalSystem system, ISpriteLoader spriteLoader, IPartyController partyController)
         {
             _model = model;
             _view = view;
             _system = system;
             _spriteLoader = spriteLoader;
+            _partyController = partyController;
 
             // 핸들러 설정
             _paragraphObserver.EventHandler = text => 
@@ -58,7 +63,17 @@ namespace Bond.WT.Journal
 
             _reportObserver.EventHandler = report => 
             {
-                if (report != null) LoadAndSetIconAsync(report.IconId).Forget();
+                if (report != null)
+                {
+                    var manualChar = _partyController.GetCurrentParty()?
+                        .FirstOrDefault(c => c.isPlayable);
+                    
+                    string address = (manualChar != null && !string.IsNullOrEmpty(manualChar.ImageAddress)) 
+                        ? manualChar.ImageAddress 
+                        : report.IconId;
+                    
+                    LoadAndSetIconAsync(address).Forget();
+                }
             };
 
             _completeObserver.EventHandler = isComplete => 
@@ -73,6 +88,7 @@ namespace Bond.WT.Journal
 
             _prevPageObserver.EventHandler = hasPrev => _view.SetPrevButtonEnabled(hasPrev);
             _lastPageObserver.EventHandler = isLast => _view.SetNextButtonText(isLast ? "닫기" : "다음 장");
+            _nextPageEnabledObserver.EventHandler = isEnabled => _view.SetNextButtonEnabled(isEnabled);
         }
 
         private async UniTaskVoid LoadAndSetIconAsync(string iconId)
@@ -116,6 +132,7 @@ namespace Bond.WT.Journal
             _model.CurrentReport.Subscribe(_reportObserver);
             _model.HasPrevPage.Subscribe(_prevPageObserver);
             _model.IsLastPage.Subscribe(_lastPageObserver);
+            _model.IsNextButtonEnabled.Subscribe(_nextPageEnabledObserver);
 
             // [초기화] 구독 시점에 이미 데이터가 있을 경우를 위해 강제 동기화 (Value가 null/초기값이 아닐 때만)
             if (!string.IsNullOrEmpty(_model.CurrentParagraph.Value)) _paragraphObserver.EventHandler?.Invoke(_model.CurrentParagraph.Value);
@@ -124,11 +141,18 @@ namespace Bond.WT.Journal
             _completeObserver.EventHandler?.Invoke(_model.IsJournalComplete.Value);
             _prevPageObserver.EventHandler?.Invoke(_model.HasPrevPage.Value);
             _lastPageObserver.EventHandler?.Invoke(_model.IsLastPage.Value);
+            _nextPageEnabledObserver.EventHandler?.Invoke(_model.IsNextButtonEnabled.Value);
 
-            // 뷰 이벤트 연결
+            // 뷰 이벤트 연결 (기존 콜백 보존 체이닝 처리로 덮어쓰기 방지)
             _view.OnNextClicked = () => _system.NextPage();
             _view.OnPrevClicked = () => _system.PrevPage();
-            _view.OnOptionSelected = option => _system.SelectOption(option);
+            
+            var originalCallback = _view.OnOptionSelected;
+            _view.OnOptionSelected = option =>
+            {
+                _system.SelectOption(option);
+                originalCallback?.Invoke(option);
+            };
         }
 
         public void Dispose()
@@ -139,6 +163,7 @@ namespace Bond.WT.Journal
             _model.CurrentReport.Unsubscribe(_reportObserver);
             _model.HasPrevPage.Unsubscribe(_prevPageObserver);
             _model.IsLastPage.Unsubscribe(_lastPageObserver);
+            _model.IsNextButtonEnabled.Unsubscribe(_nextPageEnabledObserver);
             ReleaseIconHandle();
         }
     }

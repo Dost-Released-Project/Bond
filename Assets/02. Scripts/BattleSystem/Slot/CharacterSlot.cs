@@ -29,6 +29,7 @@ namespace BattleSystem
         [Header("Visual Effects")]
         [SerializeField] private TextVisualizer m_TextVisualizer;
         [SerializeField] private CharacterSlotBar m_CharacterSlotBar;
+        [SerializeField] private CharacterSlotBuffBar m_CharacterSlotBuffBar;
 
         public BaseCharacter Occupant { get; private set; }
         public bool IsEmpty => Occupant == null;
@@ -48,10 +49,12 @@ namespace BattleSystem
             character.OnEvaded += ShowEvadedText;
             character.OnHpChanged += UpdateHpBar;
             character.OnInsanityChanged += UpdateInsanityBar;
+            character.OnBuffsChanged += UpdateBuffs;
 
             // 초기 UI 갱신
             UpdateHpBar(character);
             UpdateInsanityBar(character);
+            UpdateBuffs(character);
             
             // 기본 이미지 타입(Idle)으로 로드
             m_currentImageType = SlotImageType.Idle;
@@ -129,6 +132,7 @@ namespace BattleSystem
                 Occupant.OnEvaded -= ShowEvadedText;
                 Occupant.OnHpChanged -= UpdateHpBar;
                 Occupant.OnInsanityChanged -= UpdateInsanityBar;
+                Occupant.OnBuffsChanged -= UpdateBuffs;
                 Occupant.CurrentSlot = null;
             }
             Occupant = null;
@@ -137,6 +141,14 @@ namespace BattleSystem
             {
                 m_CharacterSlotBar.hpfillAmount = 0f;
                 m_CharacterSlotBar.insfillAmount = 0f;
+            }
+            if (m_CharacterSlotBuffBar != null)
+            {
+                m_CharacterSlotBuffBar.SetBuffs(null);
+            }
+            if (m_CharacterSlotBar != null)
+            {
+                m_CharacterSlotBar.isTurnActive = false;
             }
         }
         
@@ -159,7 +171,14 @@ namespace BattleSystem
 
         public void SetSelected(bool val) => IsSelected = val;
         public void SetTargetable(bool val) => IsTargetable = val;
-        public void SetActing(bool val) => IsActing = val;
+        public void SetActing(bool val)
+        {
+            IsActing = val;
+            if (m_CharacterSlotBar != null)
+            {
+                m_CharacterSlotBar.isTurnActive = val;
+            }
+        }
         public void SetTargeted(bool val) => IsTargeted = val;
 
         public void ResetAllStates()
@@ -231,7 +250,7 @@ namespace BattleSystem
             }
             else
             {
-                m_targetColor = colorData.normalColor;
+                m_targetColor = m_CharacterSlotBar != null ? m_CharacterSlotBar.defaultBorderColor : colorData.normalColor;
             }
 
             m_currentColor = Color.Lerp(m_currentColor, m_targetColor, Time.unscaledDeltaTime * colorData.lerpSpeed);
@@ -295,6 +314,14 @@ namespace BattleSystem
             }
         }
 
+        private void UpdateBuffs(BaseCharacter character)
+        {
+            if (m_CharacterSlotBuffBar != null && character != null)
+            {
+                m_CharacterSlotBuffBar.SetBuffs(character.ActiveBuffs);
+            }
+        }
+
         private void OnDestroy()
         {
             if (Occupant != null)
@@ -304,6 +331,7 @@ namespace BattleSystem
                 Occupant.OnEvaded -= ShowEvadedText;
                 Occupant.OnHpChanged -= UpdateHpBar;
                 Occupant.OnInsanityChanged -= UpdateInsanityBar;
+                Occupant.OnBuffsChanged -= UpdateBuffs;
             }
         }
     }

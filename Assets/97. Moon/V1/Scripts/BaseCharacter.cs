@@ -368,6 +368,8 @@ public partial class BaseCharacter : ITurnUseUnit
 
         try
         {
+            if (CurrentSlot != null) CurrentSlot.SetActing(true);
+
             if (isPlayable)
             {
                 _selectedSkill = null;
@@ -406,9 +408,13 @@ public partial class BaseCharacter : ITurnUseUnit
                     
                     // targetConfirmed가 false이거나 타겟이 없다면 (새 스킬 클릭 또는 취소), 다시 루프 처음으로 이동
                 }
+                
+                if (CurrentSlot != null) CurrentSlot.SetActing(false);
             }
             else
             {
+                if (CurrentSlot != null) CurrentSlot.SetActing(false);
+                
                 // GetUsableSkills()를 통해 현재 사용할 수 있는 스킬 판별
                 bool[] usableFlags = GetUsableSkills();
                 var usableSkills = new System.Collections.Generic.List<SkillBase>();

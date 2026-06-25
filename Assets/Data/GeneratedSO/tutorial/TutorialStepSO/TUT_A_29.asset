@@ -13,11 +13,10 @@ MonoBehaviour:
   m_Name: TUT_A_29
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_29
-  _displayName: "\uD0D0\uC0AC \uB9F5 \uD655\uC778"
-  _description: "\uD604\uC7AC \uD0D0\uC0AC \uAC00\uB2A5\uD55C \uB9F5\uC785\uB2C8\uB2E4,
-    \uC18D\uC0AD\uC774\uB294 \uC232\uC744 \uD074\uB9AD\uD558\uC138\uC694."
+  _displayName: "\uD0D0\uC0AC \uC2A4\uD0ED \uD655\uC778"
+  _description: "\uB450\uBC88\uC9F8 \uD398\uC774\uC9C0 \uD0ED\uC744 \uD074\uB9AD\uD558\uC138\uC694"
   _sequence: 0
-  _targetUiKey: TownUi/embark__region-list
+  _targetUiKey: TownUi/tab-btn--step2
   _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0
