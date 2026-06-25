@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_B_21
   _displayName: "\uC804\uD22C \uC2A4\uD14C\uC774\uC9C0"
-  _description: "\uC2A4\uD0AC\uC744 \uD074\uB9AD\uD558\uC138\uC694."
+  _description: "\uBC84\uD504 \uC2A4\uD0AC\uC744 \uD074\uB9AD\uD558\uC138\uC694."
   _sequence: 1
-  _targetUiKey: CharacterCombatUi/.combat-panel__skill-row
+  _targetUiKey: CharacterCombatUi/.combat-panel__skill-row/skill-slot-3
   _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0

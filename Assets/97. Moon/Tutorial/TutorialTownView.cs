@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.InputSystem; 
@@ -253,7 +254,7 @@ namespace Bond.Tutorial
             // 💥 점(.)대신 쉼표(,)를 구분자로 사용하므로 월드 오브젝트 체크 조건도 변경합니다.
             _isTrackingWorld = !string.IsNullOrEmpty(_targetKey) && !_targetKey.Contains(",") && GameObject.Find(_targetKey) != null;
 
-            if (_guideLabel != null) _guideLabel.text = stepData.Description;
+            if (_guideLabel != null) _guideLabel.text = $"({(stepData.ClickType == (TutorialClickType)1 ? "우클릭" : "클릭")}) \n{stepData.Description}";
         }
 
         // 🔄 이름과 클래스를 모두 유연하게 찾아주는 핵심 리팩토링 구역
@@ -308,40 +309,94 @@ namespace Bond.Tutorial
             if (root == null || string.IsNullOrEmpty(target)) return null;
 
             VisualElement result = null;
+            int targetIndex = -1; // -1이면 인덱스 조건이 없음을 의미
 
-            // 1. 기본 검색 (클래스 vs 이름)
-            if (target.StartsWith("."))
+            // 🎯 [인덱스 파싱] 주소 끝에 '[숫자]'가 붙어있는지 정밀 수동 파싱
+            if (target.EndsWith("]"))
             {
-                string className = target.Substring(1);
-                result = root.Q<VisualElement>(name: null, className: className);
-        
-                if (result == null && root is TemplateContainer template)
+                int openBracket = target.IndexOf('[');
+                if (openBracket != -1)
                 {
-                    result = template.contentContainer.Q<VisualElement>(name: null, className: className);
+                    string indexStr = target.Substring(openBracket + 1, target.Length - openBracket - 2).Trim();
+                    if (int.TryParse(indexStr, out int parsedIndex))
+                    {
+                        targetIndex = parsedIndex;
+                        target = target.Substring(0, openBracket).Trim(); // 본래의 클래스명 또는 ID만 남김
+                    }
+                }
+            }
+
+            // 클래스 기반(.으로 시작) vs 이름 기반 분기 정의
+            bool isClass = target.StartsWith(".");
+            string searchKey = isClass ? target.Substring(1) : target;
+
+            // 1. 1차 자식단 검색 시작
+            if (isClass)
+            {
+                // 대괄호 인덱스가 없는 경우 -> 가장 먼저 발견되는 첫 번째 요소 반환
+                if (targetIndex == -1)
+                {
+                    result = root.Q<VisualElement>(name: null, className: searchKey);
+                    if (result == null && root is TemplateContainer template)
+                    {
+                        result = template.contentContainer.Q<VisualElement>(name: null, className: searchKey);
+                    }
+                }
+                // 💥 인덱스가 지정된 경우 -> 조건에 맞는 n번째 요소 정밀 서칭 (범용성 최고)
+                else
+                {
+                    List<VisualElement> candidates =
+                        root.Query<VisualElement>(name: null, className: searchKey).ToList();
+                    if (candidates.Count > targetIndex) result = candidates[targetIndex];
+                    else if (candidates.Count > 0) result = candidates[0]; // 인덱스 초과 시 방어용 보정
                 }
             }
             else
             {
-                result = root.Q<VisualElement>(target);
-        
-                if (result == null && root is TemplateContainer template)
+                // 이름(ID) 기반 검색
+                if (targetIndex == -1)
                 {
-                    result = template.contentContainer.Q<VisualElement>(target);
-                }
-            }
-
-            // 💥 [핵심 보강] 만약 자식 중에 못 찾았는데, 현재 root가 Label처럼 자식을 가질 수 없는 엘리먼트라면?
-            // 부모(parent)로 한 단계 올라가서 그 부모의 전체 자식 중에서 다시 검색해봅니다. (형제 노드 검색)
-            if (result == null && root.parent != null)
-            {
-                if (target.StartsWith("."))
-                {
-                    string className = target.Substring(1);
-                    result = root.parent.Q<VisualElement>(name: null, className: className);
+                    result = root.Q<VisualElement>(searchKey);
+                    if (result == null && root is TemplateContainer template)
+                    {
+                        result = template.contentContainer.Q<VisualElement>(searchKey);
+                    }
                 }
                 else
                 {
-                    result = root.parent.Q<VisualElement>(target);
+                    List<VisualElement> candidates = root.Query<VisualElement>(searchKey).ToList();
+                    if (candidates.Count > targetIndex) result = candidates[targetIndex];
+                    else if (candidates.Count > 0) result = candidates[0];
+                }
+            }
+
+            // 2. 💥 형제 역추적 예외 보강 (자식단에서 찾지 못했을 때, 부모 레이어에서 n번째 리스트 재쿼리)
+            if (result == null && root.parent != null)
+            {
+                if (isClass)
+                {
+                    if (targetIndex == -1)
+                    {
+                        result = root.parent.Q<VisualElement>(name: null, className: searchKey);
+                    }
+                    else
+                    {
+                        List<VisualElement> candidates =
+                            root.parent.Query<VisualElement>(name: null, className: searchKey).ToList();
+                        if (candidates.Count > targetIndex) result = candidates[targetIndex];
+                    }
+                }
+                else
+                {
+                    if (targetIndex == -1)
+                    {
+                        result = root.parent.Q<VisualElement>(searchKey);
+                    }
+                    else
+                    {
+                        List<VisualElement> candidates = root.parent.Query<VisualElement>(searchKey).ToList();
+                        if (candidates.Count > targetIndex) result = candidates[targetIndex];
+                    }
                 }
             }
 

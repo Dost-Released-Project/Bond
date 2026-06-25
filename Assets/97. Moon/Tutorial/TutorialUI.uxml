@@ -8,7 +8,7 @@
         <ui:VisualElement name="Mask_Right" style="flex-grow: 1; position: absolute; background-color: rgba(0, 0, 0, 0.65);"/>
         <ui:VisualElement name="GuideContainer" picking-mode="Ignore" style="flex-grow: 1; position: absolute; top: 0; right: 0; bottom: 0; left: 0;">
             <ui:Button text="Skip" name="SkipButton" style="right: 40px; bottom: 40px; position: absolute;"/>
-            <ui:Label text="Label" name="GuideTextLabel"/>
+            <ui:Label text="Label" name="GuideTextLabel" style="font-size: 20px;"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

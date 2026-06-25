@@ -18,7 +18,7 @@ MonoBehaviour:
     \uC554\uC0B4\uC790\uB97C \uC6B0\uD074\uB9AD\uD558\uC5EC \uC0C1\uC138\uCC3D\uC744
     \uC5EC\uC138\uC694."
   _sequence: 0
-  _targetUiKey: TownUi/embark-overlay/roster-panel
+  _targetUiKey: 'TownUi/embark-overlay/roster-panel/.roster-card[1]'
   _clickType: 1
   _rewardFrontier: 0
   _rewardWood: 0

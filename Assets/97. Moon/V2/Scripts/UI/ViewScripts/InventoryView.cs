@@ -49,6 +49,8 @@ public class InventoryView : MonoBehaviour
             Debug.Log("<color=yellow>[최초 실행]</color> 새 게임 시작 초기 아이템을 1회 한정 지급합니다.");
 
             // 소모품 추가
+            
+            _totalInventory.AddItemId("07060000", 1);
             _totalInventory.AddItemId("07000000", 3);
             _totalInventory.AddItemId("07010000", 3);
             _totalInventory.AddItemId("07030000", 1);

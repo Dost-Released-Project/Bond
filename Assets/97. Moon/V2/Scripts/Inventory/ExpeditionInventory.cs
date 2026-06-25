@@ -74,10 +74,10 @@ public class ExpeditionInventory : InventoryBase, IExpeditionInventory
         }
         else
         {
-            // 새로하기 상황: 파일이 없으면 얄짤없이 2칸 고정 후 즉시 세이브 파일을 새겨서 락을 굽습니다.
+            // 새로하기 상황: 파일이 없으면 얄짤없이 4칸 고정 후 즉시 세이브 파일을 새겨서 락을 굽습니다.
             ClearAll();
-            for (int i = 0; i < 2; i++) _slots.Add(new InventorySlot());
-            Debug.Log("[ExpeditionInventory] 세이브 파일이 없으므로 정석 2칸으로 롤백 정산합니다.");
+            for (int i = 0; i < 4; i++) _slots.Add(new InventorySlot());
+            Debug.Log("[ExpeditionInventory] 세이브 파일이 없으므로 정석 4칸으로 롤백 정산합니다.");
             
             // 파일이 아예 없어서 새로 만들어야 할 때만 물리 파일을 디스크에 강제 주입
             SaveExpeditionInventoryDirect();
