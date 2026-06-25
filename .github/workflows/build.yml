@@ -33,6 +33,7 @@ jobs:
         with:
           unityVersion: 6000.3.10f1
           targetPlatform: StandaloneWindows64
+          buildMethod: CIBuildScript.Build
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
