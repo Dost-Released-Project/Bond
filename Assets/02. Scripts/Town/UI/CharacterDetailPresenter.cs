@@ -41,7 +41,7 @@ namespace Bond.UI
 
         private Label _baseStatStr, _baseStatAgi, _baseStatInt;
         private Label _statHp, _statDef, _statAtk, _statSpd;
-        private Label _statCrt, _statAcc, _statEva, _statReactionCtrl;
+        private Label _statCrt, _statAcc, _statEva;
 
         private Label         _gaugeInsanityVal;
         private Label         _gaugeInsanityWarnLabel;
@@ -147,7 +147,6 @@ namespace Bond.UI
             _statCrt                = root.Q<Label>("stat-crt");
             _statAcc                = root.Q<Label>("stat-acc");
             _statEva                = root.Q<Label>("stat-eva");
-            _statReactionCtrl       = root.Q<Label>("stat-reaction-ctrl");
             _gaugeInsanityVal       = root.Q<Label>("gauge-insanity-val");
             _gaugeInsanityWarnLabel = root.Q<Label>("gauge-insanity-warn");
             _gaugeHpFill            = root.Q("gauge-hp");
@@ -471,12 +470,6 @@ namespace Bond.UI
             _statCrt.text = $"{s.crt:P0}";
             _statAcc.text = $"{s.acc:P0}";
             _statEva.text = $"{s.eva:P0}";
-            _statReactionCtrl.text = s.Reaction_Ctrl switch
-            {
-                < 0.3f => "낮음",
-                < 0.7f => "보통",
-                _      => "높음"
-            };
 
             float hpRatio = s.max_Hp > 0 ? (float)s.current_Hp / s.max_Hp : 0f;
             _gaugeHpFill.style.width = new StyleLength(new Length(hpRatio * 100f, LengthUnit.Percent));

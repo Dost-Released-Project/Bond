@@ -37,7 +37,7 @@ namespace Reactions.Authoring
             Add("TRT_001", "겁쟁이", E_TraitType.Negative,
                 Def("TRT_001_RDEF", RoleType.None).Name("겁쟁이 — 후방 이탈", "HP30% 이하일때, Default: 후열로 이동. 해당 턴 리액션 봉인 / Alt: 스트레스 -20")
                     .Phase(E_ReactionPhase.PostApply).Observe(E_ObserveFilter.Self)
-                    .When(HpBelow(0.3f), SkillTypeIs(SkillType.OFFENSIVE, SkillType.SPELL))
+                    .When(SubjectIs(E_TargetFilter.Target), HpBelow(0.3f), SkillTypeIs(SkillType.OFFENSIVE, SkillType.SPELL))
                     .Do(MoveBack(), Seal(SealKind.All, turns: 1))
                     .Alt(Stress(-20)));
 

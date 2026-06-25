@@ -80,12 +80,20 @@ namespace Bond.Tutorial
 
             if (_isTrackingWorld)
             {
-                // 💥 정밀 인덱스 파싱 기법 적용
                 GameObject targetObj = FindIndexedGameObject(_targetKey);
                 if (targetObj != null)
                 {
                     _calculatedBounds = CalculateWorldBoundsToScreen(targetObj);
-                    ApplyLayout(_calculatedBounds);
+                    
+                    // 💥 [보정 및 안전장치] 데이터가 완전 제로거나 비정상적인 위치(동적 스폰 지연)라면 배리어를 잠시 열어 유저 락을 방지합니다.
+                    if (_calculatedBounds.width > 0 && _calculatedBounds.height > 0)
+                    {
+                        ApplyLayout(_calculatedBounds);
+                    }
+                    else
+                    {
+                        _barrier.pickingMode = PickingMode.Ignore;
+                    }
                 }
             }
             else
@@ -103,13 +111,11 @@ namespace Bond.Tutorial
             }
         }
 
-        // 💥 [월드 게임 오브젝트 순서 제어용 핵심 탐색 엔진]
         private GameObject FindIndexedGameObject(string pathKey)
         {
             string cleanKey = pathKey.Trim();
             int targetIndex = 0;
 
-            // 주소 끝에 '[숫자]'가 붙어있는지 정밀 수동 파싱
             if (cleanKey.EndsWith("]"))
             {
                 int openBracket = cleanKey.LastIndexOf('[');
@@ -119,15 +125,13 @@ namespace Bond.Tutorial
                     if (int.TryParse(indexStr, out int parsedIndex))
                     {
                         targetIndex = parsedIndex;
-                        cleanKey = cleanKey.Substring(0, openBracket).Trim(); // 이름만 추출
+                        cleanKey = cleanKey.Substring(0, openBracket).Trim();
                     }
                 }
             }
 
-            // 1. 단일 이름 기반 검색 시도
             if (!cleanKey.Contains("/"))
             {
-                // 겹치는 이름을 가진 월드의 모든 오브젝트 수집 (비활성화 상태 제외)
                 GameObject[] allObjects = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
                 List<GameObject> matches = new List<GameObject>();
                 
@@ -136,15 +140,34 @@ namespace Bond.Tutorial
                     if (go.name == cleanKey) matches.Add(go);
                 }
 
-                // 하이라키 순서대로 혹은 생성 순서의 무결성을 위해 인스턴스 ID나 이름을 기반으로 정렬 처리가 안전합니다.
                 if (matches.Count > targetIndex) return matches[targetIndex];
-                if (matches.Count > 0) return matches[0]; // 인덱스 초과 시 안전장치로 첫 번째 반환
+                if (matches.Count > 0) return matches[0]; 
                 return null;
             }
-
-            // 2. 경로형 기반 트리 추적 검색 (Canvas/MapPanel/MapParent/Map_Node_Button(Clone) 규칙 지원)
+            
             string[] hierarchyParts = cleanKey.Split('/');
-            GameObject currentGo = GameObject.Find(hierarchyParts[0].Trim());
+            GameObject currentGo = null;
+
+            if (hierarchyParts[0].Trim() == "Canvas")
+            {
+                GameObject[] canvases = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+                foreach (var canvas in canvases)
+                {
+                    if (canvas.name == "Canvas" && canvas.activeInHierarchy)
+                    {
+                        if (hierarchyParts.Length > 1 && canvas.transform.Find(hierarchyParts[1].Trim()) != null)
+                        {
+                            currentGo = canvas;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (currentGo == null)
+            {
+                currentGo = GameObject.Find(hierarchyParts[0].Trim());
+            }
 
             if (currentGo == null) return null;
 
@@ -153,7 +176,6 @@ namespace Bond.Tutorial
                 string childName = hierarchyParts[i].Trim();
                 Transform foundChild = null;
 
-                // 마지막 노드이자 이름이 겹치는 레이어일 때 순서 처리
                 if (i == hierarchyParts.Length - 1)
                 {
                     int matchCount = 0;
@@ -170,7 +192,6 @@ namespace Bond.Tutorial
                             matchCount++;
                         }
                     }
-                    // 인덱스가 미스나면 마지막으로 발견된 같은 이름이라도 매칭 보정
                     if (foundChild == null) foundChild = currentGo.transform.Find(childName);
                 }
                 else
@@ -329,10 +350,9 @@ namespace Bond.Tutorial
             _targetKey = stepData.TargetUiKey;
             _calculatedBounds = new Rect(0, 0, 0, 0);
             _isStepPendingAdvance = false;
-
-            // 월드 트래킹 여부 분석 판단 단어 확장 수정 ([...] 문법 우회용)
-            string rootCheckKey = _targetKey.Contains("[") ? _targetKey.Substring(0, _targetKey.IndexOf('[')) : _targetKey;
-            _isTrackingWorld = !string.IsNullOrEmpty(_targetKey) && !_targetKey.Contains("/") && (GameObject.Find(rootCheckKey.Trim()) != null || rootCheckKey.Contains("Canvas"));
+            
+            _isTrackingWorld = !string.IsNullOrEmpty(_targetKey) && 
+                               (!_targetKey.Contains("/") || _targetKey.StartsWith("Canvas") || _targetKey.Contains("Canvas/"));
 
             if (_guideLabel != null) _guideLabel.text = stepData.Description;
         }
@@ -450,20 +470,43 @@ namespace Bond.Tutorial
 
         private Rect CalculateWorldBoundsToScreen(GameObject targetGo)
         {
-            // uGUI RectTransform 대응 최적화
+            // 🎯 uGUI RectTransform 스크린 실측 좌표 정산 엔진 (카메라/오버레이 전천후 대응)
             if (targetGo.TryGetComponent<RectTransform>(out var rectTransform))
             {
+                Canvas rootCanvas = rectTransform.GetComponentInParent<Canvas>();
+
+                // 💥 중요: 캔버스가 ScreenSpace-Overlay 모드라면 카메라를 무조건 null로 주어야 하고,
+                // Camera 모드라면 해당 Canvas를 비추고 있는 정확한 Event Camera(혹은 mainCamera)를 매핑해야 꼬이지 않습니다.
+                Camera cam = null;
+                if (rootCanvas != null && rootCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
+                {
+                    cam = rootCanvas.worldCamera != null ? rootCanvas.worldCamera : mainCamera;
+                }
+
+                // 월드 공간상의 4개 모서리 좌표를 획득합니다.
                 Vector3[] corners = new Vector3[4];
                 rectTransform.GetWorldCorners(corners);
-                
-                Vector3 minScreen = mainCamera.WorldToScreenPoint(corners[0]);
-                Vector3 maxScreen = mainCamera.WorldToScreenPoint(corners[2]);
 
-                float x = minScreen.x;
-                float y = Screen.height - maxScreen.y;
-                return new Rect(x, y, Mathf.Abs(maxScreen.x - minScreen.x), Mathf.Abs(maxScreen.y - minScreen.y));
+                // 각 모서리를 카메라와 해상도 스케일에 맞춰 순수 스크린 픽셀 좌표로 변환합니다.
+                Vector2 screenCorner0 = RectTransformUtility.WorldToScreenPoint(cam, corners[0]); // 좌하단
+                Vector2 screenCorner2 = RectTransformUtility.WorldToScreenPoint(cam, corners[2]); // 우상단
+
+                // UI Toolkit 마스킹 시스템과 1:1 매칭되는 물리적 픽셀 크기 산출
+                float width = Mathf.Abs(screenCorner2.x - screenCorner0.x);
+                float height = Mathf.Abs(screenCorner2.y - screenCorner0.y);
+
+                // UI Toolkit의 원점 규칙(좌측 상단이 0,0)에 맞춰 정확하게 Pivot 오차를 보정합니다.
+                float x = screenCorner0.x;
+                float y = Screen.height - screenCorner2.y;
+
+                // 🔍 디버깅용 실측 로그 추가
+                Debug.Log(
+                    $"<color=lime>[uGUI Coordinate Custom]</color> 오브젝트: {targetGo.name} | CanvasMode: {rootCanvas?.renderMode} | 적용된 카메라: {(cam != null ? cam.name : "Null(Overlay)")} | 최종 Rect: {x}, {y}, {width}, {height}");
+
+                return new Rect(x, y, width, height);
             }
 
+            // 3D/2D 일반 게임오브젝트용 기존 로직 유지
             Bounds objectBounds = new Bounds(targetGo.transform.position, Vector3.one * 1.5f);
             if (targetGo.TryGetComponent<Collider>(out var collider)) objectBounds = collider.bounds;
             else if (targetGo.TryGetComponent<SpriteRenderer>(out var renderer)) objectBounds = renderer.bounds;
@@ -478,7 +521,7 @@ namespace Bond.Tutorial
 
         private void OnSkipButtonTriggered()
         {
-            _controller.Skip(null, null);
+            _controller.Skip();
         }
 
         private void OnTutorialCleared()

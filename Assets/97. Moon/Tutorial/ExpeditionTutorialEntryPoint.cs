@@ -21,8 +21,9 @@ namespace Bond.Tutorial
         {
             // [수정] DBSORegistry 규칙 준수: 문자열이나 라벨 대신 
             // 이미 레지스트리에 로드된 전역 DB들을 가로질러 TutorialStepSO 타입만 쿼리해옵니다.
-            var queryResult = DBSORegistry.QuerySO<TutorialStepSO>(so => true);
-            
+            // 탐사 시퀀스(Sequence_B_Expedition) 데이터만 정밀 조준 쿼리
+            var queryResult = DBSORegistry.QuerySO<TutorialStepSO>(so => so.Sequence == TutorialSequence.Sequence_B_Expedition);
+    
             List<TutorialStepSO> stepList = queryResult.ToList();
 
             if (stepList.Count > 0)

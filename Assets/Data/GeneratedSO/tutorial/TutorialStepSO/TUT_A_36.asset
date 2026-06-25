@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: TUT_A_36
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_36
-  _displayName: "\uB300\uC6D0 \uD3B8\uC131"
-  _description: "\uC774\uC81C \uD3B8\uC131\uB41C \uB300\uC6D0\uC744 \uC124\uC815\uD558\uACA0\uC2B5\uB2C8\uB2E4.
-    \uC804\uC0AC\uB97C \uC6B0\uD074\uB9AD\uD558\uC5EC \uC0C1\uC138\uCC3D\uC744 \uC5EC\uC138\uC694."
+  _displayName: "\uD3B8\uC131 \uD655\uC778(\uC2AC\uB86F3)"
+  _description: "\uC804\uC0AC\uAC00 \uC81C\uB300\uB85C \uD3B8\uC131\uB41C \uAC83\uC744
+    \uD655\uC778\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: TownUi/embark-overlay/roster-panel
+  _targetUiKey: TownUi/embark__party-slot-3
   _clickType: 1
   _rewardFrontier: 0
   _rewardWood: 0
