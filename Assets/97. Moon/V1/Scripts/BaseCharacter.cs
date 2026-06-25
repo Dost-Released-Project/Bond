@@ -336,6 +336,7 @@ public partial class BaseCharacter : ITurnUseUnit
     private BaseCharacter _selectedTarget;
 
     public event Action<BaseCharacter> onPlayerTurnStarted;
+    public event Action<BaseCharacter> onPlayerTurnEnded;
     public event Action<BaseCharacter, SkillBase> onTargetSelectionStarted;
 
     public void ConfirmSkillSelection(SkillBase skill)
@@ -505,6 +506,7 @@ public partial class BaseCharacter : ITurnUseUnit
             _selectedTarget = null;
             _tcs = null;
             _targetTcs = null;
+            onPlayerTurnEnded?.Invoke(this);
         }
     }
     

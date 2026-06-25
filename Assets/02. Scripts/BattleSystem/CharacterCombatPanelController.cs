@@ -13,10 +13,14 @@ public class CharacterCombatPanelController
     public void SetCharacter(BaseCharacter character)
     {
         if (_character != null)
+        {
             _character.onPlayerTurnStarted -= HandlePlayerTurnStarted;
+            _character.onPlayerTurnEnded -= HandlePlayerTurnEnded;
+        }
 
         _character = character;
         _character.onPlayerTurnStarted += HandlePlayerTurnStarted;
+        _character.onPlayerTurnEnded += HandlePlayerTurnEnded;
         OnCharacterUpdated?.Invoke(_character);
     }
 
@@ -55,6 +59,11 @@ public class CharacterCombatPanelController
     private void HandlePlayerTurnStarted(BaseCharacter character)
     {
         SetMyTurn(true);
+    }
+
+    private void HandlePlayerTurnEnded(BaseCharacter character)
+    {
+        SetMyTurn(false);
     }
 
     /// <summary>탐사 가방 인벤토리 슬롯에서 장신구 슬롯 방향으로 드래그 장착/스왑을 수행합니다.</summary>
