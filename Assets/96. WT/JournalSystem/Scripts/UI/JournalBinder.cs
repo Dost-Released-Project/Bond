@@ -22,6 +22,7 @@ namespace Bond.WT.Journal
         private readonly IPartyController _partyController;
 
         private AsyncOperationHandle<Sprite>? _currentIconHandle;
+        private readonly List<AsyncOperationHandle<Sprite>> _partyHandles = new();
 
         // 자체 IObserver 구현용 임시 래퍼 (ObservableValue가 IObserver<T>만 받으므로)
         private class ObserverWrapper<T> : IObserver<T>
@@ -73,6 +74,16 @@ namespace Bond.WT.Journal
                         : report.IconId;
                     
                     LoadAndSetIconAsync(address).Forget();
+
+                    // 전투 결과창 렌더링 체크
+                    if (report.Metadata.TryGetValue("IsBattleEnd", out string isBattleEndStr) && isBattleEndStr == "true")
+                    {
+                        LoadAndSetBattleResultAsync(report).Forget();
+                    }
+                    else
+                    {
+                        _view.ClearBattleResult();
+                    }
                 }
             };
 
@@ -81,8 +92,10 @@ namespace Bond.WT.Journal
                 if (isComplete)
                 {
                     _view.ClearUI();
+                    _view.ClearBattleResult();
                     _view.SetVisible(false);
                     ReleaseIconHandle();
+                    ReleasePartyHandles();
                 }
             };
 
@@ -165,6 +178,83 @@ namespace Bond.WT.Journal
             _model.IsLastPage.Unsubscribe(_lastPageObserver);
             _model.IsNextButtonEnabled.Unsubscribe(_nextPageEnabledObserver);
             ReleaseIconHandle();
+            ReleasePartyHandles();
+        }
+
+        private async UniTaskVoid LoadAndSetBattleResultAsync(JournalReport report)
+        {
+            ReleasePartyHandles();
+
+            // 메타데이터 정보 파싱
+            BattleSystem.Interface.BattleEndStatus status = BattleSystem.Interface.BattleEndStatus.Victory;
+            if (report.Metadata.TryGetValue("BattleEndStatus", out string statusStr))
+            {
+                Enum.TryParse(statusStr, out status);
+            }
+
+            int frontier = 0;
+            int wood = 0;
+            int ore = 0;
+            if (report.Metadata.TryGetValue("RewardFrontier", out string fStr)) int.TryParse(fStr, out frontier);
+            if (report.Metadata.TryGetValue("RewardWood", out string wStr)) int.TryParse(wStr, out wood);
+            if (report.Metadata.TryGetValue("RewardOre", out string oStr)) int.TryParse(oStr, out ore);
+
+            var party = _partyController.GetCurrentParty();
+            var portraits = new Dictionary<string, Sprite>();
+
+            if (party != null)
+            {
+                var tasks = new List<UniTask<(string, AsyncOperationHandle<Sprite>)>>();
+
+                foreach (var character in party)
+                {
+                    if (character == null) continue;
+
+                    string address = character.EffectiveIdleImageAddress;
+                    if (!string.IsNullOrEmpty(address))
+                    {
+                        tasks.Add(LoadPortraitAsync(character.Id, address));
+                    }
+                }
+
+                if (tasks.Count > 0)
+                {
+                    var results = await UniTask.WhenAll(tasks);
+                    foreach (var res in results)
+                    {
+                        var handle = res.Item2;
+                        if (handle.Status == AsyncOperationStatus.Succeeded)
+                        {
+                            _partyHandles.Add(handle);
+                            portraits[res.Item1] = handle.Result;
+                        }
+                        else
+                        {
+                            UnityEngine.AddressableAssets.Addressables.Release(handle);
+                        }
+                    }
+                }
+            }
+
+            _view.SetBattleResult(status, party, portraits, frontier, wood, ore);
+        }
+
+        private async UniTask<(string, AsyncOperationHandle<Sprite>)> LoadPortraitAsync(string id, string address)
+        {
+            var handle = await _spriteLoader.LoadAsync(address);
+            return (id, handle);
+        }
+
+        private void ReleasePartyHandles()
+        {
+            foreach (var handle in _partyHandles)
+            {
+                if (handle.IsValid())
+                {
+                    UnityEngine.AddressableAssets.Addressables.Release(handle);
+                }
+            }
+            _partyHandles.Clear();
         }
     }
 }

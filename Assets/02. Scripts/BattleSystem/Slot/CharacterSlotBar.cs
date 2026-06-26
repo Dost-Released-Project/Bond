@@ -74,7 +74,7 @@ namespace Shapes {
 			hpfillRect.width *= hpfillAmount;
 			Color hpCol = colorGradient1.Evaluate( hpfillAmount );
 			hpCol.a *= alpha;
-			Draw.Rectangle( hpfillRect, hpCol );
+			Draw.Rectangle( hpfillRect, 4f, hpCol );
 			
 			// Draw the colored bar (Ins):
 			Rect insfillRect = innerRect;
@@ -82,7 +82,7 @@ namespace Shapes {
 			insfillRect.width *= insfillAmount;
 			Color insCol = colorGradient2.Evaluate( insfillAmount );
 			insCol.a *= alpha;
-			Draw.Rectangle( insfillRect, insCol );
+			Draw.Rectangle( insfillRect, 4f, insCol );
 		}
 
 		Rect Inset( Rect r, float amount ) {

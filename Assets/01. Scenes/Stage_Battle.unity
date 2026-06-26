@@ -1371,7 +1371,6 @@ MonoBehaviour:
   autoInjectGameObjects: []
   expeditionFlowManager: {fileID: 192782865}
   _journalUIPrefab: {fileID: 2408579647488794321, guid: e972ad374caaa0443aa796b971b1ffc9, type: 3}
-  _battleResultView: {fileID: 4653359276459412153, guid: 6de10a3c24458284ab3673797d350867, type: 3}
   slots:
   - {fileID: 1410344349}
   - {fileID: 2030130101}

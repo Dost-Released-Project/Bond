@@ -24,6 +24,9 @@ namespace Bond.WT.Journal
         private VisualElement _optionButtonContainer;
         private Button _nextButton;
         private Button _prevButton;
+        
+        private ScrollView _contentScroll;
+        private VisualElement _battleResultContainer;
 
         // IJournalVisualizer 인터페이스 구현
         public Action OnNextClicked { get; set; }
@@ -46,6 +49,7 @@ namespace Bond.WT.Journal
             _optionButtonContainer = root.Q<VisualElement>("OptionContainer");
             _nextButton = root.Q<Button>("NextButton");
             _prevButton = root.Q<Button>("PrevButton");
+            _contentScroll = root.Q<ScrollView>("ContentScroll");
 
             if (_nextButton != null)
             {
@@ -179,6 +183,149 @@ namespace Bond.WT.Journal
                 }
 
                 _optionButtonContainer.Add(buttonInstance);
+            }
+        }
+
+        public void SetBattleResult(
+            BattleSystem.Interface.BattleEndStatus status, 
+            IReadOnlyList<BaseCharacter> party, 
+            Dictionary<string, Sprite> portraits, 
+            int frontier, 
+            int wood, 
+            int ore)
+        {
+            ClearBattleResult();
+
+            if (_contentScroll == null) return;
+
+            // 메인 컨테이너 생성
+            _battleResultContainer = new VisualElement();
+            _battleResultContainer.AddToClassList("result-panel-inner");
+
+            // 1. 결과 타이틀
+            var title = new Label();
+            title.AddToClassList("result-title");
+            switch (status)
+            {
+                case BattleSystem.Interface.BattleEndStatus.Victory:
+                    title.text = "전투 승리";
+                    title.AddToClassList("victory");
+                    break;
+                case BattleSystem.Interface.BattleEndStatus.Defeat:
+                    title.text = "전투 패배";
+                    title.AddToClassList("defeat");
+                    break;
+                case BattleSystem.Interface.BattleEndStatus.Retreat:
+                    title.text = "퇴각 완료";
+                    title.AddToClassList("retreat");
+                    break;
+            }
+            _battleResultContainer.Add(title);
+
+            // 2. 파티 컨테이너
+            var partyContainer = new VisualElement();
+            partyContainer.AddToClassList("party-container");
+
+            if (party != null)
+            {
+                foreach (var character in party)
+                {
+                    if (character == null) continue;
+
+                    var card = new VisualElement();
+                    card.AddToClassList("character-card");
+
+                    var portrait = new VisualElement();
+                    portrait.AddToClassList("character-portrait");
+                    if (portraits != null && portraits.TryGetValue(character.Id, out Sprite sp) && sp != null)
+                    {
+                        portrait.style.backgroundImage = new StyleBackground(sp);
+                    }
+                    card.Add(portrait);
+
+                    var nameLabel = new Label(character.Name);
+                    nameLabel.AddToClassList("character-name");
+                    card.Add(nameLabel);
+
+                    var hpContainer = new VisualElement();
+                    hpContainer.AddToClassList("bar-container");
+                    var hpBar = new VisualElement();
+                    hpBar.AddToClassList("hp-bar");
+                    float hpPercent = character.Stat.max_Hp > 0 
+                        ? (float)character.Stat.current_Hp / character.Stat.max_Hp * 100f 
+                        : 0f;
+                    hpBar.style.width = Length.Percent(hpPercent);
+                    var hpLabel = new Label($"HP {character.Stat.current_Hp}/{character.Stat.max_Hp}");
+                    hpLabel.AddToClassList("bar-label");
+                    hpContainer.Add(hpBar);
+                    hpContainer.Add(hpLabel);
+                    card.Add(hpContainer);
+
+                    var stressContainer = new VisualElement();
+                    stressContainer.AddToClassList("bar-container");
+                    var stressBar = new VisualElement();
+                    stressBar.AddToClassList("stress-bar");
+                    float stressPercent = Mathf.Clamp(character.Insanity, 0, 100);
+                    stressBar.style.width = Length.Percent(stressPercent);
+                    var stressLabel = new Label($"STRESS {character.Insanity}/100");
+                    stressLabel.AddToClassList("bar-label");
+                    stressContainer.Add(stressBar);
+                    stressContainer.Add(stressLabel);
+                    card.Add(stressContainer);
+
+                    partyContainer.Add(card);
+                }
+            }
+            _battleResultContainer.Add(partyContainer);
+
+            // 3. 보상 컨테이너
+            var rewardContainer = new VisualElement();
+            rewardContainer.AddToClassList("reward-container");
+
+            var rewardTitle = new Label("획득 전리품");
+            rewardTitle.AddToClassList("reward-title");
+            rewardContainer.Add(rewardTitle);
+
+            var rewardItemsRow = new VisualElement();
+            rewardItemsRow.AddToClassList("reward-items-row");
+
+            AddRewardItem(rewardItemsRow, "reward-icon--frontier", frontier);
+            AddRewardItem(rewardItemsRow, "reward-icon--wood", wood);
+            AddRewardItem(rewardItemsRow, "reward-icon--ore", ore);
+
+            rewardContainer.Add(rewardItemsRow);
+            _battleResultContainer.Add(rewardContainer);
+
+            // 스크롤뷰에 최종 추가
+            _contentScroll.Add(_battleResultContainer);
+        }
+
+        private void AddRewardItem(VisualElement parent, string iconClass, int value)
+        {
+            var item = new VisualElement();
+            item.AddToClassList("reward-item");
+
+            var icon = new VisualElement();
+            icon.AddToClassList("reward-icon");
+            icon.AddToClassList(iconClass);
+            item.Add(icon);
+
+            var label = new Label($"+{value}");
+            label.AddToClassList("reward-value");
+            item.Add(label);
+
+            parent.Add(item);
+        }
+
+        public void ClearBattleResult()
+        {
+            if (_battleResultContainer != null && _contentScroll != null)
+            {
+                if (_contentScroll.Contains(_battleResultContainer))
+                {
+                    _contentScroll.Remove(_battleResultContainer);
+                }
+                _battleResultContainer = null;
             }
         }
     }
