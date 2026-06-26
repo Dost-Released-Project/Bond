@@ -261,6 +261,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5c01858fdbbe6aa4ab87912a722229e9
+    m_Address: PlayerSlot
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5e059901541d4fe49bb93b4d7a787f76
     m_Address: 010E
     m_ReadOnly: 0
