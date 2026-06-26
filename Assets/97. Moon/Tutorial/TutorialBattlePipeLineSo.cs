@@ -11,6 +11,7 @@ namespace PipeLine
     [CreateAssetMenu(fileName = "TutorialBattlePipeLineSO", menuName = "PipeLine/TutorialBattlePipeLineSO")]
     public class TutorialBattlePipeLineSo : PipeLineSo<BattleContext>, IBattlePipeLine
     {
+        public static bool isFirstAttack = true;
         protected override bool ShouldBreak(BattleContext context)
         {
             // 회피가 성공했다면 이후 데미지/크리티컬 계산 등을 수행하지 않고 중단합니다.
@@ -29,9 +30,16 @@ namespace PipeLine
             }
         }
 
+        /// <summary>
+        /// 리액션 발동 시 활성화할 초상화 캔버스를 파이프라인 내 모든 ReactionCall 에 주입한다.
+        /// </summary>
         public void SetPortraitCanvas(IReactionPortraitCanvas canvas)
         {
-            throw new System.NotImplementedException();
+            List<TutorialReactionCall> allReactionCalls = steps.OfType<TutorialReactionCall>().ToList();
+            foreach (TutorialReactionCall cs in allReactionCalls)
+            {
+                cs.SetPortraitCanvas(canvas);
+            }
         }
     }
     #region [L] Logic Steps (구현부 대기)
@@ -154,7 +162,15 @@ namespace PipeLine
             if (context.isEvaded || context.target == null || context.target.IsDead) return UniTask.FromResult(context);
 
             // TODO: 개별 타겟 치명타 확률 로직 (현재는 임시로 시전자 crt 사용)
-            context.isCritical = Random.value < context.caster.Stat.crt + 1f;
+            if (TutorialBattlePipeLineSo.isFirstAttack)
+            {
+                context.isCritical = Random.value < context.caster.Stat.crt + 1f;
+                TutorialBattlePipeLineSo.isFirstAttack = false;
+            }
+            else
+            {
+                context.isCritical = Random.value < context.caster.Stat.crt - 1f;
+            }
             
             if (context.isCritical)
             {
@@ -220,10 +236,19 @@ namespace PipeLine
         public E_ReactionPhase Phase = E_ReactionPhase.None;
 
         private ReactionSystem reactionSystem;
+        private IReactionPortraitCanvas portraitCanvas;
 
         public void SetReactionSystem(ReactionSystem reactionSystem)
         {
             this.reactionSystem = reactionSystem;
+        }
+
+        /// <summary>
+        /// 리액션 발동 시 활성화할 초상화 캔버스를 주입한다.
+        /// </summary>
+        public void SetPortraitCanvas(IReactionPortraitCanvas canvas)
+        {
+            portraitCanvas = canvas;
         }
 
         public async UniTask<BattleContext> Execute(BattleContext context)
@@ -231,19 +256,31 @@ namespace PipeLine
             if (context.target == null) return context;
 
             Debug.Log($"<color=lightblue>Executing ReactionCall [{Phase}]</color>");
-            if (reactionSystem != null)
+            if (reactionSystem == null) return context;
+
+            IReadOnlyList<ReactionExecution> executions = reactionSystem.Resolve(context, Phase);
+
+            foreach (ReactionExecution execution in executions)
             {
-                var executions = reactionSystem.Resolve(context, Phase);
-                foreach (var execution in executions)
+                // ShowAsync 내부에서 timeScale 정지·대기·복원·숨김을 모두 처리한다
+                if (portraitCanvas != null)
                 {
-                    await execution.Agent.ExecuteReaction(execution, context, reactionSystem.BattleManager);
-                    execution.Agent.IncrementReactionCount(); // '연속' 리액션 카운트 증가 (자기 턴에 리셋)
-                    if (execution.Result == ReactionResult.Anomaly)
-                        execution.Agent.MarkAnomaly(); // 아군 돌발(특이행동) 관찰용 플래그
-                    else if (execution.Result == ReactionResult.BondAwakening)
-                        Debug.Log($"<color=cyan>[유대적 각성]</color> {execution.Agent.Name} 의 성향이 강화 행동으로 발현. (전용 연출 훅 자리)");
+                    await portraitCanvas.ShowAsync(execution.Agent.ImageAddress, execution.Result);
+                }
+
+                await execution.Agent.ExecuteReaction(execution, context, reactionSystem.BattleManager);
+                execution.Agent.IncrementReactionCount(); // '연속' 리액션 카운트 증가 (자기 턴에 리셋)
+
+                if (execution.Result == ReactionResult.Anomaly)
+                {
+                    execution.Agent.MarkAnomaly(); // 아군 돌발(특이행동) 관찰용 플래그
+                }
+                else if (execution.Result == ReactionResult.BondAwakening)
+                {
+                    Debug.Log($"<color=cyan>[유대적 각성]</color> {execution.Agent.Name} 의 성향이 강화 행동으로 발현. (전용 연출 훅 자리)");
                 }
             }
+
             return context;
         }
     }

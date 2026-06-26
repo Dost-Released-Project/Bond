@@ -70,3 +70,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bond.Tutorial.TutorialExpeditionView
   expeditionUiDocument: {fileID: 7307604472879758023}
   mainCamera: {fileID: 0}
+  iconLeftClick: {fileID: 2800000, guid: 41f7460740ab6b74686b7840780bd3c9, type: 3}
+  iconRightClick: {fileID: 2800000, guid: 902193071e3cc4c40945ec4b7df88635, type: 3}

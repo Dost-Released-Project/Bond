@@ -10,6 +10,7 @@ namespace Bond.Tutorial
             private readonly ResourceManager _resourceManager;
             private readonly TotalInventory _totalInventory;
             private readonly SettlementManager _settlementManager;
+            private readonly SupplyManager _supplyManager;
 
         // 세이브 데이터 키 고정
         private const string SAVE_KEY = "tutorial_progress";
@@ -25,11 +26,13 @@ namespace Bond.Tutorial
         public TutorialSystemController(
             ResourceManager resourceManager, 
             TotalInventory totalInventory, 
-            SettlementManager settlementManager)
+            SettlementManager settlementManager,
+            SupplyManager supplyManager)
         {
             _resourceManager = resourceManager;
             _totalInventory = totalInventory;
             _settlementManager = settlementManager;
+            _supplyManager = supplyManager;
         }
 
         // 튜토리얼 스텝 리스트 빌드
@@ -148,16 +151,29 @@ namespace Bond.Tutorial
 
             Debug.Log("<color=cyan>[Tutorial Core]</color> 스킵 요청 감지 -> 무결성 정산 시작.");
 
+            if (_resourceManager.FrontierData < 1100)
+            {
+                _resourceManager.AddFrontierData(1100);
+                _resourceManager.AddMaterials(100,100);
+            }
+
             // 1. 마을 건물 강제 인쇄 완공 정산 (명세 기준 슬롯 고정 배치)
-            _settlementManager.LoadBuilding(1, supplyData, 1);
-            _settlementManager.LoadBuilding(4, storageData, 1);
+            _settlementManager.BuildInSlot(1, supplyData);
+            _settlementManager.BuildInSlot(4, storageData);
 
             // 2. 고정된 목걸이 ID 3종 인벤토리 자동 수납
             _totalInventory.AddItemId("08000000", 1);
             _totalInventory.AddItemId("08010000", 1);
             _totalInventory.AddItemId("08020000", 1);
 
+            _supplyManager.RequestReinforcement();
+
             _resourceManager.ConsumeResources(1100, 100, 100);
+
+            if (_resourceManager.FrontierData < 1000)
+            {
+                _resourceManager.AddFrontierData(300);
+            }
 
             // 3. 인벤토리 수납 영구 각인
             _totalInventory.SaveTotalInventory();

@@ -13,11 +13,16 @@ namespace Bond.Tutorial
         [SerializeField] private UIDocument expeditionUiDocument; 
         [Header("카메라 (월드 좌표 변환용)")]
         [SerializeField] private Camera mainCamera;
+        [Header("클릭 타입 이모티콘 스프라이트")]
+        [SerializeField] private Texture2D iconLeftClick;
+        [SerializeField] private Texture2D iconRightClick;
+
+        private VisualElement _clickIconElement; // 동적으로 FocusBox 내부에 생성될 아이콘
 
         private VisualElement _root;
         private VisualElement _barrier;
         private VisualElement _focusBox;
-        private Label _guideLabel;
+        private VisualElement _guideLabel;
         private Button _skipButton;
 
         private VisualElement _maskTop;
@@ -70,8 +75,50 @@ namespace Bond.Tutorial
 
             _controller.OnStepChanged += OnStepUpdated;
             _controller.OnTutorialFinished += OnTutorialCleared;
+            
+            if (_guideLabel != null)
+            {
+                // 1. 이모티콘과 가이드 박스를 '형제 관계'로 묶어줄 투명한 부모 컨테이너 생성
+                VisualElement textGroupContainer = new VisualElement();
+                textGroupContainer.style.position = Position.Absolute;
+                textGroupContainer.style.flexDirection = FlexDirection.Row;   // 가로로 나란히 배정
+                textGroupContainer.style.alignItems = Align.Center;           // 수직 중앙 정렬
+                textGroupContainer.pickingMode = PickingMode.Ignore;
 
+                // 2. 원래 하이라키에서 _guideLabel이 있던 자리를 찾아 새 컨테이너로 교체
+                VisualElement originalParent = _guideLabel.parent;
+                if (originalParent != null)
+                {
+                    int originalIndex = originalParent.IndexOf(_guideLabel);
+                    originalParent.Remove(_guideLabel);
+                    originalParent.Insert(originalIndex, textGroupContainer);
+                }
+
+                // 3. [첫 번째 형제] 이모티콘 엘리먼트 생성 및 우측 마진 배정
+                _clickIconElement = new VisualElement();
+                _clickIconElement.style.position = Position.Relative;  // 레이아웃 순서대로 배치
+                _clickIconElement.style.width = 44;
+                _clickIconElement.style.height = 44;
+                _clickIconElement.style.marginRight = 12f;             // 동생(가이드박스)과의 확실한 간격 유지
+                _clickIconElement.style.flexShrink = 0;
+                _clickIconElement.pickingMode = PickingMode.Ignore;
+
+                // 4. [두 번째 형제] 오리지널 가이드 박스 정비
+                _guideLabel.style.position = Position.Relative;        // 절대 좌표 해제
+                _guideLabel.style.width = StyleKeyword.Auto;           // 글자 길이에 맞게 배경 자동 조절
+                _guideLabel.style.maxWidth = 450f;                     // 최대 너비 제한
+    
+                // 5. 부모 컨테이너에 이모티콘(좌)과 가이드 박스(우)를 형제 관계로 나란히 순서대로 추가
+                textGroupContainer.Add(_clickIconElement); 
+                textGroupContainer.Add(_guideLabel);       
+
+                // 6. Update문 및 ApplyLayout에서 전체를 움직이던 기존 변수가 
+                // 이 두 형제를 품은 'textGroupContainer'를 제어하도록 참조 치환
+                _guideLabel = textGroupContainer;
+            }
+            
             _controller.LoadProgress();
+            _controller.StartTutorial();
         }
 
         private void Update()
@@ -353,8 +400,25 @@ namespace Bond.Tutorial
             
             _isTrackingWorld = !string.IsNullOrEmpty(_targetKey) && 
                                (!_targetKey.Contains("/") || _targetKey.StartsWith("Canvas") || _targetKey.Contains("Canvas/"));
+            
+            if (_guideLabel != null)
+            {
+                // 🎯 가이드 박스 본인 또는 자식 중에서 진짜 글자가 적히는 Label/Text 엘리먼트를 찾습니다.
+                var textElement = _guideLabel as TextElement ?? _guideLabel.Q<TextElement>();
+                if (textElement != null)
+                {
+                    textElement.text = stepData.Description;
+                }
+            }
 
-            if (_guideLabel != null) _guideLabel.text = $"({(stepData.ClickType == (TutorialClickType)1 ? "우클릭" : "클릭")}) \n{stepData.Description}";
+            if (_clickIconElement != null)
+            {
+                int clickTypeInt = (int)stepData.ClickType;
+                Texture2D targetTexture = (clickTypeInt == 1) ? iconRightClick : iconLeftClick;
+
+                _clickIconElement.style.backgroundImage = targetTexture;
+                _clickIconElement.style.display = (targetTexture != null) ? DisplayStyle.Flex : DisplayStyle.None;
+            }
         }
 
         private VisualElement FindTargetVisualElement(string key)
@@ -455,7 +519,7 @@ namespace Bond.Tutorial
             if (_maskBottom != null) { _maskBottom.style.left = 0; _maskBottom.style.top = bounds.y + bounds.height; _maskBottom.style.width = sw; _maskBottom.style.height = sh - (bounds.y + bounds.height); }
             if (_maskLeft != null) { _maskLeft.style.left = 0; _maskLeft.style.top = bounds.y; _maskLeft.style.width = bounds.x; _maskLeft.style.height = bounds.height; }
             if (_maskRight != null) { _maskRight.style.left = bounds.x + bounds.width; _maskRight.style.top = bounds.y; _maskRight.style.width = sw - (bounds.x + bounds.width); _maskRight.style.height = bounds.height; }
-
+            
             if (_guideLabel != null)
             {
                 _guideLabel.style.position = Position.Absolute;

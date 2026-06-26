@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: TUT_A_59
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_59
-  _displayName: "\uC124\uC815"
-  _description: "\uBAA8\uB4E0 \uC124\uC815\uC774 \uB05D\uB0AC\uC2B5\uB2C8\uB2E4.
-    \uC0C1\uC138\uCC3D\uC744 \uB2EB\uC73C\uC138\uC694."
+  _displayName: "\uB9AC\uC561\uC158 \uC124\uC815"
+  _description: "\uC870\uAC74\uC744 \uCDA9\uC871\uD560 \uC2DC \uC9C4\uD589\uD558\uB294
+    \uD589\uB3D9\uC785\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: CharacterDetailUi/character-detail__close-btn
-  _clickType: 0
+  _targetUiKey: CharacterDetailUi/reaction-slot-1__action-part
+  _clickType: 2
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0
