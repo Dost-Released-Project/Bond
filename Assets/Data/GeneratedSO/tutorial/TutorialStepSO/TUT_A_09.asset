@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TUT_A_09
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_09
-  _displayName: "\uC0C1\uC138\uCC3D \uB2EB\uAE30"
+  _displayName: "\uB300\uC6D0 \uC0C1\uC138\uCC3D"
   _description: "\uC0C1\uC138 \uC815\uBCF4\uCC3D\uC744 \uB2EB\uC73C\uC138\uC694."
   _sequence: 0
   _targetUiKey: CharacterDetailUi/character-detail__close-btn

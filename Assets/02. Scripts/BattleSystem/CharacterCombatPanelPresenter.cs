@@ -141,10 +141,7 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
         _controller.OnTurnStateChanged += RefreshSkillSlots;
         _controller.OnSkillSelected    += RefreshSkillSelection;
 
-        _selector.OnSelectionChanged += character =>
-        {
-            if (character != null) SetCharacter(character);
-        };
+        _selector.OnSelectionChanged += HandleSelectionChanged;
 
         if (_selector.Selected != null)
             SetCharacter(_selector.Selected);
@@ -165,6 +162,12 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
     }
 
     public void SetCharacter(BaseCharacter character) => _controller.SetCharacter(character);
+
+    // 익명 람다로 두면 OnDestroy에서 -= 가 불가능하므로 명명 메서드로 분리.
+    private void HandleSelectionChanged(BaseCharacter character)
+    {
+        if (character != null) SetCharacter(character);
+    }
 
     // ── 바인딩 ────────────────────────────────────────────────────────────
 
@@ -237,7 +240,12 @@ public class CharacterCombatPanelPresenter : MonoBehaviour
 
     private void OnDestroy()
     {
+        // _selector 는 DI로 주입된 외부 소유 의존성 → 패널보다 오래 살 수 있으므로 반드시 해제.
+        if (_selector != null)
+            _selector.OnSelectionChanged -= HandleSelectionChanged;
+
         DetachCharacterEvents(_character);
+        _controller?.Dispose();
         _equipSlots?.Dispose();
 
         foreach (var handle in _skillTooltipHandles) handle.Dispose();

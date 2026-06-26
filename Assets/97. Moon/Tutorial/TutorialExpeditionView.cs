@@ -354,7 +354,7 @@ namespace Bond.Tutorial
             _isTrackingWorld = !string.IsNullOrEmpty(_targetKey) && 
                                (!_targetKey.Contains("/") || _targetKey.StartsWith("Canvas") || _targetKey.Contains("Canvas/"));
 
-            if (_guideLabel != null) _guideLabel.text = stepData.Description;
+            if (_guideLabel != null) _guideLabel.text = $"({(stepData.ClickType == (TutorialClickType)1 ? "우클릭" : "클릭")}) \n{stepData.Description}";
         }
 
         private VisualElement FindTargetVisualElement(string key)

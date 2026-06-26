@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: TUT_A_82
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_82
-  _displayName: "\uD0D0\uC0AC \uBB3C\uC790"
-  _description: "\uD0D0\uC0AC\uC5D0 \uB4E4\uACE0 \uAC08 \uBB3C\uC790\uB97C \uB2F4\uB294
-    \uACF5\uAC04\uC785\uB2C8\uB2E4."
+  _displayName: "\uBB3C\uC790 \uD3B8\uC131"
+  _description: "\uCD94\uAC00\uD55C \uC544\uC774\uD15C\uC744 \uD655\uC778\uD560 \uC218
+    \uC788\uC73C\uBA70 \uC544\uC774\uD15C\uC744 \uD074\uB9AD\uD558\uBA74 \uBE84 \uC218
+    \uC788\uC2B5\uB2C8\uB2E4."
   _sequence: 0
   _targetUiKey: TownUi/embark__exp-name/unity-content-and-vertical-scroll-container
   _clickType: 1

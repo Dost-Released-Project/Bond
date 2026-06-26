@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_B_21
   _displayName: "\uC804\uD22C \uC2A4\uD14C\uC774\uC9C0"
-  _description: "\uC2A4\uD0AC\uC744 \uD074\uB9AD\uD558\uC138\uC694."
+  _description: "\uC554\uC0B4\uC790\uB97C \uC9C0\uC815\uD558\uC138\uC694. \uBC84\uD504\uC640
+    \uB514\uBC84\uD504\uB294 \uCCB4\uB825\uBC14 \uD558\uB2E8\uC5D0 \uD45C\uC2DC\uB418\uBA70
+    \uCEE4\uC11C\uB97C \uC62C\uB824 \uC0C1\uC138\uD55C \uD655\uC778\uC774 \uAC00\uB2A5\uD569\uB2C8\uB2E4."
   _sequence: 1
-  _targetUiKey: CharacterCombatUi/.combat-panel__skill-row
+  _targetUiKey: Canvas/Party 1/Player Slot 2
   _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0

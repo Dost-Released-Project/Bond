@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TUT_A_12
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_12
-  _displayName: "\uAC74\uC124 \uD655\uC778 UI"
+  _displayName: "\uAC74\uBB3C"
   _description: "\uAC74\uBB3C\uC758 \uAE30\uB2A5\uACFC \uAC74\uC124 \uBE44\uC6A9\uC744
     \uD655\uC778\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uD655\uC778\uC744 \uB204\uB974\uC138\uC694."
   _sequence: 0

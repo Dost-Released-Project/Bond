@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TUT_A_08
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_08
-  _displayName: "\uC7A5\uC2E0\uAD6C \uB2EB\uAE30"
+  _displayName: "\uC7A5\uC2E0\uAD6C"
   _description: "\uC7A5\uC2E0\uAD6C \uC2AC\uB86F\uC744 \uD55C \uBC88 \uB354 \uD074\uB9AD\uD558\uBA74
     \uAC00\uBC29\uC744 \uB2EB\uC744 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
   _sequence: 0

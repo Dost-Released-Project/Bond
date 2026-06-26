@@ -1,6 +1,6 @@
 using System;
 
-public class CharacterCombatPanelController
+public class CharacterCombatPanelController : IDisposable
 {
     private BaseCharacter _character;
     private bool _isMyTurn;
@@ -81,5 +81,18 @@ public class CharacterCombatPanelController
         // AccessoryItem은 인벤토리에서 관리되므로 목적지 IInventory를 Presenter에서 전달받는다
         if (_character == null) return;
         itemService.UnequipToInventory(_character, accSlotIndex, supplies);
+    }
+
+    /// <summary>패널 파괴 시 소유자(프레젠터)가 호출. 마지막으로 구독 중이던 캐릭터의 턴 이벤트를 끊는다.
+    /// 이걸 안 하면 장수명 BaseCharacter → 이 컨트롤러 → (파괴된) 프레젠터 로 이어지는 참조 사슬을
+    /// 캐릭터가 살아있는 한 GC가 수거하지 못해 누수 + 좀비 콜백이 발생한다.</summary>
+    public void Dispose()
+    {
+        if (_character != null)
+        {
+            _character.onPlayerTurnStarted -= HandlePlayerTurnStarted;
+            _character.onPlayerTurnEnded   -= HandlePlayerTurnEnded;
+            _character = null;
+        }
     }
 }

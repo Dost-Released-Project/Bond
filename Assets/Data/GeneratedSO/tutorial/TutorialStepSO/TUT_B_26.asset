@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_B_26
   _displayName: "\uC804\uD22C \uC2A4\uD14C\uC774\uC9C0"
-  _description: "\uB9F5\uC73C\uB85C \uB3CC\uC544\uAC00\uAE30\uB97C \uD074\uB9AD\uD558\uC138\uC694."
+  _description: "\uBAA8\uB4E0 \uC801\uC744 \uCC98\uCE58\uD588\uC2B5\uB2C8\uB2E4.
+    \uC774\uBC88 \uC804\uD22C \uAE30\uB85D\uC740 \uC77C\uC9C0\uC5D0 \uC800\uC7A5\uB429\uB2C8\uB2E4."
   _sequence: 1
-  _targetUiKey: Canvas
-  _clickType: 0
+  _targetUiKey: JournalUI(Clone)/JournalContainer
+  _clickType: 1
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0
