@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_B_31
   _displayName: "\uC804\uD22C \uC2A4\uD14C\uC774\uC9C0"
-  _description: "\uC0AC\uAC74\uC774 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4."
+  _description: "\uC0AC\uAC74\uC744 \uC9C4\uD589\uD558\uC138\uC694"
   _sequence: 1
   _targetUiKey: 'JournalUI(Clone)[2]'
-  _clickType: 1
+  _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

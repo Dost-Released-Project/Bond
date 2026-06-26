@@ -14,9 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_B_42
   _displayName: "\uC804\uD22C \uC2A4\uD14C\uC774\uC9C0"
-  _description: "\uD1F4\uAC01 \uC2DC\uC5D0\uB294 \uC774\uBC88 \uD0D0\uC0AC\uB3D9\uC548
-    \uC788\uC5C8\uB358 \uC77C\uC744 \uD655\uC778\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.
-    \uB2E4\uC74C \uC7A5\uC744 \uD074\uB9AD\uD558\uC138\uC694."
+  _description: "\uB2EB\uAE30\uB97C \uD074\uB9AD\uD558\uC138\uC694."
   _sequence: 1
   _targetUiKey: Canvas
   _clickType: 2

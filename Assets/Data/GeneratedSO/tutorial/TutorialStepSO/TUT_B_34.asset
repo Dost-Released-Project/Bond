@@ -14,12 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_B_34
   _displayName: "\uC804\uD22C \uC2A4\uD14C\uC774\uC9C0"
-  _description: "\uAC08\uB9BC\uAE38\uC774 \uB098\uD0C0\uB0AC\uC2B5\uB2C8\uB2E4. \uC9C0\uCE5C
-    \uB300\uC6D0\uB4E4\uC5D0\uAC8C \uD734\uC2DD\uC744 \uC8FC\uAE30 \uC704\uD574 \uCEA0\uD504\uB97C
-    \uC120\uD0DD\uD558\uC138\uC694."
+  _description: "\uCEA0\uD504\uC5D0 \uB4E4\uC5B4\uC130\uC2B5\uB2C8\uB2E4."
   _sequence: 1
-  _targetUiKey: 'Canvas/MapPanel/MapParent/Map_Node_Button(Clone)[3]'
-  _clickType: 0
+  _targetUiKey: Canvas
+  _clickType: 1
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

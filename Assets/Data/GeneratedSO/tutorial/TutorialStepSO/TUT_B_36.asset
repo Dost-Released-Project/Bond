@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_B_36
   _displayName: "\uC804\uD22C \uC2A4\uD14C\uC774\uC9C0"
-  _description: "\uCEA0\uD504 \uAE30\uB2A5 \uC0AC\uC6A9\uC740 \uC77C\uC9C0\uB97C
-    \uD1B5\uD574 \uC9C4\uD589\uB429\uB2C8\uB2E4."
+  _description: "\uCEA0\uD504 \uAE30\uB2A5 \uC0AC\uC6A9\uC5D0\uB294 \uC544\uC774\uD15C\uC774
+    \uD544\uC694\uD569\uB2C8\uB2E4."
   _sequence: 1
-  _targetUiKey: Canvas/Button
+  _targetUiKey: Canvas
   _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0
