@@ -15,6 +15,7 @@ namespace BattleSystem
     {
         private readonly ReactionSystem m_reactionSystem;
         private readonly IBattlePipeLine m_skillApplyPipeline;
+        
         private readonly IBattleFlowManager m_battleFlowManager;
         private readonly IFormationManager m_formationManager;
         private readonly BattlePresentationManager m_presentationManager;

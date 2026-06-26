@@ -17,6 +17,11 @@ namespace BattleSystem.VContainer
     {
         [SerializeField]
         private BattlePipeLineSo battlePipeLineSo;
+        
+        [SerializeField]
+        private TutorialBattlePipeLineSo tutorialBattlePipeLineSo;
+
+        private bool m_isTutorial;
 
         /// <summary>
         /// 씬에 배치된 ReactionPortraitCanvas 컴포넌트. Inspector 에서 연결한다.
@@ -26,9 +31,15 @@ namespace BattleSystem.VContainer
 
         protected override void Configure(IContainerBuilder builder)
         {
+            var payload = Parent?.Container.Resolve<Bond.Expedition.ExpeditionPayload>();
+            m_isTutorial = payload != null && payload.IsTutorial;
+
             builder.RegisterEntryPoint<BattleManager>(Lifetime.Singleton).As<IBattleManager>();
             builder.Register<ReactionSystem>(Lifetime.Singleton);
-            builder.RegisterInstance(battlePipeLineSo).As<IBattlePipeLine>();
+            if (m_isTutorial)                                                                          
+                builder.RegisterInstance(tutorialBattlePipeLineSo).As<IBattlePipeLine>();            
+            else                                                                                     
+                builder.RegisterInstance(battlePipeLineSo).As<IBattlePipeLine>();      
 
             // IReactionPortraitCanvas 등록 — BattleManager 생성 시 자동 주입된다
             if (reactionPortraitCanvas != null)
