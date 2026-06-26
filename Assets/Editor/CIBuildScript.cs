@@ -24,12 +24,14 @@ public static class CIBuildScript
 
     private static void BuildAddressables()
     {
-        AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+        AddressableAssetSettings settings = AssetDatabase.LoadAssetAtPath<AddressableAssetSettings>(
+            "Assets/AddressableAssetsData/AddressableAssetSettings.asset");
         if (settings == null)
         {
             throw new Exception("AddressableAssetSettings를 찾을 수 없습니다.");
         }
 
+        AddressableAssetSettingsDefaultObject.Settings = settings;
         AddressableAssetSettings.BuildPlayerContent(out AddressablesPlayerBuildResult result);
         if (string.IsNullOrEmpty(result.Error) == false)
         {
