@@ -189,6 +189,7 @@ namespace Bond.WT.Journal
         public void SetBattleResult(
             BattleSystem.Interface.BattleEndStatus status, 
             IReadOnlyList<BaseCharacter> party, 
+            IReadOnlyList<BaseCharacter> enemyParty,
             Dictionary<string, Sprite> portraits, 
             int frontier, 
             int wood, 
@@ -198,11 +199,37 @@ namespace Bond.WT.Journal
 
             if (_contentScroll == null) return;
 
+            // 텍스트 라벨 숨김
+            if (_contentLabel != null)
+            {
+                _contentLabel.style.display = DisplayStyle.None;
+            }
+
             // 메인 컨테이너 생성
             _battleResultContainer = new VisualElement();
             _battleResultContainer.AddToClassList("result-panel-inner");
 
-            // 2. 파티 컨테이너
+            // 1. 결과 타이틀
+            var title = new Label();
+            title.AddToClassList("result-title");
+            switch (status)
+            {
+                case BattleSystem.Interface.BattleEndStatus.Victory:
+                    title.text = "전투 승리";
+                    title.AddToClassList("victory");
+                    break;
+                case BattleSystem.Interface.BattleEndStatus.Defeat:
+                    title.text = "전투 패배";
+                    title.AddToClassList("defeat");
+                    break;
+                case BattleSystem.Interface.BattleEndStatus.Retreat:
+                    title.text = "퇴각 완료";
+                    title.AddToClassList("retreat");
+                    break;
+            }
+            _battleResultContainer.Add(title);
+
+            // 2. 파티 컨테이너 (아군 VS 적군)
             var partyContainer = new VisualElement();
             partyContainer.AddToClassList("party-container");
 
@@ -211,54 +238,29 @@ namespace Bond.WT.Journal
                 foreach (var character in party)
                 {
                     if (character == null) continue;
-
-                    var card = new VisualElement();
-                    card.AddToClassList("character-card");
-
-                    var portrait = new VisualElement();
-                    portrait.AddToClassList("character-portrait");
-                    if (portraits != null && portraits.TryGetValue(character.Id, out Sprite sp) && sp != null)
-                    {
-                        portrait.style.backgroundImage = new StyleBackground(sp);
-                    }
-                    card.Add(portrait);
-
-                    var nameLabel = new Label(character.Name);
-                    nameLabel.AddToClassList("character-name");
-                    card.Add(nameLabel);
-
-                    var hpContainer = new VisualElement();
-                    hpContainer.AddToClassList("bar-container");
-                    var hpBar = new VisualElement();
-                    hpBar.AddToClassList("hp-bar");
-                    float hpPercent = character.Stat.max_Hp > 0 
-                        ? (float)character.Stat.current_Hp / character.Stat.max_Hp * 100f 
-                        : 0f;
-                    hpBar.style.width = Length.Percent(hpPercent);
-                    var hpLabel = new Label($"HP {character.Stat.current_Hp}/{character.Stat.max_Hp}");
-                    hpLabel.AddToClassList("bar-label");
-                    hpContainer.Add(hpBar);
-                    hpContainer.Add(hpLabel);
-                    card.Add(hpContainer);
-
-                    var stressContainer = new VisualElement();
-                    stressContainer.AddToClassList("bar-container");
-                    var stressBar = new VisualElement();
-                    stressBar.AddToClassList("stress-bar");
-                    float stressPercent = Mathf.Clamp(character.Insanity, 0, 100);
-                    stressBar.style.width = Length.Percent(stressPercent);
-                    var stressLabel = new Label($"STRESS {character.Insanity}/100");
-                    stressLabel.AddToClassList("bar-label");
-                    stressContainer.Add(stressBar);
-                    stressContainer.Add(stressLabel);
-                    card.Add(stressContainer);
-
+                    var card = CreateCharacterCard(character, portraits, true);
                     partyContainer.Add(card);
                 }
             }
+
+            // VS 구분 표시 추가
+            var vsLabel = new Label("VS");
+            vsLabel.AddToClassList("vs-label");
+            partyContainer.Add(vsLabel);
+
+            if (enemyParty != null)
+            {
+                foreach (var character in enemyParty)
+                {
+                    if (character == null) continue;
+                    var card = CreateCharacterCard(character, portraits, false); // 몬스터는 스트레스 제외
+                    partyContainer.Add(card);
+                }
+            }
+
             _battleResultContainer.Add(partyContainer);
 
-            // 3. 보상 컨테이너
+            // 4. 보상 컨테이너
             var rewardContainer = new VisualElement();
             rewardContainer.AddToClassList("reward-container");
 
@@ -280,6 +282,70 @@ namespace Bond.WT.Journal
             _contentScroll.Add(_battleResultContainer);
         }
 
+        private VisualElement CreateCharacterCard(BaseCharacter character, Dictionary<string, Sprite> portraits, bool showStress)
+        {
+            var card = new VisualElement();
+            card.AddToClassList("character-card");
+
+            bool isDead = character.IsDead || character.Stat.current_Hp <= 0;
+            if (isDead)
+            {
+                card.AddToClassList("dead-card");
+            }
+
+            var portrait = new VisualElement();
+            portrait.AddToClassList("character-portrait");
+            if (portraits != null && portraits.TryGetValue(character.Id, out Sprite sp) && sp != null)
+            {
+                portrait.style.backgroundImage = new StyleBackground(sp);
+            }
+            
+            if (isDead)
+            {
+                portrait.AddToClassList("dead-portrait");
+                
+                var deadMark = new Label("✕");
+                deadMark.AddToClassList("dead-mark");
+                portrait.Add(deadMark);
+            }
+            card.Add(portrait);
+
+            var nameLabel = new Label(character.Name);
+            nameLabel.AddToClassList("character-name");
+            card.Add(nameLabel);
+
+            var hpContainer = new VisualElement();
+            hpContainer.AddToClassList("bar-container");
+            var hpBar = new VisualElement();
+            hpBar.AddToClassList("hp-bar");
+            float hpPercent = character.Stat.max_Hp > 0 
+                ? (float)character.Stat.current_Hp / character.Stat.max_Hp * 100f 
+                : 0f;
+            hpBar.style.width = Length.Percent(hpPercent);
+            var hpLabel = new Label($"HP {character.Stat.current_Hp}/{character.Stat.max_Hp}");
+            hpLabel.AddToClassList("bar-label");
+            hpContainer.Add(hpBar);
+            hpContainer.Add(hpLabel);
+            card.Add(hpContainer);
+
+            if (showStress)
+            {
+                var stressContainer = new VisualElement();
+                stressContainer.AddToClassList("bar-container");
+                var stressBar = new VisualElement();
+                stressBar.AddToClassList("stress-bar");
+                float stressPercent = Mathf.Clamp(character.Insanity, 0, 100);
+                stressBar.style.width = Length.Percent(stressPercent);
+                var stressLabel = new Label($"STRESS {character.Insanity}/100");
+                stressLabel.AddToClassList("bar-label");
+                stressContainer.Add(stressBar);
+                stressContainer.Add(stressLabel);
+                card.Add(stressContainer);
+            }
+
+            return card;
+        }
+
         private void AddRewardItem(VisualElement parent, string resourceName, int value)
         {
             var item = new VisualElement();
@@ -294,6 +360,11 @@ namespace Bond.WT.Journal
 
         public void ClearBattleResult()
         {
+            if (_contentLabel != null)
+            {
+                _contentLabel.style.display = DisplayStyle.Flex;
+            }
+
             if (_battleResultContainer != null && _contentScroll != null)
             {
                 if (_contentScroll.Contains(_battleResultContainer))

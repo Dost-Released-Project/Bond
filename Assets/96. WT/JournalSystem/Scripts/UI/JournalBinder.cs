@@ -19,7 +19,7 @@ namespace Bond.WT.Journal
         private readonly IJournalVisualizer _view;
         private readonly JournalSystem _system;
         private readonly ISpriteLoader _spriteLoader;
-        private readonly IPartyController _partyController;
+        private readonly Bond.Expedition.ExpeditionPayload _payload;
 
         private AsyncOperationHandle<Sprite>? _currentIconHandle;
         private readonly List<AsyncOperationHandle<Sprite>> _partyHandles = new();
@@ -39,13 +39,13 @@ namespace Bond.WT.Journal
         private readonly ObserverWrapper<bool> _nextPageEnabledObserver = new ObserverWrapper<bool>();
 
         [Inject]
-        public JournalBinder(JournalModel model, IJournalVisualizer view, JournalSystem system, ISpriteLoader spriteLoader, IPartyController partyController)
+        public JournalBinder(JournalModel model, IJournalVisualizer view, JournalSystem system, ISpriteLoader spriteLoader, Bond.Expedition.ExpeditionPayload payload)
         {
             _model = model;
             _view = view;
             _system = system;
             _spriteLoader = spriteLoader;
-            _partyController = partyController;
+            _payload = payload;
 
             // 핸들러 설정
             _paragraphObserver.EventHandler = text => 
@@ -77,7 +77,7 @@ namespace Bond.WT.Journal
                     }
                     else
                     {
-                        var manualChar = _partyController.GetCurrentParty()?
+                        var manualChar = _payload.Party?
                             .FirstOrDefault(c => c.isPlayable);
                         
                         string address = (manualChar != null && !string.IsNullOrEmpty(manualChar.ImageAddress)) 
@@ -202,13 +202,14 @@ namespace Bond.WT.Journal
             if (report.Metadata.TryGetValue("RewardWood", out string wStr)) int.TryParse(wStr, out wood);
             if (report.Metadata.TryGetValue("RewardOre", out string oStr)) int.TryParse(oStr, out ore);
 
-            var party = _partyController.GetCurrentParty();
+            var party = _payload.Party;
+            var enemyParty = _payload.EnemyParty;
             var portraits = new Dictionary<string, Sprite>();
+
+            var tasks = new List<UniTask<(string, AsyncOperationHandle<Sprite>)>>();
 
             if (party != null)
             {
-                var tasks = new List<UniTask<(string, AsyncOperationHandle<Sprite>)>>();
-
                 foreach (var character in party)
                 {
                     if (character == null) continue;
@@ -219,27 +220,41 @@ namespace Bond.WT.Journal
                         tasks.Add(LoadPortraitAsync(character.Id, address));
                     }
                 }
+            }
 
-                if (tasks.Count > 0)
+            if (enemyParty != null)
+            {
+                foreach (var character in enemyParty)
                 {
-                    var results = await UniTask.WhenAll(tasks);
-                    foreach (var res in results)
+                    if (character == null) continue;
+
+                    string address = character.EffectiveIdleImageAddress;
+                    if (!string.IsNullOrEmpty(address))
                     {
-                        var handle = res.Item2;
-                        if (handle.Status == AsyncOperationStatus.Succeeded)
-                        {
-                            _partyHandles.Add(handle);
-                            portraits[res.Item1] = handle.Result;
-                        }
-                        else
-                        {
-                            UnityEngine.AddressableAssets.Addressables.Release(handle);
-                        }
+                        tasks.Add(LoadPortraitAsync(character.Id, address));
                     }
                 }
             }
 
-            _view.SetBattleResult(status, party, portraits, frontier, wood, ore);
+            if (tasks.Count > 0)
+            {
+                var results = await UniTask.WhenAll(tasks);
+                foreach (var res in results)
+                {
+                    var handle = res.Item2;
+                    if (handle.Status == AsyncOperationStatus.Succeeded)
+                    {
+                        _partyHandles.Add(handle);
+                        portraits[res.Item1] = handle.Result;
+                    }
+                    else
+                    {
+                        UnityEngine.AddressableAssets.Addressables.Release(handle);
+                    }
+                }
+            }
+
+            _view.SetBattleResult(status, party, enemyParty, portraits, frontier, wood, ore);
         }
 
         private async UniTask<(string, AsyncOperationHandle<Sprite>)> LoadPortraitAsync(string id, string address)

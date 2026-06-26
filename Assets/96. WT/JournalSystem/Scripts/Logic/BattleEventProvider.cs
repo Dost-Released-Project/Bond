@@ -82,6 +82,11 @@ namespace Bond.WT.Journal
             {
                 _cachedPlayerCount = players?.Length ?? 0;
                 _cachedEnemyCount = enemies?.Length ?? 0;
+
+                if (_payload != null && enemies != null)
+                {
+                    _payload.SetEnemy(enemies);
+                }
             }
             else
             {

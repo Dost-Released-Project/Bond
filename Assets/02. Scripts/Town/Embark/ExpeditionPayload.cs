@@ -104,6 +104,7 @@ namespace Bond.Expedition
             _partyController.Clear();
             Region = null;
             Outcome = ExpeditionOutcome.None;
+            EnemyParty = null;
         }
 
         public override string ToString()
