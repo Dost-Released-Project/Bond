@@ -141,27 +141,10 @@
 .result-panel-inner {
     width: 100%;
     align-items: center;
-    margin-top: 20px;
-}
-
-.result-title {
-    font-size: 40px;
-    color: #ffd700;
-    -unity-font-style: bold;
-    margin-bottom: 20px;
-    letter-spacing: 2px;
-}
-
-.result-title.victory {
-    color: #ffd700;
-}
-
-.result-title.defeat {
-    color: #ff4d4d;
-}
-
-.result-title.retreat {
-    color: #ffa500;
+    margin-top: 35px;
+    padding-top: 25px;
+    border-top-width: 1px;
+    border-color: #3a3a45;
 }
 
 .party-container {

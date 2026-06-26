@@ -202,26 +202,6 @@ namespace Bond.WT.Journal
             _battleResultContainer = new VisualElement();
             _battleResultContainer.AddToClassList("result-panel-inner");
 
-            // 1. 결과 타이틀
-            var title = new Label();
-            title.AddToClassList("result-title");
-            switch (status)
-            {
-                case BattleSystem.Interface.BattleEndStatus.Victory:
-                    title.text = "전투 승리";
-                    title.AddToClassList("victory");
-                    break;
-                case BattleSystem.Interface.BattleEndStatus.Defeat:
-                    title.text = "전투 패배";
-                    title.AddToClassList("defeat");
-                    break;
-                case BattleSystem.Interface.BattleEndStatus.Retreat:
-                    title.text = "퇴각 완료";
-                    title.AddToClassList("retreat");
-                    break;
-            }
-            _battleResultContainer.Add(title);
-
             // 2. 파티 컨테이너
             var partyContainer = new VisualElement();
             partyContainer.AddToClassList("party-container");
