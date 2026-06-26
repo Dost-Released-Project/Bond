@@ -35,6 +35,14 @@ jobs:
           targetPlatform: StandaloneWindows64
           buildMethod: CIBuildScript.Build
 
+      - name: Debug - List build output
+        if: always()
+        run: |
+          echo "=== build/ directory ==="
+          ls -la $GITHUB_WORKSPACE/build/ 2>/dev/null || echo "build/ not found"
+          echo "=== .exe files in workspace ==="
+          find $GITHUB_WORKSPACE -name "*.exe" 2>/dev/null || echo "No .exe found"
+
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
