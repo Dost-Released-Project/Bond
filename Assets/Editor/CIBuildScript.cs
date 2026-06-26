@@ -43,7 +43,7 @@ public static class CIBuildScript
     private static void BuildPlayer()
     {
         string buildPath = Environment.GetEnvironmentVariable("BUILD_PATH") ?? "build/StandaloneWindows64";
-        string buildName = Environment.GetEnvironmentVariable("BUILD_NAME") ?? "StandaloneWindows64";
+        string buildName = Environment.GetEnvironmentVariable("BUILD_FILE") ?? "StandaloneWindows64.exe";
 
         // Application.dataPath = <project>/Assets → 한 단계 위가 프로젝트 루트
         string projectRoot = Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
