@@ -36,6 +36,9 @@ namespace Shapes {
 		}
 
 		private void Start() {
+			// [방어 코드] 씬/프리팹 직렬화 값 꼬임으로 alpha가 0이 되어 UI가 안 보이는 버그 예방
+			alpha = 1f;
+
 			if (turnIndicatorRect != null) {
 				CharacterSlot slot = GetComponentInParent<CharacterSlot>();
 				_isTurnActive = slot != null && slot.IsActing;
@@ -52,8 +55,26 @@ namespace Shapes {
 		}
 
 		public override void DrawPanelShapes( Rect rect, ImCanvasContext ctx ) {
-			if( colorGradient1 == null || colorGradient2 == null ) 
-				return; // just in case it hasn't initialized
+			// [방어 코드] 빌드본 번들 패키징 시 그라디언트 참조 유실(null) 대응
+			if (colorGradient1 == null) {
+				colorGradient1 = new Gradient();
+				colorGradient1.SetKeys(
+					new GradientColorKey[] { new GradientColorKey(new Color(0.7f, 0f, 0f), 0f), new GradientColorKey(new Color(1f, 0.33f, 0f), 1f) },
+					new GradientAlphaKey[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(1f, 1f) }
+				);
+			}
+			if (colorGradient2 == null) {
+				colorGradient2 = new Gradient();
+				colorGradient2.SetKeys(
+					new GradientColorKey[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(new Color(0.9f, 0.85f, 0.13f), 1f) },
+					new GradientAlphaKey[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(1f, 1f) }
+				);
+			}
+
+			// [방어 코드] 초기 기동 시 또는 비정상적인 상태로 alpha가 0f인 경우 보정
+			if (alpha <= 0.01f) {
+				alpha = 1f;
+			}
 
 			// Draw black background:
 			Draw.Rectangle( rect, 8f, new Color( 0, 0, 0, alpha ) );
