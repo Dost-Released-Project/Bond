@@ -12,7 +12,7 @@ namespace BattleStage
     public class BattleFlowManager : MonoBehaviour, IBattleFlowManager
     {
         public event Action<BaseCharacter[], BaseCharacter[]> OnBattle;
-        public event Action<bool> OnBattleEnd;
+        public event Action<BattleEndStatus> OnBattleEnd;
         
         private Bond.Expedition.ExpeditionPayload _payload;
 
@@ -140,20 +140,16 @@ namespace BattleStage
             // 1. 진행 중인 턴 루프 및 전투 로직 중지 신호 발송 (토글 오프)
             BattleSwitch();
 
-            if (isRetreat)
-            {
-                // 퇴각 시에는 대기 없이 즉시 맵으로 신호 전송 (콜백이 유효할 때 즉시 실행하여 레이스 컨디션 방지)
-                InvokeStageComplete(isPlayerWin);
-                return;
-            }
-
-            // 2. 승리/패배 연출 대기 시간 (일반 종료 시에만 대기)
+            // 2. 승리/패배/퇴각 연출 대기 시간
             await UniTask.Delay(2000);
 
-            // 3. Provider(일지 시스템) 등 외부 구독자에게 전투 종료 및 승패 결과 알림
+            // 3. 전투 결과 상태 결정
+            BattleEndStatus status = isRetreat ? BattleEndStatus.Retreat : (isPlayerWin ? BattleEndStatus.Victory : BattleEndStatus.Defeat);
+
+            // 4. 외부 구독자에게 전투 종료 상태 전달
             if (OnBattleEnd != null)
             {
-                OnBattleEnd.Invoke(isPlayerWin);
+                OnBattleEnd.Invoke(status);
             }
             else
             {

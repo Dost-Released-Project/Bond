@@ -12,6 +12,7 @@ namespace BattleSystem.VContainer
     {
         [SerializeField] private BattleFlowManager expeditionFlowManager;
         [SerializeField] private Bond.WT.Journal.JournalUIView _journalUIPrefab;
+        [SerializeField] private BattleResultView _battleResultView;
         
         public CharacterSlot[] slots;
         protected override void Configure(IContainerBuilder builder)
@@ -42,6 +43,26 @@ namespace BattleSystem.VContainer
 
             // Journal UI 및 Binder 지역 스코프 등록
             builder.RegisterJournalUI(_journalUIPrefab);
+
+            // 신규 전투 결과 UI 및 프레젠터 등록
+            if (_battleResultView != null)
+            {
+                // 프리팹 에셋인 경우 동적으로 인스턴스화 수행
+                if (string.IsNullOrEmpty(_battleResultView.gameObject.scene.name))
+                {
+                    var instance = Instantiate(_battleResultView);
+                    builder.RegisterComponent(instance);
+                }
+                else
+                {
+                    builder.RegisterComponent(_battleResultView);
+                }
+            }
+            else
+            {
+                builder.RegisterComponentInHierarchy<BattleResultView>();
+            }
+            builder.RegisterEntryPoint<BattleResultPresenter>(Lifetime.Singleton).AsSelf();
             
             // 캐릭터 UI
             builder.Register<CharacterDetailController>(Lifetime.Scoped);

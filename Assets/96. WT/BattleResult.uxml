@@ -1,0 +1,34 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/96.%20WT/BattleResult.uss"/>
+    <ui:VisualElement name="Root" class="result-overlay">
+        <ui:VisualElement name="ResultPanel" class="result-panel">
+            <!-- 최상단: 전투 결과 타이틀 -->
+            <ui:Label name="TitleText" class="result-title" text="BATTLE VICTORY"/>
+            
+            <!-- 중단: 파티 멤버 리스트 컨테이너 -->
+            <ui:VisualElement name="PartyContainer" class="party-container"/>
+            
+            <!-- 하단: 획득한 보상 컨테이너 -->
+            <ui:VisualElement name="RewardContainer" class="reward-container">
+                <ui:Label text="획득 전리품" class="reward-title"/>
+                <ui:VisualElement name="RewardItems" class="reward-items-row">
+                    <ui:VisualElement name="RewardFrontier" class="reward-item">
+                        <ui:VisualElement class="reward-icon reward-icon--frontier"/>
+                        <ui:Label name="ValueFrontier" class="reward-value" text="+0"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="RewardWood" class="reward-item">
+                        <ui:VisualElement class="reward-icon reward-icon--wood"/>
+                        <ui:Label name="ValueWood" class="reward-value" text="+0"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="RewardOre" class="reward-item">
+                        <ui:VisualElement class="reward-icon reward-icon--ore"/>
+                        <ui:Label name="ValueOre" class="reward-value" text="+0"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            
+            <!-- 최하단: 복귀 버튼 -->
+            <ui:Button name="BtnReturn" class="btn-return" text="맵으로 복귀"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

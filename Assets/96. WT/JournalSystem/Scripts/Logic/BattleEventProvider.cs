@@ -44,7 +44,7 @@ namespace Bond.WT.Journal
                 // 배틀 매니저의 시작/종료 이벤트를 구독 (Observer)
                 // "Blind Logic" 원칙에 따라 배틀 시스템에 관여하지 않고 관찰만 수행
                 _battleFlowManager.OnBattle += HandleBattleSwitch;
-                _battleFlowManager.OnBattleEnd += HandleBattleEnd;
+                // _battleFlowManager.OnBattleEnd += HandleBattleEnd; // 신규 결과창 전용 UI로 대체됨에 따라 주석 처리
             }
         }
 
@@ -59,7 +59,7 @@ namespace Bond.WT.Journal
             if (_battleFlowManager != null)
             {
                 _battleFlowManager.OnBattle -= HandleBattleSwitch;
-                _battleFlowManager.OnBattleEnd -= HandleBattleEnd;
+                // _battleFlowManager.OnBattleEnd -= HandleBattleEnd;
             }
             
             // 스코프 파괴 시 일지 시스템에서 등록 해제
@@ -86,8 +86,9 @@ namespace Bond.WT.Journal
             }
         }
 
-        private void HandleBattleEnd(bool isPlayerWin)
+        private void HandleBattleEnd(BattleEndStatus status)
         {
+            bool isPlayerWin = status == BattleEndStatus.Victory;
             // 전투가 종료되면 DB에서 템플릿(Pure Data)을 가져와 즉시 일지 시작
             string eventId = "EVT_BATTLE_END";
             var template = _journalDB != null ? _journalDB.GetSO<JournalDataSO>(eventId) : null;
