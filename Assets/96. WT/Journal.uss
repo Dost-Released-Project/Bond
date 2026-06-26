@@ -42,7 +42,7 @@
 
 .journal-panel__content {
     white-space: normal;
-    font-size: var(--font-size-body);
+    font-size: 34px;
     color: var(--text-primary);
     letter-spacing: 0.5px;
     -unity-font-style: italic; /* 일지 본문 규칙 적용 */
@@ -77,9 +77,11 @@
 }
 
 .journal-panel__options {
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
+    align-self: center;
+    width: auto;
     margin-bottom: 20px;
 }
 
@@ -116,11 +118,13 @@
 
 /* JournalChoice Button Style */
 .journal-panel__choice-btn {
-    width: 60px;
-    height: 60px;
-    margin: 0 10px;
+    min-width: 160px;
+    width: auto;
+    height: 50px;
+    margin: 6px 0;
+    padding: 0 24px;
     border-radius: 4px;
-    font-size: var(--font-size-button);
+    font-size: 34;
     color: var(--text-accent);
     background-color: var(--btn-primary-bg);
     border-width: 1px;
@@ -131,4 +135,160 @@
 .journal-panel__choice-btn:hover {
     border-color: var(--border-highlight);
     background-color: var(--bg-raised);
+}
+
+/* ── Battle Result Integration ── */
+.result-panel-inner {
+    width: 100%;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.result-title {
+    font-size: 40px;
+    color: #ffd700;
+    -unity-font-style: bold;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+}
+
+.result-title.victory {
+    color: #ffd700;
+}
+
+.result-title.defeat {
+    color: #ff4d4d;
+}
+
+.result-title.retreat {
+    color: #ffa500;
+}
+
+.party-container {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+.character-card {
+    width: 180px;
+    background-color: #2b2b36;
+    border-width: 1px;
+    border-color: #4a4a5a;
+    border-radius: 6px;
+    padding: 12px;
+    margin: 0 10px;
+    align-items: center;
+}
+
+.character-portrait {
+    width: 120px;
+    height: 120px;
+    background-color: #18181f;
+    border-radius: 4px;
+    border-width: 1px;
+    border-color: #3a3a45;
+    margin-bottom: 8px;
+}
+
+.character-name {
+    font-size: 20px;
+    color: #e2e2e8;
+    -unity-font-style: bold;
+    margin-bottom: 12px;
+}
+
+.bar-container {
+    width: 100%;
+    height: 20px;
+    background-color: #18181f;
+    border-radius: 3px;
+    margin-bottom: 6px;
+    overflow: hidden;
+    position: relative;
+    justify-content: center;
+}
+
+.hp-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background-color: #27ae60;
+}
+
+.stress-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background-color: #8e44ad;
+}
+
+.bar-label {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    font-size: 11px;
+    color: #ffffff;
+    -unity-font-style: bold;
+}
+
+.reward-container {
+    width: 100%;
+    background-color: #25252f;
+    border-width: 1px;
+    border-color: #3e3e4f;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.reward-title {
+    font-size: 22px;
+    color: #ffd700;
+    -unity-font-style: bold;
+    margin-bottom: 15px;
+}
+
+.reward-items-row {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.reward-item {
+    flex-direction: row;
+    align-items: center;
+    margin: 0 20px;
+}
+
+.reward-icon {
+    width: 28px;
+    height: 28px;
+    margin-right: 8px;
+}
+
+.reward-icon--frontier {
+    background-image: url("project://database/Assets/97. Moon/V2/Image/money.png");
+    -unity-background-image-tint-color: rgb(180, 140, 10);
+}
+
+.reward-icon--wood {
+    background-image: url("project://database/Assets/97. Moon/V2/Image/tree-small.png");
+    -unity-background-image-tint-color: rgb(200, 100, 0);
+}
+
+.reward-icon--ore {
+    background-image: url("project://database/Assets/97. Moon/V2/Image/metal.png");
+    -unity-background-image-tint-color: rgb(150, 150, 150);
+}
+
+.reward-value {
+    font-size: 20px;
+    color: #ffffff;
+    -unity-font-style: bold;
 }

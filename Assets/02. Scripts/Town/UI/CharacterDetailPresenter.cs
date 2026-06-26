@@ -41,7 +41,7 @@ namespace Bond.UI
 
         private Label _baseStatStr, _baseStatAgi, _baseStatInt;
         private Label _statHp, _statDef, _statAtk, _statSpd;
-        private Label _statCrt, _statAcc, _statEva, _statReactionCtrl;
+        private Label _statCrt, _statAcc, _statEva;
 
         private Label         _gaugeInsanityVal;
         private Label         _gaugeInsanityWarnLabel;
@@ -65,6 +65,10 @@ namespace Bond.UI
         private readonly VisualElement[] _reactionActionParts   = new VisualElement[6];
         private readonly Label[]         _reactionActionVals    = new Label[6];
         private readonly Image[]         _reactionActionIcons   = new Image[6];
+
+        // 아이콘 뒤 문구(편집칸 {icon} 토큰 뒤) — 아이콘 오른쪽에 가로 배치
+        private readonly Label[]         _reactionTargetAfter   = new Label[6];
+        private readonly Label[]         _reactionActionAfter   = new Label[6];
 
         // 떠있는 드롭다운(카탈로그/대상/행동 공용)
         private SlotDropdown _dropdown;
@@ -147,7 +151,6 @@ namespace Bond.UI
             _statCrt                = root.Q<Label>("stat-crt");
             _statAcc                = root.Q<Label>("stat-acc");
             _statEva                = root.Q<Label>("stat-eva");
-            _statReactionCtrl       = root.Q<Label>("stat-reaction-ctrl");
             _gaugeInsanityVal       = root.Q<Label>("gauge-insanity-val");
             _gaugeInsanityWarnLabel = root.Q<Label>("gauge-insanity-warn");
             _gaugeHpFill            = root.Q("gauge-hp");
@@ -180,6 +183,9 @@ namespace Bond.UI
                 _reactionActionParts[idx]   = root.Q($"reaction-slot-{idx}__action-part");
                 _reactionActionVals[idx]    = root.Q<Label>($"reaction-slot-{idx}__action");
                 _reactionActionIcons[idx]   = root.Q<Image>($"reaction-slot-{idx}__action-icon");
+
+                _reactionTargetAfter[idx]   = root.Q<Label>($"reaction-slot-{idx}__target-after");
+                _reactionActionAfter[idx]   = root.Q<Label>($"reaction-slot-{idx}__action-after");
 
                 if (_reactionTargetIcons[idx] != null) _reactionTargetIcons[idx].scaleMode = ScaleMode.ScaleAndCrop;
                 if (_reactionActionIcons[idx] != null) _reactionActionIcons[idx].scaleMode = ScaleMode.ScaleAndCrop;
@@ -220,7 +226,7 @@ namespace Bond.UI
             _equipSlots.OnDragDropRequested -= HandleEquipSlotDragDrop;
             _equipSlots.OnDragDropRequested += HandleEquipSlotDragDrop;
 
-            _controller.OnRoleChanged      += _ => RefreshIdentity();
+            _controller.OnRoleChanged      += HandleControllerRoleChanged;
             _controller.OnReactionChanged  += RefreshReactionSlot;
 
             _panel.RegisterCallback<PointerDownEvent>(evt =>
@@ -287,6 +293,10 @@ namespace Bond.UI
         private void HandleStatRecalculated(BaseCharacter c) => RefreshStats();
         private void HandleRoleChanged(BaseCharacter c)      => RefreshIdentity();
 
+        // 컨트롤러발 역할 변경(Action<RoleType>). 캐릭터발 HandleRoleChanged 와 시그니처가 달라 별도 메서드로 둔다
+        // (익명 람다로 두면 OnDestroy 에서 -= 가 불가능).
+        private void HandleControllerRoleChanged(RoleType role) => RefreshIdentity();
+
         // 스킬 편성 변경 → 그리드 갱신 + 리액션 슬롯 재표시(압축으로 SkillIndex 가 재매핑/해제됐을 수 있음)
         private void HandleSkillsChanged(BaseCharacter c)
         {
@@ -298,6 +308,17 @@ namespace Bond.UI
 
         private void OnDestroy()
         {
+            // 주입된 컨트롤러/셀렉터 구독 해제. 지금은 셋이 같은 스코프라 동시 소멸하지만,
+            // 컨벤션(구독 측이 OnDestroy 에서 해제) 준수 + 향후 셀렉터/컨트롤러가 상위 스코프로 올라가도 안전하도록.
+            if (_controller != null)
+            {
+                _controller.OnCharacterSet    -= RefreshCharacter;
+                _controller.OnRoleChanged     -= HandleControllerRoleChanged;
+                _controller.OnReactionChanged -= RefreshReactionSlot;
+                if (_selector != null)
+                    _selector.OnSelectionChanged -= _controller.SetCharacter;
+            }
+
             DetachCharacterEvents(_character);
             _equipSlots?.Dispose();
             _dropdown?.Dispose();
@@ -471,12 +492,6 @@ namespace Bond.UI
             _statCrt.text = $"{s.crt:P0}";
             _statAcc.text = $"{s.acc:P0}";
             _statEva.text = $"{s.eva:P0}";
-            _statReactionCtrl.text = s.Reaction_Ctrl switch
-            {
-                < 0.3f => "낮음",
-                < 0.7f => "보통",
-                _      => "높음"
-            };
 
             float hpRatio = s.max_Hp > 0 ? (float)s.current_Hp / s.max_Hp : 0f;
             _gaugeHpFill.style.width = new StyleLength(new Length(hpRatio * 100f, LengthUnit.Percent));
@@ -626,7 +641,7 @@ namespace Bond.UI
             // 대상: 관찰 편집슬롯이 있으면 편집칸(할당 여부로 상태/아이콘), 없으면 고정.
             bool targetEditable = _controller.HasObserveEditable(i);
             UpdateEditablePart(
-                _reactionTargetParts[i], _reactionTargetVals[i], _reactionTargetIcons[i],
+                _reactionTargetParts[i], _reactionTargetVals[i], _reactionTargetAfter[i], _reactionTargetIcons[i],
                 targetText, targetEditable,
                 filled: targetEditable && _controller.IsObserveFilled(i),
                 iconAddr: _controller.GetObserveIconAddress(i),
@@ -636,7 +651,7 @@ namespace Bond.UI
             // 행동: 행동 스킬 편집슬롯이 있으면 편집칸, 없으면 고정.
             bool actionEditable = _controller.HasSkillEditable(i);
             UpdateEditablePart(
-                _reactionActionParts[i], _reactionActionVals[i], _reactionActionIcons[i],
+                _reactionActionParts[i], _reactionActionVals[i], _reactionActionAfter[i], _reactionActionIcons[i],
                 actionText, actionEditable,
                 filled: actionEditable && _controller.IsActionFilled(i),
                 iconAddr: _controller.GetActionIconAddress(i),
@@ -666,18 +681,34 @@ namespace Bond.UI
 
         // 편집 가능한 칸(대상/행동)의 값·색·클릭성·아이콘 갱신.
         // editable=false 면 고정 칸(아이콘 숨김). editable=true 면 filled 에 따라 할당/미할당(빈 아이콘 슬롯).
-        private void UpdateEditablePart(VisualElement part, Label val, Image icon, string text,
+        // text 에 {icon} 토큰이 있으면 앞 문구(val, 아이콘 위)와 뒤 문구(after, 아이콘 오른쪽)로 나눈다. 없으면 전부 val.
+        private void UpdateEditablePart(VisualElement part, Label val, Label after, Image icon, string text,
             bool editable, bool filled, string iconAddr, string iconTip, int slot, bool isTarget)
         {
             PartState state = !editable ? PartState.Fixed : (filled ? PartState.Assigned : PartState.Unassigned);
-            SetPartVal(val, text, state);
+
+            string before = text ?? string.Empty, afterText = string.Empty;
+            int tk = before.IndexOf("{icon}", StringComparison.Ordinal);
+            if (tk >= 0) { afterText = before.Substring(tk + 6).TrimStart(); before = before.Substring(0, tk).TrimEnd(); }
+
+            // 상태 색(할당/미할당)은 아이콘 위 문구(val)에만. 옆 문구(after)는 항상 중립색(서술 문구).
+            SetPartVal(val, before, state);
+            if (after != null)
+            {
+                bool hasAfter = !string.IsNullOrEmpty(afterText);
+                after.style.display = hasAfter ? DisplayStyle.Flex : DisplayStyle.None;
+                if (hasAfter) SetPartVal(after, afterText, PartState.Fixed);
+            }
             part?.EnableInClassList("char-detail__slot-part--editable", editable);
 
             if (icon == null) return;
 
-            if (!editable)
+            // 고정 칸이거나 아직 미할당(편집 전)이면 아이콘을 숨긴다. 할당돼야 비로소 아이콘 표시.
+            // (미할당 경고는 값 문구의 빨강 색 + 다이아몬드 에코로 충분히 드러난다.)
+            if (!editable || !filled)
             {
                 icon.style.display = DisplayStyle.None;
+                icon.RemoveFromClassList("char-detail__slot-part-icon--empty");
                 icon.sprite = null;
                 icon.tooltip = string.Empty;
                 if (isTarget) _targetIconAddr[slot] = null; else _actionIconAddr[slot] = null;
@@ -685,25 +716,14 @@ namespace Bond.UI
             }
 
             icon.style.display = DisplayStyle.Flex;
-            if (filled)
+            icon.tooltip = iconTip ?? string.Empty;
+            if (!string.IsNullOrEmpty(iconAddr))
             {
-                icon.RemoveFromClassList("char-detail__slot-part-icon--empty");
-                icon.tooltip = iconTip ?? string.Empty;
-                if (!string.IsNullOrEmpty(iconAddr))
-                {
-                    LoadSlotIcon(icon, iconAddr, slot, isTarget);
-                }
-                else
-                {
-                    icon.sprite = null;
-                    if (isTarget) _targetIconAddr[slot] = null; else _actionIconAddr[slot] = null;
-                }
+                LoadSlotIcon(icon, iconAddr, slot, isTarget);
             }
             else
             {
-                icon.AddToClassList("char-detail__slot-part-icon--empty");
                 icon.sprite = null;
-                icon.tooltip = string.Empty;
                 if (isTarget) _targetIconAddr[slot] = null; else _actionIconAddr[slot] = null;
             }
         }

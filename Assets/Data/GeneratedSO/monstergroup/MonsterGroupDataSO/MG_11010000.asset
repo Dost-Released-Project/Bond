@@ -18,8 +18,6 @@ MonoBehaviour:
   MonsterIds:
   - 10010000
   - 10010000
-  - 10010000
-  - 10010000
   MinLayer: 0
   MaxLayer: 3
   IsElite: 0

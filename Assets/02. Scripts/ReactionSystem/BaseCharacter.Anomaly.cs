@@ -118,17 +118,16 @@ public partial class BaseCharacter
 #endif
 
     /// <summary>
-    /// 역할 리액션의 특이(돌발) 행동 확률 = clamp(기본 + 스트레스 − 지능 − 관계, 최저 5%, 1).<br/>
-    /// 관계가 낮을수록·스트레스가 높을수록·지능이 낮을수록 높아진다.<br/>
+    /// 역할 리액션의 특이(돌발) 행동 확률 (기본 + 스트레스 − 지능 − 관계).<br/>
+    /// 관계가 낮을수록·지능이 낮을수록·스트레스가 높을수록 높아진다.<br/>
     /// 상수는 실제 Insanity/INT/관계 범위에 맞춰 튜닝할 밸런스 값.
     /// </summary>
     public float GetAnomalyChance(int relation)
     {
-        // TODO: 계산식 검토 및 수치 조정
-        const float baseRate     = 0.20f;
-        const float stressCoef   = 0.005f; // Insanity(0~100) → 최대 +0.5
-        const float intCoef      = 0.004f; // 지능 억제 계수 (INT 범위에 맞춰 튜닝)
-        const float relationCoef = 0.004f; // 관계↑ → 특이행동 억제 (관계 스케일에 맞춰 튜닝)
+        const float baseRate     = 0f;
+        const float stressCoef   = 0.0035f; // Insanity(0~100) → 최대 +0.5
+        const float intCoef      = 0.01f; // 지능 억제 계수 (INT 범위에 맞춰 튜닝)
+        const float relationCoef = 0.002f; // 관계↑ → 특이행동 억제 (관계 스케일에 맞춰 튜닝)
         const float minRate      = 0.05f;  // 최저 발동 확률 하한선
 
         float chance = baseRate + Insanity * stressCoef - Stat.INT * intCoef - relation * relationCoef;
@@ -136,20 +135,19 @@ public partial class BaseCharacter
     }
 
     /// <summary>
-    /// 성향 리액션의 강화(유대적 각성) 행동 확률 = clamp(기본 + 관계 + 스트레스 + 지능, 최저 5%, 1).<br/>
-    /// 관계가 높을수록·스트레스 임계일수록·지능이 높을수록(통제→각성 전환) 높아진다(GDD §4).<br/>
+    /// 성향 리액션의 강화(유대적 각성) 행동 확률 = (기본 - 스트레스 + 지능 + 관계).<br/>
+    /// 스트레스 낮을수록·지능이 높을수록·관계가 높을수록(통제→각성 전환) 높아진다.<br/>
     /// 상수는 밸런스 튜닝 대상.
     /// </summary>
     public float GetBondAwakeningChance(int relation)
     {
-        // TODO: 계산식 검토 및 수치 조정
-        const float baseRate     = 0.10f;
-        const float relationCoef = 0.006f; // 관계↑ → 각성↑ (관계 스케일에 맞춰 튜닝)
-        const float stressCoef   = 0.003f; // 스트레스 임계에서 각성 보조
-        const float intCoef      = 0.003f; // 지능(통제력) → 각성 전환 보정(GDD)
-        const float minRate      = 0.05f;
+        const float baseRate     = 0f;
+        const float relationCoef = 0.005f; // 관계↑ → 각성↑ (관계 스케일에 맞춰 튜닝)
+        const float stressCoef   = 0.001f;
+        const float intCoef      = 0.005f; // 지능(통제력) → 각성 전환 보정
+        const float minRate      = 0f;
 
-        float chance = baseRate + relation * relationCoef + Insanity * stressCoef + Stat.INT * intCoef;
+        float chance = baseRate - Insanity * stressCoef + Stat.INT * intCoef + relation * relationCoef;
         return Mathf.Clamp(chance, minRate, 1f);
     }
 

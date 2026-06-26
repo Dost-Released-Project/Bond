@@ -31,6 +31,22 @@ namespace Bond.WT.Journal
         void ClearUI();
 
         /// <summary>
+        /// 전투 결과 전용 UI 요소를 동적으로 세팅
+        /// </summary>
+        void SetBattleResult(
+            BattleSystem.Interface.BattleEndStatus status, 
+            IReadOnlyList<BaseCharacter> party, 
+            Dictionary<string, Sprite> portraits, 
+            int frontier, 
+            int wood, 
+            int ore);
+
+        /// <summary>
+        /// 세팅된 전투 결과 UI 요소를 정리
+        /// </summary>
+        void ClearBattleResult();
+
+        /// <summary>
         /// UI 창의 활성화/비활성화 제어
         /// </summary>
         void SetVisible(bool isVisible);
@@ -43,6 +59,7 @@ namespace Bond.WT.Journal
         Action<JournalOption> OnOptionSelected { get; set; }
         
         void SetPrevButtonEnabled(bool isEnabled);
+        void SetNextButtonEnabled(bool isEnabled);
         void SetNextButtonText(string text);
     }
 }

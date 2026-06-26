@@ -18,6 +18,7 @@ namespace Bond.WT.Journal
         private readonly JournalDataBaseSO _journalDB;
         private readonly IBattleFlowManager _battleFlowManager;
         private readonly JournalSystem _journalSystem;
+        private readonly Bond.Expedition.ExpeditionPayload _payload;
 
         private class BattleResultEvent
         {
@@ -33,11 +34,16 @@ namespace Bond.WT.Journal
         private int _cachedPlayerCount = 0;
         private int _cachedEnemyCount = 0;
 
-        public BattleEventProvider(JournalDataBaseSO journalDB, IBattleFlowManager battleFlowManager, JournalSystem journalSystem)
+        public BattleEventProvider(
+            JournalDataBaseSO journalDB, 
+            IBattleFlowManager battleFlowManager, 
+            JournalSystem journalSystem,
+            Bond.Expedition.ExpeditionPayload payload)
         {
             _journalDB = journalDB;
             _battleFlowManager = battleFlowManager;
             _journalSystem = journalSystem;
+            _payload = payload;
 
             if (_battleFlowManager != null)
             {
@@ -86,10 +92,14 @@ namespace Bond.WT.Journal
             }
         }
 
-        private void HandleBattleEnd(bool isPlayerWin)
+        private void HandleBattleEnd(BattleEndStatus status)
         {
+            bool isPlayerWin = status == BattleEndStatus.Victory;
             // 전투가 종료되면 DB에서 템플릿(Pure Data)을 가져와 즉시 일지 시작
-            string eventId = "EVT_BATTLE_END";
+            string eventId = status == BattleEndStatus.Victory 
+                ? "EVT_BATTLE_END" 
+                : (status == BattleEndStatus.Defeat ? "EVT_BATTLE_END_DEFEAT" : "EVT_BATTLE_RETREAT");
+            
             var template = _journalDB != null ? _journalDB.GetSO<JournalDataSO>(eventId) : null;
             
             var assembledParagraphs = new List<string>();
@@ -99,7 +109,6 @@ namespace Bond.WT.Journal
             if (template != null)
             {
                 // [Data Assembly] 템플릿의 문장을 조립
-                // 예: Paragraphs에 "{0}명의 동료들과 함께 {1}명의 적을 쓰러뜨렸다." 라고 적혀있다면 인덱스에 맞게 포맷
                 foreach (var para in template.Paragraphs)
                 {
                     assembledParagraphs.Add(string.Format(para, _cachedPlayerCount, _cachedEnemyCount));
@@ -111,20 +120,41 @@ namespace Bond.WT.Journal
             {
                 // DB에 템플릿 데이터가 없는 경우를 위한 Fallback
                 Debug.LogWarning($"[BattleEventProvider] JournalDataBaseSO에서 '{eventId}' 템플릿을 찾을 수 없습니다. 시트를 확인하세요.");
-                assembledParagraphs.Add($"동료 {_cachedPlayerCount}명이 협력하여, {_cachedEnemyCount}명의 적과 치열한 전투를 치뤘다.");
-                options.Add(new JournalOption { text = "맵으로 돌아가기", actionKey = "ACTION_RETURN_MAP", isEnabled = true });
+                string fallbackText = status == BattleEndStatus.Victory 
+                    ? $"동료 {_cachedPlayerCount}명이 협력하여, {_cachedEnemyCount}명의 적을 쓰러뜨렸다."
+                    : (status == BattleEndStatus.Defeat 
+                        ? $"아군이 전멸하여 전투에서 패배했다..." 
+                        : $"전투에서 안전하게 퇴각했다.");
+                assembledParagraphs.Add(fallbackText);
+                
+                string actionKey = "ACTION_RETURN_MAP";
+                string btnText = status == BattleEndStatus.Victory 
+                    ? "맵으로 복귀" 
+                    : (status == BattleEndStatus.Defeat ? "마을로 귀환" : "맵으로 퇴각");
+                options.Add(new JournalOption { text = btnText, actionKey = actionKey, isEnabled = true });
             }
+
+            // 승리 시에만 보상을 얻고, 패배/퇴각 시에는 0
+            int frontier = status == BattleEndStatus.Victory && _payload != null ? _payload.LastAddedFrontier : 0;
+            int wood = status == BattleEndStatus.Victory && _payload != null ? _payload.LastAddedWood : 0;
+            int ore = status == BattleEndStatus.Victory && _payload != null ? _payload.LastAddedOre : 0;
 
             JournalReport report = new JournalReport
             {
-                Title = isPlayerWin ? "전투 승리" : "전투 패배",
+                Title = status == BattleEndStatus.Victory 
+                    ? "전투 승리" 
+                    : (status == BattleEndStatus.Defeat ? "전투 패배" : "퇴각 완료"),
                 Paragraphs = assembledParagraphs,
                 IconId = iconId,
                 Options = options,
                 ProviderId = "BattleEvent",
                 Metadata = new Dictionary<string, string>
                 {
-                    { "IsPlayerWin", isPlayerWin.ToString() }
+                    { "IsBattleEnd", "true" },
+                    { "BattleEndStatus", status.ToString() },
+                    { "RewardFrontier", frontier.ToString() },
+                    { "RewardWood", wood.ToString() },
+                    { "RewardOre", ore.ToString() }
                 }
             };
 

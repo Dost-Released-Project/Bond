@@ -179,7 +179,28 @@ public class EventSceneController : MonoBehaviour
         // 람다식: journalData 를 클로저로 캡처해 OnSecondaryChoiceSelected 에 전달하기 위해 사용한다
         _choiceView.OnSecondaryOptionSelected = option => OnSecondaryChoiceSelected(option, journalData);
 
-        _choiceView.ShowSecondaryPhase(journalData.Paragraphs, journalData.Options);
+        string locationName = _currentEventData != null ? _currentEventData.DisplayName : string.Empty;
+        string itemName = string.Empty;
+        if (string.IsNullOrEmpty(_resolvedItemId) == false && _logAccumulator != null)
+        {
+            itemName = _logAccumulator.GetItemDisplayName(_resolvedItemId);
+        }
+
+        List<string> formattedParagraphs = new List<string>();
+        if (journalData.Paragraphs != null)
+        {
+            foreach (var para in journalData.Paragraphs)
+            {
+                string formatted = para;
+                if (para != null && (para.Contains("{0}") || para.Contains("{1}")))
+                {
+                    formatted = string.Format(para, locationName, itemName);
+                }
+                formattedParagraphs.Add(formatted);
+            }
+        }
+
+        _choiceView.ShowSecondaryPhase(formattedParagraphs, journalData.Options);
 
         // View 를 다시 활성화해 2차 버튼 클릭을 허용한다
         _choiceView.SetInteractable(true);

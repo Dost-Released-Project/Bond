@@ -12,7 +12,7 @@ namespace Bond.Tutorial
         [Inject] private ExpeditionPayload _payload;
 
         // 세이브 데이터 키 고정
-        private const string SAVE_KEY = "tutorial_progress";
+        private const string SAVE_KEY = "expedition_tutorial_progress";
         
         private TutorialRawSaveData _saveData = new();
         private readonly Dictionary<string, TutorialStepSO> _stepMap = new();
@@ -131,7 +131,7 @@ namespace Bond.Tutorial
         }
 
         // ⏭️ 무결성 정산 스킵 매커니즘 (기획 완벽 준수)
-        public void Skip(BuildingData supplyData, BuildingData storageData)
+        public void Skip()
         {
             if (_saveData.isTutorialCleared) return;
 

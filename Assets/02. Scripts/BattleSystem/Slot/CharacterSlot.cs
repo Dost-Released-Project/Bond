@@ -51,6 +51,11 @@ namespace BattleSystem
             character.OnInsanityChanged += UpdateInsanityBar;
             character.OnBuffsChanged += UpdateBuffs;
 
+            if (m_CharacterSlotBar != null)
+            {
+                m_CharacterSlotBar.gameObject.SetActive(true);
+            }
+
             // 초기 UI 갱신
             UpdateHpBar(character);
             UpdateInsanityBar(character);
@@ -141,6 +146,7 @@ namespace BattleSystem
             {
                 m_CharacterSlotBar.hpfillAmount = 0f;
                 m_CharacterSlotBar.insfillAmount = 0f;
+                m_CharacterSlotBar.gameObject.SetActive(false);
             }
             if (m_CharacterSlotBuffBar != null)
             {
@@ -211,6 +217,11 @@ namespace BattleSystem
         {
             m_currentColor = colorData.normalColor;
             m_targetColor = colorData.normalColor;
+            
+            if (m_CharacterSlotBar != null)
+            {
+                m_CharacterSlotBar.gameObject.SetActive(Occupant != null);
+            }
         }
 
         private void Update()

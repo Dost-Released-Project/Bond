@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_43
   _displayName: "\uC2A4\uD0AC \uC124\uC815"
-  _description: "\uD14C\uB450\uB9AC\uAC00 \uC0AC\uB77C\uC9C4 \uAC83\uC744 \uBCFC
-    \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uC774\uC81C \uD14C\uB450\uB9AC\uAC00 \uC5C6\uB294
-    \uC2A4\uD0AC \uC911 \uD558\uB098\uB97C \uD074\uB9AD\uD558\uC138\uC694."
+  _description: "\uB2E4\uC74C\uC740 \uC2A4\uD0AC \uC124\uC815\uC785\uB2C8\uB2E4.
+    \uC2A4\uD0AC\uC740 4\uAC1C\uAE4C\uC9C0 \uC120\uD0DD \uAC00\uB2A5\uD558\uBA70
+    \uC120\uD0DD\uB41C \uC2A4\uD0AC\uC740 \uD14C\uB450\uB9AC\uAC00 \uC0DD\uAE41\uB2C8\uB2E4."
   _sequence: 0
   _targetUiKey: CharacterDetailUi/char-detail__skill-grid
-  _clickType: 0
+  _clickType: 1
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

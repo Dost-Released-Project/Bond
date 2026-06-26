@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: TUT_A_20
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_20
-  _displayName: "UI \uB2EB\uAE30"
-  _description: "\uC99D\uC6D0\uB41C \uB300\uC6D0\uC744 \uD655\uC778\uD558\uAE30 \uC704\uD574
-    \uC6B0\uC120 \uBCF4\uAE09 UI\uB97C \uB2EB\uC73C\uC138\uC694."
+  _displayName: "\uAC74\uBB3C"
+  _description: "\uBCF4\uAE09\uC18C\uB97C \uD074\uB9AD\uD558\uC5EC \uBCF4\uAE09 UI\uB97C
+    \uB744\uC6B8 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: btn-close-supply
+  _targetUiKey: "Building_\uC655\uC2E4 \uBCF4\uAE09\uC18C"
   _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0

@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: TUT_A_23
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_23
-  _displayName: "\uB300\uC6D0 \uBA85\uBD80 \uB2EB\uAE302"
-  _description: "\uB300\uC6D0 \uBA85\uBD80 \uCC3D\uC744 \uB2EB\uC73C\uC138\uC694."
+  _displayName: "\uAC74\uBB3C"
+  _description: "\uC99D\uC6D0\uB41C \uB300\uC6D0\uC744 \uD655\uC778\uD558\uAE30 \uC704\uD574
+    \uC6B0\uC120 \uBCF4\uAE09 UI\uB97C \uB2EB\uC73C\uC138\uC694."
   _sequence: 0
-  _targetUiKey: TownUi/roster-panel__close-btn
+  _targetUiKey: btn-close-supply
   _clickType: 0
   _rewardFrontier: 0
   _rewardWood: 0

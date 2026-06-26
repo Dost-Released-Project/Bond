@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TRT_014_RDEF
   m_EditorClassIdentifier: Assembly-CSharp::Reactions.ReactionDefinitionSO
   _id: TRT_014_RDEF
-  _displayName: "\uACFC\uC2DC\uC695 \u2014 \uB3C5\uBB34\uB300"
+  _displayName: "\uACFC\uC2DC\uC695 \u2014 \uC790\uC544\uB3C4\uCDE8"
   _description: "\uBCF8\uC778 \uCE58\uBA85\uD0C0 \uC2DC, Default: \uC774\uBC88 \uD134\uB3D9\uC548
     \uB9AC\uC561\uC158 \uBD09\uC778+\uC2A4\uD2B8\uB808\uC2A4-10 / Alt: \uBD09\uC778
     \uC5C6\uC774 \uC2A4\uD2B8\uB808\uC2A4-5"
@@ -30,6 +30,10 @@ MonoBehaviour:
     AltEffect:
       rid: 2064475332497375383
   EditableSlots: []
+  TargetTextOverride: "\uC790\uC2E0\uC774"
+  ConditionTextOverride: "\uCE58\uBA85\uD0C0 \uACF5\uACA9\uC744 \uAC00\uD560 \uC2DC"
+  ActionTextOverride: "\uC790\uC2E0\uC5D0\uAC8C \uCDE8\uD568(\uB9AC\uC561\uC158 \uBD09\uC778,
+    \uC2A4\uD2B8\uB808\uC2A4 \uAC10\uC18C)"
   references:
     version: 2
     RefIds:
