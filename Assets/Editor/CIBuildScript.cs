@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
@@ -73,14 +72,6 @@ public static class CIBuildScript
 
     private static string[] GetEnabledScenes()
     {
-        List<string> scenes = new List<string>();
-        foreach (EditorBuildSettingsScene scene in EditorBuildSettings.scenes)
-        {
-            if (scene.enabled)
-            {
-                scenes.Add(scene.path);
-            }
-        }
-        return scenes.ToArray();
+        return new string[] { "Assets/01. Scenes/Title_Scene.unity" };
     }
 }
