@@ -55,6 +55,9 @@ namespace Shapes {
 		}
 
 		public override void DrawPanelShapes( Rect rect, ImCanvasContext ctx ) {
+			// [임시 디버그 로그] 빌드본 alpha 추적용
+			Debug.Log($"[ShapesDebug] CharacterSlotBar.DrawPanelShapes - GameObject: {gameObject.name}, Rect: {rect}, Alpha: {alpha}, Grad1: {(colorGradient1 != null ? "Valid" : "Null")}, Grad2: {(colorGradient2 != null ? "Valid" : "Null")}");
+
 			// [방어 코드] 빌드본 번들 패키징 시 그라디언트 참조 유실(null) 대응
 			if (colorGradient1 == null) {
 				colorGradient1 = new Gradient();
