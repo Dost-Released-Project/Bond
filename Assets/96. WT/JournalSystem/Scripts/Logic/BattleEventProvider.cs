@@ -106,7 +106,13 @@ namespace Bond.WT.Journal
             string iconId = "";
             List<JournalOption> options = new List<JournalOption>();
 
-            if (template != null)
+            if (status == BattleEndStatus.Retreat)
+            {
+                // 퇴각 완료 결과창은 퇴각 질문 템플릿 우회하여 전용 문구와 복귀 액션 강제 적용
+                assembledParagraphs.Add("전투에서 안전하게 퇴각하였습니다.");
+                options.Add(new JournalOption { text = "맵으로 복귀", actionKey = "ACTION_RETURN_MAP", isEnabled = true });
+            }
+            else if (template != null)
             {
                 // [Data Assembly] 템플릿의 문장을 조립
                 foreach (var para in template.Paragraphs)
@@ -114,23 +120,28 @@ namespace Bond.WT.Journal
                     assembledParagraphs.Add(string.Format(para, _cachedPlayerCount, _cachedEnemyCount));
                 }
                 iconId = template.EntryIconId;
-                options = template.Options != null ? template.Options.ToList() : new List<JournalOption>();
+                
+                if (template.Options != null)
+                {
+                    foreach (var opt in template.Options)
+                    {
+                        // 패배 액션 키인 ACTION_RETURN_MAP_DEFEAT은 핸들러 호환성을 위해 ACTION_RETURN_MAP으로 교체
+                        string actKey = opt.actionKey == "ACTION_RETURN_MAP_DEFEAT" ? "ACTION_RETURN_MAP" : opt.actionKey;
+                        options.Add(new JournalOption { text = opt.text, actionKey = actKey, isEnabled = opt.isEnabled });
+                    }
+                }
             }
             else
             {
                 // DB에 템플릿 데이터가 없는 경우를 위한 Fallback
                 Debug.LogWarning($"[BattleEventProvider] JournalDataBaseSO에서 '{eventId}' 템플릿을 찾을 수 없습니다. 시트를 확인하세요.");
                 string fallbackText = status == BattleEndStatus.Victory 
-                    ? $"동료 {_cachedPlayerCount}명이 협력하여, {_cachedEnemyCount}명의 적을 쓰러뜨렸다."
-                    : (status == BattleEndStatus.Defeat 
-                        ? $"아군이 전멸하여 전투에서 패배했다..." 
-                        : $"전투에서 안전하게 퇴각했다.");
+                    ? $"동료 {_cachedPlayerCount}명이 협력하여, {_cachedEnemyCount}명의 적과 치열한 전투를 치뤘다."
+                    : $"아군이 전멸하여 전투에서 패배했다...";
                 assembledParagraphs.Add(fallbackText);
                 
                 string actionKey = "ACTION_RETURN_MAP";
-                string btnText = status == BattleEndStatus.Victory 
-                    ? "맵으로 복귀" 
-                    : (status == BattleEndStatus.Defeat ? "마을로 귀환" : "맵으로 퇴각");
+                string btnText = status == BattleEndStatus.Victory ? "맵으로 복귀" : "마을로 귀환";
                 options.Add(new JournalOption { text = btnText, actionKey = actionKey, isEnabled = true });
             }
 
@@ -150,6 +161,7 @@ namespace Bond.WT.Journal
                 ProviderId = "BattleEvent",
                 Metadata = new Dictionary<string, string>
                 {
+                    { "IsPlayerWin", isPlayerWin.ToString() },
                     { "IsBattleEnd", "true" },
                     { "BattleEndStatus", status.ToString() },
                     { "RewardFrontier", frontier.ToString() },

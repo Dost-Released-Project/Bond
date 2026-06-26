@@ -66,22 +66,25 @@ namespace Bond.WT.Journal
             {
                 if (report != null)
                 {
-                    var manualChar = _partyController.GetCurrentParty()?
-                        .FirstOrDefault(c => c.isPlayable);
-                    
-                    string address = (manualChar != null && !string.IsNullOrEmpty(manualChar.ImageAddress)) 
-                        ? manualChar.ImageAddress 
-                        : report.IconId;
-                    
-                    LoadAndSetIconAsync(address).Forget();
+                    bool isBattleEnd = report.Metadata.TryGetValue("IsBattleEnd", out string isBattleEndStr) && isBattleEndStr == "true";
 
-                    // 전투 결과창 렌더링 체크
-                    if (report.Metadata.TryGetValue("IsBattleEnd", out string isBattleEndStr) && isBattleEndStr == "true")
+                    if (isBattleEnd)
                     {
+                        // 결과창 바인딩 페이지에서는 대표 사건 아이콘을 숨김
+                        ReleaseIconHandle();
+                        _view.SetIcon(null);
                         LoadAndSetBattleResultAsync(report).Forget();
                     }
                     else
                     {
+                        var manualChar = _partyController.GetCurrentParty()?
+                            .FirstOrDefault(c => c.isPlayable);
+                        
+                        string address = (manualChar != null && !string.IsNullOrEmpty(manualChar.ImageAddress)) 
+                            ? manualChar.ImageAddress 
+                            : report.IconId;
+                        
+                        LoadAndSetIconAsync(address).Forget();
                         _view.ClearBattleResult();
                     }
                 }

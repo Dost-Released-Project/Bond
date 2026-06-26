@@ -289,9 +289,9 @@ namespace Bond.WT.Journal
             var rewardItemsRow = new VisualElement();
             rewardItemsRow.AddToClassList("reward-items-row");
 
-            AddRewardItem(rewardItemsRow, "reward-icon--frontier", frontier);
-            AddRewardItem(rewardItemsRow, "reward-icon--wood", wood);
-            AddRewardItem(rewardItemsRow, "reward-icon--ore", ore);
+            AddRewardItem(rewardItemsRow, "개척 데이터", frontier);
+            AddRewardItem(rewardItemsRow, "목재", wood);
+            AddRewardItem(rewardItemsRow, "광석", ore);
 
             rewardContainer.Add(rewardItemsRow);
             _battleResultContainer.Add(rewardContainer);
@@ -300,17 +300,12 @@ namespace Bond.WT.Journal
             _contentScroll.Add(_battleResultContainer);
         }
 
-        private void AddRewardItem(VisualElement parent, string iconClass, int value)
+        private void AddRewardItem(VisualElement parent, string resourceName, int value)
         {
             var item = new VisualElement();
             item.AddToClassList("reward-item");
 
-            var icon = new VisualElement();
-            icon.AddToClassList("reward-icon");
-            icon.AddToClassList(iconClass);
-            item.Add(icon);
-
-            var label = new Label($"+{value}");
+            var label = new Label($"{resourceName} +{value}");
             label.AddToClassList("reward-value");
             item.Add(label);
 
