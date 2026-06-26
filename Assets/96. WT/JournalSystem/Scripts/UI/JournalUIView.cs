@@ -202,26 +202,6 @@ namespace Bond.WT.Journal
             _battleResultContainer = new VisualElement();
             _battleResultContainer.AddToClassList("result-panel-inner");
 
-            // 1. 결과 타이틀
-            var title = new Label();
-            title.AddToClassList("result-title");
-            switch (status)
-            {
-                case BattleSystem.Interface.BattleEndStatus.Victory:
-                    title.text = "전투 승리";
-                    title.AddToClassList("victory");
-                    break;
-                case BattleSystem.Interface.BattleEndStatus.Defeat:
-                    title.text = "전투 패배";
-                    title.AddToClassList("defeat");
-                    break;
-                case BattleSystem.Interface.BattleEndStatus.Retreat:
-                    title.text = "퇴각 완료";
-                    title.AddToClassList("retreat");
-                    break;
-            }
-            _battleResultContainer.Add(title);
-
             // 2. 파티 컨테이너
             var partyContainer = new VisualElement();
             partyContainer.AddToClassList("party-container");
@@ -289,9 +269,9 @@ namespace Bond.WT.Journal
             var rewardItemsRow = new VisualElement();
             rewardItemsRow.AddToClassList("reward-items-row");
 
-            AddRewardItem(rewardItemsRow, "reward-icon--frontier", frontier);
-            AddRewardItem(rewardItemsRow, "reward-icon--wood", wood);
-            AddRewardItem(rewardItemsRow, "reward-icon--ore", ore);
+            AddRewardItem(rewardItemsRow, "개척 데이터", frontier);
+            AddRewardItem(rewardItemsRow, "목재", wood);
+            AddRewardItem(rewardItemsRow, "광석", ore);
 
             rewardContainer.Add(rewardItemsRow);
             _battleResultContainer.Add(rewardContainer);
@@ -300,17 +280,12 @@ namespace Bond.WT.Journal
             _contentScroll.Add(_battleResultContainer);
         }
 
-        private void AddRewardItem(VisualElement parent, string iconClass, int value)
+        private void AddRewardItem(VisualElement parent, string resourceName, int value)
         {
             var item = new VisualElement();
             item.AddToClassList("reward-item");
 
-            var icon = new VisualElement();
-            icon.AddToClassList("reward-icon");
-            icon.AddToClassList(iconClass);
-            item.Add(icon);
-
-            var label = new Label($"+{value}");
+            var label = new Label($"{resourceName} +{value}");
             label.AddToClassList("reward-value");
             item.Add(label);
 
