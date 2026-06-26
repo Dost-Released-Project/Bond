@@ -24,12 +24,14 @@ public static class CIBuildScript
 
     private static void BuildAddressables()
     {
-        AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+        AddressableAssetSettings settings = AssetDatabase.LoadAssetAtPath<AddressableAssetSettings>(
+            "Assets/AddressableAssetsData/AddressableAssetSettings.asset");
         if (settings == null)
         {
             throw new Exception("AddressableAssetSettings를 찾을 수 없습니다.");
         }
 
+        AddressableAssetSettingsDefaultObject.Settings = settings;
         AddressableAssetSettings.BuildPlayerContent(out AddressablesPlayerBuildResult result);
         if (string.IsNullOrEmpty(result.Error) == false)
         {
@@ -42,12 +44,18 @@ public static class CIBuildScript
     private static void BuildPlayer()
     {
         string buildPath = Environment.GetEnvironmentVariable("BUILD_PATH") ?? "build/StandaloneWindows64";
-        string buildName = Environment.GetEnvironmentVariable("BUILD_NAME") ?? "StandaloneWindows64.exe";
+        string buildName = Environment.GetEnvironmentVariable("BUILD_NAME") ?? "StandaloneWindows64";
+
+        // Application.dataPath = <project>/Assets → 한 단계 위가 프로젝트 루트
+        string projectRoot = Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
+        string outputPath = Path.Combine(projectRoot, buildPath, buildName);
+
+        Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
 
         BuildPlayerOptions options = new BuildPlayerOptions
         {
             scenes = GetEnabledScenes(),
-            locationPathName = Path.Combine(buildPath, buildName),
+            locationPathName = outputPath,
             target = BuildTarget.StandaloneWindows64,
             options = BuildOptions.None
         };
