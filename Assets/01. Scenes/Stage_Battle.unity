@@ -2509,6 +2509,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player Slot 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2108399142230142152, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
+      propertyPath: insfillAmount
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5937003464936598925, guid: 5c01858fdbbe6aa4ab87912a722229e9, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
