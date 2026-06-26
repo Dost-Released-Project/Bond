@@ -3,6 +3,7 @@ using Reactions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Playables;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
 using VContainer;
@@ -17,6 +18,11 @@ public class ReactionPortraitCanvas : MonoBehaviour, IReactionPortraitCanvas
     /// 초상화 스프라이트를 표시할 Image 컴포넌트. Inspector 에서 연결한다.
     /// </summary>
     [SerializeField] private Image _portraitImage;
+
+    /// <summary>
+    /// 캔버스 활성화 시 재생할 PlayableDirector. Inspector 에서 연결한다.
+    /// </summary>
+    [SerializeField] private PlayableDirector _director;
 
     /// <summary>
     /// 리액션 결과 대사를 표시할 TMP_Text 컴포넌트. Inspector 에서 연결한다.
@@ -63,13 +69,32 @@ public class ReactionPortraitCanvas : MonoBehaviour, IReactionPortraitCanvas
         SetReactionText(result);
 
         gameObject.SetActive(true);
+
+        if (_director != null)
+        {
+            // Time.timeScale = 0 상태에서도 타임라인이 재생되도록 UnscaledGameTime 으로 설정한다
+            _director.timeUpdateMode = DirectorUpdateMode.UnscaledGameTime;
+            _director.Play();
+        }
+
         Time.timeScale = 0f;
 
         try
         {
-            await UniTask.Delay(
-                System.TimeSpan.FromSeconds(_displayDuration),
-                DelayType.UnscaledDeltaTime);
+            if (_director != null)
+            {
+                // 타임라인 재생이 끝날 때까지 대기한다
+                await UniTask.WaitUntil(
+                    () => _director.state != PlayState.Playing,
+                    PlayerLoopTiming.Update,
+                    this.GetCancellationTokenOnDestroy());
+            }
+            else
+            {
+                await UniTask.Delay(
+                    System.TimeSpan.FromSeconds(_displayDuration),
+                    DelayType.UnscaledDeltaTime);
+            }
         }
         finally
         {
