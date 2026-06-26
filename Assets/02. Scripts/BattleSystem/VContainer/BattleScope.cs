@@ -19,7 +19,7 @@ namespace BattleSystem.VContainer
         private BattlePipeLineSo battlePipeLineSo;
         
         [SerializeField]
-        private BattlePipeLineSo tutorialBattlePipeLineSo;
+        private TutorialBattlePipeLineSo tutorialBattlePipeLineSo;
 
         private bool m_isTutorial;
 
