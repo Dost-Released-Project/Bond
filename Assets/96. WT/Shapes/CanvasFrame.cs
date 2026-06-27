@@ -23,17 +23,24 @@ namespace _02.Scripts.UI.Title
         {
             base.OnEnable();
             
-            // Canvas 컴포넌트를 가져와 worldCamera를 자동으로 할당합니다.
+            // Canvas 컴포넌트를 가져와 worldCamera를 강제로 할당합니다.
             Canvas canvas = GetComponent<Canvas>();
-            if (canvas != null && canvas.worldCamera == null)
+            if (canvas != null)
             {
                 canvas.worldCamera = Camera.main;
-                Debug.Log("[TitleShapesCanvas] 메인 카메라를 Canvas에 자동 할당했습니다.");
+                Debug.Log("[TitleShapesCanvas] 메인 카메라를 Canvas에 강제 할당했습니다.");
             }
         }
 
         public override void DrawCanvasShapes(ImCanvasContext ctx)
         {
+            // [방어 코드] OnEnable 시점에 카메라 로드 지연으로 바인딩되지 못했을 경우 실시간 대응
+            Canvas canvas = GetComponent<Canvas>();
+            if (canvas != null && canvas.worldCamera == null)
+            {
+                canvas.worldCamera = Camera.main;
+            }
+
             // 화면 영역 계산
             Rect drawRect = Inset(ctx.canvasRect, padding);
 

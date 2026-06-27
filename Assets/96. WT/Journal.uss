@@ -137,6 +137,13 @@
     background-color: var(--bg-raised);
 }
 
+.journal-panel__choice-btn--selected {
+    border-color: #ffd700;
+    background-color: #3b3b4a;
+    color: #ffffff;
+    -unity-font-style: bold;
+}
+
 /* ── Battle Result Integration ── */
 .result-panel-inner {
     width: 100%;
@@ -147,28 +154,54 @@
     border-color: #3a3a45;
 }
 
+.result-title {
+    font-size: 44px;
+    color: #ffd700;
+    -unity-font-style: bold;
+    margin-bottom: 25px;
+    letter-spacing: 2px;
+}
+
+.result-title.victory {
+    color: #ffd700;
+}
+
+.result-title.defeat {
+    color: #ff4d4d;
+}
+
+.result-title.retreat {
+    color: #ffa500;
+}
+
 .party-container {
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    flex-wrap: nowrap;
     width: 100%;
     margin-bottom: 25px;
 }
 
 .character-card {
-    width: 180px;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    max-width: 180px;
+    min-width: 90px;
     background-color: #2b2b36;
     border-width: 1px;
     border-color: #4a4a5a;
     border-radius: 6px;
-    padding: 12px;
-    margin: 0 10px;
+    padding: 10px;
+    margin: 0 4px;
     align-items: center;
 }
 
 .character-portrait {
-    width: 120px;
-    height: 120px;
+    width: 90%;
+    aspect-ratio: 1;
+    height: auto;
     background-color: #18181f;
     border-radius: 4px;
     border-width: 1px;
@@ -274,4 +307,33 @@
     font-size: 20px;
     color: #ffffff;
     -unity-font-style: bold;
+}
+
+.vs-label {
+    font-size: 40px;
+    color: #ffd700;
+    -unity-font-style: bold-and-italic;
+    margin: 0 10px;
+    align-self: center;
+}
+
+.dead-card {
+    opacity: 0.5;
+    border-color: #552222;
+    background-color: #1a1515;
+}
+
+.dead-portrait {
+    -unity-background-image-tint-color: #555555;
+}
+
+.dead-mark {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -unity-text-align: middle-center;
+    font-size: 80px;
+    color: #ff3333;
+    -unity-font-style: bold;
+    text-shadow: 2px 2px 2px #000000;
 }

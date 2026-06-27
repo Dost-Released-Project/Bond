@@ -22,19 +22,38 @@ namespace Bond.WT.Journal
             public string FoundItemName;
             public string ItemId;
             public int Quantity;
-            public List<JournalOption> CustomOptions; // 추가
+            public List<JournalOption> CustomOptions;
+            public List<string> CustomParagraphs;
+            public string CustomTitle;
         }
         private readonly List<DiscoveryEvent> _eventBuffer = new List<DiscoveryEvent>();
+        private readonly List<JournalReport> _directReports = new List<JournalReport>();
 
         public LocationEventProvider(JournalDataBaseSO journalDB)
         {
             _journalDB = journalDB;
         }
 
+        public void AddDirectReports(IEnumerable<JournalReport> reports)
+        {
+            if (reports != null)
+            {
+                _directReports.AddRange(reports);
+            }
+        }
+
         /// <summary>
         /// 테스트용 데이터 설정 (이벤트 발생 시뮬레이션)
         /// </summary>
-        public void SetDiscovery(string eventId, string location, string item, string itemId = null, int quantity = 1, List<JournalOption> customOptions = null)
+        public void SetDiscovery(
+            string eventId, 
+            string location, 
+            string item, 
+            string itemId = null, 
+            int quantity = 1, 
+            List<JournalOption> customOptions = null,
+            List<string> customParagraphs = null,
+            string customTitle = null)
         {
             _eventBuffer.Add(new DiscoveryEvent 
             { 
@@ -43,12 +62,19 @@ namespace Bond.WT.Journal
                 FoundItemName = item,
                 ItemId = itemId,
                 Quantity = quantity,
-                CustomOptions = customOptions
+                CustomOptions = customOptions,
+                CustomParagraphs = customParagraphs,
+                CustomTitle = customTitle
             });
         }
 
         public IEnumerable<JournalReport> GetDailyReports()
         {
+            foreach (var report in _directReports)
+            {
+                yield return report;
+            }
+
             if (_eventBuffer.Count == 0) yield break;
 
             foreach (var evt in _eventBuffer)
@@ -73,8 +99,8 @@ namespace Bond.WT.Journal
 
                 var report = new JournalReport
                 {
-                    Title = template.Id.Contains("CAMP") ? "캠핑 정비" : "탐색 보고",
-                    Paragraphs = assembledParagraphs,
+                    Title = evt.CustomTitle ?? (template.Id.Contains("CAMP") ? "캠핑 정비" : "탐색 보고"),
+                    Paragraphs = evt.CustomParagraphs ?? assembledParagraphs,
                     IconId = template.EntryIconId,
                     Options = evt.CustomOptions ?? template.Options.ToList(), // 커스텀 옵션 우선 사용
                     ProviderId = "LocationEvent"
@@ -93,6 +119,7 @@ namespace Bond.WT.Journal
         public void ClearBuffer()
         {
             _eventBuffer.Clear();
+            _directReports.Clear();
         }
     }
 }

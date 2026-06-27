@@ -115,12 +115,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2ac4c5a7d89608f45b0a1899798c13d6
-    m_Address: TutorialBattlePipeLine
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - DBSO
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2b0673ddd35a58a45bb66bc80bd9f880
     m_Address: Assets/Data/GeneratedSO/journaldata/JournalData/JO_EVT_FIND_OLD_ITEM.asset
     m_ReadOnly: 0
@@ -258,6 +252,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5a9914d6adc46a04182f6d0d21259741
     m_Address: Assets/Data/GeneratedSO/monsterstat/MonsterDataSO/MN_10010000.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5c01858fdbbe6aa4ab87912a722229e9
+    m_Address: PlayerSlot
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -725,12 +724,6 @@ MonoBehaviour:
     m_Address: Assets/Data/GeneratedSO/building/BuildingDataSO/BU_09020000.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f6d7bc105c3672744b9425aaa988c32e
-    m_Address: BattlePipeLine
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - DBSO
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f82e37bef9adc3a4fbca561887836071
     m_Address: Assets/Data/GeneratedSO/eventdata/EventDataSO/EV_12020000.asset

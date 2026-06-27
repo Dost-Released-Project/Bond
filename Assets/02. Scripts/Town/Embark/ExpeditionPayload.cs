@@ -37,7 +37,6 @@ namespace Bond.Expedition
         public ExpeditionInventory Supplies { get; private set; } =
             new ExpeditionInventory();
         public ExpeditionRegion Region { get; private set; }
-        public bool IsTutorial { get; set; }
 
         // LeeJuno 맵 시스템 호환용 passthrough — 선택된 지역의 DungeonType 을 그대로 노출
         public DungeonType DungeonType => Region != null ? Region.DungeonType : DungeonType.None;
@@ -104,6 +103,7 @@ namespace Bond.Expedition
             _partyController.Clear();
             Region = null;
             Outcome = ExpeditionOutcome.None;
+            EnemyParty = null;
         }
 
         public override string ToString()

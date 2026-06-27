@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum TutorialSequence { Sequence_A_Town, Sequence_B_Expedition }
+public enum TutorialSequence { Sequence_A_Town, Sequence_B_Expedition, Sequence_C_Camp, Sequence_D_Battle }
 
 public enum TutorialClickType
 {

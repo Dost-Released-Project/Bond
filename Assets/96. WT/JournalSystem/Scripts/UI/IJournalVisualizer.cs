@@ -36,6 +36,7 @@ namespace Bond.WT.Journal
         void SetBattleResult(
             BattleSystem.Interface.BattleEndStatus status, 
             IReadOnlyList<BaseCharacter> party, 
+            IReadOnlyList<BaseCharacter> enemyParty,
             Dictionary<string, Sprite> portraits, 
             int frontier, 
             int wood, 

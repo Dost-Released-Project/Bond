@@ -12,7 +12,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2bef063d7c387a478dc98ff71814b1d, type: 3}
   m_Name: TutorialBattlePipeLineSO
   m_EditorClassIdentifier: Assembly-CSharp::PipeLine.TutorialBattlePipeLineSo
-  steps: []
+  steps:
+  - rid: 4595144461437370450
+  - rid: 4595144461437370451
+  - rid: 4595144461437370452
+  - rid: 4595144461437370453
+  - rid: 4595144461437370454
+  - rid: 4595144461437370456
+  - rid: 4595144461437370457
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 4595144461437370450
+      type: {class: TutorialReactionCall, ns: PipeLine, asm: Assembly-CSharp}
+      data:
+        Phase: 1
+    - rid: 4595144461437370451
+      type: {class: TutorialEntryStep, ns: PipeLine, asm: Assembly-CSharp}
+      data: 
+    - rid: 4595144461437370452
+      type: {class: TutorialEvasionStep, ns: PipeLine, asm: Assembly-CSharp}
+      data: 
+    - rid: 4595144461437370453
+      type: {class: TutorialCriticalStep, ns: PipeLine, asm: Assembly-CSharp}
+      data:
+        criticalBonus: 0.5
+    - rid: 4595144461437370454
+      type: {class: TutorialDefenseStep, ns: PipeLine, asm: Assembly-CSharp}
+      data: 
+    - rid: 4595144461437370456
+      type: {class: TutorialApplyStep, ns: PipeLine, asm: Assembly-CSharp}
+      data: 
+    - rid: 4595144461437370457
+      type: {class: TutorialReactionCall, ns: PipeLine, asm: Assembly-CSharp}
+      data:
+        Phase: 2
