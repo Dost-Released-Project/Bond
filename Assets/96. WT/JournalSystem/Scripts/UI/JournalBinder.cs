@@ -60,6 +60,13 @@ namespace Bond.WT.Journal
             _optionsObserver.EventHandler = options => 
             {
                 _view.SetOptions(options);
+                if (_model.CurrentReport.Value != null && _model.CurrentReport.Value.SelectedOption.HasValue)
+                {
+                    if (_view is JournalUIView uiView)
+                    {
+                        uiView.HighlightSelectedOption(_model.CurrentReport.Value.SelectedOption.Value.actionKey);
+                    }
+                }
             };
 
             _reportObserver.EventHandler = report => 

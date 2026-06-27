@@ -21,6 +21,7 @@ namespace Bond.WT.Camping
         public bool CanHandle(string actionKey)
         {
             return actionKey.StartsWith("CAMP_ACTION|") || 
+                   actionKey.StartsWith("CAMP_SKIP|") || 
                    actionKey == "CAMP_END";
         }
 
@@ -54,6 +55,20 @@ namespace Bond.WT.Camping
                                 }
                             }
                         }
+                    }
+                }
+            }
+            else if (actionKey.StartsWith("CAMP_SKIP|"))
+            {
+                string[] parts = actionKey.Split('|');
+                if (parts.Length == 3)
+                {
+                    int index = int.Parse(parts[1]);
+                    var chara = GetCharacter(index);
+                    if (chara != null)
+                    {
+                        chara.IncreaseInsanity(15);
+                        Debug.Log($"[CampingJournalActionHandler] {chara.Name} 치료 스킵으로 인한 스트레스 증가 (+15). 현재 스트레스: {chara.Insanity}");
                     }
                 }
             }

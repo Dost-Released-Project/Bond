@@ -179,10 +179,38 @@ namespace Bond.WT.Journal
                 {
                     btn.text = option.text;
                     btn.SetEnabled(option.isEnabled);
-                    btn.clicked += () => OnOptionSelected?.Invoke(option);
+                    btn.userData = option.actionKey;
+                    btn.clicked += () => 
+                    {
+                        HighlightSelectedOption(option.actionKey);
+                        OnOptionSelected?.Invoke(option);
+                    };
                 }
 
                 _optionButtonContainer.Add(buttonInstance);
+            }
+        }
+
+        public void HighlightSelectedOption(string actionKey)
+        {
+            if (_optionButtonContainer == null) return;
+
+            int count = _optionButtonContainer.childCount;
+            for (int i = 0; i < count; i++)
+            {
+                var child = _optionButtonContainer[i];
+                var btn = child.Q<Button>();
+                if (btn != null)
+                {
+                    if (btn.userData is string key && key == actionKey)
+                    {
+                        btn.AddToClassList("journal-panel__choice-btn--selected");
+                    }
+                    else
+                    {
+                        btn.RemoveFromClassList("journal-panel__choice-btn--selected");
+                    }
+                }
             }
         }
 
