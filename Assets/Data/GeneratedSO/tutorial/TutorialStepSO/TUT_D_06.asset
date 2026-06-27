@@ -10,14 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b4d21d8be30e47844a21b0e8770670b4, type: 3}
-  m_Name: TUT_B_14
+  m_Name: TUT_D_06
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
-  _id: TUT_B_14
+  _id: TUT_D_06
   _displayName: "\uC804\uD22C \uC2A4\uD14C\uC774\uC9C0"
-  _description: "\uC554\uC0B4\uC790\uC758 \uCC28\uB840\uC785\uB2C8\uB2E4. \uD604\uC7AC
-    \uCC28\uB840\uC778 \uB300\uC6D0\uC740 \uCCB4\uB825\uBC14\uAC00 \uAC15\uC870\uB429\uB2C8\uB2E4."
-  _sequence: 1
-  _targetUiKey: Canvas/Party 1/Player Slot 2
+  _description: "\uD0D0\uC0AC \uC778\uBCA4\uD1A0\uB9AC\uC785\uB2C8\uB2E4. \uCE90\uB9AD\uD130\uC758
+    \uCC28\uB840\uC77C \uB54C, \uC544\uC774\uD15C\uC744 \uC6B0\uD074\uB9AD\uD558\uC5EC
+    \uC0AC\uC6A9\uD560 \uC218 \uC788\uC73C\uBA70 \uC544\uC774\uD15C \uC0AC\uC6A9\uC740
+    \uD134\uC744 \uC18C\uBAA8\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."
+  _sequence: 3
+  _targetUiKey: ExpeditionInventoryView/VisualElement
   _clickType: 1
   _rewardFrontier: 0
   _rewardWood: 0

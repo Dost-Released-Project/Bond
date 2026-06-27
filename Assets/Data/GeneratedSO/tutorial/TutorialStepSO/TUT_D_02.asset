@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b4d21d8be30e47844a21b0e8770670b4, type: 3}
-  m_Name: TUT_B_08
+  m_Name: TUT_D_02
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
-  _id: TUT_B_08
+  _id: TUT_D_02
   _displayName: "\uC804\uD22C \uC2A4\uD14C\uC774\uC9C0"
   _description: "\uB77C\uC6B4\uB4DC \uD45C\uC2DC\uC785\uB2C8\uB2E4. \uBAA8\uB4E0
     \uB300\uC0C1\uC758 \uD589\uB3D9\uC774 \uB05D\uB098\uBA74 \uC99D\uAC00\uD569\uB2C8\uB2E4."
-  _sequence: 1
+  _sequence: 3
   _targetUiKey: Juno_Canvas/TurnUI_A/TurnCount
   _clickType: 1
   _rewardFrontier: 0

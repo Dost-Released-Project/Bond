@@ -2,15 +2,16 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.InputSystem; 
 using System.Collections.Generic;
+using UnityEngine.Serialization;
 using VContainer;
 
 namespace Bond.Tutorial
 {
-    public class TutorialExpeditionView : MonoBehaviour
+    public class TutorialBattleView : MonoBehaviour
     {
-        private ExpeditionTutorialSystemController _controller;
+        private BattleTutorialSystemController _controller;
 
-        [SerializeField] private UIDocument expeditionUiDocument; 
+        [SerializeField] private UIDocument battleUiDocument; 
         [Header("카메라 (월드 좌표 변환용)")]
         [SerializeField] private Camera mainCamera;
         [Header("클릭 타입 이모티콘 스프라이트")]
@@ -37,17 +38,17 @@ namespace Bond.Tutorial
         private TutorialStepSO _currentStepData;
 
         [Inject]
-        public void Construct(ExpeditionTutorialSystemController controller)
+        public void Construct(BattleTutorialSystemController controller)
         {
             _controller = controller;
         }
 
         private void Start()
         {
-            if (expeditionUiDocument == null) return;
+            if (battleUiDocument == null) return;
             if (mainCamera == null) mainCamera = Camera.main;
 
-            _root = expeditionUiDocument.rootVisualElement;
+            _root = battleUiDocument.rootVisualElement;
             _barrier = _root.Q<VisualElement>("TutorialBarrier");
             _focusBox = _barrier?.Q<VisualElement>("FocusBox");
             _guideLabel = _root.Q<Label>("GuideTextLabel");
@@ -118,7 +119,6 @@ namespace Bond.Tutorial
             }
             
             _controller.LoadProgress();
-            _controller.StartTutorial();
         }
 
         private void Update()
@@ -385,7 +385,7 @@ namespace Bond.Tutorial
         {
             _currentStepData = stepData; 
 
-            if (stepData.Sequence != TutorialSequence.Sequence_B_Expedition)
+            if (stepData.Sequence != TutorialSequence.Sequence_D_Battle)
             {
                 if (_barrier != null) _barrier.style.display = DisplayStyle.None;
                 return;
@@ -448,7 +448,7 @@ namespace Bond.Tutorial
                 var uiDocuments = FindObjectsByType<UIDocument>(FindObjectsSortMode.None);
                 foreach (var doc in uiDocuments)
                 {
-                    if (doc != null && doc != expeditionUiDocument && doc.rootVisualElement != null)
+                    if (doc != null && doc != battleUiDocument && doc.rootVisualElement != null)
                     {
                         var el = QueryElement(doc.rootVisualElement, key.Trim());
                         if (el != null) return el;

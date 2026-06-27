@@ -24,13 +24,6 @@ namespace Bond.Tutorial
         public event Action<TutorialStepSO> OnStepChanged;
         public event Action OnTutorialFinished;
 
-        public void StartTutorial()
-        {
-            _payload.IsTutorial = true;
-            TutorialBattlePipeLineSo.isFirstAttack = true;
-            Debug.Log($"Starting Tutorial {_payload.IsTutorial}");
-        }
-
         // 튜토리얼 스텝 리스트 빌드
         public void SetupSteps(List<TutorialStepSO> steps)
         {
@@ -86,8 +79,6 @@ namespace Bond.Tutorial
         public void Advance()
         {
             if (_saveData.isTutorialCleared) return;
-            
-            if(TutorialBattlePipeLineSo.isFirstAttack == false) TutorialBattlePipeLineSo.isFirstAttack = true;
 
             // 💥 [보상 정산 타이밍] 현재 완료 판정을 받은 스텝의 SO를 꺼내 정산 개시
             if (_stepMap.TryGetValue(_saveData.currentStepId, out var currentStepSO))
@@ -155,7 +146,6 @@ namespace Bond.Tutorial
         {
             _saveData.isTutorialCleared = true;
             _saveData.currentStepId = "FINISHED";
-            _payload.IsTutorial = false;
             SaveCurrentState();
             OnTutorialFinished?.Invoke();
         }
