@@ -13,14 +13,13 @@ MonoBehaviour:
   m_Name: TUT_A_45
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_45
-  _displayName: "\uB9AC\uC561\uC158 \uC124\uC815"
-  _description: "\uB9AC\uC561\uC158 \uC124\uC815\uC785\uB2C8\uB2E4. \uB9AC\uC561\uC158\uC740
-    \uD2B9\uC815 \uC870\uAC74\uC5D0\uC11C \uBC1C\uC0DD\uD558\uB294 \uCD94\uAC00\uC801\uC778
-    \uD589\uB3D9\uC774\uACE0 \uC9C0\uC815\uB41C \uC5ED\uD560\uAD70\uC5D0 \uB530\uB77C
-    \uB2EC\uB77C\uC9D1\uB2C8\uB2E4."
+  _displayName: "\uC5ED\uD560 \uC124\uC815"
+  _description: "\uD0F1\uCEE4, \uB51C\uB7EC, \uC11C\uD3EC\uD130 \uC911\uC5D0\uC11C
+    \uD558\uB098\uB97C \uC9C0\uC815\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uC120\uD0DD\uD558\uC9C0
+    \uC54A\uC73C\uBA74 \uAE30\uC874 \uC5ED\uD560\uC744 \uC720\uC9C0\uD569\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: CharacterDetailUi/reaction-slot-0
-  _clickType: 0
+  _targetUiKey: CharacterDetailUi/char-detail__role-picker
+  _clickType: 1
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

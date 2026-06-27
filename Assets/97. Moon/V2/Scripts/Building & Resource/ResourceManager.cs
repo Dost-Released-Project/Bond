@@ -16,9 +16,9 @@ public class ResourceManager
 
     public ResourceManager()
     {
-        _resources[ResourceType.Frontier] = new ResourceData("개척 데이터", 10000);
-        _resources[ResourceType.Wood] = new ResourceData("목재", 1000);
-        _resources[ResourceType.Ore] = new ResourceData("광석", 1000);
+        _resources[ResourceType.Frontier] = new ResourceData("개척 데이터", 5000);
+        _resources[ResourceType.Wood] = new ResourceData("목재", 500);
+        _resources[ResourceType.Ore] = new ResourceData("광석", 500);
         
         var loadData = new ResourceSaveData();
         string saveKey = loadData.Key;
@@ -58,7 +58,8 @@ public class ResourceManager
             Debug.Log("<color=yellow>[최초 실행]</color> 새 게임 시작 보너스 자원을 1회 한정 지급합니다.");
             
             // 초기 세팅치 최대 보유량 범위 안에서 안전하게 추가 정산되도록 오버로드 연산
-            Admin_AddAllResources(10000); 
+            AddFrontierData(1000);
+            AddMaterials(100, 100);
             
             // 지급 후 다음 프레임이나 재실행 시 다시 호출되지 않도록 즉시 false 락 처리
             _isFirstStart = false;
@@ -87,11 +88,6 @@ public class ResourceManager
 
     public void AddFrontierData(int amount) => AddResource(ResourceType.Frontier, amount);
     public void AddMaterials(int wood, int ore) { AddResource(ResourceType.Wood, wood); AddResource(ResourceType.Ore, ore); }
-    
-    public void Admin_AddAllResources(int amount)
-    {
-        foreach (var type in _resources.Keys) AddResource(type, amount);
-    }
 
     public bool ConsumeResources(int frontier, int wood, int ore)
     {

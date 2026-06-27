@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: TUT_A_60
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_60
-  _displayName: "\uB300\uC6D0 \uD3B8\uC131"
-  _description: "\uC774\uC5B4\uC11C \uC554\uC0B4\uC790\uB97C \uC124\uC815\uD558\uACA0\uC2B5\uB2C8\uB2E4.
-    \uC554\uC0B4\uC790\uB97C \uC6B0\uD074\uB9AD\uD558\uC5EC \uC0C1\uC138\uCC3D\uC744
-    \uC5EC\uC138\uC694."
+  _displayName: "\uC131\uD5A5"
+  _description: "\uC131\uD5A5 \uBAA9\uB85D\uC785\uB2C8\uB2E4. \uC131\uD5A5\uC740
+    \uB530\uB85C \uC124\uC815\uD560 \uC218 \uC5C6\uC73C\uBA70 \uC7A0\uAE34 \uC131\uD5A5\uC740
+    \uC815\uC2E0\uAC01\uC131\uC81C\uB97C \uD1B5\uD574 \uD574\uC81C\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: 'TownUi/embark-overlay/roster-panel/.roster-card[1]'
-  _clickType: 1
+  _targetUiKey: CharacterDetailUi/char-detail__trait-list
+  _clickType: 2
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

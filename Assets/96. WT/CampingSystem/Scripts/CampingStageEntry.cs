@@ -5,6 +5,7 @@ using Bond.Expedition;
 using Bond.WT.Journal;
 using BattleSystem;
 using BattleSystem.Interface;
+using Bond.Tutorial;
 using Bond.UI;
 using Cysharp.Threading.Tasks;
 
@@ -54,6 +55,13 @@ namespace Bond.WT.Camping
             builder.Register<CharacterDetailController>(Lifetime.Scoped);
             builder.RegisterComponentInHierarchy<CharacterDetailPresenter>();
             builder.RegisterComponentInHierarchy<CharacterCombatPanelPresenter>();
+            
+            // 순수 C# 코어 컨트롤러 등록 (프로젝트 스코프에 이미 Singleton으로 등록되어 있다면 제외 가능)
+            builder.Register<CampTutorialSystemController>(Lifetime.Singleton);
+            // 어드레서블 로드 및 컨트롤러 초기화 바인딩을 담당할 엔트리 포인트 등록
+            builder.Register<CampTutorialEntryPoint>(Lifetime.Singleton).AsImplementedInterfaces();
+            // 씬에 배치된 UI Toolkit 마스킹 뷰 등록
+            builder.RegisterComponentInHierarchy<TutorialCampView>();
         }
     }
 

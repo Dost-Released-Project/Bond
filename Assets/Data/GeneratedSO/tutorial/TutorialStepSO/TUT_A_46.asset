@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: TUT_A_46
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_46
-  _displayName: "\uB9AC\uC561\uC158 \uC124\uC815"
-  _description: "\uC9D1\uC911 \uBCF4\uD638\uB97C \uD074\uB9AD\uD558\uC138\uC694."
+  _displayName: "\uC2A4\uD0AC \uC124\uC815"
+  _description: "\uC774\uC5B4\uC11C \uC2A4\uD0AC \uC124\uC815\uC785\uB2C8\uB2E4.
+    \uC2A4\uD0AC\uC740 4\uAC1C\uAE4C\uC9C0 \uC120\uD0DD \uAC00\uB2A5\uD558\uBA70
+    \uC120\uD0DD\uB41C \uC2A4\uD0AC\uC740 \uD14C\uB450\uB9AC\uAC00 \uC0DD\uAE41\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: CharacterDetailUi/__slot-dropdown
-  _clickType: 0
+  _targetUiKey: CharacterDetailUi/char-detail__skill-grid
+  _clickType: 1
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0

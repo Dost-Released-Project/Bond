@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4d21d8be30e47844a21b0e8770670b4, type: 3}
+  m_Name: TUT_D_10
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
+  _id: TUT_D_10
+  _displayName: "\uC804\uD22C \uC2A4\uD14C\uC774\uC9C0"
+  _description: "\uC2A4\uD0AC\uC744 \uD074\uB9AD\uD558\uC5EC \uC0AC\uC6A9\uD560 \uC218
+    \uC788\uACE0, \uD0C0\uAC9F\uC740 \uCCB4\uB825\uBC14\uAC00 \uBE68\uAC04\uC0C9\uC73C\uB85C
+    \uAC15\uC870\uB429\uB2C8\uB2E4. \uC774\uC81C \uC790\uC720\uB86D\uAC8C \uC804\uD22C\uD558\uC5EC
+    \uC2B9\uB9AC\uD558\uC138\uC694."
+  _sequence: 3
+  _targetUiKey: CharacterCombatUi/.combat-panel__skill-row
+  _clickType: 1
+  _rewardFrontier: 3000
+  _rewardWood: 300
+  _rewardOre: 300
+  _rewardItemIds: 
+  _rewardItemCounts: 

@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: TUT_A_41
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStepSO
   _id: TUT_A_41
-  _displayName: "\uC5ED\uD560 \uC124\uC815"
-  _description: "\uD0F1\uCEE4\uB97C \uD074\uB9AD\uD558\uC138\uC694."
+  _displayName: "\uBAA8\uB4DC \uC124\uC815"
+  _description: "\uC790\uB3D9\uACFC \uC218\uB3D9\uC774 \uC788\uC2B5\uB2C8\uB2E4."
   _sequence: 0
-  _targetUiKey: CharacterDetailUi/role-btn-current
-  _clickType: 0
+  _targetUiKey: CharacterDetailUi/control-mode
+  _clickType: 1
   _rewardFrontier: 0
   _rewardWood: 0
   _rewardOre: 0
